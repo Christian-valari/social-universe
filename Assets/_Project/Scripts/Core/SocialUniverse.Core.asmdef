@@ -1,0 +1,17 @@
+{
+    "name": "SocialUniverse.Core",
+    "rootNamespace": "SocialUniverse.Core",
+    "references": [
+        "VContainer",
+        "SocialUniverse.Config"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

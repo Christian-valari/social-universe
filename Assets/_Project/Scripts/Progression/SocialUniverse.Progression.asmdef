@@ -1,0 +1,19 @@
+{
+    "name": "SocialUniverse.Progression",
+    "rootNamespace": "SocialUniverse.Progression",
+    "references": [
+        "VContainer",
+        "SocialUniverse.Core",
+        "SocialUniverse.Config",
+        "SocialUniverse.Economy"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

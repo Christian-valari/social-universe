@@ -1,0 +1,22 @@
+{
+    "name": "SocialUniverse.App",
+    "rootNamespace": "SocialUniverse.App",
+    "references": [
+        "VContainer",
+        "SocialUniverse.Core",
+        "SocialUniverse.Config",
+        "SocialUniverse.World",
+        "SocialUniverse.Mining",
+        "SocialUniverse.Economy",
+        "SocialUniverse.Progression"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

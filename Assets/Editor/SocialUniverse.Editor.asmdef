@@ -1,0 +1,25 @@
+{
+    "name": "SocialUniverse.Editor",
+    "rootNamespace": "",
+    "references": [
+        "VContainer",
+        "SocialUniverse.Config",
+        "SocialUniverse.Core",
+        "SocialUniverse.World",
+        "SocialUniverse.Mining",
+        "SocialUniverse.Economy",
+        "SocialUniverse.Progression",
+        "SocialUniverse.App"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

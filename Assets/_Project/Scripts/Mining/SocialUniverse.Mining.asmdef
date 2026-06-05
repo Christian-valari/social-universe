@@ -1,0 +1,20 @@
+{
+    "name": "SocialUniverse.Mining",
+    "rootNamespace": "SocialUniverse.Mining",
+    "references": [
+        "VContainer",
+        "SocialUniverse.Core",
+        "SocialUniverse.Config",
+        "SocialUniverse.World",
+        "SocialUniverse.Economy"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
