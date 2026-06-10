@@ -4,7 +4,9 @@
     "references": [
         "VContainer",
         "SocialUniverse.Core",
-        "SocialUniverse.Config"
+        "SocialUniverse.Config",
+        "SocialUniverse.Net",
+        "Unity.Services.Economy"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

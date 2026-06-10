@@ -4,7 +4,9 @@
     "references": [
         "VContainer",
         "SocialUniverse.Core",
-        "SocialUniverse.Config"
+        "SocialUniverse.Config",
+        "HexasphereGrid",
+        "LeanTouch"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

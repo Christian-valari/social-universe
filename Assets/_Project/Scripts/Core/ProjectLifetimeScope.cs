@@ -5,6 +5,8 @@ using VContainer.Unity;
 
 namespace SocialUniverse.Core
 {
+    // Base project scope — registers Core services only.
+    // In scene use RootLifetimeScope (App assembly) which extends this and wires in Net.
     public class ProjectLifetimeScope : LifetimeScope
     {
         [SerializeField] private AppConfig _appConfig;

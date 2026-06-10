@@ -8,6 +8,18 @@ Social Universe is a Unity 6 social MMO where players explore a solar system, mi
 
 **Current state:** Fresh Unity 6 project (URP). No gameplay scripts exist yet. Development starts at M0 (Foundation).
 
+## Pre-Task Protocol (mandatory)
+
+Before writing any code, creating any file, or modifying any script — without exception — you MUST:
+
+1. **Read `Social_Universe_Architecture.md`** — specifically §2 (Principles), §4 (Milestones & scope), and the Script Inventory (§8 or §9 depending on version).
+2. **Identify the correct namespace and assembly** for every file you will touch using the Project Structure table in this file. Never place a type in the wrong namespace.
+3. **Check milestone scope** — confirm the work is within the current milestone. If a request extends scope, flag it explicitly before proceeding.
+4. **Verify each Architecture Rule below applies** to your approach. If any rule is violated by the proposed implementation, stop and propose a compliant alternative.
+5. **Check Open Decisions** — if the task touches a flagged open decision (backend, DI, AR), do not resolve it silently; surface the dependency.
+
+> Skip only for pure documentation edits (PROGRESS.md, CLAUDE.md, ARCHITECTURE.md) with no code changes.
+
 ## Running Tests
 
 Tests run through Unity's Test Runner (Window > General > Test Runner). EditMode tests require no Play Mode; PlayMode tests run in-editor or on-device. There is no CLI build script yet.

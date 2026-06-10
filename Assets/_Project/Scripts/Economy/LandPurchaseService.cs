@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using SocialUniverse.Config;
 using SocialUniverse.Core;
+using SocialUniverse.Net;
 
 namespace SocialUniverse.Economy
 {
@@ -19,25 +21,64 @@ namespace SocialUniverse.Economy
 
     public class LandPurchaseService
     {
-        private readonly IEconomyService _economy;
-        private readonly EconomyConfig   _config;
+        private readonly IBackendClient _backend;
+        private readonly EconomyConfig  _config;
+        private readonly LandRegistry   _registry;
+        private readonly Wallet         _wallet;
 
-        public LandPurchaseService(IEconomyService economy, EconomyConfig config)
+        public LandPurchaseService(IBackendClient backend, EconomyConfig config,
+            LandRegistry registry, Wallet wallet)
         {
-            _economy = economy;
-            _config  = config;
+            _backend  = backend;
+            _config   = config;
+            _registry = registry;
+            _wallet   = wallet;
         }
 
         public async Task<LandPurchaseResult> PurchaseAsync(LandPurchaseRequest request, PlanetDefinition planet)
         {
-            int  price   = (int)Math.Round(_config.BaseLandPrice * planet.LandPriceMultiplier);
-            bool success = await _economy.SpendCoinsAsync(price);
+            int price = (int)Math.Round(_config.BaseLandPrice * planet.LandPriceMultiplier);
 
-            if (!success)
-                return new LandPurchaseResult { Success = false, FailureReason = "Insufficient coins" };
+            PurchaseLandResponse response;
+            try
+            {
+                response = await _backend.CallAsync<PurchaseLandResponse>("PurchaseLand",
+                    new Dictionary<string, object>
+                    {
+                        { "tileId",   request.TileId  },
+                        { "planetId", planet.name      },
+                        { "price",    price            }
+                    });
+            }
+            catch (Exception ex)
+            {
+                SULog.Error($"LandPurchaseService: server call failed — {ex.Message}", SULog.Channel.Economy);
+                return new LandPurchaseResult { Success = false, FailureReason = "Network error" };
+            }
 
-            SULog.Info($"Land purchased: {request.TileId} by {request.PlayerId} for {price} coins", SULog.Channel.Economy);
+            if (!response.Success)
+            {
+                string reason = response.Reason switch
+                {
+                    "ALREADY_OWNED"      => "Tile is already owned",
+                    "INSUFFICIENT_FUNDS" => "Insufficient coins",
+                    _                    => response.Reason ?? "Server rejected"
+                };
+                return new LandPurchaseResult { Success = false, FailureReason = reason };
+            }
+
+            _registry.MarkOwned(request.TileId);
+            if (response.NewBalance >= 0) _wallet.SetCoins(response.NewBalance);
+
+            SULog.Info($"Land purchased: {request.TileId} for {price} coins (balance: {response.NewBalance})", SULog.Channel.Economy);
             return new LandPurchaseResult { Success = true };
+        }
+
+        private class PurchaseLandResponse
+        {
+            public bool   Success;
+            public string Reason;
+            public int    NewBalance = -1;
         }
     }
 }

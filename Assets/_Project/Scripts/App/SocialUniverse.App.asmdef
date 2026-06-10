@@ -5,10 +5,12 @@
         "VContainer",
         "SocialUniverse.Core",
         "SocialUniverse.Config",
+        "SocialUniverse.Net",
         "SocialUniverse.World",
         "SocialUniverse.Mining",
         "SocialUniverse.Economy",
-        "SocialUniverse.Progression"
+        "SocialUniverse.Progression",
+        "SocialUniverse.UI"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

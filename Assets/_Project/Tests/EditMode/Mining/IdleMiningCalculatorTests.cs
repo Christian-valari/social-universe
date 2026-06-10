@@ -29,6 +29,9 @@ namespace SocialUniverse.Tests
 
         private DroneRuntime MakeDrone(int cargoCap = 100, int cargoAmount = 0)
         {
+            typeof(DroneDefinition)
+                .GetField("_cargoCap", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                .SetValue(_droneDef, cargoCap);
             var runtime = new DroneRuntime(_droneDef);
             if (cargoAmount > 0) runtime.AddCargo(cargoAmount);
             return runtime;

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd974ea8636137a4ab38ae02215e424c, type: 3}
+  m_Name: Asteroid_Iridium
+  m_EditorClassIdentifier: SocialUniverse.Config::SocialUniverse.Config.AsteroidDefinition
+  _mineralType: Iridium
+  _tier: 3
+  _baseYield: 15
+  _rarity: 0.08
+  _coinsPerUnit: 40
+  _modelPrefab: {fileID: 3834735827108266822, guid: c655d5bb0f31c654aa1f7e44c105d07c, type: 3}

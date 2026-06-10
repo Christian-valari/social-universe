@@ -20,5 +20,10 @@ namespace SocialUniverse.Core
         {
             public const string Player = "Player";
         }
+
+        public static class PlanetIds
+        {
+            public const string Earth = "earth";
+        }
     }
 }

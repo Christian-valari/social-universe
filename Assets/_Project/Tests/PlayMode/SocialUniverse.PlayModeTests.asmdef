@@ -1,0 +1,29 @@
+{
+    "name": "SocialUniverse.PlayModeTests",
+    "rootNamespace": "SocialUniverse.Tests",
+    "references": [
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "VContainer",
+        "SocialUniverse.Core",
+        "SocialUniverse.Config",
+        "SocialUniverse.World",
+        "SocialUniverse.Mining",
+        "SocialUniverse.Economy",
+        "SocialUniverse.Progression",
+        "SocialUniverse.App"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

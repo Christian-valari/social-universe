@@ -5,6 +5,7 @@
         "VContainer",
         "SocialUniverse.Config",
         "SocialUniverse.Core",
+        "HexasphereGrid",
         "SocialUniverse.World",
         "SocialUniverse.Mining",
         "SocialUniverse.Economy",

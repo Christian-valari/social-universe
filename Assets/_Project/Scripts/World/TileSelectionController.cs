@@ -1,33 +1,30 @@
 using UnityEngine;
+using HexasphereGrid;
 
 namespace SocialUniverse.World
 {
-    // Uses legacy Input API for the M1 prototype. Upgrade to Input System in M2.
     public class TileSelectionController : MonoBehaviour
     {
         [SerializeField] private HexasphereManager _hexasphere;
-        [SerializeField] private Camera            _cam;
-        [SerializeField] private LayerMask         _tileLayer;
 
         private void Awake()
         {
-            if (_cam == null) _cam = Camera.main;
+            var hex = _hexasphere != null ? _hexasphere.PluginHexasphere : null;
+            if (hex != null)
+                hex.OnTileClick += OnPluginTileClick;
         }
 
-        private void Update()
+        private void OnDestroy()
         {
-            if (Input.GetMouseButtonDown(0))
-                TrySelect(_cam.ScreenPointToRay(Input.mousePosition));
-
-            if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
-                TrySelect(_cam.ScreenPointToRay(Input.GetTouch(0).position));
+            var hex = _hexasphere != null ? _hexasphere.PluginHexasphere : null;
+            if (hex != null)
+                hex.OnTileClick -= OnPluginTileClick;
         }
 
-        private void TrySelect(Ray ray)
+        private void OnPluginTileClick(Hexasphere hex, int tileIndex)
         {
-            if (!Physics.Raycast(ray, out var hit, 100f, _tileLayer)) return;
-            // TODO: Replace name-based lookup with Hexasphere Grid System's tile-from-collider API
-            _hexasphere.SelectTile(hit.collider.gameObject.name);
+            Debug.Log($"#{GetType().Name}# Tile Clicked {tileIndex}");
+            _hexasphere.SelectTile(tileIndex.ToString());
         }
     }
 }

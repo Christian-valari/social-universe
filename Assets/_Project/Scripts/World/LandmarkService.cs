@@ -2,25 +2,24 @@ using SocialUniverse.Core;
 
 namespace SocialUniverse.World
 {
-    // P1 — identifies the 12 pentagon tiles inherent to any hexasphere geometry.
     public class LandmarkService
     {
         private const int LandmarkCount = 12;
 
         public void MarkLandmarks(HexasphereManager hexasphere)
         {
-            // TODO: Query hexasphere.PentagonTileIds once the asset is installed.
-            // Pentagon tiles are guaranteed by icosahedral subdivision geometry.
             int marked = 0;
-            foreach (var tile in hexasphere.Tiles.Values)
+            foreach (var tileId in hexasphere.PentagonTileIds)
             {
                 if (marked >= LandmarkCount) break;
+                var tile = hexasphere.GetTile(tileId);
+                if (tile == null) continue;
                 tile.IsLandmark = true;
-                tile.State      = TileState.Landmark;
+                tile.State = TileState.Landmark;
                 marked++;
             }
 
-            SULog.Info($"LandmarkService: marked {marked} landmark tiles (stub)", SULog.Channel.World);
+            SULog.Info($"LandmarkService: marked {marked} landmark tiles.", SULog.Channel.World);
         }
     }
 }

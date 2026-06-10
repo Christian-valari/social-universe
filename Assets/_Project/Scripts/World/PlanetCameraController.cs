@@ -1,13 +1,12 @@
+using Lean.Touch;
 using UnityEngine;
 
 namespace SocialUniverse.World
 {
-    // Uses legacy Input API for the M1 prototype. Upgrade to Input System in M2.
     public class PlanetCameraController : MonoBehaviour
     {
         [SerializeField] private Transform _target;
-        [SerializeField] private float     _orbitSpeed  = 120f;
-        [SerializeField] private float     _zoomSpeed   = 5f;
+        [SerializeField] private float     _orbitSpeed  = 0.2f;
         [SerializeField] private float     _minDistance = 5f;
         [SerializeField] private float     _maxDistance = 20f;
 
@@ -17,15 +16,20 @@ namespace SocialUniverse.World
 
         private void LateUpdate()
         {
-            if (Input.GetMouseButton(1))
+            var fingers = LeanTouch.Fingers;
+
+            if (fingers.Count == 1)
             {
-                _yaw   += Input.GetAxis("Mouse X") * _orbitSpeed * Time.deltaTime;
-                _pitch -= Input.GetAxis("Mouse Y") * _orbitSpeed * Time.deltaTime;
+                var delta = LeanGesture.GetScaledDelta(fingers);
+                _yaw   += delta.x * _orbitSpeed;
+                _pitch -= delta.y * _orbitSpeed;
                 _pitch  = Mathf.Clamp(_pitch, -80f, 80f);
             }
-
-            _distance -= Input.GetAxis("Mouse ScrollWheel") * _zoomSpeed;
-            _distance  = Mathf.Clamp(_distance, _minDistance, _maxDistance);
+            else if (fingers.Count >= 2)
+            {
+                _distance /= LeanGesture.GetPinchRatio(fingers);
+                _distance  = Mathf.Clamp(_distance, _minDistance, _maxDistance);
+            }
 
             var center   = _target != null ? _target.position : Vector3.zero;
             var rotation = Quaternion.Euler(_pitch, _yaw, 0f);

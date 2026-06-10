@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
-using SocialUniverse.Core;
 
 namespace SocialUniverse.World
 {
     public class TileColorizer : MonoBehaviour
     {
+        [SerializeField] private HexasphereManager _hexasphere;
+
         [SerializeField] private Color _availableColor = new Color(0.4f, 0.4f, 0.4f);
         [SerializeField] private Color _ownedColor     = new Color(0.2f, 0.8f, 0.2f);
         [SerializeField] private Color _othersColor    = new Color(0.2f, 0.4f, 0.9f);
@@ -29,8 +30,8 @@ namespace SocialUniverse.World
                 _                       => _availableColor
             };
 
-            // TODO: hexasphere.SetTileColor(tile.TileId, color);
-            _ = color; // suppress unused warning until Hexasphere API is wired
+            _hexasphere.SetTileColor(tile.TileId, color);
+            Debug.Log($"#{GetType().Name}# Change Color -> {tile.TileId}");
         }
     }
 }

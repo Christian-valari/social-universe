@@ -1,0 +1,24 @@
+{
+    "name": "SocialUniverse.Net",
+    "rootNamespace": "SocialUniverse.Net",
+    "references": [
+        "VContainer",
+        "SocialUniverse.Core",
+        "SocialUniverse.Config",
+        "Unity.Services.Core",
+        "Unity.Services.Core.Environments",
+        "Unity.Services.Authentication",
+        "Unity.Services.CloudCode",
+        "Unity.Services.CloudSave",
+        "NaughtyAttributes.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

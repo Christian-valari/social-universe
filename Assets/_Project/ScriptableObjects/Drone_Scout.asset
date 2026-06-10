@@ -16,4 +16,4 @@ MonoBehaviour:
   _displayName: Scout Drone
   _travelSpeed: 5
   _cargoCap: 50
-  _modelPrefab: {fileID: 0}
+  _modelPrefab: {fileID: 8667300961151965220, guid: a948ba0ef83cc074a93fe60c476921a9, type: 3}

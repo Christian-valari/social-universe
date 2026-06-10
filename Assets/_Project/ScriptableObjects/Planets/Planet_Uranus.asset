@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d347d496c75ee1649a4da5764b5d97af, type: 3}
+  m_Name: Planet_Uranus
+  m_EditorClassIdentifier: SocialUniverse.Config::SocialUniverse.Config.PlanetDefinition
+  _planetId: uranus
+  _displayName: Uranus
+  _modelPrefab: {fileID: 2480477017863869684, guid: 069fc554cf1c1ad4cbc00620fdc75420, type: 3}
+  _tileCount: 322
+  _landPriceMultiplier: 2.5
+  _asteroidTier: 3
+  _asteroidTypes:
+  - {fileID: 11400000, guid: 18f73dc4d9a8d9d43a26744869206dba, type: 2}
+  - {fileID: 11400000, guid: b37f1cb13e8c51b4da4d72b515020755, type: 2}

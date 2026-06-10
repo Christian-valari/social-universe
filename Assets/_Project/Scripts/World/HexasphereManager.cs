@@ -1,32 +1,48 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using HexasphereGrid;
 using SocialUniverse.Core;
 
 namespace SocialUniverse.World
 {
     public class TileSelectedEvent { public TileData Tile; }
 
-    // STUB: Replace Generate() internals with Hexasphere Grid System API when asset is installed.
-    // The public contract (Tiles dictionary, SelectTile) must remain unchanged.
     public class HexasphereManager : MonoBehaviour
     {
+        [SerializeField] private Hexasphere _hexasphere;
+
         private readonly Dictionary<string, TileData> _tiles = new();
+        private readonly Dictionary<string, int> _indexById = new();
 
         public IReadOnlyDictionary<string, TileData> Tiles => _tiles;
+
+        public Hexasphere PluginHexasphere => _hexasphere;
+
+        public IEnumerable<string> PentagonTileIds =>
+            _hexasphere != null && _hexasphere.tiles != null
+                ? _hexasphere.tiles.Where(t => t.isPentagon).Select(t => t.index.ToString())
+                : Enumerable.Empty<string>();
 
         public void Generate(int tileCount)
         {
             _tiles.Clear();
+            _indexById.Clear();
 
-            // TODO: hexasphere.GenerateTiles(tileCount);
-            //       foreach (var t in hexasphere.Tiles) _tiles[t.Id] = new TileData(t.Id);
-            for (int i = 0; i < tileCount; i++)
+            if (_hexasphere == null || _hexasphere.tiles == null)
             {
-                var id = $"tile_{i:D5}";
-                _tiles[id] = new TileData(id);
+                SULog.Warn("HexasphereManager: Hexasphere component or tiles not ready.", SULog.Channel.World);
+                return;
             }
 
-            SULog.Info($"HexasphereManager: {_tiles.Count} tiles (stub)", SULog.Channel.World);
+            foreach (var t in _hexasphere.tiles)
+            {
+                var id = t.index.ToString();
+                _tiles[id] = new TileData(id);
+                _indexById[id] = t.index;
+            }
+
+            SULog.Info($"HexasphereManager: {_tiles.Count} tiles (numDivisions={_hexasphere.numDivisions}).", SULog.Channel.World);
         }
 
         public TileData GetTile(string tileId) =>
@@ -36,6 +52,13 @@ namespace SocialUniverse.World
         {
             if (_tiles.TryGetValue(tileId, out var tile))
                 EventBus.Publish(new TileSelectedEvent { Tile = tile });
+        }
+
+        public void SetTileColor(string tileId, Color color)
+        {
+            if (_hexasphere == null) return;
+            if (_indexById.TryGetValue(tileId, out var index))
+                _hexasphere.SetTileColor(index, color);
         }
     }
 }

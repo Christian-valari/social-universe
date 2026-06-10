@@ -13,8 +13,22 @@ MonoBehaviour:
   m_Name: DatabaseRegistry
   m_EditorClassIdentifier: SocialUniverse.Config::SocialUniverse.Config.DatabaseRegistry
   _planets:
-  - {fileID: 11400000, guid: 9dd42cada434bf5418491234279ffeba, type: 2}
+  - {fileID: 11400000, guid: 1fc69b4a9a8e7e74c9dca6da028434f4, type: 2}
+  - {fileID: 11400000, guid: 2e6080ca8e0a02e44b7185c1bd8ae137, type: 2}
+  - {fileID: 11400000, guid: c85be2bbe5b38254f9aed297daabc199, type: 2}
+  - {fileID: 11400000, guid: 61f69b734e0db4448a7f524d8a7413a8, type: 2}
+  - {fileID: 11400000, guid: a04e16aa2208c554ab7f732fa138eaa4, type: 2}
+  - {fileID: 11400000, guid: ee60ac39f04c68742bd768d00736f9fc, type: 2}
+  - {fileID: 11400000, guid: 109302d4bac5f8a4f98d4c7ca30021f8, type: 2}
+  - {fileID: 11400000, guid: 540f0d1177523644c874c604f9e279ce, type: 2}
+  - {fileID: 11400000, guid: f49eb84feb7389648a9b608556fc027a, type: 2}
+  - {fileID: 11400000, guid: 7a319865be85f274193f38f74dff415a, type: 2}
   _asteroids:
-  - {fileID: 11400000, guid: 106acb64966367a438b2844dfffb9303, type: 2}
+  - {fileID: 11400000, guid: 23c16a66f215aba419c786ee1606a9ad, type: 2}
+  - {fileID: 11400000, guid: 5c766c8008416ae47b82995a38832715, type: 2}
+  - {fileID: 11400000, guid: bd567778965878a4bb6f98ceae2a1c3b, type: 2}
+  - {fileID: 11400000, guid: e4d49b244165e444297372bfa072725d, type: 2}
+  - {fileID: 11400000, guid: 18f73dc4d9a8d9d43a26744869206dba, type: 2}
+  - {fileID: 11400000, guid: b37f1cb13e8c51b4da4d72b515020755, type: 2}
   _drones:
   - {fileID: 11400000, guid: b0f50eb462295314fa2c6a9b68f14da3, type: 2}

@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e5b5f92231476b4dacad8909d4aa066, type: 3}
   m_Name: AppConfig
   m_EditorClassIdentifier: SocialUniverse.Config::SocialUniverse.Config.AppConfig
-  _environment: 0
+  _environment: 2
   _gameVersion: 0.1.0
   _verboseLogging: 1
