@@ -17,6 +17,23 @@ namespace SocialUniverse.Config
         [SerializeField] private int   _baseLandPrice           = 100;
         [SerializeField] private int   _upkeepPerTilePerDay     = 5;
 
+        [Header("Land Registry")]
+        [SerializeField] private float _landRegistryPollIntervalSec = 20f; // how often to refresh other players' tile ownership
+
+        [Header("Build")]
+        [SerializeField] private int   _maxBuildLevel           = 4;
+
+        [Header("Yield")]
+        [SerializeField] private float _baseYieldPerTilePerHour     = 2f;
+        [SerializeField] private float _buildLevelYieldMultiplier   = 0.25f; // +25% per build level
+        [SerializeField] private float _visitYieldBonus             = 0.1f;  // +10% per recorded visit (capped)
+        [SerializeField] private float _maxYieldAccrualHours        = 24f;
+        [SerializeField] private int   _maxVisitCount               = 50;
+
+        [Header("Upkeep & Resale")]
+        [SerializeField] private float _upkeepPollIntervalSec   = 60f;  // how often to check whether upkeep is due
+        [SerializeField] private float _landResaleRate          = 0.5f; // fraction of base price refunded on sell
+
         [Header("Mining — Idle")]
         [SerializeField] private float _idleMiningRate          = 1f;   // units/sec
         [SerializeField] private float _maxOfflineHours         = 8f;
@@ -38,6 +55,15 @@ namespace SocialUniverse.Config
         public int   StartingStardust      => _startingStardust;
         public int   BaseLandPrice         => _baseLandPrice;
         public int   UpkeepPerTilePerDay   => _upkeepPerTilePerDay;
+        public float LandRegistryPollIntervalSec => _landRegistryPollIntervalSec;
+        public int   MaxBuildLevel              => _maxBuildLevel;
+        public float BaseYieldPerTilePerHour    => _baseYieldPerTilePerHour;
+        public float BuildLevelYieldMultiplier  => _buildLevelYieldMultiplier;
+        public float VisitYieldBonus            => _visitYieldBonus;
+        public float MaxYieldAccrualHours       => _maxYieldAccrualHours;
+        public int   MaxVisitCount              => _maxVisitCount;
+        public float UpkeepPollIntervalSec      => _upkeepPollIntervalSec;
+        public float LandResaleRate             => _landResaleRate;
         public float IdleMiningRate        => _idleMiningRate;
         public float MaxOfflineHours       => _maxOfflineHours;
         public float IdleSessionDuration   => _idleSessionDuration;

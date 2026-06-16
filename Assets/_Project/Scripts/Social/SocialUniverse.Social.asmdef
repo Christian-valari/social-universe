@@ -1,0 +1,20 @@
+{
+    "name": "SocialUniverse.Social",
+    "rootNamespace": "SocialUniverse.Social",
+    "references": [
+        "VContainer",
+        "SocialUniverse.Core",
+        "SocialUniverse.Config",
+        "Unity.Services.Vivox",
+        "Unity.Services.Friends"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

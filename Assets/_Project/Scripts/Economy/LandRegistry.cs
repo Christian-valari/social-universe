@@ -17,6 +17,8 @@ namespace SocialUniverse.Economy
 
         public void MarkOwned(string tileId) => _owned.Add(tileId);
 
+        public void RemoveOwned(string tileId) => _owned.Remove(tileId);
+
         public bool IsOwned(string tileId) => _owned.Contains(tileId);
 
         public IReadOnlyCollection<string> OwnedTileIds => _owned;

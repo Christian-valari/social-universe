@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using SocialUniverse.Config;
 using SocialUniverse.Core;
-using SocialUniverse.Net;
 
 namespace SocialUniverse.Economy
 {

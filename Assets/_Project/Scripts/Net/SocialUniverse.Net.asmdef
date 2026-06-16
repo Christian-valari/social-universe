@@ -10,7 +10,11 @@
         "Unity.Services.Authentication",
         "Unity.Services.CloudCode",
         "Unity.Services.CloudSave",
-        "NaughtyAttributes.Core"
+        "Unity.Services.Multiplayer",
+        "Unity.Netcode.Runtime",
+        "Unity.Collections",
+        "NaughtyAttributes.Core",
+        "SocialUniverse.Social"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

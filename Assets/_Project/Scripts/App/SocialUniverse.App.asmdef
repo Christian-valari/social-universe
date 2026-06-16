@@ -9,6 +9,7 @@
         "SocialUniverse.World",
         "SocialUniverse.Mining",
         "SocialUniverse.Economy",
+        "SocialUniverse.Social",
         "SocialUniverse.Progression",
         "SocialUniverse.UI"
     ],

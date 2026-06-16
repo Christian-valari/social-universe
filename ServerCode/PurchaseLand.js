@@ -1,10 +1,15 @@
 // PurchaseLand — validates ownership, deducts coins, records per-tile ownership,
-// and appends to the player's owned-tiles list so the client can restore state on login.
-// NOTE: the deduct -> record sequence is not transactional; see the design caveat above.
-const { CurrenciesApi }          = require("@unity-services/economy-2.5");
-const { DataApi: PlayerDataApi } = require("@unity-services/cloud-save-1.4");
+// appends to the player's owned-tiles list so the client can restore state on login,
+// and updates the planet's global land registry so other players see the new owner.
+// The registry entry is { ownerId, buildLevel, lastYieldClaimTs, lastUpkeepTs, visitCount } —
+// see GetLandRegistry, PlaceBuild, ClaimYield, RecordVisit, ApplyUpkeep, SellLand for readers/writers.
+// NOTE: the deduct -> record -> registry sequence is not transactional; see the
+// design caveat above.
+const { CurrenciesApi }            = require("@unity-services/economy-2.5");
+const { DataApi: PlayerDataApi }   = require("@unity-services/cloud-save-1.4");
 
-const CURRENCY_ID = "COINS";
+const CURRENCY_ID  = "COINS";
+const REGISTRY_KEY = "land_registry";
 
 /**
  * @param {string} tileId - ID of the hex tile being purchased.
@@ -66,6 +71,27 @@ module.exports = async ({ params, context, logger }) => {
       key:  ownedKey,
       body: { value: ownedTiles }
     });
+
+    // 5. Update the planet's global land registry (Custom Data, shared across all
+    //    players) so other clients render this tile as "owned by other".
+    const customDataApi = new PlayerDataApi(context);
+    const customId       = planetId.toLowerCase();
+    let registry = {};
+    try {
+      const regRes = await customDataApi.getCustomItems(projectId, customId, [REGISTRY_KEY]);
+      const item   = regRes.data.results.find(r => r.key === REGISTRY_KEY);
+      if (item?.value) registry = item.value;
+    } catch (_) { /* registry doesn't exist yet */ }
+
+    const now = Date.now();
+    registry[tileId] = {
+      ownerId: playerId,
+      buildLevel: 0,
+      lastYieldClaimTs: now,
+      lastUpkeepTs: now,
+      visitCount: 0
+    };
+    await customDataApi.setCustomItem(projectId, customId, { key: REGISTRY_KEY, value: registry });
 
     logger.info(`PurchaseLand: player ${playerId} purchased tile ${tileId} on ${planetId} for ${price} → ${newBalance}`);
     return { success: true, newBalance };

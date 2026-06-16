@@ -5,7 +5,7 @@
         "VContainer",
         "SocialUniverse.Core",
         "SocialUniverse.Config",
-        "SocialUniverse.Net",
+        "SocialUniverse.World",
         "Unity.Services.Economy"
     ],
     "includePlatforms": [],

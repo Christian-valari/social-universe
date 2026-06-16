@@ -169,6 +169,7 @@ MonoBehaviour:
   autoInjectGameObjects: []
   _appConfig: {fileID: 11400000, guid: 6edecc2567f9a5243935c96dc57d22d4, type: 2}
   _devMode: 0
+  _socialConfig: {fileID: 11400000, guid: 86487a0a0a616b6468a0f6b573706480, type: 2}
 --- !u!1 &791655229
 GameObject:
   m_ObjectHideFlags: 0

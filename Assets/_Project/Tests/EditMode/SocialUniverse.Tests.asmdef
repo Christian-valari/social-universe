@@ -8,7 +8,10 @@
         "SocialUniverse.Config",
         "SocialUniverse.Economy",
         "SocialUniverse.Mining",
-        "SocialUniverse.Progression"
+        "SocialUniverse.Progression",
+        "SocialUniverse.Net",
+        "SocialUniverse.Social",
+        "SocialUniverse.World"
     ],
     "includePlatforms": [
         "Editor"

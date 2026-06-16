@@ -13,14 +13,16 @@ namespace SocialUniverse.App
         private readonly TileColorizer       _colorizer;
         private readonly PlanetDefinition    _planet;
         private readonly IAuthService        _auth;
+        private readonly LandRegistryService _landRegistryService;
 
         public TilePurchaseHandler(LandPurchaseService purchaseService, TileColorizer colorizer,
-            PlanetDefinition planet, IAuthService auth)
+            PlanetDefinition planet, IAuthService auth, LandRegistryService landRegistryService)
         {
-            _purchaseService = purchaseService;
-            _colorizer       = colorizer;
-            _planet          = planet;
-            _auth            = auth;
+            _purchaseService     = purchaseService;
+            _colorizer           = colorizer;
+            _planet              = planet;
+            _auth                = auth;
+            _landRegistryService = landRegistryService;
         }
 
         public void Start()   => EventBus.Subscribe<TileSelectedEvent>(OnTileSelected);
@@ -44,6 +46,7 @@ namespace SocialUniverse.App
             tile.State   = TileState.OwnedByPlayer;
             tile.OwnerId = playerId;
             _colorizer.RefreshTile(tile);
+            _landRegistryService.SetOwner(tile.TileId, playerId);
         }
     }
 }

@@ -12,6 +12,7 @@ using SocialUniverse.Economy;
 using SocialUniverse.Progression;
 using SocialUniverse.Core;
 using SocialUniverse.Net;
+using SocialUniverse.Social;
 
 namespace SocialUniverse.App
 {
@@ -23,6 +24,7 @@ namespace SocialUniverse.App
         [SerializeField] private EconomyConfig    _economyConfig;
         [SerializeField] private DatabaseRegistry _databaseRegistry;
         [SerializeField] private PlanetDefinition _startPlanet;
+        [SerializeField] private SocialConfig     _socialConfig;   // used in standalone mode only; production gets it from RootLifetimeScope
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -43,13 +45,30 @@ namespace SocialUniverse.App
                 builder.Register<LocalMockAuthService>(Lifetime.Singleton).As<IAuthService>();
                 builder.Register<BackendClient>(Lifetime.Singleton).As<IBackendClient>();
                 builder.Register<CloudSaveService>(Lifetime.Singleton).As<ICloudSave>();
+
+                // M4 social layer — mocks, mirroring RootLifetimeScope's dev-mode set.
+                builder.RegisterInstance(_socialConfig != null ? _socialConfig : ScriptableObject.CreateInstance<SocialConfig>());
+                builder.Register<LocalMockChatService>(Lifetime.Singleton).As<IChatService>();
+                builder.Register<LocalMockFriendsService>(Lifetime.Singleton).As<IFriendsService>();
+                builder.Register<LocalMockPresenceService>(Lifetime.Singleton).As<IPresenceService>();
+                builder.Register<ChatModerationFilter>(Lifetime.Singleton);
+                builder.Register<ReportService>(Lifetime.Singleton);
+                builder.Register<ChatChannelController>(Lifetime.Singleton);
+                builder.Register<DirectMessageService>(Lifetime.Singleton);
+                builder.Register<ProfileService>(Lifetime.Singleton);
             }
 
             // Economy
             builder.Register<Wallet>(Lifetime.Singleton);
             builder.Register<LandRegistry>(Lifetime.Singleton);
+            builder.Register<LandRegistryService>(Lifetime.Singleton);
             builder.Register<IEconomyService, EconomyService>(Lifetime.Singleton);
             builder.Register<LandPurchaseService>(Lifetime.Singleton);
+            builder.Register<BuildPaletteService>(Lifetime.Singleton);
+            builder.Register<YieldService>(Lifetime.Singleton);
+            builder.Register<VisitorTracker>(Lifetime.Singleton);
+            builder.Register<UpkeepService>(Lifetime.Singleton);
+            builder.Register<LandSaleService>(Lifetime.Singleton);
 
             // Progression
             builder.Register<PlayerState>(Lifetime.Singleton);
@@ -59,6 +78,7 @@ namespace SocialUniverse.App
             builder.RegisterComponentInHierarchy<HexasphereManager>();
             builder.RegisterComponentInHierarchy<TileSelectionController>();
             builder.RegisterComponentInHierarchy<TileColorizer>();
+            builder.RegisterComponentInHierarchy<TileExtrusionView>();
             builder.RegisterComponentInHierarchy<PlanetController>();
             builder.RegisterComponentInHierarchy<PlanetCameraController>();
 
@@ -73,11 +93,18 @@ namespace SocialUniverse.App
             // UI
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.HUDController>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.MiningModePromptView>();
+            builder.RegisterComponentInHierarchy<SocialUniverse.UI.SocialDebugPanel>();
 
             builder.RegisterEntryPoint<PlanetSceneBootstrapper>();
             builder.RegisterEntryPoint<MiningInputHandler>();
             builder.RegisterEntryPoint<IdleMiningSessionController>();
             builder.RegisterEntryPoint<TilePurchaseHandler>();
+            builder.RegisterEntryPoint<LandRegistrySyncController>();
+            builder.RegisterEntryPoint<BuildModeController>();
+            builder.RegisterEntryPoint<VisitorTrackingController>();
+            builder.RegisterEntryPoint<UpkeepController>();
+            builder.RegisterEntryPoint<LandSaleHandler>();
+            builder.RegisterEntryPoint<PlanetPresenceController>();
         }
 
         private void OnApplicationPause(bool pausing)

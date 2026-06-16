@@ -8,7 +8,10 @@
         "SocialUniverse.World",
         "SocialUniverse.Mining",
         "SocialUniverse.Economy",
-        "SocialUniverse.Progression"
+        "SocialUniverse.Progression",
+        "SocialUniverse.Net",
+        "SocialUniverse.Social",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

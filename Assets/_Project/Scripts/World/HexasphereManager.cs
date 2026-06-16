@@ -3,10 +3,15 @@ using System.Linq;
 using UnityEngine;
 using HexasphereGrid;
 using SocialUniverse.Core;
+using SocialUniverse.Config;
 
 namespace SocialUniverse.World
 {
     public class TileSelectedEvent { public TileData Tile; }
+
+    public class BuildItemRequestedEvent { public TileData Tile; public ItemDefinition Item; }
+
+    public class TileSellRequestedEvent { public TileData Tile; }
 
     public class HexasphereManager : MonoBehaviour
     {
@@ -59,6 +64,13 @@ namespace SocialUniverse.World
             if (_hexasphere == null) return;
             if (_indexById.TryGetValue(tileId, out var index))
                 _hexasphere.SetTileColor(index, color);
+        }
+
+        public void SetTileExtrudeAmount(string tileId, float amount)
+        {
+            if (_hexasphere == null) return;
+            if (_indexById.TryGetValue(tileId, out var index))
+                _hexasphere.SetTileExtrudeAmount(index, amount);
         }
     }
 }

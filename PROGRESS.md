@@ -1,6 +1,6 @@
 # Social Universe — Project Progress Tracker
 
-> Last updated: 2026-06-10 — Fixed `PurchaseLand` Cloud Code function (broken SDK calls + response shape mismatch with `LandPurchaseService`)
+> Last updated: 2026-06-15 — M4 (Social: Presence, Chat, Friends, Profiles) code-complete and wired into DI for both dev and production modes (79/79 EditMode tests passing, up from 39/39). M3 unchanged. New PlayMode regression — see Known Issue #7.
 > Engine: Unity 6 (URP 17.3.0) · Branch: `main`
 
 ---
@@ -29,7 +29,7 @@
 | Lean Touch                  | ✅ **Installed**  | `Assets/Plugins/CW/LeanTouch/` — replaces legacy `Input` for camera orbit/zoom (touch + mouse) |
 | Backend (UGS vs Nakama)     | ✅ **UGS**        | Unity Gaming Services — Auth, Economy, Cloud Save, Cloud Code. Packages added to manifest.json |
 | Sky Discovery (AR vs gyro)  | 🔲 **Open**      | Decide before M5                                                                               |
-| Age policy / content rating | 🔲 **Open**      | Decide before M4 (drives chat restrictions and moderation scope)                               |
+| Age policy / content rating | 🔲 **Open**      | `SocialConfig` ships a provisional teen-safe default (`ChatFilterLevel.Strict` for all players) so M4 isn't blocked; revisit once decided — see "M4 — Chat & Moderation Notes" |
 | Land resale model           | 🔲 **Open**      | Coins-only confirmed; confirm no real-money cash-out before M8                                 |
 
 
@@ -46,6 +46,7 @@
 | 4   | ✅ Fixed  | `PlanetCameraController` depended on legacy `UnityEngine.Input` (right-mouse orbit, scroll-wheel zoom), which doesn't translate to mobile touch                                         | Rewritten against **Lean Touch** (`Lean.Touch.LeanGesture`/`LeanTouch.Fingers`): one-finger drag orbits, two-finger pinch zooms — works uniformly across mouse and touch      |
 | 5   | ⚠️ Open  | Unity MCP `execute_code` tool fails on every invocation in this environment — even `return 1;` — with `Error running ...mono.exe: The filename or extension is too long`                | Environment/tooling issue (not project code). Blocks live in-editor smoke-testing via injected C#; use manual Play Mode tap-throughs or PlayMode tests instead until resolved |
 | 6   | ✅ Fixed  | `ServerCode/PurchaseLand.js` used incorrect UGS SDK call signatures (Economy/Cloud Save client construction, `getItems`/`setItem` shapes, unnecessary `ConfigurationApi`/`configAssignmentHash`) and returned extra `tileId`/`ownerId` fields, causing Cloud Code's strict deserializer to throw `Could not find member 'ownerId' on object of type 'PurchaseLandResponse'` | Rewrote to match `SpendCoins.js`/`CLOUD_CODE_FUNCTIONS.md` conventions; trimmed success response to `{ success, newBalance }` matching `PurchaseLandResponse` |
+| 7   | ⚠️ Open  | `PlanetSceneFlowTests` (PlayMode) now fails both tests at `SetUp` with `PlanetSceneScope.Container not initialized`. Root cause: `Planet.unity`'s `PlanetSceneScope` has `parentReference.TypeName = SocialUniverse.App.RootLifetimeScope` set (production config). VContainer's `LifetimeScope.Awake()` sees `parentReference.Type != null` and calls `EnqueueParent`, queuing the scope to wait for a `RootLifetimeScope` instance before `Configure`/`Build` run. The test loads `Planet.unity` standalone via `LoadSceneMode.Single` (no `Bootstrap.unity`, no `RootLifetimeScope` ever created), so the wait never resolves, `Container` stays `null`, and downstream `[Inject]` fields (`CurrencyView._wallet`, `HUDController._wallet`/`_playerState`/`_mining`) throw NREs | Not yet fixed. Needs either: (a) a test-only bootstrap that instantiates `RootLifetimeScope` before loading `Planet.unity`, or (b) clearing `parentReference` on the scene's `PlanetSceneScope` and relying on the `parentReference.Type == null` standalone-mock path (would need re-adding `_socialConfig` + Net mocks to that scene instance) |
 
 
 ---
@@ -69,6 +70,10 @@
 | UGS Economy            | 3.5.3   | ✅      |
 | UGS Cloud Save         | 3.4.0   | ✅      |
 | UGS Cloud Code         | 2.10.2  | ✅      |
+| Unity Netcode for GameObjects | 2.12.0 | ✅ |
+| UGS Friends            | 1.1.1   | ✅      |
+| UGS Multiplayer (Sessions/Relay) | 2.2.3 | ✅ |
+| UGS Vivox              | 16.11.0 | ✅      |
 
 
 ---
@@ -110,6 +115,11 @@
 | `Asteroids/Asteroid_Platinum.asset` | ✅      | Tier 3, yield 25, rarity 18%, 22 coins/unit                |
 | `Asteroids/Asteroid_Iridium.asset`  | ✅      | Tier 3, yield 15, rarity 8%, 40 coins/unit                 |
 
+
+**⚠️ Misplaced asset:** `Assets/SocialConfig.asset` (M4, referenced by `Bootstrap.unity`'s
+`RootLifetimeScope._socialConfig`) was created at the `Assets/` root instead of
+`Assets/_Project/ScriptableObjects/`. Move it into this folder and re-point the `RootLifetimeScope`
+and `PlanetSceneScope` (Planet.unity) `_socialConfig` references to match project convention.
 
 ### Scenes
 
@@ -390,37 +400,208 @@
 
 ---
 
-## M3 — Land System Depth 🔲 NOT STARTED
+## M3 — Land System Depth 🚧 CODE COMPLETE — AWAITING DEPLOY/SETUP
 
 **Exit criteria:** Networked ownership visible to others, visitor-driven yield, build mode.
+
+**Phase 1 (done):** `LandRegistryService` — a global, cross-player-readable land registry so
+other players' tiles render as "owned by other".
+
+**Phase 2 (done):** Build mode — players spend coins to place items on owned tiles,
+incrementing a per-tile build level reflected via tile extrusion.
+
+**Phase 3 (done):** Visitor-driven yield — owners claim accrued coin income on their tiles,
+boosted by build level and recorded visits from other players.
+**Includes an M4-dependency caveat** — see "Phase 3 — Visitor-Driven Yield Notes" below.
+
+**Phase 4 (done):** Upkeep & resale — recurring land tax with auto-revert on non-payment, and
+voluntary tile resale for a partial refund. See "Phase 4 — Upkeep & Resale Notes" below.
+
+All four phases are code-complete and covered by EditMode tests (39/39 passing). What remains
+is Cloud Code deployment and manual/PlayMode verification — see "Setup Required" and the
+"M3 Completion Checklist" below.
 
 
 | Script                | Path          | Responsibility                                                      | Status |
 | --------------------- | ------------- | ------------------------------------------------------------------- | ------ |
-| `LandRegistryService` | `Economy/`    | Fetch/subscribe tile ownership for a planet from server             | 🔲     |
-| `YieldService`        | `Economy/`    | Compute and claim visitor-driven land income                        | 🔲     |
-| `VisitorTracker`      | `Economy/`    | Count/attribute visits to plots (server-backed)                     | 🔲     |
-| `UpkeepService`       | `Economy/`    | Recurring land tax sink — deduct upkeep from wallet                 | 🔲     |
-| `BuildController`     | `World/`      | Place/move/remove buildables on an owned tile                       | 🔲     |
-| `BuildPaletteService` | `World/`      | Available buildables by ownership/inventory                         | 🔲     |
-| `TileExtrusionView`   | `World/`      | Reflect build level via tile height visual                          | 🔲     |
-| `ItemDefinition` (SO) | `Config/`     | Buildables/decor: cost, rarity, yield bonus                         | 🔲     |
-| `ClaimYield`          | `ServerCode/` | Server function — validate and grant land yield                     | 🔲     |
-| `PlaceBuild`          | `ServerCode/` | Server function — validate ownership, commit build state            | 🔲     |
-| `ApplyUpkeep`         | `ServerCode/` | Server function — deduct recurring upkeep cost                      | 🔲     |
-| `SellLand`            | `ServerCode/` | Server function — validate ownership, transfer tile, settle payment | 🔲     |
+| `LandRegistryService` | `Economy/`    | Fetch/subscribe tile ownership for a planet from server             | ✅ (poll-based; see notes) |
+| `YieldService`        | `Economy/`    | Compute and claim visitor-driven land income                        | ✅     |
+| `VisitorTracker`      | `Economy/`    | Count/attribute visits to plots (server-backed)                     | ✅ (see M4 caveat) |
+| `UpkeepService`       | `Economy/`    | Recurring land tax sink — deduct upkeep from wallet                 | ✅     |
+| `LandSaleService`     | `Economy/`    | Sell an owned tile back for a partial refund                        | ✅     |
+| `BuildModeController` | `App/`        | Place buildables on an owned tile (responds to `BuildItemRequestedEvent`) | ✅ |
+| `UpkeepController`    | `App/`        | Poll loop — apply upkeep, revert tiles that fall behind             | ✅     |
+| `LandSaleHandler`     | `App/`        | Sell an owned tile (responds to `TileSellRequestedEvent`)           | ✅     |
+| `BuildPaletteService` | `Economy/`    | Available buildables by ownership/build-level progression           | ✅     |
+| `TileExtrusionView`   | `World/`      | Reflect build level via tile height visual                          | ✅     |
+| `ItemDefinition` (SO) | `Config/`     | Buildables/decor: cost, rarity, yield bonus, build level            | ✅     |
+| `ClaimYield`          | `ServerCode/` | Server function — validate and grant land yield                     | ✅     |
+| `RecordVisit`         | `ServerCode/` | Server function — increment a tile's visit count (M3 stand-in, see notes) | ✅ |
+| `PlaceBuild`          | `ServerCode/` | Server function — validate ownership, commit build state            | ✅     |
+| `ApplyUpkeep`         | `ServerCode/` | Server function — deduct recurring upkeep cost, revert overdue tiles | ✅    |
+| `SellLand`            | `ServerCode/` | Server function — validate ownership, transfer tile, settle payment | ✅     |
+| `GetLandRegistry`     | `ServerCode/` | Server function — return the planet's tile-ownership map (Custom Data) | ✅ |
+
+
+### Phase 1 — Networked Ownership Notes
+
+- **New shared storage:** `PurchaseLand` now also writes to a per-planet Cloud Save **Custom
+  Data** item (`customId = planetId.toLowerCase()`, `key = "land_registry"`,
+  `value = { tileId: { ownerId, buildLevel, lastYieldClaimTs, lastUpkeepTs, visitCount } }` —
+  see "Phase 2 — Build Mode Notes" for the schema v2 upgrade). Custom Data is shared across
+  players (unlike the existing player-scoped `tile_{tileId}_owner` / `owned_tiles_{planetId}`
+  keys), making it readable by every client via the new `GetLandRegistry` function.
+- **`LandRegistryService`** (Economy) fetches this map via `GetLandRegistry` and is the
+  authoritative source for ALL tile ownership on the planet (own + others').
+  `LandRegistrySyncController` (App) polls it every `EconomyConfig.LandRegistryPollIntervalSec`
+  (default 20s) and applies `OwnedByPlayer`/`OwnedByOther` state + `TileColorizer.RefreshTile` to
+  every tile in the registry. This is the phase-1 stand-in for "subscribe" — true realtime push
+  needs the M4 presence/realtime layer.
+- The existing M2 `LandRegistry` (private per-player "my tiles" cache, hydrated from
+  `owned_tiles_{planetId}`) is kept as a resilience fallback for restoring "my tiles" if the new
+  global-registry call fails — both paths are idempotent and converge to the same state.
+- `TilePurchaseHandler` calls `LandRegistryService.SetOwner()` immediately after a successful
+  purchase so the buyer's own client doesn't wait for the next poll.
+
+### Phase 2 — Build Mode Notes
+
+- **Registry schema v2:** since Phase 1 hasn't been deployed yet, the `land_registry` Custom
+  Data entry shape was upgraded from a bare `ownerId` string to
+  `{ ownerId, buildLevel, lastYieldClaimTs, lastUpkeepTs, visitCount }` (`LandTileEntry` in
+  `LandRegistryService`). `PurchaseLand` now writes the full entry with defaults
+  (`buildLevel: 0`, timestamps = now, `visitCount: 0`). `GetLandRegistry` needed **no code
+  change** — it's a generic passthrough of whatever object is stored.
+- **`ItemDefinition`** (Config) is a new SO describing a buildable: `itemId`, `displayName`,
+  `cost`, `rarity`, `yieldBonus`, and the tile `buildLevel` it represents/unlocks.
+  `DatabaseRegistry.AllItems` / `GetItem(itemId)` mirror the existing drone accessors.
+- **`BuildPaletteService`** (Economy) returns the items a tile can build next:
+  `tile.State == OwnedByPlayer && tile.BuildLevel < EconomyConfig.MaxBuildLevel`, filtered to
+  `ItemDefinition.BuildLevel == tile.BuildLevel + 1` (linear progression — one item per level).
+  It lives in `Economy/` (not `World/` as originally sketched) since it depends on
+  `DatabaseRegistry`/`EconomyConfig`; `SocialUniverse.Economy`'s asmdef now references
+  `SocialUniverse.World` for `TileData`/`TileState`.
+- **`TileExtrusionView`** (World) mirrors `TileColorizer`: `RefreshTile(tile)` calls
+  `HexasphereManager.SetTileExtrudeAmount(tileId, tile.BuildLevel / EconomyConfig.MaxBuildLevel)`.
+  The Hexasphere plugin's `SetTileExtrudeAmount` works whether or not the "Extruded" flag is
+  enabled on the Hexasphere component (falls back to vertex elevation), so **no scene setup is
+  required** for this to work.
+- **`BuildModeController`** (App, `IStartable`/`IDisposable`) mirrors `TilePurchaseHandler`:
+  subscribes to a new `HexasphereManager.BuildItemRequestedEvent { TileData Tile; ItemDefinition
+  Item; }` (published by a future build-mode UI — none exists yet, see "No new UI screens"
+  below), validates ownership/level progression, calls `PlaceBuild`, and on success increments
+  `tile.BuildLevel`, updates `LandRegistryService` and `TileExtrusionView`, and applies the
+  returned balance to `Wallet`.
+- **No new UI screens.** As with Phase 1, build placement is wired as an `EventBus` event +
+  App-layer controller with no screen to publish it yet — a future build-mode UI just needs to
+  call `EventBus.Publish(new BuildItemRequestedEvent { Tile = ..., Item = ... })`.
+- **Test coverage deviation:** the plan called for a `BuildModeControllerTests.cs` with a fake
+  backend, but `BuildModeController` follows the same shape as the (untested)
+  `TilePurchaseHandler`/`LandPurchaseService` — an `async void` event handler with a private
+  response DTO. Consistent with that existing precedent (no unit tests for App-layer purchase
+  handlers), only `BuildPaletteServiceTests.cs` was added; `BuildModeController`'s logic is
+  exercised end-to-end once a UI exists, via a future PlayMode test (see
+  `PlanetSceneFlowTests.cs`).
+
+### Phase 3 — Visitor-Driven Yield Notes
+
+- **`YieldService.ClaimYieldAsync(tileId, planetId)`** calls the new `ClaimYield` server
+  function, which computes accrued coin income for an owned tile:
+  `granted = floor(BaseYieldPerTilePerHour * (1 + buildBonus + visitBonus) * elapsedHours)`,
+  where `buildBonus = buildLevel * BuildLevelYieldMultiplier`,
+  `visitBonus = min(visitCount, MaxVisitCount) * VisitYieldBonus`, and `elapsedHours` is capped
+  at `MaxYieldAccrualHours`. On success, `Wallet.SetCoins(newBalance)` is applied and
+  `LandRegistryService.ResetYieldState(tileId)` zeroes `visitCount` and resets
+  `lastYieldClaimTs` locally. The yield-formula constants in `ClaimYield.js` are duplicated from
+  `EconomyConfig`'s `[Header("Yield")]` values (same "must match" pattern as
+  `GrantOfflineIncome.js`'s idle-rate constants) — if those tunables change, update both places.
+- **`VisitorTracker.RecordVisitAsync(tileId, planetId)`** calls the new `RecordVisit` server
+  function, which increments `visitCount` (capped at `MaxVisitCount`) on a tile's registry entry
+  if the caller isn't the owner. No economy mutation.
+- **`VisitorTrackingController`** (App, `IStartable`/`IDisposable`) subscribes to
+  `TileSelectedEvent`. When the selected tile's `State == OwnedByOther` and differs from the
+  last-recorded tile (avoids spamming `RecordVisit` on repeated clicks of the same tile), it
+  calls `VisitorTracker.RecordVisitAsync`.
+- **⚠️ M4 dependency caveat — visitor tracking is a stand-in.** True "a player is physically
+  standing on this tile" detection needs M4's presence/position-sync layer
+  (`NetworkPlayer`/`PlayerSyncController`), which doesn't exist yet. For M3, **selecting a tile
+  you don't own counts as a "visit"** — this exercises the entire yield pipeline end-to-end
+  (registry `visitCount` → `ClaimYield` bonus → wallet) but is not real cross-player visit
+  attribution. **This will need revisiting once M4's presence layer ships** — likely replacing
+  `TileSelectedEvent` with a proximity/presence trigger as the call site for `RecordVisit`,
+  with no change needed to `ClaimYield`, `YieldService`, or the registry schema.
+- **No new UI screens.** As with Phases 1–2, yield claiming is wired as an `EventBus`-free
+  direct service call (`YieldService.ClaimYieldAsync`) ready for a future HUD "Claim Yield"
+  button — no controller is needed on the claim side since there's no event to react to yet.
+
+### Phase 4 — Upkeep & Resale Notes
+
+- **`UpkeepService.ApplyUpkeepAsync(planetId)`** calls the new `ApplyUpkeep` server function,
+  which charges `EconomyConfig.UpkeepPerTilePerDay` coins per full day elapsed since each owned
+  tile's `lastUpkeepTs`. If the player can afford it, the cost is deducted and `lastUpkeepTs`
+  advances by the elapsed days (`chargedTiles`); if not, the registry entry is deleted and the
+  tile reverts to `Available` for everyone (`revertedTiles`). On the client, `Wallet.SetCoins`
+  is applied from `newBalance`, and `LandRegistryService.RemoveTile(tileId)` is called for each
+  reverted tile.
+- **`UpkeepController`** (App, `IStartable`/`IDisposable`) is a poll loop mirroring
+  `LandRegistrySyncController`: every `EconomyConfig.UpkeepPollIntervalSec` (default 60s) it
+  calls `UpkeepService.ApplyUpkeepAsync`. For each reverted tile it looks up the tile via
+  `HexasphereManager.GetTile`, resets `State = Available`, `OwnerId = null`, `BuildLevel = 0`,
+  and refreshes both `TileColorizer` and `TileExtrusionView`. The poll interval is
+  intentionally short relative to the once-per-day charge — the function is a cheap no-op when
+  no tile is due.
+- **`LandSaleService.SellAsync(tileId, planet)`** computes the refund client-side as
+  `round(EconomyConfig.BaseLandPrice * planet.LandPriceMultiplier * EconomyConfig.LandResaleRate)`
+  (default resale rate 0.5 — half the current purchase price) and calls the new `SellLand`
+  server function with `{ tileId, planetId, refund }`. On success it removes the tile from the
+  M2 `LandRegistry` cache (new `RemoveOwned` helper), removes the entry from
+  `LandRegistryService` via `RemoveTile`, and applies `newBalance` to `Wallet`. The server still
+  gates the payout on `entry.ownerId === playerId` — same trust model as `PurchaseLand`'s
+  client-supplied `price`.
+- **`LandSaleHandler`** (App, `IStartable`/`IDisposable`) mirrors `TilePurchaseHandler`:
+  subscribes to a new `HexasphereManager.TileSellRequestedEvent { TileData Tile }` (published by
+  a future "Sell" UI — none exists yet, see "No new UI screens" below), validates
+  `tile.State == OwnedByPlayer`, calls `LandSaleService.SellAsync`, and on success resets
+  `tile.State = Available`, `tile.OwnerId = null`, `tile.BuildLevel = 0`, then refreshes
+  `TileColorizer` and `TileExtrusionView`.
+- **DTO simplification:** the plan called for a `LandSaleRequest`/private-`SellLandResponse`
+  pair (mirroring `LandPurchaseService`). Instead, a single public `LandSaleResult` class is
+  used directly as both `_backend.CallAsync<LandSaleResult>(...)`'s type parameter and the
+  service's return type — same public-DTO pattern as `YieldClaimResult`/`UpkeepResult`/
+  `RecordVisitResult`, needed because a `FakeBackendClient` in the test assembly can't reference
+  a private nested type for `typeof(T)` comparisons. There's no unused request wrapper since the
+  refund is a single computed value passed straight through.
+- **No new UI screens.** As with Phases 1–3, selling a tile is wired as an `EventBus` event +
+  App-layer handler with no screen to publish it yet — a future "Sell Land" button just needs to
+  call `EventBus.Publish(new TileSellRequestedEvent { Tile = ... })`.
+
+**Setup Required (new, in addition to M2's pending checklist):**
+
+- [ ] Deploy `GetLandRegistry` to Cloud Code; redeploy updated `PurchaseLand`; deploy
+      `PlaceBuild`, `ClaimYield`, `RecordVisit`, `ApplyUpkeep`, `SellLand`.
+- [ ] Verify the `@unity-services/cloud-save-1.4` Custom Data API surface used in
+      `GetLandRegistry.js`/`PurchaseLand.js`/`PlaceBuild.js`/`ClaimYield.js`/`RecordVisit.js`/
+      `ApplyUpkeep.js`/`SellLand.js`
+      (`CustomDataManagementApi.getCustomItems` / `.setCustomItem`) against the dashboard's
+      bundled SDK types — written from best knowledge, not yet confirmed against an actual
+      deploy. If the names/shape differ, fix and add a "Known Issue" entry, same as #6
+      (`PurchaseLand` SDK signature mismatch).
+- [ ] Author at least one `ItemDefinition` asset per build level (1..`EconomyConfig.MaxBuildLevel`)
+      and add them to `DatabaseRegistry._items` so `BuildPaletteService` has items to offer.
 
 
 ### M3 Completion Checklist
 
 **Automated Tests**
 
-- [ ] EditMode: `LandRegistryService` — subscribing to a planet's tile stream receives ownership updates
-- [ ] EditMode: `YieldService` — yield calculation matches expected formula from `EconomyConfig`
-- [ ] EditMode: `UpkeepService` — upkeep is deducted on schedule, tile reverts when overdue
-- [ ] EditMode: `BuildController` — placing an item on an owned tile updates `TileData.buildState`
+- [x] EditMode: `LandRegistryService` — `RefreshAsync` populates the tile-ownership map from `GetLandRegistry`; `GetOwner`/`SetOwner`/`GetEntry`/`SetBuildLevel`/`ResetYieldState`/`RemoveTile` behave correctly (`LandRegistryServiceTests`)
+- [x] EditMode: `BuildPaletteService` — available items filtered by ownership and build-level progression (`BuildPaletteServiceTests`)
+- [x] EditMode: `YieldService` — `ClaimYieldAsync` applies `newBalance` to `Wallet` and resets registry yield state on success, leaves both unchanged on failure (`YieldServiceTests`)
+- [x] EditMode: `VisitorTracker` — `RecordVisitAsync` calls `RecordVisit` with `tileId`/`planetId` and returns the updated visit count (`VisitorTrackerTests`)
+- [x] EditMode: `UpkeepService` — `ApplyUpkeepAsync` applies `newBalance` to `Wallet` and removes registry entries for reverted tiles, leaves both unchanged when no tile is due (`UpkeepServiceTests`)
+- [x] EditMode: `LandSaleService` — `SellAsync` applies `newBalance` to `Wallet` and clears ownership (`LandRegistry`/`LandRegistryService`) on success, leaves both unchanged on failure (`LandSaleServiceTests`)
+- [ ] EditMode: `BuildModeController` — placing an item on an owned tile updates `TileData.BuildLevel` (deferred — see Phase 2 notes)
 - [ ] PlayMode: Player A purchases a tile → Player B sees tile change color to "other-owned"
-- [ ] PlayMode: Visitor steps on tile → `VisitorTracker` increments count → yield accumulates
+- [ ] PlayMode: Visitor selects another player's tile → `VisitorTracker` increments count → owner's `ClaimYield` reflects the bonus (M3 stand-in for true presence-based visits — see Phase 3 notes)
 
 **Manual Play Mode Verification**
 
@@ -438,60 +619,195 @@
 
 ---
 
-## M4 — Social: Presence, Chat, Friends, Profiles 🔲 NOT STARTED
+## M4 — Social: Presence, Chat, Friends, Profiles 🚧 CODE COMPLETE — AWAITING DEPLOY/SETUP
 
 **Exit criteria:** See others on a planet, chat with moderation, add friends, view profiles.
 
-**Pre-requisite:** Age policy decision (drives chat restrictions and moderation scope).
+**Pre-requisite:** Age policy decision — **not yet resolved** (see Open Decisions). `SocialConfig`
+ships a provisional teen-safe default (`ChatFilterLevel.Strict`) so M4 isn't blocked on it; see
+"Chat & Moderation Notes" below.
+
+All four areas (presence/shards, chat, friends/DMs, profiles/reporting) are code-complete, wired
+into both `RootLifetimeScope` (dev-mode mocks vs. production UGS services) and `PlanetSceneScope`
+(standalone-mode mocks), and covered by EditMode tests (79/79 passing, up from 39/39 in M3). What
+remains is UGS dashboard configuration, Cloud Code deployment, NetworkPlayer prefab/scene wiring,
+and manual/PlayMode verification — see "Setup Required" and the "M4 Completion Checklist" below.
+**A pre-existing PlayMode regression (Known Issue #7) currently blocks PlayMode verification for
+M3 and M4 alike.**
 
 
-| Script                  | Path          | Responsibility                                           | Status |
-| ----------------------- | ------------- | -------------------------------------------------------- | ------ |
-| `PresenceService`       | `Net/`        | Who is on this planet/shard right now                    | 🔲     |
-| `ShardManager`          | `Net/`        | Pick/join a planet shard; follow a friend to their shard | 🔲     |
-| `NetworkPlayer`         | `Net/`        | Replicated player object on a planet                     | 🔲     |
-| `PlayerSyncController`  | `Net/`        | Sync position/avatar/state across clients                | 🔲     |
-| `IChatService`          | `Social/`     | Contract for channels, send/receive                      | 🔲     |
-| `ChatService`           | `Social/`     | Concrete implementation (Vivox or Nakama channels)       | 🔲     |
-| `ChatChannelController` | `Social/`     | Global / local / guild / DM channel switching            | 🔲     |
-| `ChatModerationFilter`  | `Social/`     | Client-side profanity filter (server also enforces)      | 🔲     |
-| `ReportService`         | `Social/`     | Report / block / mute a player                           | 🔲     |
-| `FriendsService`        | `Social/`     | Add/remove/list friends + show their presence            | 🔲     |
-| `DirectMessageService`  | `Social/`     | Cross-planet DMs between friends                         | 🔲     |
-| `ProfileService`        | `Social/`     | Fetch/update profile, badges, stats                      | 🔲     |
-| `PlayerProfile`         | `Social/`     | Runtime model for a player's public profile data         | 🔲     |
-| `SubmitReport`          | `ServerCode/` | Server function — log and queue report for moderation    | 🔲     |
-| `BlockUser`             | `ServerCode/` | Server function — enforce block at server level          | 🔲     |
-| `ModerateMessage`       | `ServerCode/` | Server function — filter/remove messages                 | 🔲     |
+| Script                                  | Path          | Responsibility                                                              | Status |
+| ---------------------------------------- | ------------- | ----------------------------------------------------------------------------- | ------ |
+| `SocialConfig` (SO)                     | `Config/`     | M4 tunables: chat filter level/words, channel/message limits, shard sizing, position-sync rate, display-name length | ✅ |
+| `IPresenceService` / `PresenceService`  | `Net/`        | Who is on this planet/shard right now                                      | ✅ (real impl wraps `ShardManager`'s session player list) |
+| `LocalMockPresenceService`              | `Net/`        | Offline stub — `SimulatePlayerJoined`/`SimulatePlayerLeft` test helpers     | ✅     |
+| `ShardManager`                          | `Net/`        | Owns Multiplayer Sessions lifecycle; `ShardId(planetId, n) = "{planetId}_shard{n}"`; `JoinPlanetAsync` walks shards `0..MaxShardsPerPlanet-1` via `CreateOrJoinSessionAsync` + Relay | ✅ |
+| `NetworkPlayer`                         | `Net/`        | Replicated player marker — `NetworkVariable<FixedString64Bytes>` PlayerId/DisplayName, owner-writable via `SetIdentity()` | ✅ (marker mesh only — no avatar model yet) |
+| `PlayerSyncController`                  | `Net/`        | Syncs position via `NetworkVariable<Vector3>`; projects camera focus onto the planet sphere (radius 1.05f) since no avatar exists; send rate from `SocialConfig.PositionSyncIntervalSec` | ✅ |
+| `IChatService` / `ChatService`          | `Social/`     | Contract + Vivox-backed implementation — connect, join channel, send/receive | ✅ |
+| `LocalMockChatService`                  | `Social/`     | Offline loopback — `SimulateIncoming` test helper                          | ✅     |
+| `ChatMessage` / `ChatSendStatus`        | `Social/`     | Message DTO + send-result enum (`Sent`, `Empty`, `TooLong`, `Filtered`, `NoChannel`, `NotFriend`, `Blocked`) | ✅ |
+| `ChatChannelController`                 | `Social/`     | Active-channel management, `ChatMessageReceivedEvent` on `EventBus`, `SwitchToGlobal/Local/GuildAsync`, `SendAsync` with moderation | ✅ |
+| `ChatModerationFilter`                  | `Social/`     | `IsClean`/`Sanitize`/`Apply`/`SanitizeIncoming` — char-substitution normalization (`@→a`, `1`/`!→i`, `0→o`, `3→e`, `$`/`5→s`, `7→t`) | ✅ |
+| `IFriendsService` / `FriendsService`    | `Social/`     | UGS Friends SDK-backed — roster, incoming/outgoing requests, send/accept/decline/remove | ✅ |
+| `LocalMockFriendsService`               | `Social/`     | In-memory mock — `SimulateIncomingRequest` test helper                     | ✅     |
+| `DirectMessageService`                  | `Social/`     | Wraps `IChatService` DMs with friends-only/moderation/block rules, `DirectMessageReceivedEvent` | ✅ |
+| `ProfileService` / `PlayerProfile`      | `Social/`     | `GetProfileAsync`/`UpdateDisplayNameAsync`; `PlayerProfile` DTO (PlayerId, DisplayName, Level, Xp, Badges[], TilesOwned) | ✅ |
+| `ReportService`                         | `Social/`     | `ReportPlayerAsync`/`Block`/`UnblockPlayerAsync` + local-only `MutePlayer`; `ReportResult`/`BlockResult` DTOs | ✅ |
+| `PlanetPresenceController`              | `App/`        | `IStartable`/`IDisposable` — joins planet shard + local chat channel on scene start, leaves on dispose, logs join/leave | ✅ |
+| `SocialServicesInitializer`             | `App/`        | `IStartable`/`IDisposable` in Root scope — on `PlayerReadyEvent`, connects chat, joins global channel, initializes friends roster | ✅ |
+| `SubmitReport`                          | `ServerCode/` | Writes to Custom Data `moderation`/`reports` (capped 500); returns `{ success, reportId }` | ✅ |
+| `BlockUser`                             | `ServerCode/` | Reads/writes player's `blocked_users` Cloud Save key (capped 200); returns `{ success, blockedUsers }` | ✅ |
+| `ModerateMessage`                       | `ServerCode/` | Standalone moderation function (`BLOCKED_WORDS`/`CHAR_MAP`) | ⚠️ appears **unused/orphaned** — no caller found; `UpdateProfile.js` does its own inline moderation. Decide whether to wire it in server-side or remove it |
+| `GetPlayerProfile`                      | `ServerCode/` | Reads target player's `player_profile` Cloud Save + sums `owned_tiles_*` for `tilesOwned`; defaults to `"Pilot {id6}"` if unset | ✅ |
+| `UpdateProfile`                         | `ServerCode/` | Validates/commits `displayName` into `player_profile`, merging with existing; re-moderates server-side (`BLOCKED_WORDS`/`CHAR_MAP`/`MAX_DISPLAY_NAME_LENGTH=20` duplicated from `SocialConfig`) | ✅ |
+
+
+### Assembly & DI Changes
+
+| Change | Detail |
+| ------ | ------ |
+| New assembly | `SocialUniverse.Social` at `Assets/_Project/Scripts/Social/` — references `VContainer`, `SocialUniverse.Core`, `SocialUniverse.Config`, `Unity.Services.Vivox`, `Unity.Services.Friends` (no dependency on `SocialUniverse.Net`) |
+| `SocialUniverse.Net.asmdef` | Added `Unity.Services.Multiplayer`, `Unity.Netcode.Runtime`, `Unity.Collections`, `SocialUniverse.Social` |
+| `SocialUniverse.App.asmdef` | Added `SocialUniverse.Social` reference |
+| `SocialUniverse.Tests.asmdef` | Added `SocialUniverse.Net`, `SocialUniverse.Social`, `SocialUniverse.World` references |
+| `RootLifetimeScope` | New `[SerializeField] SocialConfig _socialConfig`. Dev mode (`_devMode = true`) registers `LocalMockChatService`/`LocalMockFriendsService`/`LocalMockPresenceService`; production registers `ChatService`/`FriendsService`/`ShardManager`/`PresenceService` (all `As<I*Service>`). Both modes register `ChatModerationFilter`, `ReportService`, `ChatChannelController`, `DirectMessageService`, `ProfileService`, `RegisterInstance(_socialConfig)`, `RegisterEntryPoint<SocialServicesInitializer>()` |
+| `PlanetSceneScope` | New `[SerializeField] SocialConfig _socialConfig` (standalone mode only — production gets it from `RootLifetimeScope`). Standalone (`parentReference.Type == null`) registers the same M4 mock set as `RootLifetimeScope`'s dev mode, plus `RegisterInstance(_socialConfig ?? ScriptableObject.CreateInstance<SocialConfig>())`. New `RegisterEntryPoint<PlanetPresenceController>()` (both modes) |
+| `Bootstrap.unity` | `RootLifetimeScope._devMode = 0` (production); `_socialConfig` assigned → `Assets/SocialConfig.asset` (misplaced — see Assets section above) |
+| `Packages/manifest.json` | Added `com.unity.netcode.gameobjects@2.12.0`, `com.unity.services.friends@1.1.1`, `com.unity.services.multiplayer@2.2.3`, `com.unity.services.vivox@16.11.0` |
+| `Assets/DefaultNetworkPrefabs.asset` (new) | NGO `NetworkPrefabsList`, `IsDefault: 1`, `List: []` — empty; `NetworkPlayer`/`PlayerSyncController` prefab not yet registered (see Setup Required) |
+
+
+### Presence & Shards Notes
+
+- **`ShardManager`** owns the Multiplayer Sessions lifecycle. A shard is a session named
+  `"{planetId}_shard{n}"`; `JoinPlanetAsync` walks `n = 0..MaxShardsPerPlanet-1`
+  (`SocialConfig.MaxShardsPerPlanet`, default 8) calling `CreateOrJoinSessionAsync` with
+  `SessionOptions.WithRelayNetwork()` and `MaxPlayers = SocialConfig.MaxPlayersPerShard` (default
+  16) until one succeeds. The session's `displayName` player property is set from
+  `IAuthService.PlayerId`.
+- **`PresenceService`** is a thin projection of `ShardManager.CurrentSession.Players` — it
+  re-subscribes to `ISession.PlayerJoined`/`PlayerLeaving` whenever `ShardManager.SessionChanged`
+  fires, and exposes `Players`/`PlayerJoined`/`PlayerLeft`/`PresenceChanged` per `IPresenceService`.
+- **`NetworkPlayer`**/**`PlayerSyncController`** replicate identity and position via NGO
+  `NetworkVariable`s, owner-writable only. Since no avatar model exists yet (per architecture
+  doc, "models to acquire"), the marker's "position" is the local player's **camera focus point
+  projected onto the planet sphere** (radius 1.05f, configurable per-instance) — this is the
+  same kind of stand-in called out for visitor tracking in M3 Phase 3, and both will need
+  revisiting once a real avatar/controllable character lands.
+- **`PlanetPresenceController`** (App, `IStartable`/`IDisposable`) is the glue: on Planet scene
+  start it calls `IPresenceService.JoinPlanetAsync(planetId)` and
+  `ChatChannelController.SwitchToLocalAsync` (joins the planet's local chat channel), and leaves
+  both on dispose.
+
+### Chat & Moderation Notes
+
+- **`ChatChannelController`** is the single point of contact for chat: it tracks the active
+  channel, exposes `SwitchToGlobal/Local/GuildAsync`, and publishes `ChatMessageReceivedEvent` on
+  the `EventBus` for incoming messages (no `ChatScreen` UI exists yet — same "wire the event, no
+  screen yet" pattern as M3's build/sell/yield events).
+- **`ChatModerationFilter`** applies `SocialConfig.BlockedWords` with character-substitution
+  normalization (`@→a`, `1`/`!→i`, `0→o`, `3→e`, `$`/`5→s`, `7→t`) before checking against the
+  list, so simple letter-for-symbol evasion is caught. Behavior is gated by
+  `SocialConfig.ChatFilterLevel`: `Off` = no client-side filtering, `Moderate` = blocked words
+  masked (message still sends), `Strict` = message rejected outright (`ChatSendStatus.Filtered`).
+- **Provisional age-policy default:** `SocialConfig.ChatFilterLevel` defaults to `Strict` for
+  *every* player — a deliberate "teen-safe by default" stand-in for the still-open age-policy
+  decision (Open Decisions table). When that decision lands, per-age-band behavior should be
+  layered in via `AgeGateService` (M10) rather than changing the social services themselves —
+  `SocialConfig` already isolates the tunable.
+- **"Must match" duplication, again:** `SocialConfig.BlockedWords`/`MaxDisplayNameLength` must
+  match `BLOCKED_WORDS`/`CHAR_MAP`/`MAX_DISPLAY_NAME_LENGTH` duplicated in
+  `ServerCode/UpdateProfile.js` (and `ServerCode/ModerateMessage.js`, if kept) — same pattern as
+  the M3 yield-formula constants in `ClaimYield.js`. If the word list or limits change, update
+  both places.
+- **`ModerateMessage.js` looks orphaned** — `ChatChannelController`/`ChatService` don't call it,
+  and `UpdateProfile.js` re-implements its own inline moderation rather than calling it. Either
+  wire it in as the server-side enforcement path for chat messages, or remove it as dead code.
+
+### Friends & Direct Messages Notes
+
+- **`FriendsService`** wraps the UGS Friends SDK for roster/request management;
+  `LocalMockFriendsService` is an in-memory mock with a `SimulateIncomingRequest` helper for
+  tests/dev.
+- **`DirectMessageService`** layers friends-only + moderation + block checks on top of
+  `IChatService`'s DM primitives, publishing `DirectMessageReceivedEvent` on the `EventBus`. As
+  with chat channels, no `FriendsScreen`/DM UI exists yet.
+- **`SocialServicesInitializer`** (Root scope, `IStartable`/`IDisposable`) subscribes to
+  `PlayerReadyEvent` and, once the player is ready, connects `IChatService`, joins the global
+  channel (`SocialConfig.GlobalChannelName`), and initializes the friends roster — this is the
+  app-wide (not per-planet) social bring-up, complementing `PlanetPresenceController`'s
+  per-planet bring-up.
+
+### Profiles & Reporting Notes
+
+- **`ProfileService.GetProfileAsync`** calls `GetPlayerProfile`, which reads the target player's
+  `player_profile` Cloud Save record and sums `owned_tiles_{planetId}` list lengths across
+  planets for `TilesOwned`; if no profile has been saved yet it returns sensible defaults
+  (`"Pilot {first 6 chars of playerId}"`, level 0, etc.).
+- **`ProfileService.UpdateDisplayNameAsync`** calls `UpdateProfile`, which re-validates/moderates
+  the name server-side and merges it into the existing `player_profile` record — the client-side
+  `ChatModerationFilter`/`SocialConfig.MaxDisplayNameLength` check is advisory only, matching the
+  "server is authoritative" rule.
+- **`ReportService`** continues the M3 public-DTO testability pattern: `ReportResult`,
+  `BlockResult`, `PlayerProfile`, and `ProfileUpdateResult` are all public top-level types so
+  `FakeBackendClient.CallAsync<T>` in the test assembly can use them as type parameters.
+  `MutePlayer` is local-only (no server round-trip) — it just suppresses incoming messages from
+  that player on this client.
+
+**Setup Required (new, in addition to M2/M3's pending checklists):**
+
+- [ ] Deploy `SubmitReport`, `BlockUser`, `GetPlayerProfile`, `UpdateProfile` to Cloud Code;
+      decide on `ModerateMessage` (wire it in server-side or remove it as dead code) before
+      deploying it.
+- [ ] UGS Dashboard: enable/configure **Vivox** (text chat channels), **Friends**, and
+      **Multiplayer Sessions + Relay** for this project.
+- [x] Create a `NetworkPlayer` + `PlayerSyncController` + `NetworkObject` prefab, register it in
+      `Assets/DefaultNetworkPrefabs.asset`, and add a `NetworkManager` to `Planet.unity` so shard
+      sessions can actually spawn player markers. `Assets/Prefabs/Net/NetworkPlayer.prefab`
+      (Capsule marker, scale 0.05, `NetworkObject` + `NetworkPlayer` + `PlayerSyncController`) is
+      registered as the default network prefab and assigned as `NetworkManager.NetworkConfig.PlayerPrefab`;
+      `NetworkManager` (+ `UnityTransport`) added to `Planet.unity`. Fixes the
+      `"Cannot start when Singleton is not set"` / `"all shards full"` warnings from
+      `ShardManager.WithRelayNetwork()` having no `NetworkManager.Singleton` to attach to.
+- [ ] Move `Assets/SocialConfig.asset` into `Assets/_Project/ScriptableObjects/` per project
+      convention and re-point `Bootstrap.unity`'s `RootLifetimeScope._socialConfig`.
+- [ ] Assign `_socialConfig` on `Planet.unity`'s `PlanetSceneScope` (the field exists in code but
+      the scene hasn't been re-saved since it was added, so it's currently unassigned).
+- [ ] Resolve Known Issue #7 (`PlanetSceneScope.Container not initialized` in
+      `PlanetSceneFlowTests`) — it blocks PlayMode verification for both M3 and M4.
 
 
 ### M4 Completion Checklist
 
 **Automated Tests**
 
-- [ ] EditMode: `IChatService` contract — send message, receive message in same channel
-- [ ] EditMode: `ChatModerationFilter` — known slurs are filtered on client before send
-- [ ] EditMode: `FriendsService` — add friend creates pending request; accept updates both rosters
-- [ ] EditMode: `ReportService` — report call constructs correct payload and invokes `SubmitReport` RPC
-- [ ] PlayMode: Two clients on same planet — both `PresenceService` instances show each other
-- [ ] PlayMode: Chat message sent from Client A appears in Client B's `ChatScreen`
+- [x] EditMode: `ChatModerationFilterTests` — `IsClean`/`Sanitize`/`Apply`/`SanitizeIncoming`, including char-substitution normalization
+- [x] EditMode: `ChatChannelControllerTests` — channel switching, `SendAsync` moderation outcomes, `ChatMessageReceivedEvent`
+- [x] EditMode: `LocalMockFriendsServiceTests` — send/accept/decline/remove requests update both rosters
+- [x] EditMode: `DirectMessageServiceTests` — friends-only/moderation/block rules, `DirectMessageReceivedEvent`
+- [x] EditMode: `ProfileServiceTests` — `GetProfileAsync`/`UpdateDisplayNameAsync` against `FakeBackendClient`
+- [x] EditMode: `ReportServiceTests` — `ReportPlayerAsync`/`Block`/`UnblockPlayerAsync` payloads and `MutePlayer` local suppression
+- [ ] PlayMode: Two clients on same planet — both `PresenceService` instances show each other (blocked on Known Issue #7 + UGS Multiplayer setup)
+- [ ] PlayMode: Chat message sent from Client A appears in Client B's channel (blocked on Known Issue #7 + Vivox setup; no `ChatScreen` UI yet either)
 
 **Manual Play Mode Verification**
 
-- [ ] Two devices/editors on same planet — other player avatar is visible and moves
+- [ ] Two devices/editors on same planet — other player marker is visible and moves
 - [ ] Send a chat message — appears in global channel for both clients within 1 s
-- [ ] Type a filtered word — message is blocked before send (client filter fires)
-- [ ] Report a player — server acknowledges; reported user's messages can be hidden
+- [ ] Type a filtered word — message is blocked before send (Strict) or masked (Moderate)
+- [ ] Report a player — server acknowledges; reported user's messages can be hidden via `MutePlayer`
 - [ ] Add a friend — friend appears in friends list with online/offline indicator
 - [ ] Follow a friend to their shard — scene transitions and player appears in correct shard
 - [ ] View a profile — name, level, badges, land count displayed correctly
+- [ ] Update display name — re-moderated server-side, persists across sessions
 
 **Architecture Rules**
 
-- [ ] `IChatService` abstracts the provider (Vivox/Nakama) — no SDK calls in gameplay code
-- [ ] Age policy configuration gates chat features for minors (verify `AgeGateService` hook exists)
-- [ ] `ReportService` / `BlockUser` always route to `ServerCode/` — client cannot self-moderate
-- [ ] `SocialUniverse.Social.asmdef` created and does not depend on `SocialUniverse.Net` directly
+- [x] `IChatService` abstracts the provider (Vivox) — no SDK calls outside `ChatService`/`FriendsService`
+- [ ] Age policy configuration gates chat features for minors — `SocialConfig` provides a provisional default, but `AgeGateService` (M10) doesn't exist yet to apply per-age-band behavior
+- [x] `ReportService` / `BlockUser` always route to `ServerCode/` — client cannot self-moderate (`MutePlayer` is intentionally local-only and non-authoritative)
+- [x] `SocialUniverse.Social.asmdef` created and does not depend on `SocialUniverse.Net` directly (dependency runs the other way: `SocialUniverse.Net` → `SocialUniverse.Social`)
 
 ---
 
@@ -862,12 +1178,28 @@
 | `WalletTests.cs`               | EditMode | `Wallet` balance changes                                                                                                                                                                                                                                                                                                    |
 | `IdleMiningCalculatorTests.cs` | EditMode | Offline haul calculation                                                                                                                                                                                                                                                                                                    |
 | `LocalMockEconomyTests.cs`     | EditMode | Mock economy grant/spend                                                                                                                                                                                                                                                                                                    |
-| `PlanetSceneFlowTests.cs`      | PlayMode | ✅ Loads `Planet.unity`, resolves DI services, and verifies: (1) mining taps fill cargo and `CommitCargoAsync` grants `hauled × CoinsPerUnit` coins; (2) selecting an available tile fires `TileSelectedEvent` → `TilePurchaseHandler` → `LandPurchaseService`, debits the wallet, and transfers the tile to `OwnedByPlayer` |
+| `LandRegistryServiceTests.cs`  | EditMode | `LandRegistryService.RefreshAsync` populates the tile-ownership map from a fake `IBackendClient`'s `GetLandRegistry` response; `GetOwner`/`SetOwner`/`GetEntry`/`SetBuildLevel`/`ResetYieldState`/`RemoveTile` behavior (schema v2 `LandTileEntry`) |
+| `BuildPaletteServiceTests.cs`  | EditMode | `BuildPaletteService.GetAvailableItems` returns items matching `tile.BuildLevel + 1`, only for `OwnedByPlayer` tiles below `EconomyConfig.MaxBuildLevel` |
+| `YieldServiceTests.cs`         | EditMode | `YieldService.ClaimYieldAsync` applies `newBalance` to `Wallet` and resets registry yield state on success; leaves both unchanged on failure |
+| `VisitorTrackerTests.cs`       | EditMode | `VisitorTracker.RecordVisitAsync` calls `RecordVisit` with the correct `tileId`/`planetId` and returns the response |
+| `UpkeepServiceTests.cs`        | EditMode | `UpkeepService.ApplyUpkeepAsync` applies `newBalance` to `Wallet` and removes registry entries for `RevertedTiles`; leaves wallet/registry unchanged when no tile is due |
+| `LandSaleServiceTests.cs`      | EditMode | `LandSaleService.SellAsync` applies `newBalance` to `Wallet` and clears ownership in `LandRegistry`/`LandRegistryService` on success; leaves both unchanged on failure |
+| `ChatModerationFilterTests.cs` | EditMode | `ChatModerationFilter.IsClean`/`Sanitize`/`Apply`/`SanitizeIncoming`, including char-substitution normalization (`@→a`, `1`/`!→i`, `0→o`, `3→e`, `$`/`5→s`, `7→t`) and `ChatFilterLevel` (Off/Moderate/Strict) behavior |
+| `ChatChannelControllerTests.cs` | EditMode | `ChatChannelController` channel switching (`SwitchToGlobal/Local/GuildAsync`), `SendAsync` moderation outcomes (`ChatSendStatus`), and `ChatMessageReceivedEvent` publication on `EventBus` |
+| `LocalMockFriendsServiceTests.cs` | EditMode | `LocalMockFriendsService` send/accept/decline/remove friend requests update both rosters; `SimulateIncomingRequest` helper |
+| `DirectMessageServiceTests.cs` | EditMode | `DirectMessageService` friends-only/moderation/block rules and `DirectMessageReceivedEvent` publication |
+| `ProfileServiceTests.cs`       | EditMode | `ProfileService.GetProfileAsync`/`UpdateDisplayNameAsync` against a `FakeBackendClient` returning `PlayerProfile`/`ProfileUpdateResult` |
+| `ReportServiceTests.cs`        | EditMode | `ReportService.ReportPlayerAsync`/`Block`/`UnblockPlayerAsync` payloads (`ReportResult`/`BlockResult`) and local-only `MutePlayer` suppression |
+| `FakeSocialDoubles.cs`         | EditMode | Shared `FakeBackendClient`/test doubles for the `Social/` EditMode test suite |
+| `PlanetSceneFlowTests.cs`      | PlayMode | ⚠️ Both tests now **fail at `SetUp`** with `PlanetSceneScope.Container not initialized` — see Known Issue #7. Previously (M3) verified: (1) mining taps fill cargo and `CommitCargoAsync` grants `hauled × CoinsPerUnit` coins; (2) selecting an available tile fires `TileSelectedEvent` → `TilePurchaseHandler` → `LandPurchaseService`, debits the wallet, and transfers the tile to `OwnedByPlayer` |
 
+
+**EditMode total: 79/79 passing** (up from 39/39 in M3 — 40 new tests added across the 7 `Social/` test files above).
 
 **Missing tests (high priority):**
 
 - [ ] EditMode: `LandmarkService` marks exactly 12 tiles as `IsLandmark = true`
 - [ ] EditMode: `DatabaseRegistry` lookups (`GetPlanet`, `GetAsteroid`, `GetDrone`)
+- [ ] Fix `PlanetSceneFlowTests` PlayMode regression (Known Issue #7) — currently 0/2 passing
 
-**Note:** The temporary `PlayModeVerifier.cs` smoke-test script (and its component on the `PlanetSceneScope` GameObject in `Planet.unity`) has been removed — its checks are now covered by `PlanetSceneFlowTests` under `Assets/_Project/Tests/PlayMode/` (assembly `SocialUniverse.PlayModeTests`). Both tests pass (2/2, ~3.2s total).
+**Note:** The temporary `PlayModeVerifier.cs` smoke-test script (and its component on the `PlanetSceneScope` GameObject in `Planet.unity`) has been removed — its checks are now covered by `PlanetSceneFlowTests` under `Assets/_Project/Tests/PlayMode/` (assembly `SocialUniverse.PlayModeTests`). As of M4, both tests fail at `SetUp` — see Known Issue #7.

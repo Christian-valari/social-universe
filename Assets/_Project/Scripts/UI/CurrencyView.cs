@@ -1,14 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
 using SocialUniverse.Economy;
+using TMPro;
 
 namespace SocialUniverse.UI
 {
     // Reusable currency readout — bound to a Wallet by its owner (HUD, shop, land sheet, ...).
     public class CurrencyView : MonoBehaviour
     {
-        [SerializeField] private Text _coinsText;
-        [SerializeField] private Text _stardustText;
+        [SerializeField] private TMP_Text _coinsText;
+        [SerializeField] private TMP_Text _stardustText;
 
         private Wallet _wallet;
 

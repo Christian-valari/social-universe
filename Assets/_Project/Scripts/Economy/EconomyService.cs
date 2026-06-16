@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Unity.Services.Economy;
 using SocialUniverse.Config;
 using SocialUniverse.Core;
-using SocialUniverse.Net;
 
 namespace SocialUniverse.Economy
 {

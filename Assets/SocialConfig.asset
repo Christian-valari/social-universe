@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aebcfe0b88f43d549b409cca243f6324, type: 3}
+  m_Name: SocialConfig
+  m_EditorClassIdentifier: SocialUniverse.Config::SocialUniverse.Config.SocialConfig
+  _chatFilterLevel: 2
+  _blockedWords:
+  - fuck
+  - shit
+  - bitch
+  - asshole
+  - cunt
+  - dick
+  - faggot
+  - nigger
+  - nigga
+  - whore
+  - slut
+  - retard
+  - kys
+  _globalChannelName: global
+  _maxMessageLength: 200
+  _chatHistoryLimit: 100
+  _maxPlayersPerShard: 16
+  _maxShardsPerPlanet: 8
+  _positionSyncIntervalSec: 0.5
+  _maxDisplayNameLength: 20

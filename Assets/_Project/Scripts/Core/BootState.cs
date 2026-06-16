@@ -42,6 +42,10 @@ namespace SocialUniverse.Core
             if (_auth.IsSignedIn)
             {
                 SULog.Info("Boot: session restored, skipping Auth scene");
+                // AuthScreen normally publishes this on sign-in to bring chat/friends
+                // online (see SocialServicesInitializer). Returning players skip that
+                // screen entirely, so fire it here or chat never connects.
+                EventBus.Publish(new PlayerReadyEvent());
                 var planet = _resolver.Resolve<PlanetState>();
                 planet.TargetPlanetId = Constants.PlanetIds.Earth;
                 _fsm.TransitionTo(planet);

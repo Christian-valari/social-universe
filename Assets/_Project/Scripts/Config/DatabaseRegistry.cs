@@ -11,13 +11,16 @@ namespace SocialUniverse.Config
         [SerializeField] private PlanetDefinition[]   _planets;
         [SerializeField] private AsteroidDefinition[] _asteroids;
         [SerializeField] private DroneDefinition[]    _drones;
+        [SerializeField] private ItemDefinition[]     _items;
 
         public IEnumerable<PlanetDefinition>   AllPlanets   => _planets   ?? Array.Empty<PlanetDefinition>();
         public IEnumerable<AsteroidDefinition> AllAsteroids => _asteroids ?? Array.Empty<AsteroidDefinition>();
         public IEnumerable<DroneDefinition>    AllDrones    => _drones    ?? Array.Empty<DroneDefinition>();
+        public IEnumerable<ItemDefinition>     AllItems     => _items     ?? Array.Empty<ItemDefinition>();
 
         public PlanetDefinition   GetPlanet(string id)          => Array.Find(_planets,   p => p.PlanetId     == id);
         public AsteroidDefinition GetAsteroid(string mineral)   => Array.Find(_asteroids, a => a.MineralType  == mineral);
         public DroneDefinition    GetDrone(string droneId)      => Array.Find(_drones,    d => d.DroneId      == droneId);
+        public ItemDefinition     GetItem(string itemId)        => Array.Find(_items,     i => i.ItemId       == itemId);
     }
 }
