@@ -17,6 +17,11 @@ namespace SocialUniverse.UI
 
         private void FireSend()
         {
+            if (_input == null || _sendButton == null)
+            {
+                Debug.LogWarning("#ChatSendProbe# not wired — assign _input and _sendButton in the Inspector");
+                return;
+            }
             Debug.Log("#ChatSendProbe# firing send (delayed)");
             _input.text = _message;
             _sendButton.onClick.Invoke();

@@ -72,5 +72,12 @@ namespace SocialUniverse.World
             if (_indexById.TryGetValue(tileId, out var index))
                 _hexasphere.SetTileExtrudeAmount(index, amount);
         }
+
+        // Toggles tile rendering without disabling colliders, so selection raycasts still work.
+        public void SetTilesVisible(bool visible)
+        {
+            if (_hexasphere == null) return;
+            _hexasphere.style = visible ? STYLE.ShadedWireframe : STYLE.Invisible;
+        }
     }
 }

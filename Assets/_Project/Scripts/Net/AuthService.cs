@@ -10,6 +10,8 @@ namespace SocialUniverse.Net
         public bool   IsSignedIn         => AuthenticationService.Instance.IsSignedIn;
         public bool   SessionTokenExists => AuthenticationService.Instance.SessionTokenExists;
         public string PlayerId           => AuthenticationService.Instance.PlayerId;
+        public string Username           => AuthenticationService.Instance.PlayerName;
+        public string DisplayName        => AuthenticationService.Instance.PlayerName;
 
         public event Action            OnSignedIn;
         public event Action<Exception> OnSignInFailed;
@@ -58,10 +60,18 @@ namespace SocialUniverse.Net
             SULog.Info($"Signed in with credentials (playerId: {PlayerId})", SULog.Channel.Net);
         }
 
-        public async Task RegisterAsync(string username, string password)
+        public async Task RegisterAsync(string username, string password, string displayName)
         {
             await AuthenticationService.Instance.SignUpWithUsernamePasswordAsync(username, password);
+            if (!string.IsNullOrEmpty(displayName))
+                await AuthenticationService.Instance.UpdatePlayerNameAsync(displayName);
             SULog.Info($"Registered new account (playerId: {PlayerId})", SULog.Channel.Net);
+        }
+
+        public async Task UpdateDisplayNameAsync(string displayName)
+        {
+            await AuthenticationService.Instance.UpdatePlayerNameAsync(displayName);
+            SULog.Info($"Display name updated to '{displayName}'", SULog.Channel.Net);
         }
 
         public async Task SignInWithAppleAsync(string idToken)

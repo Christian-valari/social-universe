@@ -9,6 +9,7 @@ namespace SocialUniverse.World
         [SerializeField] private float     _orbitSpeed  = 0.2f;
         [SerializeField] private float     _minDistance = 5f;
         [SerializeField] private float     _maxDistance = 20f;
+        [SerializeField] private Vector3   _offset      = Vector3.zero;
 
         private float _distance = 12f;
         private float _yaw;
@@ -31,7 +32,7 @@ namespace SocialUniverse.World
                 _distance  = Mathf.Clamp(_distance, _minDistance, _maxDistance);
             }
 
-            var center   = _target != null ? _target.position : Vector3.zero;
+            var center   = (_target != null ? _target.position : Vector3.zero) + _offset;
             var rotation = Quaternion.Euler(_pitch, _yaw, 0f);
             transform.position = center + rotation * new Vector3(0f, 0f, -_distance);
             transform.LookAt(center);

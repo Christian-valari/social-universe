@@ -20,6 +20,10 @@ namespace SocialUniverse.Mining
 
         public IReadOnlyList<Asteroid> ActiveAsteroids => _active;
 
+        // Returns the earliest scheduled respawn time, or null if all asteroids are live.
+        public DateTime? NextRespawnUtc =>
+            _pending.Count > 0 ? _pending.Min(p => p.RespawnAtUtc) : (DateTime?)null;
+
         private struct PendingRespawn
         {
             public AsteroidDefinition Definition;

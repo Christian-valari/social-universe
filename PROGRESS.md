@@ -1,6 +1,6 @@
 # Social Universe — Project Progress Tracker
 
-> Last updated: 2026-06-15 — M4 (Social: Presence, Chat, Friends, Profiles) code-complete and wired into DI for both dev and production modes (79/79 EditMode tests passing, up from 39/39). M3 unchanged. New PlayMode regression — see Known Issue #7.
+> Last updated: 2026-06-17 — Post-M4 infrastructure: Planet loading screen added (additive `LoadingScreen` scene, animated slider, per-step progress events, 2 s minimum display). M4 and M3 otherwise unchanged. PlayMode regression (Known Issue #7) still open.
 > Engine: Unity 6 (URP 17.3.0) · Branch: `main`
 
 ---
@@ -126,11 +126,12 @@ and `PlanetSceneScope` (Planet.unity) `_socialConfig` references to match projec
 
 | Scene               | Status | Notes                                      |
 | ------------------- | ------ | ------------------------------------------ |
-| `Bootstrap.unity`   | ✅      | DontDestroyOnLoad container, boots to Auth; `RootLifetimeScope` has `_devMode` flag for UGS-free testing |
-| `Auth.unity`        | ✅      | Login + Register panels; no success modal — sign-in immediately publishes `PlayerReadyEvent` and transitions to Hub |
-| `SolarSystem.unity` | ✅      | Shell — star map placeholder               |
-| `Planet.unity`      | ✅      | **Fully wired for Earth** — see M1 detail  |
-| `Station.unity`     | ✅      | Shell — guild hub placeholder              |
+| `Bootstrap.unity`      | ✅      | DontDestroyOnLoad container, boots to Auth; `RootLifetimeScope` has `_devMode` flag for UGS-free testing |
+| `Auth.unity`           | ✅      | Login + Register panels; no success modal — sign-in immediately publishes `PlayerReadyEvent` and transitions to Hub |
+| `SolarSystem.unity`    | ✅      | Shell — star map placeholder               |
+| `Planet.unity`         | ✅      | **Fully wired for Earth** — see M1 detail  |
+| `Station.unity`        | ✅      | Shell — guild hub placeholder              |
+| `LoadingScreen.unity`  | 🔲      | **To create** — additive overlay scene; add Canvas + `LoadingScreenView` + Slider + TMP_Text, then add to Build Settings. Loaded by `PlanetState` before `Planet.unity`; self-unloads when `PlanetSceneReadyEvent` fires |
 
 
 ---
@@ -150,7 +151,7 @@ and `PlanetSceneScope` (Planet.unity) `_socialConfig` references to match projec
 | `BootState`                                 | `Core/`   | Concrete state — service init, data load, advance to Auth                | ✅      |
 | `AuthState`                                 | `Core/`   | Concrete state — wait for auth result, advance to Hub                    | ✅      |
 | `HubState`                                  | `Core/`   | Concrete state — activate SolarSystem scene                              | ✅      |
-| `PlanetState`                               | `Core/`   | Concrete state — load/unload Planet scene additively                     | ✅      |
+| `PlanetState`                               | `Core/`   | Concrete state — loads `LoadingScreen` additively first, then `Planet`; defensively unloads `LoadingScreen` on exit if still present | ✅      |
 | `SceneLoader`                               | `Core/`   | Async additive scene load/unload with progress callback                  | ✅      |
 | `EventBus`                                  | `Core/`   | Global typed publish/subscribe (decouple systems via events)             | ✅      |
 | `GameEvent` / `GameEventListener`           | `Core/`   | ScriptableObject event channels for inspector wiring                     | ✅      |
@@ -808,6 +809,59 @@ M3 and M4 alike.**
 - [ ] Age policy configuration gates chat features for minors — `SocialConfig` provides a provisional default, but `AgeGateService` (M10) doesn't exist yet to apply per-age-band behavior
 - [x] `ReportService` / `BlockUser` always route to `ServerCode/` — client cannot self-moderate (`MutePlayer` is intentionally local-only and non-authoritative)
 - [x] `SocialUniverse.Social.asmdef` created and does not depend on `SocialUniverse.Net` directly (dependency runs the other way: `SocialUniverse.Net` → `SocialUniverse.Social`)
+
+---
+
+## Post-M4 Infrastructure — Planet Loading Screen ✅ CODE COMPLETE
+
+**Goal:** Show a full-screen loading overlay while the Planet scene and all server data load, with a smooth animated progress bar and a minimum 2-second display time.
+
+**New files:**
+
+| File | Path | Responsibility |
+|---|---|---|
+| `PlanetSceneReadyEvent` | `Core/` | Published by `PlanetSceneBootstrapper` when all async setup is complete |
+| `LoadingStatusEvent` | `Core/` | Published at each setup step with a `float Progress` (0–1); drives the slider |
+| `LoadingScreenView` | `UI/` | `MonoBehaviour` in the `LoadingScreen` scene — animates `Slider` toward each progress target, shows live `%` text, enforces 2 s minimum via coroutine, then calls `SceneManager.UnloadSceneAsync(gameObject.scene)` |
+
+**Modified files:**
+
+| File | Change |
+|---|---|
+| `Core/Constants.cs` | Added `SceneNames.LoadingScreen = "LoadingScreen"` |
+| `Core/PlanetState.cs` | `LoadAsync` now loads `LoadingScreen` first, then `Planet`; `UnloadAsync` defensively unloads `LoadingScreen` if still present |
+| `App/PlanetSceneScope.cs` | `SceneLoader` added to standalone-mode registrations; `PlanetSceneBootstrapper.Start()` checks if `LoadingScreen` is already loaded (standalone guard); publishes `LoadingStatusEvent` at five milestones (0.15 → 0.35 → 0.55 → 0.75 → 0.90) then `PlanetSceneReadyEvent` |
+
+**Load sequence (production):**
+
+```
+PlanetState.Enter()
+  └─ SceneLoader.LoadAsync("LoadingScreen")   ← visible before Planet loads
+  └─ SceneLoader.LoadAsync("Planet")
+
+PlanetSceneBootstrapper.Start()
+  ├─ LoadingStatusEvent(0.15)  — planet + asteroids initialised
+  ├─ LoadingStatusEvent(0.35)  — wallet hydrated
+  ├─ LoadingStatusEvent(0.55)  — profile loaded
+  ├─ LoadingStatusEvent(0.75)  — land tiles restored
+  ├─ LoadingStatusEvent(0.90)  — session started
+  └─ PlanetSceneReadyEvent
+
+LoadingScreenView
+  ├─ Slider animates via Mathf.MoveTowards (speed: 0.5/s, Inspector-tunable)
+  ├─ Text shows live "N%" derived from animated value
+  ├─ Sets target to 1.0 on PlanetSceneReadyEvent
+  └─ Waits: max(2 s elapsed, fill animation reaches 100%) → UnloadSceneAsync
+```
+
+**Standalone fallback:** when the Planet scene is opened directly in the Editor (no `Bootstrap`/`PlanetState`), `PlanetSceneBootstrapper` detects `LoadingScreen` is not loaded and loads it itself before publishing any events.
+
+**Setup Required:**
+
+- [ ] Create `Assets/Scenes/LoadingScreen.unity` (new scene)
+- [ ] Add a full-screen Canvas (Sort Order > Planet scene canvases) with a Panel background, a `Slider` (non-interactable), and a `TMP_Text` for the percentage
+- [ ] Attach `LoadingScreenView` to a root GameObject; assign `_slider` and `_percentageText` in Inspector
+- [ ] Add `LoadingScreen.unity` to **File → Build Settings** (must be present for `SceneManager.LoadSceneAsync` to find it by name)
 
 ---
 

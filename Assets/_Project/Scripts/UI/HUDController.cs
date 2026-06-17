@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -5,6 +6,8 @@ using SocialUniverse.Economy;
 using SocialUniverse.Mining;
 using SocialUniverse.World;
 using SocialUniverse.Progression;
+using TMPro;
+using UnityEngine.Serialization;
 
 namespace SocialUniverse.UI
 {
@@ -12,34 +15,56 @@ namespace SocialUniverse.UI
     public class HUDController : MonoBehaviour
     {
         [SerializeField] private CurrencyView _currency;
-        [SerializeField] private Text _levelText;
-        [SerializeField] private Text _fuelText;
+        [SerializeField] private TMP_Text _levelText;
+        [SerializeField] private Slider _fuelSlider;
         [SerializeField] private Text _miningStatusText;
         [SerializeField] private Text _landStatusText;
+        [SerializeField] private TMP_Text _usernameText;
+        [SerializeField] private Button _usernameButton;
+        [SerializeField] private DisplayNameModal _displayNameModal;
+        [SerializeField] private TMP_Text _asteroidRefreshText;
+        [SerializeField] private Button _chatButton;
+        [SerializeField] private SocialDebugPanel _socialPanel;
+        [SerializeField] private Toggle _tileViewToggle;
 
         [Inject] private Wallet _wallet;
         [Inject] private PlayerState _playerState;
         [Inject] private MiningController _mining;
         [Inject] private HexasphereManager _hexasphere;
+        [Inject] private AsteroidSpawner _asteroidSpawner;
 
         private void Start()
         {
             _currency.Bind(_wallet);
+            _chatButton.onClick.AddListener(_socialPanel.Open);
+            _usernameButton?.onClick.AddListener(OnUsernameClicked);
 
-            _playerState.OnLevelChanged += SetLevel;
-            _playerState.OnFuelChanged  += SetFuel;
-            _mining.OnPhaseChanged      += _ => RefreshMiningStatus();
+            // Tiles hidden by default; toggled by the view-land-tile toggle.
+            _hexasphere.SetTilesVisible(false);
+            if (_tileViewToggle != null)
+            {
+                _tileViewToggle.SetIsOnWithoutNotify(false);
+                _tileViewToggle.onValueChanged.AddListener(_hexasphere.SetTilesVisible);
+            }
+
+            _playerState.OnLevelChanged       += SetLevel;
+            _playerState.OnFuelChanged        += SetFuel;
+            _playerState.OnDisplayNameChanged += SetUsername;
+            _mining.OnPhaseChanged            += _ => RefreshMiningStatus();
 
             SetLevel(_playerState.Level);
             SetFuel(_playerState.Fuel);
+            SetUsername(_playerState.DisplayName);
             RefreshMiningStatus();
             RefreshLandStatus();
+            RefreshAsteroidRefresh();
         }
 
         private void OnDestroy()
         {
-            _playerState.OnLevelChanged -= SetLevel;
-            _playerState.OnFuelChanged  -= SetFuel;
+            _playerState.OnLevelChanged       -= SetLevel;
+            _playerState.OnFuelChanged        -= SetFuel;
+            _playerState.OnDisplayNameChanged -= SetUsername;
         }
 
         private void Update()
@@ -47,15 +72,50 @@ namespace SocialUniverse.UI
             // Cargo amount and owned-tile count have no change events — cheap to poll each frame.
             RefreshMiningStatus();
             RefreshLandStatus();
+            RefreshAsteroidRefresh();
+        }
+
+        private void SetUsername(string name)
+        {
+            if (_usernameText != null) _usernameText.text = name;
+        }
+
+        private void OnUsernameClicked()
+        {
+            _displayNameModal?.Open();
+        }
+
+        private void RefreshAsteroidRefresh()
+        {
+            if (_asteroidRefreshText == null) return;
+
+            var next = _asteroidSpawner.NextRespawnUtc;
+            if (next == null)
+            {
+                _asteroidRefreshText.text = "Asteroids: Ready";
+                return;
+            }
+
+            var remaining = next.Value - DateTime.UtcNow;
+            if (remaining <= TimeSpan.Zero)
+            {
+                _asteroidRefreshText.text = "Asteroids: Ready";
+                return;
+            }
+
+            _asteroidRefreshText.text = remaining.TotalHours >= 1
+                ? $"Next asteroid: {(int)remaining.TotalHours}h {remaining.Minutes}m"
+                : $"Next asteroid: {remaining.Minutes}m {remaining.Seconds}s";
         }
 
         private void SetLevel(int level) => _levelText.text = $"Lv. {level}";
 
         private void SetFuel(float fuel) =>
-            _fuelText.text = $"Fuel: {Mathf.CeilToInt(fuel)}/{Mathf.CeilToInt(_playerState.MaxFuel)}";
+            _fuelSlider.value = Mathf.CeilToInt(fuel);
 
         private void RefreshMiningStatus()
         {
+            if (_miningStatusText == null) return;
             var session = _mining.CurrentIdleSession;
             if (session != null)
             {
@@ -84,6 +144,7 @@ namespace SocialUniverse.UI
 
         private void RefreshLandStatus()
         {
+            if (_landStatusText == null) return;
             int owned = 0;
             foreach (var kv in _hexasphere.Tiles)
                 if (kv.Value.State == TileState.OwnedByPlayer) owned++;

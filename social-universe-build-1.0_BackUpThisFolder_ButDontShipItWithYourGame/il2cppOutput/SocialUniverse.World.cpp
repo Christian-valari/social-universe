@@ -1,0 +1,3668 @@
+﻿#include "pch-cpp.hpp"
+
+
+
+
+
+template <typename R>
+struct VirtualFuncInvoker0
+{
+	typedef R (*Func)(void*, const RuntimeMethod*);
+
+	static inline R Invoke (Il2CppMethodSlot slot, RuntimeObject* obj)
+	{
+		const VirtualInvokeData& invokeData = il2cpp_codegen_get_virtual_invoke_data(slot, obj);
+		return ((Func)invokeData.methodPtr)(obj, invokeData.method);
+	}
+};
+struct InterfaceActionInvoker0
+{
+	typedef void (*Action)(void*, const RuntimeMethod*);
+
+	static inline void Invoke (Il2CppMethodSlot slot, RuntimeClass* declaringInterface, RuntimeObject* obj)
+	{
+		const VirtualInvokeData& invokeData = il2cpp_codegen_get_interface_invoke_data(slot, obj, declaringInterface);
+		((Action)invokeData.methodPtr)(obj, invokeData.method);
+	}
+};
+template <typename R>
+struct InterfaceFuncInvoker0
+{
+	typedef R (*Func)(void*, const RuntimeMethod*);
+
+	static inline R Invoke (Il2CppMethodSlot slot, RuntimeClass* declaringInterface, RuntimeObject* obj)
+	{
+		const VirtualInvokeData& invokeData = il2cpp_codegen_get_interface_invoke_data(slot, obj, declaringInterface);
+		return ((Func)invokeData.methodPtr)(obj, invokeData.method);
+	}
+};
+
+struct Action_1_t639601D0B573E3C22896E25ED44964D270CB48AE;
+struct Action_1_tC8F8CE87DE08BA8C43746C4F5590DE4EFDA74DF9;
+struct Dictionary_2_t636F9C070769C139CD799C938BCE87A25215D571;
+struct Dictionary_2_t48E78A307BF6EF41AF0546E1DA208EA7822F98B6;
+struct Dictionary_2_t01224C8DBCCFE276E97D2BF52F4D7B10D3642682;
+struct Dictionary_2_tBF325E0F09BEEDF7AC6E6CB85841301637FC6E90;
+struct Dictionary_2_t5C96F4B6841710A9013966F76224BAE01FB4B4D1;
+struct Dictionary_2_t14FE4A752A83D53771C584E4C8D14E01F2AFD7BA;
+struct Dictionary_2_t6D8BD97C276122733C26FB7272D62F5675961A11;
+struct Dictionary_2_tFC9DF1E7D180CC0F09043B63D3B0E3B33CD25F83;
+struct Dictionary_2_t5C8F46F5D57502270DD9E1DA8303B23C7FE85588;
+struct Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900;
+struct Func_2_tE1F0D41563EE092E5E5540B061449FDE88F1DC00;
+struct Func_2_tACBF5A1656250800CE861707354491F0611F6624;
+struct Func_2_tC1B10E6814D157530665B3AD8BD80C5DF62FCC75;
+struct Func_2_tB3AF949DDCE1592AFD08CDFDB2C82076EF4495A8;
+struct HashSet_1_tEB45CC4847CE7B236FBCD8F0B171FE1AC4196C76;
+struct IEnumerable_1_tF95C9E01A913DD50575531C8305932628663D9E9;
+struct IEnumerable_1_t349E66EC5F09B881A8E52EE40A1AB9EC60E08E44;
+struct IEnumerable_1_tF8C383E8421DAA29E6E312CE334A2D2609F787CB;
+struct IEnumerator_1_t73FD060C436E3C4264A734C8F8DCC01DFF6046B8;
+struct IEnumerator_1_tBE1C1044442DB29BC5B1F1B07A43FC46C46C7046;
+struct IEqualityComparer_1_tAE94C8F24AD5B94D4EE85CA9FC59E3409D41CAF7;
+struct IReadOnlyDictionary_2_t496318BAF17F74950A66C9B70ACE8BAB249DDF0E;
+struct KeyCollection_tCC15D033281A6593E2488FAF5B205812A152AC03;
+struct KeyCollection_tEBA959BECA7AA1C1E87E9A3F4F08705896339B3A;
+struct List_1_t05915E9237850A58106982B7FE4BC5DA4E872E73;
+struct List_1_tBD1C7A6DDCC7BB4E36CB06B8F1176E9C8A97702E;
+struct List_1_tBF94C0F32CDCABF8BA3AB4BB01A9B7856AAE5D0B;
+struct List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D;
+struct List_1_tE8D7CADB79D7B89DE79B80D7F9C56526C93D9F3D;
+struct List_1_t8292C421BBB00D7661DC07462822936152BAB446;
+struct List_1_t0F231C3F13EBA1FF9081BD61489D01AA3CBE59D4;
+struct List_1_t1CD56E32C92480BACEBFEDDA9B5ADBB3630162C5;
+struct ValueCollection_tCE6BD704B9571C131E2D8C8CED569DDEC4AE042B;
+struct ValueCollection_tBA5E5898944F9376EA7A7CA1FAA8A1F85E9A3F90;
+struct EntryU5BU5D_tEA0133B78B9FF7045128C508FA50247E525A94D6;
+struct EntryU5BU5D_t0F61F0D80717880D4EC532C96018CBB811BA83FB;
+struct List_1U5BU5D_t4CE1B0D94CF35C0CCBCA465FCD6362B44614AB71;
+struct List_1U5BU5D_t37294D7C303231F2FD83B3C398AED0937F4F3206;
+struct List_1U5BU5D_tDE88DA8DCD79A37A10DCC96911E1242D15FF66FE;
+struct List_1U5BU5D_tC1B009E92641A2C993F3BB28A80D61D2AB67979B;
+struct List_1U5BU5D_t9BF6AD8E40F61ECF42793E072C32B96F7717E274;
+struct AsteroidDefinitionU5BU5D_tBFF455AEF363CCA9AD627A7BE225FF1013BBAC04;
+struct BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4;
+struct ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031;
+struct CharU5BU5D_t799905CF001DD5F13F7DBB310181FC4D8B7D0AAB;
+struct ColorU5BU5D_t612261CF293F6FFC3D80AB52259FF0DC2B2CC389;
+struct DelegateU5BU5D_tC5AB7E8F745616680F337909D3A8E6C722CDF771;
+struct Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C;
+struct LeanFingerU5BU5D_t3DD2571F64F142B705F67D9122387BAB07086D41;
+struct MeshU5BU5D_t178CA36422FC397211E68FB7E39C5B2F95619689;
+struct MeshFilterU5BU5D_tCE3B457E6F7ECE5ECEE9E09150642150448685BA;
+struct MeshRendererU5BU5D_tDF429EF168050A5CE085D0B51909A6AE2067E446;
+struct ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918;
+struct PFNodeFastU5BU5D_t97D62CE050F1335343151D07AAAD79AB3490A73B;
+struct PointU5BU5D_t073C019AF936FA7041F5C60356A85397A0D36FB2;
+struct Texture2DU5BU5D_t05332F1E3F7D4493E304C702201F9BE4F9236191;
+struct TileU5BU5D_t80464C127442B698EA2C216209F42194F7DA7806;
+struct TriangleU5BU5D_t22D3F3FF7698A9A180F0F56CE30E11BA895E1452;
+struct TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB;
+struct Vector2U5BU5D_tFEBBC94BCC6C9C88277BA04047D2B3FDB6ED7FDA;
+struct Vector3U5BU5D_tFF1859CCE176131B909E2044F76443064254679C;
+struct Action_tD00B0A84D7945E50C2DFFC28EFEE6ED44ED2AD07;
+struct AsyncCallback_t7FEF460CBDCFB9C5FA2EF776984778B9A4145F4C;
+struct Binder_t91BFCE95A7057FADF4D8A1A342AFE52872246235;
+struct BuildItemRequestedEvent_tF173E11650039A6ADDF57D43B816D8679CD65810;
+struct Camera_tA92CC927D7439999BC82DBEDC0AA45B470F9E184;
+struct CancellationTokenSource_tAAE1E0033BCFC233801F8CB4CED5C852B350CB7B;
+struct Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3;
+struct DelegateData_t9B286B493293CD2D23A5B2B5EF0E5B1324C2B77E;
+struct EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8;
+struct EventSystem_t61C51380B105BE9D2C39C4F15B7E655659957707;
+struct GameObject_t76FEDD663AB33C991A9C9A23129337651094216F;
+struct Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC;
+struct HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926;
+struct IAsyncResult_t7B9B5A0ECB35DCEC31B8A8122C37D687369253B5;
+struct ItemDefinition_t8BADD4DDEF367747A3719AFF59CCA57B2FC53984;
+struct LandmarkService_t2DD86DC59445B3BFE0F7F20764DD609289137254;
+struct LeanFinger_t26AAB32CCAF9C1785BDCF4BAB1F58A2AEE90F77D;
+struct Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3;
+struct MemberFilter_tF644F1AE82F611B677CE1964D5A3277DDA21D553;
+struct MethodInfo_t;
+struct MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71;
+struct Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C;
+struct PQInt_t06D2495D13CD3CAB3433C44A474096C801F53E38;
+struct PlanetCameraController_t39B59651096CD06669788766750AA520816F4353;
+struct PlanetController_t98B98D4212B2BD0C9F16BBA07BEEA0934DD2E93D;
+struct PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933;
+struct PlanetLoadedEvent_tA3765940816DE98DCA14FE62D5C14BABFD749624;
+struct Point_t13126743CEDB2A83E25B6018553E5022E06D2790;
+struct PointerEventData_t9670F3C7D823CCB738A1604C72A1EB90292396FB;
+struct Renderer_t320575F223BCB177A982E5DDB5DB19FAA89E7FBF;
+struct SphereCollider_tBA111C542CE97F6873DE742757213D6265C7D275;
+struct String_t;
+struct Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4;
+struct Texture2DArray_t5ADB8D23A8AA2F2F3916F43852194B78E579E6BA;
+struct Tile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67;
+struct TileColorizer_tA9064ACBB2D03D01390CA92E77EC11178C734F58;
+struct TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A;
+struct TileExtrusionView_tDD2454E77A3D6A1A8E13B1083D9547D9CB4122C9;
+struct TileSelectedEvent_t8669A0F7C42087F2631BEF3F654EB04362AC9CD7;
+struct TileSelectionController_t52499162946483DB827354C72F6418BB7AAF62DD;
+struct TileSellRequestedEvent_t7C63DA7EA22FC3801153BF730D1D193AF8929B25;
+struct Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1;
+struct Type_t;
+struct UnitySourceGeneratedAssemblyMonoScriptTypes_v1_t73E3BED51B3AF273F7F3B153157746806A916467;
+struct Void_t4861ACF8F4594C3437BB48B6E56783494B843915;
+struct HexasphereEvent_tB5F22BB1BD67A07D3E87AE6A08A3679A68328BEF;
+struct PathFindingEvent_tAC1B357C66C743FCB3ECD82365EC9B9115F4C5B9;
+struct TileEvent_t3392B77898A6708FA7D695CF027BB60332242782;
+struct U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD;
+
+IL2CPP_EXTERN_C RuntimeClass* ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Dictionary_2_t5C8F46F5D57502270DD9E1DA8303B23C7FE85588_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* EventBus_tD995B8977DB6D299BE8C38F5E222C99EE6EA8B11_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Func_2_tB3AF949DDCE1592AFD08CDFDB2C82076EF4495A8_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Func_2_tC1B10E6814D157530665B3AD8BD80C5DF62FCC75_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* IDisposable_t030E0496B4E0E4E4F086825007979AF51F7248C5_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* IEnumerable_1_t349E66EC5F09B881A8E52EE40A1AB9EC60E08E44_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* IEnumerable_1_tE375E6588C9D62999E1A1A6C94DEA12D77798543_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* IEnumerator_1_t73FD060C436E3C4264A734C8F8DCC01DFF6046B8_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* IEnumerator_1_tBE1C1044442DB29BC5B1F1B07A43FC46C46C7046_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* IEnumerator_t7B609C2FFA6EB5167D9C62A0C32A21DE2F666DAA_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* IReadOnlyDictionary_2_t496318BAF17F74950A66C9B70ACE8BAB249DDF0E_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* LeanTouch_tB9A5FAC0D173A45CDB1A8F994FD2BBB689D8927C_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* PlanetLoadedEvent_tA3765940816DE98DCA14FE62D5C14BABFD749624_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* TileEvent_t3392B77898A6708FA7D695CF027BB60332242782_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* TileSelectedEvent_t8669A0F7C42087F2631BEF3F654EB04362AC9CD7_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeField* U3CPrivateImplementationDetailsU3E_t046CE544964706492C55E46839F7ACEA2B780648____301071F95E1E0170CC668C030E05DA716F619ACFCF85F4C32133444CEA0982F3_FieldInfo_var;
+IL2CPP_EXTERN_C RuntimeField* U3CPrivateImplementationDetailsU3E_t046CE544964706492C55E46839F7ACEA2B780648____344CF8E98CA9F87C1664BF1B37380AD00F2491621D7D962C56880C684337E5C5_FieldInfo_var;
+IL2CPP_EXTERN_C String_t* _stringLiteral0B0FEB3147CE20EB2C90076367F895C59BCD14B3;
+IL2CPP_EXTERN_C String_t* _stringLiteral2E7F9F6A92320D7FDDBABF84CA80597D099FF1F5;
+IL2CPP_EXTERN_C String_t* _stringLiteral40373A76597DE99AC62935B2C149E78DE4F0CE6C;
+IL2CPP_EXTERN_C String_t* _stringLiteral42646B33B50B6AA15E22733C8900716F0FE19E1D;
+IL2CPP_EXTERN_C String_t* _stringLiteral4AD4ED171C31CBC00F019AF65A10F63CBFC368B3;
+IL2CPP_EXTERN_C String_t* _stringLiteral5D04F5597E4F592111E72D65DC12090A9FB5EEB7;
+IL2CPP_EXTERN_C String_t* _stringLiteralB210985702E2933A1D7BF40F573B3230ECDFD15A;
+IL2CPP_EXTERN_C String_t* _stringLiteralE31B9D15229B3F7485D53DA64E9020B8EC987599;
+IL2CPP_EXTERN_C const RuntimeMethod* Dictionary_2_Clear_m1CC8AEF98BB2624D8C2FA63F6739F892271DFC84_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Dictionary_2_Clear_m841DBE29811833266CC127714688998A50D5F7CD_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Dictionary_2_TryGetValue_m216A34326D3B7BF79ABF0F08D5C9673D88DBA854_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Dictionary_2_TryGetValue_m835BB1E6EA8A8BF1242B51E28FD65B43FEF68E2A_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Dictionary_2__ctor_m3E79BA218E1627FF6E687B6923F6D48AD8582CF5_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Dictionary_2__ctor_mA3C3860EDE2CDD08BBD68C389377BC89D029D968_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Dictionary_2_get_Count_mB7EA7647B176F301A3E292AF8558671A93430B68_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Dictionary_2_set_Item_m038480C0EC13713DBD89A53BE69FF0359501B4C2_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Dictionary_2_set_Item_mD7E6EE34109FD8FB8E6CA361D32BE025A082A450_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Enumerable_Empty_TisString_t_mBCB5B53D37C4DA21A03B6730942638F3E389DD63_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Enumerable_Select_TisTile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67_TisString_t_mCCDC93B857BD82926D219D4C99DAEF54F2233F06_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Enumerable_Where_TisTile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67_m2F5ED6D877948EA972AF2941B3295664E751DAD1_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* EventBus_Publish_TisPlanetLoadedEvent_tA3765940816DE98DCA14FE62D5C14BABFD749624_mA56367E579D06438AAC41E7DDB5E7EF006025DDE_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* EventBus_Publish_TisTileSelectedEvent_t8669A0F7C42087F2631BEF3F654EB04362AC9CD7_mDB902E268D4D81A22161830D89D95C6B00F288DD_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* List_1_get_Count_mC7A9070AFE9070AE414B124B3FC850C94DB8D282_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Object_Instantiate_TisGameObject_t76FEDD663AB33C991A9C9A23129337651094216F_mD136E37F696C00A3A1D4F65724ACAE903E385181_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* TileSelectionController_OnPluginTileClick_m47AEE7AA083EEBA08490859CCF97DD6D9589DF32_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* U3CU3Ec_U3Cget_PentagonTileIdsU3Eb__8_0_mB74000289558BDBFCD010F1139CEC2C610B7E3DD_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* U3CU3Ec_U3Cget_PentagonTileIdsU3Eb__8_1_mB957B24FE1FF83E15C4C6BA04A3D93E2F751F032_RuntimeMethod_var;
+struct Delegate_t_marshaled_com;
+struct Delegate_t_marshaled_pinvoke;
+
+struct ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031;
+struct ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918;
+struct TileU5BU5D_t80464C127442B698EA2C216209F42194F7DA7806;
+
+IL2CPP_EXTERN_C_BEGIN
+IL2CPP_EXTERN_C_END
+
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+struct U3CModuleU3E_tC628BD4137FE23F0FF3E299EAB0447A0203665FD 
+{
+};
+struct Dictionary_2_t5C8F46F5D57502270DD9E1DA8303B23C7FE85588  : public RuntimeObject
+{
+	Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* ____buckets;
+	EntryU5BU5D_tEA0133B78B9FF7045128C508FA50247E525A94D6* ____entries;
+	int32_t ____count;
+	int32_t ____freeList;
+	int32_t ____freeCount;
+	int32_t ____version;
+	RuntimeObject* ____comparer;
+	KeyCollection_tCC15D033281A6593E2488FAF5B205812A152AC03* ____keys;
+	ValueCollection_tCE6BD704B9571C131E2D8C8CED569DDEC4AE042B* ____values;
+	RuntimeObject* ____syncRoot;
+};
+struct Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900  : public RuntimeObject
+{
+	Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* ____buckets;
+	EntryU5BU5D_t0F61F0D80717880D4EC532C96018CBB811BA83FB* ____entries;
+	int32_t ____count;
+	int32_t ____freeList;
+	int32_t ____freeCount;
+	int32_t ____version;
+	RuntimeObject* ____comparer;
+	KeyCollection_tEBA959BECA7AA1C1E87E9A3F4F08705896339B3A* ____keys;
+	ValueCollection_tBA5E5898944F9376EA7A7CA1FAA8A1F85E9A3F90* ____values;
+	RuntimeObject* ____syncRoot;
+};
+struct EmptyEnumerable_1_t8C8873EF4F89FB0F86D91BA5B4D640E3A23AD28E  : public RuntimeObject
+{
+};
+struct List_1_tBD1C7A6DDCC7BB4E36CB06B8F1176E9C8A97702E  : public RuntimeObject
+{
+	LeanFingerU5BU5D_t3DD2571F64F142B705F67D9122387BAB07086D41* ____items;
+	int32_t ____size;
+	int32_t ____version;
+	RuntimeObject* ____syncRoot;
+};
+struct List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D  : public RuntimeObject
+{
+	ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918* ____items;
+	int32_t ____size;
+	int32_t ____version;
+	RuntimeObject* ____syncRoot;
+};
+struct U3CPrivateImplementationDetailsU3E_t046CE544964706492C55E46839F7ACEA2B780648  : public RuntimeObject
+{
+};
+struct BuildItemRequestedEvent_tF173E11650039A6ADDF57D43B816D8679CD65810  : public RuntimeObject
+{
+	TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* ___Tile;
+	ItemDefinition_t8BADD4DDEF367747A3719AFF59CCA57B2FC53984* ___Item;
+};
+struct LandmarkService_t2DD86DC59445B3BFE0F7F20764DD609289137254  : public RuntimeObject
+{
+};
+struct MemberInfo_t  : public RuntimeObject
+{
+};
+struct PlanetLoadedEvent_tA3765940816DE98DCA14FE62D5C14BABFD749624  : public RuntimeObject
+{
+	PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* ___Planet;
+};
+struct String_t  : public RuntimeObject
+{
+	int32_t ____stringLength;
+	Il2CppChar ____firstChar;
+};
+struct TileSelectedEvent_t8669A0F7C42087F2631BEF3F654EB04362AC9CD7  : public RuntimeObject
+{
+	TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* ___Tile;
+};
+struct TileSellRequestedEvent_t7C63DA7EA22FC3801153BF730D1D193AF8929B25  : public RuntimeObject
+{
+	TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* ___Tile;
+};
+struct UnitySourceGeneratedAssemblyMonoScriptTypes_v1_t73E3BED51B3AF273F7F3B153157746806A916467  : public RuntimeObject
+{
+};
+struct ValueType_t6D9B272BD21782F0A9A14F2E41F85A50E97A986F  : public RuntimeObject
+{
+};
+struct ValueType_t6D9B272BD21782F0A9A14F2E41F85A50E97A986F_marshaled_pinvoke
+{
+};
+struct ValueType_t6D9B272BD21782F0A9A14F2E41F85A50E97A986F_marshaled_com
+{
+};
+struct U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD  : public RuntimeObject
+{
+};
+struct Boolean_t09A6377A54BE2F9E6985A8149F19234FD7DDFE22 
+{
+	bool ___m_value;
+};
+struct Byte_t94D9231AC217BE4D2E004C4CD32DF6D099EA41A3 
+{
+	uint8_t ___m_value;
+};
+struct Color_tD001788D726C3A7F1379BEED0260B9591F440C1F 
+{
+	float ___r;
+	float ___g;
+	float ___b;
+	float ___a;
+};
+struct Enum_t2A1A94B24E3B776EEF4E5E485E290BB9D4D072E2  : public ValueType_t6D9B272BD21782F0A9A14F2E41F85A50E97A986F
+{
+};
+struct Enum_t2A1A94B24E3B776EEF4E5E485E290BB9D4D072E2_marshaled_pinvoke
+{
+};
+struct Enum_t2A1A94B24E3B776EEF4E5E485E290BB9D4D072E2_marshaled_com
+{
+};
+struct Int32_t680FF22E76F6EFAD4375103CBBFFA0421349384C 
+{
+	int32_t ___m_value;
+};
+struct IntPtr_t 
+{
+	void* ___m_value;
+};
+struct LayerMask_t97CB6BDADEDC3D6423C7BCFEA7F86DA2EC6241DB 
+{
+	int32_t ___m_Mask;
+};
+struct Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 
+{
+	float ___x;
+	float ___y;
+	float ___z;
+	float ___w;
+};
+struct Single_t4530F2FF86FCB0DC29F35385CA1BD21BE294761C 
+{
+	float ___m_value;
+};
+struct Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 
+{
+	float ___x;
+	float ___y;
+};
+struct Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 
+{
+	float ___x;
+	float ___y;
+	float ___z;
+};
+struct Void_t4861ACF8F4594C3437BB48B6E56783494B843915 
+{
+	union
+	{
+		struct
+		{
+		};
+		uint8_t Void_t4861ACF8F4594C3437BB48B6E56783494B843915__padding[1];
+	};
+};
+#pragma pack(push, tp, 1)
+struct __StaticArrayInitTypeSizeU3D467_t566CC3FA6B74B433530C8DF38C6607656843332C 
+{
+	union
+	{
+		struct
+		{
+			union
+			{
+			};
+		};
+		uint8_t __StaticArrayInitTypeSizeU3D467_t566CC3FA6B74B433530C8DF38C6607656843332C__padding[467];
+	};
+};
+#pragma pack(pop, tp)
+#pragma pack(push, tp, 1)
+struct __StaticArrayInitTypeSizeU3D522_tA8E5408AFA8BC272E7E06034EA00F716921D7B99 
+{
+	union
+	{
+		struct
+		{
+			union
+			{
+			};
+		};
+		uint8_t __StaticArrayInitTypeSizeU3D522_tA8E5408AFA8BC272E7E06034EA00F716921D7B99__padding[522];
+	};
+};
+#pragma pack(pop, tp)
+struct MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A 
+{
+	ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* ___FilePathsData;
+	ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* ___TypesData;
+	int32_t ___TotalTypes;
+	int32_t ___TotalFiles;
+	bool ___IsEditorOnly;
+};
+struct MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A_marshaled_pinvoke
+{
+	Il2CppSafeArray* ___FilePathsData;
+	Il2CppSafeArray* ___TypesData;
+	int32_t ___TotalTypes;
+	int32_t ___TotalFiles;
+	int32_t ___IsEditorOnly;
+};
+struct MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A_marshaled_com
+{
+	Il2CppSafeArray* ___FilePathsData;
+	Il2CppSafeArray* ___TypesData;
+	int32_t ___TotalTypes;
+	int32_t ___TotalFiles;
+	int32_t ___IsEditorOnly;
+};
+struct Delegate_t  : public RuntimeObject
+{
+	intptr_t ___method_ptr;
+	intptr_t ___invoke_impl;
+	RuntimeObject* ___m_target;
+	intptr_t ___method;
+	intptr_t ___delegate_trampoline;
+	intptr_t ___extra_arg;
+	intptr_t ___method_code;
+	intptr_t ___interp_method;
+	intptr_t ___interp_invoke_impl;
+	MethodInfo_t* ___method_info;
+	MethodInfo_t* ___original_method_info;
+	DelegateData_t9B286B493293CD2D23A5B2B5EF0E5B1324C2B77E* ___data;
+	bool ___method_is_virtual;
+};
+struct Delegate_t_marshaled_pinvoke
+{
+	intptr_t ___method_ptr;
+	intptr_t ___invoke_impl;
+	Il2CppIUnknown* ___m_target;
+	intptr_t ___method;
+	intptr_t ___delegate_trampoline;
+	intptr_t ___extra_arg;
+	intptr_t ___method_code;
+	intptr_t ___interp_method;
+	intptr_t ___interp_invoke_impl;
+	MethodInfo_t* ___method_info;
+	MethodInfo_t* ___original_method_info;
+	DelegateData_t9B286B493293CD2D23A5B2B5EF0E5B1324C2B77E* ___data;
+	int32_t ___method_is_virtual;
+};
+struct Delegate_t_marshaled_com
+{
+	intptr_t ___method_ptr;
+	intptr_t ___invoke_impl;
+	Il2CppIUnknown* ___m_target;
+	intptr_t ___method;
+	intptr_t ___delegate_trampoline;
+	intptr_t ___extra_arg;
+	intptr_t ___method_code;
+	intptr_t ___interp_method;
+	intptr_t ___interp_invoke_impl;
+	MethodInfo_t* ___method_info;
+	MethodInfo_t* ___original_method_info;
+	DelegateData_t9B286B493293CD2D23A5B2B5EF0E5B1324C2B77E* ___data;
+	int32_t ___method_is_virtual;
+};
+struct HIGHLIGHT_STYLE_t9F5F3F42D15C8E63A6398FE914DD53AF271DBBAF 
+{
+	int32_t ___value__;
+};
+struct HeuristicFormula_t1AA38B23DC2BD6032EA3832384B730271902F742 
+{
+	int32_t ___value__;
+};
+struct Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C  : public RuntimeObject
+{
+	intptr_t ___m_CachedPtr;
+};
+struct Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_marshaled_pinvoke
+{
+	intptr_t ___m_CachedPtr;
+};
+struct Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_marshaled_com
+{
+	intptr_t ___m_CachedPtr;
+};
+struct ROTATION_AXIS_ALLOWED_t26C34C8B0AA1AED626DB4D4060A15D9680E59502 
+{
+	int32_t ___value__;
+};
+struct Ray_t2B1742D7958DC05BDC3EFC7461D3593E1430DC00 
+{
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___m_Origin;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___m_Direction;
+};
+struct RuntimeFieldHandle_t6E4C45B6D2EA12FC99185805A7E77527899B25C5 
+{
+	intptr_t ___value;
+};
+struct RuntimeTypeHandle_t332A452B8B6179E4469B69525D0FE82A88030F7B 
+{
+	intptr_t ___value;
+};
+struct STYLE_t83C01E12C73156896000F96741FD4C5FA443835A 
+{
+	int32_t ___value__;
+};
+struct Tile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67  : public RuntimeObject
+{
+	int32_t ___index;
+	PointU5BU5D_t073C019AF936FA7041F5C60356A85397A0D36FB2* ___vertexPoints;
+	Point_t13126743CEDB2A83E25B6018553E5022E06D2790* ___centerPoint;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___center;
+	int32_t ___borders;
+	bool ___isWater;
+	bool ___canCross;
+	int32_t ___group;
+	float ___rotation;
+	Renderer_t320575F223BCB177A982E5DDB5DB19FAA89E7FBF* ___renderer;
+	Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3* ___customMat;
+	Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3* ___tempMat;
+	float ___extrudeAmount;
+	int32_t ___uvShadedChunkIndex;
+	int32_t ___uvShadedChunkStart;
+	int32_t ___uvShadedChunkLength;
+	int32_t ___uvWireChunkIndex;
+	int32_t ___uvWireChunkStart;
+	int32_t ___uvWireChunkLength;
+	float ___heightMapValue;
+	String_t* ___tag;
+	int32_t ___tagInt;
+	bool ___visible;
+	float ___crossCost;
+	float ___computedCrossCost;
+	Vector3U5BU5D_tFF1859CCE176131B909E2044F76443064254679C* ____vertices;
+	bool ____verticesComputed;
+	TileU5BU5D_t80464C127442B698EA2C216209F42194F7DA7806* ____neighbours;
+	Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* ____neighboursIndices;
+	bool ____neighboursComputed;
+};
+struct TileState_t7EEBFAF8A1A760751B642E71A021E352D2B11908 
+{
+	int32_t ___value__;
+};
+struct Channel_t77A89A22C692E6EF33F073D7A4B8313A22992599 
+{
+	int32_t ___value__;
+};
+struct Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3  : public Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C
+{
+};
+struct GameObject_t76FEDD663AB33C991A9C9A23129337651094216F  : public Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C
+{
+};
+struct MulticastDelegate_t  : public Delegate_t
+{
+	DelegateU5BU5D_tC5AB7E8F745616680F337909D3A8E6C722CDF771* ___delegates;
+};
+struct MulticastDelegate_t_marshaled_pinvoke : public Delegate_t_marshaled_pinvoke
+{
+	Delegate_t_marshaled_pinvoke** ___delegates;
+};
+struct MulticastDelegate_t_marshaled_com : public Delegate_t_marshaled_com
+{
+	Delegate_t_marshaled_com** ___delegates;
+};
+struct ScriptableObject_tB3BFDB921A1B1795B38A5417D3B97A89A140436A  : public Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C
+{
+};
+struct ScriptableObject_tB3BFDB921A1B1795B38A5417D3B97A89A140436A_marshaled_pinvoke : public Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_marshaled_pinvoke
+{
+};
+struct ScriptableObject_tB3BFDB921A1B1795B38A5417D3B97A89A140436A_marshaled_com : public Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_marshaled_com
+{
+};
+struct TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A  : public RuntimeObject
+{
+	String_t* ___U3CTileIdU3Ek__BackingField;
+	String_t* ___U3COwnerIdU3Ek__BackingField;
+	int32_t ___U3CStateU3Ek__BackingField;
+	float ___U3CYieldRateU3Ek__BackingField;
+	bool ___U3CIsLandmarkU3Ek__BackingField;
+	int32_t ___U3CBuildLevelU3Ek__BackingField;
+};
+struct Type_t  : public MemberInfo_t
+{
+	RuntimeTypeHandle_t332A452B8B6179E4469B69525D0FE82A88030F7B ____impl;
+};
+struct Func_2_tC1B10E6814D157530665B3AD8BD80C5DF62FCC75  : public MulticastDelegate_t
+{
+};
+struct Func_2_tB3AF949DDCE1592AFD08CDFDB2C82076EF4495A8  : public MulticastDelegate_t
+{
+};
+struct Behaviour_t01970CFBBA658497AE30F311C447DB0440BAB7FA  : public Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3
+{
+};
+struct EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8  : public ScriptableObject_tB3BFDB921A1B1795B38A5417D3B97A89A140436A
+{
+	String_t* ____coinsCurrencyId;
+	String_t* ____stardustCurrencyId;
+	int32_t ____startingCoins;
+	int32_t ____startingStardust;
+	int32_t ____baseLandPrice;
+	int32_t ____upkeepPerTilePerDay;
+	float ____landRegistryPollIntervalSec;
+	int32_t ____maxBuildLevel;
+	float ____baseYieldPerTilePerHour;
+	float ____buildLevelYieldMultiplier;
+	float ____visitYieldBonus;
+	float ____maxYieldAccrualHours;
+	int32_t ____maxVisitCount;
+	float ____upkeepPollIntervalSec;
+	float ____landResaleRate;
+	float ____idleMiningRate;
+	float ____maxOfflineHours;
+	float ____idleSessionDuration;
+	int32_t ____idleSessionClaimTaps;
+	float ____asteroidRespawnHours;
+	int32_t ____activeTapYield;
+	float ____critChance;
+	float ____critMultiplier;
+};
+struct PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933  : public ScriptableObject_tB3BFDB921A1B1795B38A5417D3B97A89A140436A
+{
+	String_t* ____planetId;
+	String_t* ____displayName;
+	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ____modelPrefab;
+	int32_t ____tileCount;
+	float ____landPriceMultiplier;
+	int32_t ____asteroidTier;
+	AsteroidDefinitionU5BU5D_tBFF455AEF363CCA9AD627A7BE225FF1013BBAC04* ____asteroidTypes;
+};
+struct Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1  : public Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3
+{
+};
+struct TileEvent_t3392B77898A6708FA7D695CF027BB60332242782  : public MulticastDelegate_t
+{
+};
+struct MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71  : public Behaviour_t01970CFBBA658497AE30F311C447DB0440BAB7FA
+{
+	CancellationTokenSource_tAAE1E0033BCFC233801F8CB4CED5C852B350CB7B* ___m_CancellationTokenSource;
+};
+struct Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC  : public MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71
+{
+	Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3* ____tileShadedFrameMatBevel;
+	Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3* ____tileShadedFrameMatExtrusion;
+	Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3* ____tileShadedFrameMatNoExtrusion;
+	Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3* ____gridMatExtrusion;
+	Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3* ____gridMatNoExtrusion;
+	Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3* ____tileColoredMat;
+	Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3* ____tileTexturedMat;
+	Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3* ___highlightMaterial;
+	int32_t ___currentDivisions;
+	int32_t ___currentTextureSize;
+	bool ___currentExtruded;
+	bool ___currentInvertedMode;
+	bool ___currentWireframeColorFromTile;
+	bool ___currentSmartEdges;
+	bool ___currentBevel;
+	Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ___currentDefaultShadedColor;
+	bool ___pendingUVUpdateFast;
+	bool ___pendingTextureArrayUpdate;
+	bool ___pendingColorsUpdate;
+	int32_t ___currentStyle;
+	float ___currentTransparencyTiles;
+	bool ___mouseIsOver;
+	bool ___mouseStartedDragging;
+	bool ___hasDragged;
+	float ___clickStart;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___mouseDragStartLocalPosition;
+	float ___wheelAccel;
+	Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 ___flyingStartRotation;
+	Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 ___flyingEndRotation;
+	bool ___flying;
+	float ___flyingStartTime;
+	float ___flyingDuration;
+	Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* ___defaultRampTexture;
+	SphereCollider_tBA111C542CE97F6873DE742757213D6265C7D275* ___sphereCollider;
+	int32_t ___lastHitTileIndex;
+	Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* ___whiteTex;
+	int32_t ___uvChunkCount;
+	int32_t ___wireChunkCount;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___currentRotationShift;
+	bool ___leftMouseButtonClick;
+	bool ___leftMouseButtonPressed;
+	bool ___leftMouseButtonRelease;
+	bool ___rightMouseButtonPressed;
+	bool ___allowedTextureArray;
+	bool ___useEditorRay;
+	Ray_t2B1742D7958DC05BDC3EFC7461D3593E1430DC00 ___editorRay;
+	bool ___shouldUpdateMaterialProperties;
+	bool ___needRegenerate;
+	bool ___needRegenerateWireframe;
+	Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* ___bevelNormals;
+	ColorU5BU5D_t612261CF293F6FFC3D80AB52259FF0DC2B2CC389* ___bevelNormalsColors;
+	List_1_t05915E9237850A58106982B7FE4BC5DA4E872E73* ___tmpList;
+	Dictionary_2_t01224C8DBCCFE276E97D2BF52F4D7B10D3642682* ___tmpDict;
+	List_1_t05915E9237850A58106982B7FE4BC5DA4E872E73* ___tmpCandidates;
+	int32_t ___lastHoverTileIndex;
+	bool ___canInteract;
+	Texture2DArray_t5ADB8D23A8AA2F2F3916F43852194B78E579E6BA* ___finalTexArray;
+	bool ___triggerOnGenerateEvent;
+	Dictionary_2_tFC9DF1E7D180CC0F09043B63D3B0E3B33CD25F83* ___points;
+	Dictionary_2_t6D8BD97C276122733C26FB7272D62F5675961A11* ___verticesIdx;
+	List_1U5BU5D_tC1B009E92641A2C993F3BB28A80D61D2AB67979B* ___verticesWire;
+	List_1U5BU5D_t37294D7C303231F2FD83B3C398AED0937F4F3206* ___indicesWire;
+	List_1U5BU5D_tDE88DA8DCD79A37A10DCC96911E1242D15FF66FE* ___uvWire;
+	List_1U5BU5D_t4CE1B0D94CF35C0CCBCA465FCD6362B44614AB71* ___colorWire;
+	List_1U5BU5D_tC1B009E92641A2C993F3BB28A80D61D2AB67979B* ___verticesShaded;
+	List_1U5BU5D_t37294D7C303231F2FD83B3C398AED0937F4F3206* ___indicesShaded;
+	List_1U5BU5D_t9BF6AD8E40F61ECF42793E072C32B96F7717E274* ___uvShaded;
+	List_1U5BU5D_t9BF6AD8E40F61ECF42793E072C32B96F7717E274* ___uv2Shaded;
+	List_1U5BU5D_t4CE1B0D94CF35C0CCBCA465FCD6362B44614AB71* ___colorShaded;
+	List_1_t0F231C3F13EBA1FF9081BD61489D01AA3CBE59D4* ___texArray;
+	Dictionary_2_t48E78A307BF6EF41AF0546E1DA208EA7822F98B6* ___solidTexCache;
+	MeshU5BU5D_t178CA36422FC397211E68FB7E39C5B2F95619689* ___shadedMeshes;
+	MeshFilterU5BU5D_tCE3B457E6F7ECE5ECEE9E09150642150448685BA* ___shadedMFs;
+	MeshRendererU5BU5D_tDF429EF168050A5CE085D0B51909A6AE2067E446* ___shadedMRs;
+	MeshU5BU5D_t178CA36422FC397211E68FB7E39C5B2F95619689* ___wiredMeshes;
+	MeshFilterU5BU5D_tCE3B457E6F7ECE5ECEE9E09150642150448685BA* ___wiredMFs;
+	MeshRendererU5BU5D_tDF429EF168050A5CE085D0B51909A6AE2067E446* ___wiredMRs;
+	BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4* ___colorShadedDirty;
+	BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4* ___uvShadedDirty;
+	BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4* ___uvWireDirty;
+	BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4* ___colorWireDirty;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___oldCameraPosition;
+	Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ___tilesRoot;
+	Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* ___hexagonIndices;
+	Vector2U5BU5D_tFEBBC94BCC6C9C88277BA04047D2B3FDB6ED7FDA* ___hexagonUVs;
+	Vector2U5BU5D_tFEBBC94BCC6C9C88277BA04047D2B3FDB6ED7FDA* ___hexagonUVsInverted;
+	Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* ___hexagonIndicesExtruded;
+	Vector2U5BU5D_tFEBBC94BCC6C9C88277BA04047D2B3FDB6ED7FDA* ___hexagonUVsExtruded;
+	Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* ___hexagonIndicesInverted;
+	Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* ___pentagonIndices;
+	Vector2U5BU5D_tFEBBC94BCC6C9C88277BA04047D2B3FDB6ED7FDA* ___pentagonUVs;
+	Vector2U5BU5D_tFEBBC94BCC6C9C88277BA04047D2B3FDB6ED7FDA* ___pentagonUVsInverted;
+	Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* ___pentagonIndicesExtruded;
+	Vector2U5BU5D_tFEBBC94BCC6C9C88277BA04047D2B3FDB6ED7FDA* ___pentagonUVsExtruded;
+	Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* ___pentagonIndicesInverted;
+	Dictionary_2_t636F9C070769C139CD799C938BCE87A25215D571* ___colorCache;
+	Dictionary_2_tBF325E0F09BEEDF7AC6E6CB85841301637FC6E90* ___textureCache;
+	Vector2U5BU5D_tFEBBC94BCC6C9C88277BA04047D2B3FDB6ED7FDA* ___uvTmp;
+	float ___lastTimeCheckVRPointers;
+	bool ___needRefreshRouteMatrix;
+	PQInt_t06D2495D13CD3CAB3433C44A474096C801F53E38* ___open;
+	PFNodeFastU5BU5D_t97D62CE050F1335343151D07AAAD79AB3490A73B* ___pfCalc;
+	uint8_t ___openTileValue;
+	uint8_t ___closeTileValue;
+	List_1_tE8D7CADB79D7B89DE79B80D7F9C56526C93D9F3D* ___close;
+	int32_t ___mSearchLimit;
+	bool ___mIgnoreTileCanCross;
+	int32_t ___lastRouteMatrixGroupMask;
+	ColorU5BU5D_t612261CF293F6FFC3D80AB52259FF0DC2B2CC389* ___heights;
+	ColorU5BU5D_t612261CF293F6FFC3D80AB52259FF0DC2B2CC389* ___waters;
+	int32_t ___heightMapWidth;
+	int32_t ___heightMapHeight;
+	ColorU5BU5D_t612261CF293F6FFC3D80AB52259FF0DC2B2CC389* ___gradientColors;
+	int32_t ___rampWidth;
+	int32_t ____numDivisions;
+	int32_t ____style;
+	bool ____smartEdges;
+	bool ____transparent;
+	bool ____transparencyZWrite;
+	float ____transparencyTiles;
+	bool ____transparencyCull;
+	bool ____transparencyDoubleSided;
+	bool ____invertedMode;
+	bool ____lighting;
+	bool ____castShadows;
+	bool ____receiveShadows;
+	Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ____ambientColor;
+	float ____minimumLight;
+	Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ____specularTint;
+	float ____smoothness;
+	bool ____extruded;
+	bool ____bevel;
+	int32_t ____tileTextureSize;
+	bool ____tileTextureStretch;
+	float ____extrudeMultiplier;
+	bool ____VREnabled;
+	float ____gradientIntensity;
+	Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ____wireframeColor;
+	bool ____wireframeColorFromTile;
+	float ____wireframeIntensity;
+	Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ____defaultShadedColor;
+	Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ____tileTintColor;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ____rotationShift;
+	bool ____enableGridEditor;
+	Texture2DU5BU5D_t05332F1E3F7D4493E304C702201F9BE4F9236191* ___textures;
+	PathFindingEvent_tAC1B357C66C743FCB3ECD82365EC9B9115F4C5B9* ___OnPathFindingCrossTile;
+	TileEvent_t3392B77898A6708FA7D695CF027BB60332242782* ___OnTileClick;
+	TileEvent_t3392B77898A6708FA7D695CF027BB60332242782* ___OnTileMouseOver;
+	HexasphereEvent_tB5F22BB1BD67A07D3E87AE6A08A3679A68328BEF* ___OnFlyStart;
+	HexasphereEvent_tB5F22BB1BD67A07D3E87AE6A08A3679A68328BEF* ___OnFlyEnd;
+	HexasphereEvent_tB5F22BB1BD67A07D3E87AE6A08A3679A68328BEF* ___OnDragStart;
+	HexasphereEvent_tB5F22BB1BD67A07D3E87AE6A08A3679A68328BEF* ___OnDragEnd;
+	HexasphereEvent_tB5F22BB1BD67A07D3E87AE6A08A3679A68328BEF* ___OnZoom;
+	HexasphereEvent_tB5F22BB1BD67A07D3E87AE6A08A3679A68328BEF* ___OnGeneration;
+	Camera_tA92CC927D7439999BC82DBEDC0AA45B470F9E184* ____cameraMain;
+	bool ____respectOtherUI;
+	bool ____rotationEnabled;
+	float ____rotationSpeed;
+	int32_t ____rotationAxisAllowed;
+	float ____rotationAxisVerticalThreshold;
+	bool ____zoomEnabled;
+	float ____zoomSpeed;
+	float ____zoomDamping;
+	float ____zoomMinDistance;
+	float ____zoomMaxDistance;
+	float ____flyToTilt;
+	Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ____highlightColor;
+	float ____highlightSpeed;
+	int32_t ____highlightStyle;
+	bool ____highlightEnabled;
+	bool ____raycast3D;
+	float ____dragThreshold;
+	float ____clickDuration;
+	bool ____rightButtonDrag;
+	bool ____rightClickRotates;
+	bool ____rightClickRotatingClockwise;
+	int32_t ___lastHighlightedTileIndex;
+	Tile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67* ___lastHighlightedTile;
+	int32_t ___lastClickedTile;
+	int32_t ____pathFindingHeuristicFormula;
+	int32_t ____pathFindingSearchLimit;
+	bool ____pathFindingUseExtrusion;
+	int32_t ____pathFindingExtrusionWeight;
+	TileU5BU5D_t80464C127442B698EA2C216209F42194F7DA7806* ___tiles;
+};
+struct HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926  : public MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71
+{
+	Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* ____hexasphere;
+	Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900* ____tiles;
+	Dictionary_2_t5C8F46F5D57502270DD9E1DA8303B23C7FE85588* ____indexById;
+};
+struct LeanTouch_tB9A5FAC0D173A45CDB1A8F994FD2BBB689D8927C  : public MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71
+{
+	Action_tD00B0A84D7945E50C2DFFC28EFEE6ED44ED2AD07* ___OnSimulateFingers;
+	float ___tapThreshold;
+	float ___swipeThreshold;
+	int32_t ___referenceDpi;
+	LayerMask_t97CB6BDADEDC3D6423C7BCFEA7F86DA2EC6241DB ___guiLayers;
+	bool ___useTouch;
+	bool ___useHover;
+	bool ___useMouse;
+	bool ___useSimulator;
+	bool ___disableMouseEmulation;
+	bool ___recordFingers;
+	float ___recordThreshold;
+	float ___recordLimit;
+};
+struct PlanetCameraController_t39B59651096CD06669788766750AA520816F4353  : public MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71
+{
+	Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ____target;
+	float ____orbitSpeed;
+	float ____minDistance;
+	float ____maxDistance;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ____offset;
+	float ____distance;
+	float ____yaw;
+	float ____pitch;
+};
+struct PlanetController_t98B98D4212B2BD0C9F16BBA07BEEA0934DD2E93D  : public MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71
+{
+	HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* ____hexasphere;
+	TileColorizer_tA9064ACBB2D03D01390CA92E77EC11178C734F58* ____colorizer;
+	LandmarkService_t2DD86DC59445B3BFE0F7F20764DD609289137254* ____landmarkService;
+	PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* ___U3CCurrentPlanetU3Ek__BackingField;
+};
+struct TileColorizer_tA9064ACBB2D03D01390CA92E77EC11178C734F58  : public MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71
+{
+	HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* ____hexasphere;
+	Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ____availableColor;
+	Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ____ownedColor;
+	Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ____othersColor;
+	Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ____landmarkColor;
+};
+struct TileExtrusionView_tDD2454E77A3D6A1A8E13B1083D9547D9CB4122C9  : public MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71
+{
+	HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* ____hexasphere;
+	EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* ____economyConfig;
+};
+struct TileSelectionController_t52499162946483DB827354C72F6418BB7AAF62DD  : public MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71
+{
+	HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* ____hexasphere;
+};
+struct EmptyEnumerable_1_t8C8873EF4F89FB0F86D91BA5B4D640E3A23AD28E_StaticFields
+{
+	ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918* ___Instance;
+};
+struct List_1_tBD1C7A6DDCC7BB4E36CB06B8F1176E9C8A97702E_StaticFields
+{
+	LeanFingerU5BU5D_t3DD2571F64F142B705F67D9122387BAB07086D41* ___s_emptyArray;
+};
+struct List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D_StaticFields
+{
+	ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918* ___s_emptyArray;
+};
+struct U3CPrivateImplementationDetailsU3E_t046CE544964706492C55E46839F7ACEA2B780648_StaticFields
+{
+	__StaticArrayInitTypeSizeU3D522_tA8E5408AFA8BC272E7E06034EA00F716921D7B99 ___301071F95E1E0170CC668C030E05DA716F619ACFCF85F4C32133444CEA0982F3;
+	__StaticArrayInitTypeSizeU3D467_t566CC3FA6B74B433530C8DF38C6607656843332C ___344CF8E98CA9F87C1664BF1B37380AD00F2491621D7D962C56880C684337E5C5;
+};
+struct String_t_StaticFields
+{
+	String_t* ___Empty;
+};
+struct U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_StaticFields
+{
+	U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD* ___U3CU3E9;
+	Func_2_tC1B10E6814D157530665B3AD8BD80C5DF62FCC75* ___U3CU3E9__8_0;
+	Func_2_tB3AF949DDCE1592AFD08CDFDB2C82076EF4495A8* ___U3CU3E9__8_1;
+};
+struct Boolean_t09A6377A54BE2F9E6985A8149F19234FD7DDFE22_StaticFields
+{
+	String_t* ___TrueString;
+	String_t* ___FalseString;
+};
+struct IntPtr_t_StaticFields
+{
+	intptr_t ___Zero;
+};
+struct Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974_StaticFields
+{
+	Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 ___identityQuaternion;
+};
+struct Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7_StaticFields
+{
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___zeroVector;
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___oneVector;
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___upVector;
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___downVector;
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___leftVector;
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___rightVector;
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___positiveInfinityVector;
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___negativeInfinityVector;
+};
+struct Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2_StaticFields
+{
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___zeroVector;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___oneVector;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___upVector;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___downVector;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___leftVector;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___rightVector;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___forwardVector;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___backVector;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___positiveInfinityVector;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___negativeInfinityVector;
+};
+struct Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_StaticFields
+{
+	int32_t ___OffsetOfInstanceIDInCPlusPlusObject;
+};
+struct Tile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67_StaticFields
+{
+	TriangleU5BU5D_t22D3F3FF7698A9A180F0F56CE30E11BA895E1452* ___tempTriangles;
+	List_1_t05915E9237850A58106982B7FE4BC5DA4E872E73* ___tempInt;
+	List_1_t1CD56E32C92480BACEBFEDDA9B5ADBB3630162C5* ___temp;
+};
+struct Type_t_StaticFields
+{
+	Binder_t91BFCE95A7057FADF4D8A1A342AFE52872246235* ___s_defaultBinder;
+	Il2CppChar ___Delimiter;
+	TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* ___EmptyTypes;
+	RuntimeObject* ___Missing;
+	MemberFilter_tF644F1AE82F611B677CE1964D5A3277DDA21D553* ___FilterAttribute;
+	MemberFilter_tF644F1AE82F611B677CE1964D5A3277DDA21D553* ___FilterName;
+	MemberFilter_tF644F1AE82F611B677CE1964D5A3277DDA21D553* ___FilterNameIgnoreCase;
+};
+struct LeanTouch_tB9A5FAC0D173A45CDB1A8F994FD2BBB689D8927C_StaticFields
+{
+	List_1_tBF94C0F32CDCABF8BA3AB4BB01A9B7856AAE5D0B* ___Instances;
+	List_1_tBD1C7A6DDCC7BB4E36CB06B8F1176E9C8A97702E* ___Fingers;
+	List_1_tBD1C7A6DDCC7BB4E36CB06B8F1176E9C8A97702E* ___InactiveFingers;
+	Action_1_tC8F8CE87DE08BA8C43746C4F5590DE4EFDA74DF9* ___OnFingerDown;
+	Action_1_tC8F8CE87DE08BA8C43746C4F5590DE4EFDA74DF9* ___OnFingerUpdate;
+	Action_1_tC8F8CE87DE08BA8C43746C4F5590DE4EFDA74DF9* ___OnFingerUp;
+	Action_1_tC8F8CE87DE08BA8C43746C4F5590DE4EFDA74DF9* ___OnFingerOld;
+	Action_1_tC8F8CE87DE08BA8C43746C4F5590DE4EFDA74DF9* ___OnFingerTap;
+	Action_1_tC8F8CE87DE08BA8C43746C4F5590DE4EFDA74DF9* ___OnFingerSwipe;
+	Action_1_t639601D0B573E3C22896E25ED44964D270CB48AE* ___OnGesture;
+	Action_1_tC8F8CE87DE08BA8C43746C4F5590DE4EFDA74DF9* ___OnFingerExpired;
+	Action_1_tC8F8CE87DE08BA8C43746C4F5590DE4EFDA74DF9* ___OnFingerInactive;
+	List_1_t8292C421BBB00D7661DC07462822936152BAB446* ___tempRaycastResults;
+	List_1_tBD1C7A6DDCC7BB4E36CB06B8F1176E9C8A97702E* ___filteredFingers;
+	PointerEventData_t9670F3C7D823CCB738A1604C72A1EB90292396FB* ___tempPointerEventData;
+	EventSystem_t61C51380B105BE9D2C39C4F15B7E655659957707* ___tempEventSystem;
+	LeanFinger_t26AAB32CCAF9C1785BDCF4BAB1F58A2AEE90F77D* ___simulatedTapFinger;
+	HashSet_1_tEB45CC4847CE7B236FBCD8F0B171FE1AC4196C76* ___missingFingers;
+	List_1_tBD1C7A6DDCC7BB4E36CB06B8F1176E9C8A97702E* ___tempFingers;
+};
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+struct ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031  : public RuntimeArray
+{
+	ALIGN_FIELD (8) uint8_t m_Items[1];
+
+	inline uint8_t GetAt(il2cpp_array_size_t index) const
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		return m_Items[index];
+	}
+	inline uint8_t* GetAddressAt(il2cpp_array_size_t index)
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		return m_Items + index;
+	}
+	inline void SetAt(il2cpp_array_size_t index, uint8_t value)
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		m_Items[index] = value;
+	}
+	inline uint8_t GetAtUnchecked(il2cpp_array_size_t index) const
+	{
+		return m_Items[index];
+	}
+	inline uint8_t* GetAddressAtUnchecked(il2cpp_array_size_t index)
+	{
+		return m_Items + index;
+	}
+	inline void SetAtUnchecked(il2cpp_array_size_t index, uint8_t value)
+	{
+		m_Items[index] = value;
+	}
+};
+struct TileU5BU5D_t80464C127442B698EA2C216209F42194F7DA7806  : public RuntimeArray
+{
+	ALIGN_FIELD (8) Tile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67* m_Items[1];
+
+	inline Tile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67* GetAt(il2cpp_array_size_t index) const
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		return m_Items[index];
+	}
+	inline Tile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67** GetAddressAt(il2cpp_array_size_t index)
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		return m_Items + index;
+	}
+	inline void SetAt(il2cpp_array_size_t index, Tile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67* value)
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		m_Items[index] = value;
+		Il2CppCodeGenWriteBarrier((void**)m_Items + index, (void*)value);
+	}
+	inline Tile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67* GetAtUnchecked(il2cpp_array_size_t index) const
+	{
+		return m_Items[index];
+	}
+	inline Tile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67** GetAddressAtUnchecked(il2cpp_array_size_t index)
+	{
+		return m_Items + index;
+	}
+	inline void SetAtUnchecked(il2cpp_array_size_t index, Tile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67* value)
+	{
+		m_Items[index] = value;
+		Il2CppCodeGenWriteBarrier((void**)m_Items + index, (void*)value);
+	}
+};
+struct ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918  : public RuntimeArray
+{
+	ALIGN_FIELD (8) RuntimeObject* m_Items[1];
+
+	inline RuntimeObject* GetAt(il2cpp_array_size_t index) const
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		return m_Items[index];
+	}
+	inline RuntimeObject** GetAddressAt(il2cpp_array_size_t index)
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		return m_Items + index;
+	}
+	inline void SetAt(il2cpp_array_size_t index, RuntimeObject* value)
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		m_Items[index] = value;
+		Il2CppCodeGenWriteBarrier((void**)m_Items + index, (void*)value);
+	}
+	inline RuntimeObject* GetAtUnchecked(il2cpp_array_size_t index) const
+	{
+		return m_Items[index];
+	}
+	inline RuntimeObject** GetAddressAtUnchecked(il2cpp_array_size_t index)
+	{
+		return m_Items + index;
+	}
+	inline void SetAtUnchecked(il2cpp_array_size_t index, RuntimeObject* value)
+	{
+		m_Items[index] = value;
+		Il2CppCodeGenWriteBarrier((void**)m_Items + index, (void*)value);
+	}
+};
+
+
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR RuntimeObject* Enumerable_Empty_TisRuntimeObject_mA90CDE158774C34A28C07CEEA9E9EA2A61618238_gshared_inline (const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Func_2__ctor_m13C0A7F33154D861E2A041B52E88461832DA1697_gshared (Func_2_tE1F0D41563EE092E5E5540B061449FDE88F1DC00* __this, RuntimeObject* ___0_object, intptr_t ___1_method, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* Enumerable_Where_TisRuntimeObject_m5DAF16724887B42DDBBF391C7F375749E8AA4AD7_gshared (RuntimeObject* ___0_source, Func_2_tE1F0D41563EE092E5E5540B061449FDE88F1DC00* ___1_predicate, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Func_2__ctor_m7F8A01C0B02BC1D4063F4EB1E817F7A48562A398_gshared (Func_2_tACBF5A1656250800CE861707354491F0611F6624* __this, RuntimeObject* ___0_object, intptr_t ___1_method, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* Enumerable_Select_TisRuntimeObject_TisRuntimeObject_m67C538A5EBF57C4844107A8EF25DB2CAAFBAF8FB_gshared (RuntimeObject* ___0_source, Func_2_tACBF5A1656250800CE861707354491F0611F6624* ___1_selector, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Dictionary_2_Clear_mCFB5EA7351D5860D2B91592B91A84CA265A41433_gshared (Dictionary_2_t14FE4A752A83D53771C584E4C8D14E01F2AFD7BA* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Dictionary_2_Clear_m931E25EF2557C3A386E4B9DC8D8212B7D9D3F5AE_gshared (Dictionary_2_t5C96F4B6841710A9013966F76224BAE01FB4B4D1* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Dictionary_2_set_Item_m1A840355E8EDAECEA9D0C6F5E51B248FAA449CBD_gshared (Dictionary_2_t14FE4A752A83D53771C584E4C8D14E01F2AFD7BA* __this, RuntimeObject* ___0_key, RuntimeObject* ___1_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Dictionary_2_set_Item_m72CC2F1213D1C1B8ABEDE31082D07B67EC873B13_gshared (Dictionary_2_t5C96F4B6841710A9013966F76224BAE01FB4B4D1* __this, RuntimeObject* ___0_key, int32_t ___1_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Dictionary_2_get_Count_m4DDA9442C238A443489115E22B026AD366851549_gshared (Dictionary_2_t14FE4A752A83D53771C584E4C8D14E01F2AFD7BA* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool Dictionary_2_TryGetValue_mD15380A4ED7CDEE99EA45881577D26BA9CE1B849_gshared (Dictionary_2_t14FE4A752A83D53771C584E4C8D14E01F2AFD7BA* __this, RuntimeObject* ___0_key, RuntimeObject** ___1_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void EventBus_Publish_TisRuntimeObject_mB7AA04208004390A25C200E40136DB1876C07724_gshared (RuntimeObject* ___0_evt, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool Dictionary_2_TryGetValue_m4B8EE45640C70BBFD6F3EFF1040983404C098342_gshared (Dictionary_2_t5C96F4B6841710A9013966F76224BAE01FB4B4D1* __this, RuntimeObject* ___0_key, int32_t* ___1_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Dictionary_2__ctor_m5B32FBC624618211EB461D59CFBB10E987FD1329_gshared (Dictionary_2_t14FE4A752A83D53771C584E4C8D14E01F2AFD7BA* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Dictionary_2__ctor_m517E7F9D104FEAE6646EABDDC9C852510E86077C_gshared (Dictionary_2_t5C96F4B6841710A9013966F76224BAE01FB4B4D1* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t List_1_get_Count_m4407E4C389F22B8CEC282C15D56516658746C383_gshared_inline (List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* Object_Instantiate_TisRuntimeObject_m5F38AE6B74636F569647D545E365C5579E5F59CE_gshared (RuntimeObject* ___0_original, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___1_position, Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 ___2_rotation, Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ___3_parent, const RuntimeMethod* method) ;
+
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void RuntimeHelpers_InitializeArray_m751372AA3F24FBF6DA9B9D687CBFA2DE436CAB9B (RuntimeArray* ___0_array, RuntimeFieldHandle_t6E4C45B6D2EA12FC99185805A7E77527899B25C5 ___1_fldHandle, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2 (RuntimeObject* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602 (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* ___0_x, Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* ___1_y, const RuntimeMethod* method) ;
+inline RuntimeObject* Enumerable_Empty_TisString_t_mBCB5B53D37C4DA21A03B6730942638F3E389DD63_inline (const RuntimeMethod* method)
+{
+	return ((  RuntimeObject* (*) (const RuntimeMethod*))Enumerable_Empty_TisRuntimeObject_mA90CDE158774C34A28C07CEEA9E9EA2A61618238_gshared_inline)(method);
+}
+inline void Func_2__ctor_mC610ADA16AE9707CDBF3F59941D5F7D7890FA939 (Func_2_tC1B10E6814D157530665B3AD8BD80C5DF62FCC75* __this, RuntimeObject* ___0_object, intptr_t ___1_method, const RuntimeMethod* method)
+{
+	((  void (*) (Func_2_tC1B10E6814D157530665B3AD8BD80C5DF62FCC75*, RuntimeObject*, intptr_t, const RuntimeMethod*))Func_2__ctor_m13C0A7F33154D861E2A041B52E88461832DA1697_gshared)(__this, ___0_object, ___1_method, method);
+}
+inline RuntimeObject* Enumerable_Where_TisTile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67_m2F5ED6D877948EA972AF2941B3295664E751DAD1 (RuntimeObject* ___0_source, Func_2_tC1B10E6814D157530665B3AD8BD80C5DF62FCC75* ___1_predicate, const RuntimeMethod* method)
+{
+	return ((  RuntimeObject* (*) (RuntimeObject*, Func_2_tC1B10E6814D157530665B3AD8BD80C5DF62FCC75*, const RuntimeMethod*))Enumerable_Where_TisRuntimeObject_m5DAF16724887B42DDBBF391C7F375749E8AA4AD7_gshared)(___0_source, ___1_predicate, method);
+}
+inline void Func_2__ctor_mE009F7A8436703740B86BD268DE8EBC0EE21E508 (Func_2_tB3AF949DDCE1592AFD08CDFDB2C82076EF4495A8* __this, RuntimeObject* ___0_object, intptr_t ___1_method, const RuntimeMethod* method)
+{
+	((  void (*) (Func_2_tB3AF949DDCE1592AFD08CDFDB2C82076EF4495A8*, RuntimeObject*, intptr_t, const RuntimeMethod*))Func_2__ctor_m7F8A01C0B02BC1D4063F4EB1E817F7A48562A398_gshared)(__this, ___0_object, ___1_method, method);
+}
+inline RuntimeObject* Enumerable_Select_TisTile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67_TisString_t_mCCDC93B857BD82926D219D4C99DAEF54F2233F06 (RuntimeObject* ___0_source, Func_2_tB3AF949DDCE1592AFD08CDFDB2C82076EF4495A8* ___1_selector, const RuntimeMethod* method)
+{
+	return ((  RuntimeObject* (*) (RuntimeObject*, Func_2_tB3AF949DDCE1592AFD08CDFDB2C82076EF4495A8*, const RuntimeMethod*))Enumerable_Select_TisRuntimeObject_TisRuntimeObject_m67C538A5EBF57C4844107A8EF25DB2CAAFBAF8FB_gshared)(___0_source, ___1_selector, method);
+}
+inline void Dictionary_2_Clear_m1CC8AEF98BB2624D8C2FA63F6739F892271DFC84 (Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900* __this, const RuntimeMethod* method)
+{
+	((  void (*) (Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900*, const RuntimeMethod*))Dictionary_2_Clear_mCFB5EA7351D5860D2B91592B91A84CA265A41433_gshared)(__this, method);
+}
+inline void Dictionary_2_Clear_m841DBE29811833266CC127714688998A50D5F7CD (Dictionary_2_t5C8F46F5D57502270DD9E1DA8303B23C7FE85588* __this, const RuntimeMethod* method)
+{
+	((  void (*) (Dictionary_2_t5C8F46F5D57502270DD9E1DA8303B23C7FE85588*, const RuntimeMethod*))Dictionary_2_Clear_m931E25EF2557C3A386E4B9DC8D8212B7D9D3F5AE_gshared)(__this, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605 (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* ___0_x, Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* ___1_y, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SULog_Warn_m1EA0A6F04845F06AD7CBCEB8E788FEEEF143BE4F (String_t* ___0_msg, int32_t ___1_channel, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* Int32_ToString_m030E01C24E294D6762FB0B6F37CB541581F55CA5 (int32_t* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileData__ctor_mBC4A31FCECE66705FC48AC56F63E53C8DF8FB281 (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, String_t* ___0_tileId, const RuntimeMethod* method) ;
+inline void Dictionary_2_set_Item_mD7E6EE34109FD8FB8E6CA361D32BE025A082A450 (Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900* __this, String_t* ___0_key, TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* ___1_value, const RuntimeMethod* method)
+{
+	((  void (*) (Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900*, String_t*, TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A*, const RuntimeMethod*))Dictionary_2_set_Item_m1A840355E8EDAECEA9D0C6F5E51B248FAA449CBD_gshared)(__this, ___0_key, ___1_value, method);
+}
+inline void Dictionary_2_set_Item_m038480C0EC13713DBD89A53BE69FF0359501B4C2 (Dictionary_2_t5C8F46F5D57502270DD9E1DA8303B23C7FE85588* __this, String_t* ___0_key, int32_t ___1_value, const RuntimeMethod* method)
+{
+	((  void (*) (Dictionary_2_t5C8F46F5D57502270DD9E1DA8303B23C7FE85588*, String_t*, int32_t, const RuntimeMethod*))Dictionary_2_set_Item_m72CC2F1213D1C1B8ABEDE31082D07B67EC873B13_gshared)(__this, ___0_key, ___1_value, method);
+}
+inline int32_t Dictionary_2_get_Count_mB7EA7647B176F301A3E292AF8558671A93430B68 (Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900* __this, const RuntimeMethod* method)
+{
+	return ((  int32_t (*) (Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900*, const RuntimeMethod*))Dictionary_2_get_Count_m4DDA9442C238A443489115E22B026AD366851549_gshared)(__this, method);
+}
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t Hexasphere_get_numDivisions_m2433897045B687D3469512DAAF274A10D82614DC_inline (Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* String_Format_mFB7DA489BD99F4670881FF50EC017BFB0A5C0987 (String_t* ___0_format, RuntimeObject* ___1_arg0, RuntimeObject* ___2_arg1, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SULog_Info_m4F0F76BC192792291ABFF31712DB6F83FD36C8D9 (String_t* ___0_msg, int32_t ___1_channel, const RuntimeMethod* method) ;
+inline bool Dictionary_2_TryGetValue_m216A34326D3B7BF79ABF0F08D5C9673D88DBA854 (Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900* __this, String_t* ___0_key, TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A** ___1_value, const RuntimeMethod* method)
+{
+	return ((  bool (*) (Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900*, String_t*, TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A**, const RuntimeMethod*))Dictionary_2_TryGetValue_mD15380A4ED7CDEE99EA45881577D26BA9CE1B849_gshared)(__this, ___0_key, ___1_value, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileSelectedEvent__ctor_m384FCDC55E0B04067F7ADF052C4C6D756D403C17 (TileSelectedEvent_t8669A0F7C42087F2631BEF3F654EB04362AC9CD7* __this, const RuntimeMethod* method) ;
+inline void EventBus_Publish_TisTileSelectedEvent_t8669A0F7C42087F2631BEF3F654EB04362AC9CD7_mDB902E268D4D81A22161830D89D95C6B00F288DD (TileSelectedEvent_t8669A0F7C42087F2631BEF3F654EB04362AC9CD7* ___0_evt, const RuntimeMethod* method)
+{
+	((  void (*) (TileSelectedEvent_t8669A0F7C42087F2631BEF3F654EB04362AC9CD7*, const RuntimeMethod*))EventBus_Publish_TisRuntimeObject_mB7AA04208004390A25C200E40136DB1876C07724_gshared)(___0_evt, method);
+}
+inline bool Dictionary_2_TryGetValue_m835BB1E6EA8A8BF1242B51E28FD65B43FEF68E2A (Dictionary_2_t5C8F46F5D57502270DD9E1DA8303B23C7FE85588* __this, String_t* ___0_key, int32_t* ___1_value, const RuntimeMethod* method)
+{
+	return ((  bool (*) (Dictionary_2_t5C8F46F5D57502270DD9E1DA8303B23C7FE85588*, String_t*, int32_t*, const RuntimeMethod*))Dictionary_2_TryGetValue_m4B8EE45640C70BBFD6F3EFF1040983404C098342_gshared)(__this, ___0_key, ___1_value, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool Hexasphere_SetTileColor_mA72EA2917D0547FE309D3ACCA0A302DC252801F7 (Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* __this, int32_t ___0_tileIndex, Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ___1_color, bool ___2_temporary, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool Hexasphere_SetTileExtrudeAmount_m0FAE1815E768582D6AEC10A64158B98DEA7D744F (Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* __this, int32_t ___0_tileIndex, float ___1_extrudeAmount, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Hexasphere_set_style_mB20CF735DE7005949D47FE28B7FA4AC59CD5284A (Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* __this, int32_t ___0_value, const RuntimeMethod* method) ;
+inline void Dictionary_2__ctor_m3E79BA218E1627FF6E687B6923F6D48AD8582CF5 (Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900* __this, const RuntimeMethod* method)
+{
+	((  void (*) (Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900*, const RuntimeMethod*))Dictionary_2__ctor_m5B32FBC624618211EB461D59CFBB10E987FD1329_gshared)(__this, method);
+}
+inline void Dictionary_2__ctor_mA3C3860EDE2CDD08BBD68C389377BC89D029D968 (Dictionary_2_t5C8F46F5D57502270DD9E1DA8303B23C7FE85588* __this, const RuntimeMethod* method)
+{
+	((  void (*) (Dictionary_2_t5C8F46F5D57502270DD9E1DA8303B23C7FE85588*, const RuntimeMethod*))Dictionary_2__ctor_m517E7F9D104FEAE6646EABDDC9C852510E86077C_gshared)(__this, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MonoBehaviour__ctor_m592DB0105CA0BC97AA1C5F4AD27B12D68A3B7C1E (MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CU3Ec__ctor_m016D35029A89AFA307DD51D9F4B69567DE1A2478 (U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool Tile_get_isPentagon_m6671EE5DEDEC2C5765606BAA7BBD01D187F13523 (Tile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* HexasphereManager_get_PentagonTileIds_mB993125ED6DF072C19D921A31F48F5ACAF2D1202 (HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* HexasphereManager_GetTile_m1CAACD6CE125BEF890B61FA12628A974F18D05CF (HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* __this, String_t* ___0_tileId, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void TileData_set_IsLandmark_m501882A1819F87071A239D0AF6E449BE312EC319_inline (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, bool ___0_value, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void TileData_set_State_m41D6FA690A61A9BE5879AEF5B44B103E11484CA7_inline (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, int32_t ___0_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* String_Format_mA8DBB4C2516B9723C5A41E6CB1E2FAF4BBE96DD8 (String_t* ___0_format, RuntimeObject* ___1_arg0, const RuntimeMethod* method) ;
+inline int32_t List_1_get_Count_mC7A9070AFE9070AE414B124B3FC850C94DB8D282_inline (List_1_tBD1C7A6DDCC7BB4E36CB06B8F1176E9C8A97702E* __this, const RuntimeMethod* method)
+{
+	return ((  int32_t (*) (List_1_tBD1C7A6DDCC7BB4E36CB06B8F1176E9C8A97702E*, const RuntimeMethod*))List_1_get_Count_m4407E4C389F22B8CEC282C15D56516658746C383_gshared_inline)(__this, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 LeanGesture_GetScaledDelta_m119DBF21A9CABFF6032359D86BE08ADC8913192B (List_1_tBD1C7A6DDCC7BB4E36CB06B8F1176E9C8A97702E* ___0_fingers, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Mathf_Clamp_mEB9AEA827D27D20FCC787F7375156AF46BB12BBF_inline (float ___0_value, float ___1_min, float ___2_max, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float LeanGesture_GetPinchRatio_m503AEECC69D1D09213ACBE8B1CF8421540237EC3 (List_1_tBD1C7A6DDCC7BB4E36CB06B8F1176E9C8A97702E* ___0_fingers, float ___1_wheelSensitivity, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector3_get_zero_m0C1249C3F25B1C70EAD3CC8B31259975A457AE39_inline (const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Transform_get_position_m69CD5FA214FDAE7BB701552943674846C220FDE1 (Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector3_op_Addition_m78C0EC70CB66E8DCAC225743D82B268DAEE92067_inline (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_a, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___1_b, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 Quaternion_Euler_m9262AB29E3E9CE94EF71051F38A28E82AEC73F90_inline (float ___0_x, float ___1_y, float ___2_z, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371 (Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void Vector3__ctor_m376936E6B999EF1ECBE57D990A386303E2283DE0_inline (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2* __this, float ___0_x, float ___1_y, float ___2_z, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Quaternion_op_Multiply_mE1EBA73F9173432B50F8F17CE8190C5A7986FB8C (Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 ___0_rotation, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___1_point, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Transform_set_position_mA1A817124BB41B685043DED2A9BA48CDF37C4156 (Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* __this, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Transform_LookAt_mFEF7353E4CAEB85D5F7CEEF9276C3B8D6E314C6C (Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* __this, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_worldPosition, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void PlanetController_set_CurrentPlanet_m8DFB88588759CF05746F22DA4A4F03A6F90776B0_inline (PlanetController_t98B98D4212B2BD0C9F16BBA07BEEA0934DD2E93D* __this, PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* ___0_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void PlanetController_SpawnModel_m43E8C9901756F56ECB9A4DA5A2A5BE9FE4A9EBA2 (PlanetController_t98B98D4212B2BD0C9F16BBA07BEEA0934DD2E93D* __this, PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* ___0_planet, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t PlanetDefinition_get_TileCount_m315D304A1924B15A44D531F67E13DA30D46D4B6E_inline (PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void HexasphereManager_Generate_m798E3E6FE9FCC0FD986A9C06BDF4C5EB26B8142B (HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* __this, int32_t ___0_tileCount, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandmarkService_MarkLandmarks_m7BEBD807E1EB00D48CDD4AE39D69651FF4F65017 (LandmarkService_t2DD86DC59445B3BFE0F7F20764DD609289137254* __this, HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* ___0_hexasphere, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR RuntimeObject* HexasphereManager_get_Tiles_mF734D1A1D6883CCA033771EA5E3ECE0496934D87_inline (HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileColorizer_Refresh_mE98CA3A02E0A7A0458F68C1BD271244260151AA8 (TileColorizer_tA9064ACBB2D03D01390CA92E77EC11178C734F58* __this, RuntimeObject* ___0_tiles, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void PlanetLoadedEvent__ctor_mAF6651E8B2315717DD0F21EB20C864F7C3C184CC (PlanetLoadedEvent_tA3765940816DE98DCA14FE62D5C14BABFD749624* __this, const RuntimeMethod* method) ;
+inline void EventBus_Publish_TisPlanetLoadedEvent_tA3765940816DE98DCA14FE62D5C14BABFD749624_mA56367E579D06438AAC41E7DDB5E7EF006025DDE (PlanetLoadedEvent_tA3765940816DE98DCA14FE62D5C14BABFD749624* ___0_evt, const RuntimeMethod* method)
+{
+	((  void (*) (PlanetLoadedEvent_tA3765940816DE98DCA14FE62D5C14BABFD749624*, const RuntimeMethod*))EventBus_Publish_TisRuntimeObject_mB7AA04208004390A25C200E40136DB1876C07724_gshared)(___0_evt, method);
+}
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* PlanetDefinition_get_DisplayName_m9B90C34BBDD2E66775A13EBF6FA084E31173B0A4_inline (PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* String_Concat_m8855A6DE10F84DA7F4EC113CADDB59873A25573B (String_t* ___0_str0, String_t* ___1_str1, String_t* ___2_str2, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* PlanetDefinition_get_ModelPrefab_m7015314C62AB28581E0FC93C0F70054FAA51C51D_inline (PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 Quaternion_get_identity_m7E701AE095ED10FD5EA0B50ABCFDE2EEFF2173A5_inline (const RuntimeMethod* method) ;
+inline GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* Object_Instantiate_TisGameObject_t76FEDD663AB33C991A9C9A23129337651094216F_mD136E37F696C00A3A1D4F65724ACAE903E385181 (GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ___0_original, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___1_position, Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 ___2_rotation, Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ___3_parent, const RuntimeMethod* method)
+{
+	return ((  GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* (*) (GameObject_t76FEDD663AB33C991A9C9A23129337651094216F*, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2, Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974, Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1*, const RuntimeMethod*))Object_Instantiate_TisRuntimeObject_m5F38AE6B74636F569647D545E365C5579E5F59CE_gshared)(___0_original, ___1_position, ___2_rotation, ___3_parent, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileColorizer_Apply_m40D0319101F92E13A25B639E0C8E71920BB80E85 (TileColorizer_tA9064ACBB2D03D01390CA92E77EC11178C734F58* __this, TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* ___0_tile, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t TileData_get_State_mA1728DEA54FD632BEAEC26F74BDE591DB737E62A_inline (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* TileData_get_TileId_m18EFA30B16870BDE2751E871927869366925497E_inline (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void HexasphereManager_SetTileColor_m8B2B3A4BBD5C49E1F627587D8423BFB7D863B258 (HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* __this, String_t* ___0_tileId, Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ___1_color, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Type_t* Object_GetType_mE10A8FC1E57F3DF29972CCBC026C2DC3942263B3 (RuntimeObject* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* String_Concat_m093934F71A9B351911EE46311674ED463B180006 (String_t* ___0_str0, String_t* ___1_str1, String_t* ___2_str2, String_t* ___3_str3, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB (RuntimeObject* ___0_message, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void Color__ctor_mCD6889CDE39F18704CD6EA8E2EFBFA48BA3E13B0_inline (Color_tD001788D726C3A7F1379BEED0260B9591F440C1F* __this, float ___0_r, float ___1_g, float ___2_b, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileExtrusionView_Apply_m142B31AE6916A5D6A47C28C32A03648C6699AEAA (TileExtrusionView_tDD2454E77A3D6A1A8E13B1083D9547D9CB4122C9* __this, TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* ___0_tile, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t TileData_get_BuildLevel_mEEBB93D2AFFDD1B9D06C2A9C8E055947B8358DDD_inline (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_MaxBuildLevel_m332B5ADA4C8A582EA81523FC9FA32E6D94A2C610_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Mathf_Clamp01_mA7E048DBDA832D399A581BE4D6DED9FA44CE0F14_inline (float ___0_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void HexasphereManager_SetTileExtrudeAmount_m5C0063E085E629B870B2DDE4EA14F4FF99855917 (HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* __this, String_t* ___0_tileId, float ___1_amount, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* HexasphereManager_get_PluginHexasphere_m37CAAE2F6C9100B251C76C567CF65E6C49F0151D_inline (HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileEvent__ctor_mDC8E605DD8506F3DC6B0981BD02F34754D09E89F (TileEvent_t3392B77898A6708FA7D695CF027BB60332242782* __this, RuntimeObject* ___0_object, intptr_t ___1_method, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Hexasphere_add_OnTileClick_mBFBFB76D3017B9E24967A8B076759ACFC408FF4A (Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* __this, TileEvent_t3392B77898A6708FA7D695CF027BB60332242782* ___0_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Hexasphere_remove_OnTileClick_m4E0425855F1AC2C083B9C9B059485BCA93CCBE3F (Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* __this, TileEvent_t3392B77898A6708FA7D695CF027BB60332242782* ___0_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void HexasphereManager_SelectTile_m92E6F926C43D4A904E2095630DF5D9900A1D6B2D (HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* __this, String_t* ___0_tileId, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 Quaternion_Internal_FromEulerRad_mD0C4C0EFE1D70EC0EA4A92B11F1A4D5B0A134E49 (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2* ___0_euler, const RuntimeMethod* method) ;
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 132007
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A UnitySourceGeneratedAssemblyMonoScriptTypes_v1_Get_m654F1FF54A6B4584B748598F4DA1F6BD27997E51 (const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&U3CPrivateImplementationDetailsU3E_t046CE544964706492C55E46839F7ACEA2B780648____301071F95E1E0170CC668C030E05DA716F619ACFCF85F4C32133444CEA0982F3_FieldInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&U3CPrivateImplementationDetailsU3E_t046CE544964706492C55E46839F7ACEA2B780648____344CF8E98CA9F87C1664BF1B37380AD00F2491621D7D962C56880C684337E5C5_FieldInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	{
+		il2cpp_codegen_initobj((&V_0), sizeof(MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A));
+		ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* L_0 = (ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)SZArrayNew(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031_il2cpp_TypeInfo_var, (uint32_t)((int32_t)467));
+		ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* L_1 = L_0;
+		RuntimeFieldHandle_t6E4C45B6D2EA12FC99185805A7E77527899B25C5 L_2 = { reinterpret_cast<intptr_t> (U3CPrivateImplementationDetailsU3E_t046CE544964706492C55E46839F7ACEA2B780648____344CF8E98CA9F87C1664BF1B37380AD00F2491621D7D962C56880C684337E5C5_FieldInfo_var) };
+		RuntimeHelpers_InitializeArray_m751372AA3F24FBF6DA9B9D687CBFA2DE436CAB9B((RuntimeArray*)L_1, L_2, NULL);
+		(&V_0)->___FilePathsData = L_1;
+		Il2CppCodeGenWriteBarrier((void**)(&(&V_0)->___FilePathsData), (void*)L_1);
+		ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* L_3 = (ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)SZArrayNew(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031_il2cpp_TypeInfo_var, (uint32_t)((int32_t)522));
+		ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* L_4 = L_3;
+		RuntimeFieldHandle_t6E4C45B6D2EA12FC99185805A7E77527899B25C5 L_5 = { reinterpret_cast<intptr_t> (U3CPrivateImplementationDetailsU3E_t046CE544964706492C55E46839F7ACEA2B780648____301071F95E1E0170CC668C030E05DA716F619ACFCF85F4C32133444CEA0982F3_FieldInfo_var) };
+		RuntimeHelpers_InitializeArray_m751372AA3F24FBF6DA9B9D687CBFA2DE436CAB9B((RuntimeArray*)L_4, L_5, NULL);
+		(&V_0)->___TypesData = L_4;
+		Il2CppCodeGenWriteBarrier((void**)(&(&V_0)->___TypesData), (void*)L_4);
+		(&V_0)->___TotalFiles = 8;
+		(&V_0)->___TotalTypes = ((int32_t)12);
+		(&V_0)->___IsEditorOnly = (bool)0;
+		MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A L_6 = V_0;
+		return L_6;
+	}
+}
+// Method Definition Index: 132008
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void UnitySourceGeneratedAssemblyMonoScriptTypes_v1__ctor_m41010A50C5602C358289D89951C23DBDB109C07C (UnitySourceGeneratedAssemblyMonoScriptTypes_v1_t73E3BED51B3AF273F7F3B153157746806A916467* __this, const RuntimeMethod* method) 
+{
+	{
+		Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2(__this, NULL);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+IL2CPP_EXTERN_C void MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A_marshal_pinvoke(const MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A& unmarshaled, MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A_marshaled_pinvoke& marshaled)
+{
+	marshaled.___FilePathsData = il2cpp_codegen_com_marshal_safe_array(IL2CPP_VT_I1, unmarshaled.___FilePathsData);
+	marshaled.___TypesData = il2cpp_codegen_com_marshal_safe_array(IL2CPP_VT_I1, unmarshaled.___TypesData);
+	marshaled.___TotalTypes = unmarshaled.___TotalTypes;
+	marshaled.___TotalFiles = unmarshaled.___TotalFiles;
+	marshaled.___IsEditorOnly = static_cast<int32_t>(unmarshaled.___IsEditorOnly);
+}
+IL2CPP_EXTERN_C void MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A_marshal_pinvoke_back(const MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A_marshaled_pinvoke& marshaled, MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A& unmarshaled)
+{
+	unmarshaled.___FilePathsData = (ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)il2cpp_codegen_com_marshal_safe_array_result(IL2CPP_VT_I1, il2cpp_defaults.byte_class, marshaled.___FilePathsData);
+	Il2CppCodeGenWriteBarrier((void**)(&unmarshaled.___FilePathsData), (void*)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)il2cpp_codegen_com_marshal_safe_array_result(IL2CPP_VT_I1, il2cpp_defaults.byte_class, marshaled.___FilePathsData));
+	unmarshaled.___TypesData = (ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)il2cpp_codegen_com_marshal_safe_array_result(IL2CPP_VT_I1, il2cpp_defaults.byte_class, marshaled.___TypesData);
+	Il2CppCodeGenWriteBarrier((void**)(&unmarshaled.___TypesData), (void*)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)il2cpp_codegen_com_marshal_safe_array_result(IL2CPP_VT_I1, il2cpp_defaults.byte_class, marshaled.___TypesData));
+	int32_t unmarshaledTotalTypes_temp_2 = 0;
+	unmarshaledTotalTypes_temp_2 = marshaled.___TotalTypes;
+	unmarshaled.___TotalTypes = unmarshaledTotalTypes_temp_2;
+	int32_t unmarshaledTotalFiles_temp_3 = 0;
+	unmarshaledTotalFiles_temp_3 = marshaled.___TotalFiles;
+	unmarshaled.___TotalFiles = unmarshaledTotalFiles_temp_3;
+	bool unmarshaledIsEditorOnly_temp_4 = false;
+	unmarshaledIsEditorOnly_temp_4 = static_cast<bool>(marshaled.___IsEditorOnly);
+	unmarshaled.___IsEditorOnly = unmarshaledIsEditorOnly_temp_4;
+}
+IL2CPP_EXTERN_C void MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A_marshal_pinvoke_cleanup(MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A_marshaled_pinvoke& marshaled)
+{
+	il2cpp_codegen_com_destroy_safe_array(marshaled.___FilePathsData);
+	marshaled.___FilePathsData = NULL;
+	il2cpp_codegen_com_destroy_safe_array(marshaled.___TypesData);
+	marshaled.___TypesData = NULL;
+}
+IL2CPP_EXTERN_C void MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A_marshal_com(const MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A& unmarshaled, MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A_marshaled_com& marshaled)
+{
+	marshaled.___FilePathsData = il2cpp_codegen_com_marshal_safe_array(IL2CPP_VT_I1, unmarshaled.___FilePathsData);
+	marshaled.___TypesData = il2cpp_codegen_com_marshal_safe_array(IL2CPP_VT_I1, unmarshaled.___TypesData);
+	marshaled.___TotalTypes = unmarshaled.___TotalTypes;
+	marshaled.___TotalFiles = unmarshaled.___TotalFiles;
+	marshaled.___IsEditorOnly = static_cast<int32_t>(unmarshaled.___IsEditorOnly);
+}
+IL2CPP_EXTERN_C void MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A_marshal_com_back(const MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A_marshaled_com& marshaled, MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A& unmarshaled)
+{
+	unmarshaled.___FilePathsData = (ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)il2cpp_codegen_com_marshal_safe_array_result(IL2CPP_VT_I1, il2cpp_defaults.byte_class, marshaled.___FilePathsData);
+	Il2CppCodeGenWriteBarrier((void**)(&unmarshaled.___FilePathsData), (void*)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)il2cpp_codegen_com_marshal_safe_array_result(IL2CPP_VT_I1, il2cpp_defaults.byte_class, marshaled.___FilePathsData));
+	unmarshaled.___TypesData = (ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)il2cpp_codegen_com_marshal_safe_array_result(IL2CPP_VT_I1, il2cpp_defaults.byte_class, marshaled.___TypesData);
+	Il2CppCodeGenWriteBarrier((void**)(&unmarshaled.___TypesData), (void*)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)il2cpp_codegen_com_marshal_safe_array_result(IL2CPP_VT_I1, il2cpp_defaults.byte_class, marshaled.___TypesData));
+	int32_t unmarshaledTotalTypes_temp_2 = 0;
+	unmarshaledTotalTypes_temp_2 = marshaled.___TotalTypes;
+	unmarshaled.___TotalTypes = unmarshaledTotalTypes_temp_2;
+	int32_t unmarshaledTotalFiles_temp_3 = 0;
+	unmarshaledTotalFiles_temp_3 = marshaled.___TotalFiles;
+	unmarshaled.___TotalFiles = unmarshaledTotalFiles_temp_3;
+	bool unmarshaledIsEditorOnly_temp_4 = false;
+	unmarshaledIsEditorOnly_temp_4 = static_cast<bool>(marshaled.___IsEditorOnly);
+	unmarshaled.___IsEditorOnly = unmarshaledIsEditorOnly_temp_4;
+}
+IL2CPP_EXTERN_C void MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A_marshal_com_cleanup(MonoScriptData_t981D6C86D79C8789FE2DB157A422AAF96CC2953A_marshaled_com& marshaled)
+{
+	il2cpp_codegen_com_destroy_safe_array(marshaled.___FilePathsData);
+	marshaled.___FilePathsData = NULL;
+	il2cpp_codegen_com_destroy_safe_array(marshaled.___TypesData);
+	marshaled.___TypesData = NULL;
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 132009
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileSelectedEvent__ctor_m384FCDC55E0B04067F7ADF052C4C6D756D403C17 (TileSelectedEvent_t8669A0F7C42087F2631BEF3F654EB04362AC9CD7* __this, const RuntimeMethod* method) 
+{
+	{
+		Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2(__this, NULL);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 132010
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void BuildItemRequestedEvent__ctor_m05ABF8D6CCBB674E95494DAE9066E30891095C6F (BuildItemRequestedEvent_tF173E11650039A6ADDF57D43B816D8679CD65810* __this, const RuntimeMethod* method) 
+{
+	{
+		Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2(__this, NULL);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 132011
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileSellRequestedEvent__ctor_m38B4C7917162660C436A6410D37DB9B3EF37CEFF (TileSellRequestedEvent_t7C63DA7EA22FC3801153BF730D1D193AF8929B25* __this, const RuntimeMethod* method) 
+{
+	{
+		Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2(__this, NULL);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 132012
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* HexasphereManager_get_Tiles_mF734D1A1D6883CCA033771EA5E3ECE0496934D87 (HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:23>
+		Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900* L_0 = __this->____tiles;
+		return L_0;
+	}
+}
+// Method Definition Index: 132013
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* HexasphereManager_get_PluginHexasphere_m37CAAE2F6C9100B251C76C567CF65E6C49F0151D (HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:25>
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_0 = __this->____hexasphere;
+		return L_0;
+	}
+}
+// Method Definition Index: 132014
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* HexasphereManager_get_PentagonTileIds_mB993125ED6DF072C19D921A31F48F5ACAF2D1202 (HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Enumerable_Empty_TisString_t_mBCB5B53D37C4DA21A03B6730942638F3E389DD63_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Enumerable_Select_TisTile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67_TisString_t_mCCDC93B857BD82926D219D4C99DAEF54F2233F06_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Enumerable_Where_TisTile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67_m2F5ED6D877948EA972AF2941B3295664E751DAD1_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Func_2_tB3AF949DDCE1592AFD08CDFDB2C82076EF4495A8_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Func_2_tC1B10E6814D157530665B3AD8BD80C5DF62FCC75_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&U3CU3Ec_U3Cget_PentagonTileIdsU3Eb__8_0_mB74000289558BDBFCD010F1139CEC2C610B7E3DD_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&U3CU3Ec_U3Cget_PentagonTileIdsU3Eb__8_1_mB957B24FE1FF83E15C4C6BA04A3D93E2F751F032_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Func_2_tC1B10E6814D157530665B3AD8BD80C5DF62FCC75* G_B5_0 = NULL;
+	TileU5BU5D_t80464C127442B698EA2C216209F42194F7DA7806* G_B5_1 = NULL;
+	Func_2_tC1B10E6814D157530665B3AD8BD80C5DF62FCC75* G_B4_0 = NULL;
+	TileU5BU5D_t80464C127442B698EA2C216209F42194F7DA7806* G_B4_1 = NULL;
+	Func_2_tB3AF949DDCE1592AFD08CDFDB2C82076EF4495A8* G_B7_0 = NULL;
+	RuntimeObject* G_B7_1 = NULL;
+	Func_2_tB3AF949DDCE1592AFD08CDFDB2C82076EF4495A8* G_B6_0 = NULL;
+	RuntimeObject* G_B6_1 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:28>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:29>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:30>
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_0 = __this->____hexasphere;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_1;
+		L_1 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_0, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_1)
+		{
+			goto IL_001b;
+		}
+	}
+	{
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_2 = __this->____hexasphere;
+		NullCheck(L_2);
+		TileU5BU5D_t80464C127442B698EA2C216209F42194F7DA7806* L_3 = L_2->___tiles;
+		if (L_3)
+		{
+			goto IL_0021;
+		}
+	}
+
+IL_001b:
+	{
+		RuntimeObject* L_4;
+		L_4 = Enumerable_Empty_TisString_t_mBCB5B53D37C4DA21A03B6730942638F3E389DD63_inline(Enumerable_Empty_TisString_t_mBCB5B53D37C4DA21A03B6730942638F3E389DD63_RuntimeMethod_var);
+		return L_4;
+	}
+
+IL_0021:
+	{
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_5 = __this->____hexasphere;
+		NullCheck(L_5);
+		TileU5BU5D_t80464C127442B698EA2C216209F42194F7DA7806* L_6 = L_5->___tiles;
+		il2cpp_codegen_runtime_class_init_inline(U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_il2cpp_TypeInfo_var);
+		Func_2_tC1B10E6814D157530665B3AD8BD80C5DF62FCC75* L_7 = ((U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_il2cpp_TypeInfo_var))->___U3CU3E9__8_0;
+		Func_2_tC1B10E6814D157530665B3AD8BD80C5DF62FCC75* L_8 = L_7;
+		if (L_8)
+		{
+			G_B5_0 = L_8;
+			G_B5_1 = L_6;
+			goto IL_004b;
+		}
+		G_B4_0 = L_8;
+		G_B4_1 = L_6;
+	}
+	{
+		il2cpp_codegen_runtime_class_init_inline(U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_il2cpp_TypeInfo_var);
+		U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD* L_9 = ((U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_il2cpp_TypeInfo_var))->___U3CU3E9;
+		Func_2_tC1B10E6814D157530665B3AD8BD80C5DF62FCC75* L_10 = (Func_2_tC1B10E6814D157530665B3AD8BD80C5DF62FCC75*)il2cpp_codegen_object_new(Func_2_tC1B10E6814D157530665B3AD8BD80C5DF62FCC75_il2cpp_TypeInfo_var);
+		Func_2__ctor_mC610ADA16AE9707CDBF3F59941D5F7D7890FA939(L_10, L_9, (intptr_t)((void*)U3CU3Ec_U3Cget_PentagonTileIdsU3Eb__8_0_mB74000289558BDBFCD010F1139CEC2C610B7E3DD_RuntimeMethod_var), NULL);
+		Func_2_tC1B10E6814D157530665B3AD8BD80C5DF62FCC75* L_11 = L_10;
+		((U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_il2cpp_TypeInfo_var))->___U3CU3E9__8_0 = L_11;
+		Il2CppCodeGenWriteBarrier((void**)(&((U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_il2cpp_TypeInfo_var))->___U3CU3E9__8_0), (void*)L_11);
+		G_B5_0 = L_11;
+		G_B5_1 = G_B4_1;
+	}
+
+IL_004b:
+	{
+		RuntimeObject* L_12;
+		L_12 = Enumerable_Where_TisTile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67_m2F5ED6D877948EA972AF2941B3295664E751DAD1((RuntimeObject*)G_B5_1, G_B5_0, Enumerable_Where_TisTile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67_m2F5ED6D877948EA972AF2941B3295664E751DAD1_RuntimeMethod_var);
+		il2cpp_codegen_runtime_class_init_inline(U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_il2cpp_TypeInfo_var);
+		Func_2_tB3AF949DDCE1592AFD08CDFDB2C82076EF4495A8* L_13 = ((U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_il2cpp_TypeInfo_var))->___U3CU3E9__8_1;
+		Func_2_tB3AF949DDCE1592AFD08CDFDB2C82076EF4495A8* L_14 = L_13;
+		if (L_14)
+		{
+			G_B7_0 = L_14;
+			G_B7_1 = L_12;
+			goto IL_006f;
+		}
+		G_B6_0 = L_14;
+		G_B6_1 = L_12;
+	}
+	{
+		il2cpp_codegen_runtime_class_init_inline(U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_il2cpp_TypeInfo_var);
+		U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD* L_15 = ((U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_il2cpp_TypeInfo_var))->___U3CU3E9;
+		Func_2_tB3AF949DDCE1592AFD08CDFDB2C82076EF4495A8* L_16 = (Func_2_tB3AF949DDCE1592AFD08CDFDB2C82076EF4495A8*)il2cpp_codegen_object_new(Func_2_tB3AF949DDCE1592AFD08CDFDB2C82076EF4495A8_il2cpp_TypeInfo_var);
+		Func_2__ctor_mE009F7A8436703740B86BD268DE8EBC0EE21E508(L_16, L_15, (intptr_t)((void*)U3CU3Ec_U3Cget_PentagonTileIdsU3Eb__8_1_mB957B24FE1FF83E15C4C6BA04A3D93E2F751F032_RuntimeMethod_var), NULL);
+		Func_2_tB3AF949DDCE1592AFD08CDFDB2C82076EF4495A8* L_17 = L_16;
+		((U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_il2cpp_TypeInfo_var))->___U3CU3E9__8_1 = L_17;
+		Il2CppCodeGenWriteBarrier((void**)(&((U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_il2cpp_TypeInfo_var))->___U3CU3E9__8_1), (void*)L_17);
+		G_B7_0 = L_17;
+		G_B7_1 = G_B6_1;
+	}
+
+IL_006f:
+	{
+		RuntimeObject* L_18;
+		L_18 = Enumerable_Select_TisTile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67_TisString_t_mCCDC93B857BD82926D219D4C99DAEF54F2233F06(G_B7_1, G_B7_0, Enumerable_Select_TisTile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67_TisString_t_mCCDC93B857BD82926D219D4C99DAEF54F2233F06_RuntimeMethod_var);
+		return L_18;
+	}
+}
+// Method Definition Index: 132015
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void HexasphereManager_Generate_m798E3E6FE9FCC0FD986A9C06BDF4C5EB26B8142B (HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* __this, int32_t ___0_tileCount, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Dictionary_2_Clear_m1CC8AEF98BB2624D8C2FA63F6739F892271DFC84_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Dictionary_2_Clear_m841DBE29811833266CC127714688998A50D5F7CD_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Dictionary_2_get_Count_mB7EA7647B176F301A3E292AF8558671A93430B68_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Dictionary_2_set_Item_m038480C0EC13713DBD89A53BE69FF0359501B4C2_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Dictionary_2_set_Item_mD7E6EE34109FD8FB8E6CA361D32BE025A082A450_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral4AD4ED171C31CBC00F019AF65A10F63CBFC368B3);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteralE31B9D15229B3F7485D53DA64E9020B8EC987599);
+		s_Il2CppMethodInitialized = true;
+	}
+	TileU5BU5D_t80464C127442B698EA2C216209F42194F7DA7806* V_0 = NULL;
+	int32_t V_1 = 0;
+	Tile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67* V_2 = NULL;
+	String_t* V_3 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:34>
+		Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900* L_0 = __this->____tiles;
+		NullCheck(L_0);
+		Dictionary_2_Clear_m1CC8AEF98BB2624D8C2FA63F6739F892271DFC84(L_0, Dictionary_2_Clear_m1CC8AEF98BB2624D8C2FA63F6739F892271DFC84_RuntimeMethod_var);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:35>
+		Dictionary_2_t5C8F46F5D57502270DD9E1DA8303B23C7FE85588* L_1 = __this->____indexById;
+		NullCheck(L_1);
+		Dictionary_2_Clear_m841DBE29811833266CC127714688998A50D5F7CD(L_1, Dictionary_2_Clear_m841DBE29811833266CC127714688998A50D5F7CD_RuntimeMethod_var);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:37>
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_2 = __this->____hexasphere;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_3;
+		L_3 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_2, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (L_3)
+		{
+			goto IL_0031;
+		}
+	}
+	{
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_4 = __this->____hexasphere;
+		NullCheck(L_4);
+		TileU5BU5D_t80464C127442B698EA2C216209F42194F7DA7806* L_5 = L_4->___tiles;
+		if (L_5)
+		{
+			goto IL_003d;
+		}
+	}
+
+IL_0031:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:39>
+		il2cpp_codegen_runtime_class_init_inline(SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		SULog_Warn_m1EA0A6F04845F06AD7CBCEB8E788FEEEF143BE4F(_stringLiteralE31B9D15229B3F7485D53DA64E9020B8EC987599, 8, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:40>
+		return;
+	}
+
+IL_003d:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:43>
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_6 = __this->____hexasphere;
+		NullCheck(L_6);
+		TileU5BU5D_t80464C127442B698EA2C216209F42194F7DA7806* L_7 = L_6->___tiles;
+		V_0 = L_7;
+		V_1 = 0;
+		goto IL_0085;
+	}
+
+IL_004d:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:43>
+		TileU5BU5D_t80464C127442B698EA2C216209F42194F7DA7806* L_8 = V_0;
+		int32_t L_9 = V_1;
+		NullCheck(L_8);
+		int32_t L_10 = L_9;
+		Tile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67* L_11 = (L_8)->GetAt(static_cast<il2cpp_array_size_t>(L_10));
+		V_2 = L_11;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:45>
+		Tile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67* L_12 = V_2;
+		NullCheck(L_12);
+		int32_t* L_13 = (int32_t*)(&L_12->___index);
+		String_t* L_14;
+		L_14 = Int32_ToString_m030E01C24E294D6762FB0B6F37CB541581F55CA5(L_13, NULL);
+		V_3 = L_14;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:46>
+		Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900* L_15 = __this->____tiles;
+		String_t* L_16 = V_3;
+		String_t* L_17 = V_3;
+		TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* L_18 = (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A*)il2cpp_codegen_object_new(TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A_il2cpp_TypeInfo_var);
+		TileData__ctor_mBC4A31FCECE66705FC48AC56F63E53C8DF8FB281(L_18, L_17, NULL);
+		NullCheck(L_15);
+		Dictionary_2_set_Item_mD7E6EE34109FD8FB8E6CA361D32BE025A082A450(L_15, L_16, L_18, Dictionary_2_set_Item_mD7E6EE34109FD8FB8E6CA361D32BE025A082A450_RuntimeMethod_var);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:47>
+		Dictionary_2_t5C8F46F5D57502270DD9E1DA8303B23C7FE85588* L_19 = __this->____indexById;
+		String_t* L_20 = V_3;
+		Tile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67* L_21 = V_2;
+		NullCheck(L_21);
+		int32_t L_22 = L_21->___index;
+		NullCheck(L_19);
+		Dictionary_2_set_Item_m038480C0EC13713DBD89A53BE69FF0359501B4C2(L_19, L_20, L_22, Dictionary_2_set_Item_m038480C0EC13713DBD89A53BE69FF0359501B4C2_RuntimeMethod_var);
+		int32_t L_23 = V_1;
+		V_1 = ((int32_t)il2cpp_codegen_add(L_23, 1));
+	}
+
+IL_0085:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:43>
+		int32_t L_24 = V_1;
+		TileU5BU5D_t80464C127442B698EA2C216209F42194F7DA7806* L_25 = V_0;
+		NullCheck(L_25);
+		if ((((int32_t)L_24) < ((int32_t)((int32_t)(((RuntimeArray*)L_25)->max_length)))))
+		{
+			goto IL_004d;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:50>
+		Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900* L_26 = __this->____tiles;
+		NullCheck(L_26);
+		int32_t L_27;
+		L_27 = Dictionary_2_get_Count_mB7EA7647B176F301A3E292AF8558671A93430B68(L_26, Dictionary_2_get_Count_mB7EA7647B176F301A3E292AF8558671A93430B68_RuntimeMethod_var);
+		int32_t L_28 = L_27;
+		RuntimeObject* L_29 = Box(il2cpp_defaults.int32_class, &L_28);
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_30 = __this->____hexasphere;
+		NullCheck(L_30);
+		int32_t L_31;
+		L_31 = Hexasphere_get_numDivisions_m2433897045B687D3469512DAAF274A10D82614DC_inline(L_30, NULL);
+		int32_t L_32 = L_31;
+		RuntimeObject* L_33 = Box(il2cpp_defaults.int32_class, &L_32);
+		String_t* L_34;
+		L_34 = String_Format_mFB7DA489BD99F4670881FF50EC017BFB0A5C0987(_stringLiteral4AD4ED171C31CBC00F019AF65A10F63CBFC368B3, L_29, L_33, NULL);
+		il2cpp_codegen_runtime_class_init_inline(SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		SULog_Info_m4F0F76BC192792291ABFF31712DB6F83FD36C8D9(L_34, 8, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:51>
+		return;
+	}
+}
+// Method Definition Index: 132016
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* HexasphereManager_GetTile_m1CAACD6CE125BEF890B61FA12628A974F18D05CF (HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* __this, String_t* ___0_tileId, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Dictionary_2_TryGetValue_m216A34326D3B7BF79ABF0F08D5C9673D88DBA854_RuntimeMethod_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* V_0 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:54>
+		Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900* L_0 = __this->____tiles;
+		String_t* L_1 = ___0_tileId;
+		NullCheck(L_0);
+		bool L_2;
+		L_2 = Dictionary_2_TryGetValue_m216A34326D3B7BF79ABF0F08D5C9673D88DBA854(L_0, L_1, (&V_0), Dictionary_2_TryGetValue_m216A34326D3B7BF79ABF0F08D5C9673D88DBA854_RuntimeMethod_var);
+		if (L_2)
+		{
+			goto IL_0012;
+		}
+	}
+	{
+		return (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A*)NULL;
+	}
+
+IL_0012:
+	{
+		TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* L_3 = V_0;
+		return L_3;
+	}
+}
+// Method Definition Index: 132017
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void HexasphereManager_SelectTile_m92E6F926C43D4A904E2095630DF5D9900A1D6B2D (HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* __this, String_t* ___0_tileId, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Dictionary_2_TryGetValue_m216A34326D3B7BF79ABF0F08D5C9673D88DBA854_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&EventBus_Publish_TisTileSelectedEvent_t8669A0F7C42087F2631BEF3F654EB04362AC9CD7_mDB902E268D4D81A22161830D89D95C6B00F288DD_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&EventBus_tD995B8977DB6D299BE8C38F5E222C99EE6EA8B11_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&TileSelectedEvent_t8669A0F7C42087F2631BEF3F654EB04362AC9CD7_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* V_0 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:58>
+		Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900* L_0 = __this->____tiles;
+		String_t* L_1 = ___0_tileId;
+		NullCheck(L_0);
+		bool L_2;
+		L_2 = Dictionary_2_TryGetValue_m216A34326D3B7BF79ABF0F08D5C9673D88DBA854(L_0, L_1, (&V_0), Dictionary_2_TryGetValue_m216A34326D3B7BF79ABF0F08D5C9673D88DBA854_RuntimeMethod_var);
+		if (!L_2)
+		{
+			goto IL_0021;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:59>
+		TileSelectedEvent_t8669A0F7C42087F2631BEF3F654EB04362AC9CD7* L_3 = (TileSelectedEvent_t8669A0F7C42087F2631BEF3F654EB04362AC9CD7*)il2cpp_codegen_object_new(TileSelectedEvent_t8669A0F7C42087F2631BEF3F654EB04362AC9CD7_il2cpp_TypeInfo_var);
+		TileSelectedEvent__ctor_m384FCDC55E0B04067F7ADF052C4C6D756D403C17(L_3, NULL);
+		TileSelectedEvent_t8669A0F7C42087F2631BEF3F654EB04362AC9CD7* L_4 = L_3;
+		TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* L_5 = V_0;
+		NullCheck(L_4);
+		L_4->___Tile = L_5;
+		Il2CppCodeGenWriteBarrier((void**)(&L_4->___Tile), (void*)L_5);
+		il2cpp_codegen_runtime_class_init_inline(EventBus_tD995B8977DB6D299BE8C38F5E222C99EE6EA8B11_il2cpp_TypeInfo_var);
+		EventBus_Publish_TisTileSelectedEvent_t8669A0F7C42087F2631BEF3F654EB04362AC9CD7_mDB902E268D4D81A22161830D89D95C6B00F288DD(L_4, EventBus_Publish_TisTileSelectedEvent_t8669A0F7C42087F2631BEF3F654EB04362AC9CD7_mDB902E268D4D81A22161830D89D95C6B00F288DD_RuntimeMethod_var);
+	}
+
+IL_0021:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:60>
+		return;
+	}
+}
+// Method Definition Index: 132018
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void HexasphereManager_SetTileColor_m8B2B3A4BBD5C49E1F627587D8423BFB7D863B258 (HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* __this, String_t* ___0_tileId, Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ___1_color, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Dictionary_2_TryGetValue_m835BB1E6EA8A8BF1242B51E28FD65B43FEF68E2A_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	int32_t V_0 = 0;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:64>
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_0 = __this->____hexasphere;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_1;
+		L_1 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_1)
+		{
+			goto IL_000f;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:64>
+		return;
+	}
+
+IL_000f:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:65>
+		Dictionary_2_t5C8F46F5D57502270DD9E1DA8303B23C7FE85588* L_2 = __this->____indexById;
+		String_t* L_3 = ___0_tileId;
+		NullCheck(L_2);
+		bool L_4;
+		L_4 = Dictionary_2_TryGetValue_m835BB1E6EA8A8BF1242B51E28FD65B43FEF68E2A(L_2, L_3, (&V_0), Dictionary_2_TryGetValue_m835BB1E6EA8A8BF1242B51E28FD65B43FEF68E2A_RuntimeMethod_var);
+		if (!L_4)
+		{
+			goto IL_002e;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:66>
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_5 = __this->____hexasphere;
+		int32_t L_6 = V_0;
+		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_7 = ___1_color;
+		NullCheck(L_5);
+		bool L_8;
+		L_8 = Hexasphere_SetTileColor_mA72EA2917D0547FE309D3ACCA0A302DC252801F7(L_5, L_6, L_7, (bool)0, NULL);
+	}
+
+IL_002e:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:67>
+		return;
+	}
+}
+// Method Definition Index: 132019
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void HexasphereManager_SetTileExtrudeAmount_m5C0063E085E629B870B2DDE4EA14F4FF99855917 (HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* __this, String_t* ___0_tileId, float ___1_amount, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Dictionary_2_TryGetValue_m835BB1E6EA8A8BF1242B51E28FD65B43FEF68E2A_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	int32_t V_0 = 0;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:71>
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_0 = __this->____hexasphere;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_1;
+		L_1 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_1)
+		{
+			goto IL_000f;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:71>
+		return;
+	}
+
+IL_000f:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:72>
+		Dictionary_2_t5C8F46F5D57502270DD9E1DA8303B23C7FE85588* L_2 = __this->____indexById;
+		String_t* L_3 = ___0_tileId;
+		NullCheck(L_2);
+		bool L_4;
+		L_4 = Dictionary_2_TryGetValue_m835BB1E6EA8A8BF1242B51E28FD65B43FEF68E2A(L_2, L_3, (&V_0), Dictionary_2_TryGetValue_m835BB1E6EA8A8BF1242B51E28FD65B43FEF68E2A_RuntimeMethod_var);
+		if (!L_4)
+		{
+			goto IL_002d;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:73>
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_5 = __this->____hexasphere;
+		int32_t L_6 = V_0;
+		float L_7 = ___1_amount;
+		NullCheck(L_5);
+		bool L_8;
+		L_8 = Hexasphere_SetTileExtrudeAmount_m0FAE1815E768582D6AEC10A64158B98DEA7D744F(L_5, L_6, L_7, NULL);
+	}
+
+IL_002d:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:74>
+		return;
+	}
+}
+// Method Definition Index: 132020
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void HexasphereManager_SetTilesVisible_m104028B830487D1A079F8D4E74B884B5BB15AEBF (HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* __this, bool ___0_visible, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* G_B4_0 = NULL;
+	Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* G_B3_0 = NULL;
+	int32_t G_B5_0 = 0;
+	Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* G_B5_1 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:79>
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_0 = __this->____hexasphere;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_1;
+		L_1 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_1)
+		{
+			goto IL_000f;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:79>
+		return;
+	}
+
+IL_000f:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:80>
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_2 = __this->____hexasphere;
+		bool L_3 = ___0_visible;
+		if (L_3)
+		{
+			G_B4_0 = L_2;
+			goto IL_001b;
+		}
+		G_B3_0 = L_2;
+	}
+	{
+		G_B5_0 = 3;
+		G_B5_1 = G_B3_0;
+		goto IL_001c;
+	}
+
+IL_001b:
+	{
+		G_B5_0 = 2;
+		G_B5_1 = G_B4_0;
+	}
+
+IL_001c:
+	{
+		NullCheck(G_B5_1);
+		Hexasphere_set_style_mB20CF735DE7005949D47FE28B7FA4AC59CD5284A(G_B5_1, G_B5_0, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:81>
+		return;
+	}
+}
+// Method Definition Index: 132021
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void HexasphereManager__ctor_mFEA20AA7D8ADAD12A87BFD9F514287ADD6D20C46 (HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Dictionary_2__ctor_m3E79BA218E1627FF6E687B6923F6D48AD8582CF5_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Dictionary_2__ctor_mA3C3860EDE2CDD08BBD68C389377BC89D029D968_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Dictionary_2_t5C8F46F5D57502270DD9E1DA8303B23C7FE85588_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:20>
+		Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900* L_0 = (Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900*)il2cpp_codegen_object_new(Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900_il2cpp_TypeInfo_var);
+		Dictionary_2__ctor_m3E79BA218E1627FF6E687B6923F6D48AD8582CF5(L_0, Dictionary_2__ctor_m3E79BA218E1627FF6E687B6923F6D48AD8582CF5_RuntimeMethod_var);
+		__this->____tiles = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____tiles), (void*)L_0);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:21>
+		Dictionary_2_t5C8F46F5D57502270DD9E1DA8303B23C7FE85588* L_1 = (Dictionary_2_t5C8F46F5D57502270DD9E1DA8303B23C7FE85588*)il2cpp_codegen_object_new(Dictionary_2_t5C8F46F5D57502270DD9E1DA8303B23C7FE85588_il2cpp_TypeInfo_var);
+		Dictionary_2__ctor_mA3C3860EDE2CDD08BBD68C389377BC89D029D968(L_1, Dictionary_2__ctor_mA3C3860EDE2CDD08BBD68C389377BC89D029D968_RuntimeMethod_var);
+		__this->____indexById = L_1;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____indexById), (void*)L_1);
+		MonoBehaviour__ctor_m592DB0105CA0BC97AA1C5F4AD27B12D68A3B7C1E(__this, NULL);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 132022
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CU3Ec__cctor_mCE1105A0FEF51F637A08246E5632BB1D582EF86C (const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD* L_0 = (U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD*)il2cpp_codegen_object_new(U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_il2cpp_TypeInfo_var);
+		U3CU3Ec__ctor_m016D35029A89AFA307DD51D9F4B69567DE1A2478(L_0, NULL);
+		((U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_il2cpp_TypeInfo_var))->___U3CU3E9 = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&((U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD_il2cpp_TypeInfo_var))->___U3CU3E9), (void*)L_0);
+		return;
+	}
+}
+// Method Definition Index: 132023
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CU3Ec__ctor_m016D35029A89AFA307DD51D9F4B69567DE1A2478 (U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD* __this, const RuntimeMethod* method) 
+{
+	{
+		Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2(__this, NULL);
+		return;
+	}
+}
+// Method Definition Index: 132024
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool U3CU3Ec_U3Cget_PentagonTileIdsU3Eb__8_0_mB74000289558BDBFCD010F1139CEC2C610B7E3DD (U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD* __this, Tile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67* ___0_t, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:29>
+		Tile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67* L_0 = ___0_t;
+		NullCheck(L_0);
+		bool L_1;
+		L_1 = Tile_get_isPentagon_m6671EE5DEDEC2C5765606BAA7BBD01D187F13523(L_0, NULL);
+		return L_1;
+	}
+}
+// Method Definition Index: 132025
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* U3CU3Ec_U3Cget_PentagonTileIdsU3Eb__8_1_mB957B24FE1FF83E15C4C6BA04A3D93E2F751F032 (U3CU3Ec_tD90980ED966595C15D142A200F1A4E4C695CD9FD* __this, Tile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67* ___0_t, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:29>
+		Tile_t0AB54A26F90D3980CB21B959D84EB5D0C84ABC67* L_0 = ___0_t;
+		NullCheck(L_0);
+		int32_t* L_1 = (int32_t*)(&L_0->___index);
+		String_t* L_2;
+		L_2 = Int32_ToString_m030E01C24E294D6762FB0B6F37CB541581F55CA5(L_1, NULL);
+		return L_2;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 132026
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandmarkService_MarkLandmarks_m7BEBD807E1EB00D48CDD4AE39D69651FF4F65017 (LandmarkService_t2DD86DC59445B3BFE0F7F20764DD609289137254* __this, HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* ___0_hexasphere, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IDisposable_t030E0496B4E0E4E4F086825007979AF51F7248C5_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IEnumerable_1_t349E66EC5F09B881A8E52EE40A1AB9EC60E08E44_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IEnumerator_1_t73FD060C436E3C4264A734C8F8DCC01DFF6046B8_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IEnumerator_t7B609C2FFA6EB5167D9C62A0C32A21DE2F666DAA_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral40373A76597DE99AC62935B2C149E78DE4F0CE6C);
+		s_Il2CppMethodInitialized = true;
+	}
+	int32_t V_0 = 0;
+	RuntimeObject* V_1 = NULL;
+	String_t* V_2 = NULL;
+	TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* V_3 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/LandmarkService.cs:11>
+		V_0 = 0;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/LandmarkService.cs:12>
+		HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* L_0 = ___0_hexasphere;
+		NullCheck(L_0);
+		RuntimeObject* L_1;
+		L_1 = HexasphereManager_get_PentagonTileIds_mB993125ED6DF072C19D921A31F48F5ACAF2D1202(L_0, NULL);
+		NullCheck(L_1);
+		RuntimeObject* L_2;
+		L_2 = InterfaceFuncInvoker0< RuntimeObject* >::Invoke(0, IEnumerable_1_t349E66EC5F09B881A8E52EE40A1AB9EC60E08E44_il2cpp_TypeInfo_var, L_1);
+		V_1 = L_2;
+	}
+	{
+		auto __finallyBlock = il2cpp::utils::Finally([&]
+		{
+
+FINALLY_0045:
+			{
+				{
+					RuntimeObject* L_3 = V_1;
+					if (!L_3)
+					{
+						goto IL_004e;
+					}
+				}
+				{
+					RuntimeObject* L_4 = V_1;
+					NullCheck(L_4);
+					InterfaceActionInvoker0::Invoke(0, IDisposable_t030E0496B4E0E4E4F086825007979AF51F7248C5_il2cpp_TypeInfo_var, L_4);
+				}
+
+IL_004e:
+				{
+					return;
+				}
+			}
+		});
+		try
+		{
+			{
+				goto IL_003b_1;
+			}
+
+IL_0010_1:
+			{
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/LandmarkService.cs:12>
+				RuntimeObject* L_5 = V_1;
+				NullCheck(L_5);
+				String_t* L_6;
+				L_6 = InterfaceFuncInvoker0< String_t* >::Invoke(0, IEnumerator_1_t73FD060C436E3C4264A734C8F8DCC01DFF6046B8_il2cpp_TypeInfo_var, L_5);
+				V_2 = L_6;
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/LandmarkService.cs:14>
+				int32_t L_7 = V_0;
+				if ((((int32_t)L_7) < ((int32_t)((int32_t)12))))
+				{
+					goto IL_001e_1;
+				}
+			}
+			{
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/LandmarkService.cs:14>
+				goto IL_004f;
+			}
+
+IL_001e_1:
+			{
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/LandmarkService.cs:15>
+				HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* L_8 = ___0_hexasphere;
+				String_t* L_9 = V_2;
+				NullCheck(L_8);
+				TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* L_10;
+				L_10 = HexasphereManager_GetTile_m1CAACD6CE125BEF890B61FA12628A974F18D05CF(L_8, L_9, NULL);
+				V_3 = L_10;
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/LandmarkService.cs:16>
+				TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* L_11 = V_3;
+				if (!L_11)
+				{
+					goto IL_003b_1;
+				}
+			}
+			{
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/LandmarkService.cs:17>
+				TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* L_12 = V_3;
+				NullCheck(L_12);
+				TileData_set_IsLandmark_m501882A1819F87071A239D0AF6E449BE312EC319_inline(L_12, (bool)1, NULL);
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/LandmarkService.cs:18>
+				TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* L_13 = V_3;
+				NullCheck(L_13);
+				TileData_set_State_m41D6FA690A61A9BE5879AEF5B44B103E11484CA7_inline(L_13, 3, NULL);
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/LandmarkService.cs:19>
+				int32_t L_14 = V_0;
+				V_0 = ((int32_t)il2cpp_codegen_add(L_14, 1));
+			}
+
+IL_003b_1:
+			{
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/LandmarkService.cs:12>
+				RuntimeObject* L_15 = V_1;
+				NullCheck(L_15);
+				bool L_16;
+				L_16 = InterfaceFuncInvoker0< bool >::Invoke(0, IEnumerator_t7B609C2FFA6EB5167D9C62A0C32A21DE2F666DAA_il2cpp_TypeInfo_var, L_15);
+				if (L_16)
+				{
+					goto IL_0010_1;
+				}
+			}
+			{
+				goto IL_004f;
+			}
+		}
+		catch(Il2CppExceptionWrapper& e)
+		{
+			__finallyBlock.StoreException(e.ex);
+		}
+	}
+
+IL_004f:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/LandmarkService.cs:22>
+		int32_t L_17 = V_0;
+		int32_t L_18 = L_17;
+		RuntimeObject* L_19 = Box(il2cpp_defaults.int32_class, &L_18);
+		String_t* L_20;
+		L_20 = String_Format_mA8DBB4C2516B9723C5A41E6CB1E2FAF4BBE96DD8(_stringLiteral40373A76597DE99AC62935B2C149E78DE4F0CE6C, L_19, NULL);
+		il2cpp_codegen_runtime_class_init_inline(SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		SULog_Info_m4F0F76BC192792291ABFF31712DB6F83FD36C8D9(L_20, 8, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/LandmarkService.cs:23>
+		return;
+	}
+}
+// Method Definition Index: 132027
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandmarkService__ctor_mF7A48164DD82389E8702D0766DF641EA54E5E23B (LandmarkService_t2DD86DC59445B3BFE0F7F20764DD609289137254* __this, const RuntimeMethod* method) 
+{
+	{
+		Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2(__this, NULL);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 132028
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void PlanetCameraController_LateUpdate_m3B16654DF89063C7199E6496EB66655470E196A1 (PlanetCameraController_t39B59651096CD06669788766750AA520816F4353* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&LeanTouch_tB9A5FAC0D173A45CDB1A8F994FD2BBB689D8927C_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1_get_Count_mC7A9070AFE9070AE414B124B3FC850C94DB8D282_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	List_1_tBD1C7A6DDCC7BB4E36CB06B8F1176E9C8A97702E* V_0 = NULL;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 V_1;
+	memset((&V_1), 0, sizeof(V_1));
+	Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 V_2;
+	memset((&V_2), 0, sizeof(V_2));
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 V_3;
+	memset((&V_3), 0, sizeof(V_3));
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 G_B7_0;
+	memset((&G_B7_0), 0, sizeof(G_B7_0));
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetCameraController.cs:20>
+		il2cpp_codegen_runtime_class_init_inline(LeanTouch_tB9A5FAC0D173A45CDB1A8F994FD2BBB689D8927C_il2cpp_TypeInfo_var);
+		List_1_tBD1C7A6DDCC7BB4E36CB06B8F1176E9C8A97702E* L_0 = ((LeanTouch_tB9A5FAC0D173A45CDB1A8F994FD2BBB689D8927C_StaticFields*)il2cpp_codegen_static_fields_for(LeanTouch_tB9A5FAC0D173A45CDB1A8F994FD2BBB689D8927C_il2cpp_TypeInfo_var))->___Fingers;
+		V_0 = L_0;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetCameraController.cs:22>
+		List_1_tBD1C7A6DDCC7BB4E36CB06B8F1176E9C8A97702E* L_1 = V_0;
+		NullCheck(L_1);
+		int32_t L_2;
+		L_2 = List_1_get_Count_mC7A9070AFE9070AE414B124B3FC850C94DB8D282_inline(L_1, List_1_get_Count_mC7A9070AFE9070AE414B124B3FC850C94DB8D282_RuntimeMethod_var);
+		if ((!(((uint32_t)L_2) == ((uint32_t)1))))
+		{
+			goto IL_0067;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetCameraController.cs:24>
+		List_1_tBD1C7A6DDCC7BB4E36CB06B8F1176E9C8A97702E* L_3 = V_0;
+		Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 L_4;
+		L_4 = LeanGesture_GetScaledDelta_m119DBF21A9CABFF6032359D86BE08ADC8913192B(L_3, NULL);
+		V_3 = L_4;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetCameraController.cs:25>
+		float L_5 = __this->____yaw;
+		Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 L_6 = V_3;
+		float L_7 = L_6.___x;
+		float L_8 = __this->____orbitSpeed;
+		__this->____yaw = ((float)il2cpp_codegen_add(L_5, ((float)il2cpp_codegen_multiply(L_7, L_8))));
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetCameraController.cs:26>
+		float L_9 = __this->____pitch;
+		Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 L_10 = V_3;
+		float L_11 = L_10.___y;
+		float L_12 = __this->____orbitSpeed;
+		__this->____pitch = ((float)il2cpp_codegen_subtract(L_9, ((float)il2cpp_codegen_multiply(L_11, L_12))));
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetCameraController.cs:27>
+		float L_13 = __this->____pitch;
+		float L_14;
+		L_14 = Mathf_Clamp_mEB9AEA827D27D20FCC787F7375156AF46BB12BBF_inline(L_13, (-80.0f), (80.0f), NULL);
+		__this->____pitch = L_14;
+		goto IL_00a5;
+	}
+
+IL_0067:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetCameraController.cs:29>
+		List_1_tBD1C7A6DDCC7BB4E36CB06B8F1176E9C8A97702E* L_15 = V_0;
+		NullCheck(L_15);
+		int32_t L_16;
+		L_16 = List_1_get_Count_mC7A9070AFE9070AE414B124B3FC850C94DB8D282_inline(L_15, List_1_get_Count_mC7A9070AFE9070AE414B124B3FC850C94DB8D282_RuntimeMethod_var);
+		if ((((int32_t)L_16) < ((int32_t)2)))
+		{
+			goto IL_00a5;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetCameraController.cs:31>
+		float L_17 = __this->____distance;
+		List_1_tBD1C7A6DDCC7BB4E36CB06B8F1176E9C8A97702E* L_18 = V_0;
+		float L_19;
+		L_19 = LeanGesture_GetPinchRatio_m503AEECC69D1D09213ACBE8B1CF8421540237EC3(L_18, (0.0f), NULL);
+		__this->____distance = ((float)(L_17/L_19));
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetCameraController.cs:32>
+		float L_20 = __this->____distance;
+		float L_21 = __this->____minDistance;
+		float L_22 = __this->____maxDistance;
+		float L_23;
+		L_23 = Mathf_Clamp_mEB9AEA827D27D20FCC787F7375156AF46BB12BBF_inline(L_20, L_21, L_22, NULL);
+		__this->____distance = L_23;
+	}
+
+IL_00a5:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetCameraController.cs:35>
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_24 = __this->____target;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_25;
+		L_25 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_24, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (L_25)
+		{
+			goto IL_00ba;
+		}
+	}
+	{
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_26;
+		L_26 = Vector3_get_zero_m0C1249C3F25B1C70EAD3CC8B31259975A457AE39_inline(NULL);
+		G_B7_0 = L_26;
+		goto IL_00c5;
+	}
+
+IL_00ba:
+	{
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_27 = __this->____target;
+		NullCheck(L_27);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_28;
+		L_28 = Transform_get_position_m69CD5FA214FDAE7BB701552943674846C220FDE1(L_27, NULL);
+		G_B7_0 = L_28;
+	}
+
+IL_00c5:
+	{
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_29 = __this->____offset;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_30;
+		L_30 = Vector3_op_Addition_m78C0EC70CB66E8DCAC225743D82B268DAEE92067_inline(G_B7_0, L_29, NULL);
+		V_1 = L_30;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetCameraController.cs:36>
+		float L_31 = __this->____pitch;
+		float L_32 = __this->____yaw;
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 L_33;
+		L_33 = Quaternion_Euler_m9262AB29E3E9CE94EF71051F38A28E82AEC73F90_inline(L_31, L_32, (0.0f), NULL);
+		V_2 = L_33;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetCameraController.cs:37>
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_34;
+		L_34 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(__this, NULL);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_35 = V_1;
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 L_36 = V_2;
+		float L_37 = __this->____distance;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_38;
+		memset((&L_38), 0, sizeof(L_38));
+		Vector3__ctor_m376936E6B999EF1ECBE57D990A386303E2283DE0_inline((&L_38), (0.0f), (0.0f), ((-L_37)), NULL);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_39;
+		L_39 = Quaternion_op_Multiply_mE1EBA73F9173432B50F8F17CE8190C5A7986FB8C(L_36, L_38, NULL);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_40;
+		L_40 = Vector3_op_Addition_m78C0EC70CB66E8DCAC225743D82B268DAEE92067_inline(L_35, L_39, NULL);
+		NullCheck(L_34);
+		Transform_set_position_mA1A817124BB41B685043DED2A9BA48CDF37C4156(L_34, L_40, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetCameraController.cs:38>
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_41;
+		L_41 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(__this, NULL);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_42 = V_1;
+		NullCheck(L_41);
+		Transform_LookAt_mFEF7353E4CAEB85D5F7CEEF9276C3B8D6E314C6C(L_41, L_42, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetCameraController.cs:39>
+		return;
+	}
+}
+// Method Definition Index: 132029
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void PlanetCameraController__ctor_m8E76287DBB30189E2B88E73B64FCAE610F74E217 (PlanetCameraController_t39B59651096CD06669788766750AA520816F4353* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetCameraController.cs:9>
+		__this->____orbitSpeed = (0.200000003f);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetCameraController.cs:10>
+		__this->____minDistance = (5.0f);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetCameraController.cs:11>
+		__this->____maxDistance = (20.0f);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetCameraController.cs:12>
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_0;
+		L_0 = Vector3_get_zero_m0C1249C3F25B1C70EAD3CC8B31259975A457AE39_inline(NULL);
+		__this->____offset = L_0;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetCameraController.cs:14>
+		__this->____distance = (12.0f);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetCameraController.cs:16>
+		__this->____pitch = (20.0f);
+		MonoBehaviour__ctor_m592DB0105CA0BC97AA1C5F4AD27B12D68A3B7C1E(__this, NULL);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 132030
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void PlanetLoadedEvent__ctor_mAF6651E8B2315717DD0F21EB20C864F7C3C184CC (PlanetLoadedEvent_tA3765940816DE98DCA14FE62D5C14BABFD749624* __this, const RuntimeMethod* method) 
+{
+	{
+		Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2(__this, NULL);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 132031
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* PlanetController_get_CurrentPlanet_mA22AE29F8164ECB2908B94BE32D46CD3A6A57BD1 (PlanetController_t98B98D4212B2BD0C9F16BBA07BEEA0934DD2E93D* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetController.cs:17>
+		PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* L_0 = __this->___U3CCurrentPlanetU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 132032
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void PlanetController_set_CurrentPlanet_m8DFB88588759CF05746F22DA4A4F03A6F90776B0 (PlanetController_t98B98D4212B2BD0C9F16BBA07BEEA0934DD2E93D* __this, PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetController.cs:17>
+		PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* L_0 = ___0_value;
+		__this->___U3CCurrentPlanetU3Ek__BackingField = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CCurrentPlanetU3Ek__BackingField), (void*)L_0);
+		return;
+	}
+}
+// Method Definition Index: 132033
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void PlanetController_Load_mBE354323623EEC0676B8717D27D22BB276A5A38F (PlanetController_t98B98D4212B2BD0C9F16BBA07BEEA0934DD2E93D* __this, PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* ___0_planet, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&EventBus_Publish_TisPlanetLoadedEvent_tA3765940816DE98DCA14FE62D5C14BABFD749624_mA56367E579D06438AAC41E7DDB5E7EF006025DDE_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&EventBus_tD995B8977DB6D299BE8C38F5E222C99EE6EA8B11_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&PlanetLoadedEvent_tA3765940816DE98DCA14FE62D5C14BABFD749624_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral42646B33B50B6AA15E22733C8900716F0FE19E1D);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral5D04F5597E4F592111E72D65DC12090A9FB5EEB7);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetController.cs:21>
+		PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* L_0 = ___0_planet;
+		PlanetController_set_CurrentPlanet_m8DFB88588759CF05746F22DA4A4F03A6F90776B0_inline(__this, L_0, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetController.cs:22>
+		PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* L_1 = ___0_planet;
+		PlanetController_SpawnModel_m43E8C9901756F56ECB9A4DA5A2A5BE9FE4A9EBA2(__this, L_1, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetController.cs:23>
+		HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* L_2 = __this->____hexasphere;
+		PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* L_3 = ___0_planet;
+		NullCheck(L_3);
+		int32_t L_4;
+		L_4 = PlanetDefinition_get_TileCount_m315D304A1924B15A44D531F67E13DA30D46D4B6E_inline(L_3, NULL);
+		NullCheck(L_2);
+		HexasphereManager_Generate_m798E3E6FE9FCC0FD986A9C06BDF4C5EB26B8142B(L_2, L_4, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetController.cs:24>
+		LandmarkService_t2DD86DC59445B3BFE0F7F20764DD609289137254* L_5 = __this->____landmarkService;
+		HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* L_6 = __this->____hexasphere;
+		NullCheck(L_5);
+		LandmarkService_MarkLandmarks_m7BEBD807E1EB00D48CDD4AE39D69651FF4F65017(L_5, L_6, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetController.cs:25>
+		TileColorizer_tA9064ACBB2D03D01390CA92E77EC11178C734F58* L_7 = __this->____colorizer;
+		HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* L_8 = __this->____hexasphere;
+		NullCheck(L_8);
+		RuntimeObject* L_9;
+		L_9 = HexasphereManager_get_Tiles_mF734D1A1D6883CCA033771EA5E3ECE0496934D87_inline(L_8, NULL);
+		NullCheck(L_7);
+		TileColorizer_Refresh_mE98CA3A02E0A7A0458F68C1BD271244260151AA8(L_7, L_9, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetController.cs:26>
+		PlanetLoadedEvent_tA3765940816DE98DCA14FE62D5C14BABFD749624* L_10 = (PlanetLoadedEvent_tA3765940816DE98DCA14FE62D5C14BABFD749624*)il2cpp_codegen_object_new(PlanetLoadedEvent_tA3765940816DE98DCA14FE62D5C14BABFD749624_il2cpp_TypeInfo_var);
+		PlanetLoadedEvent__ctor_mAF6651E8B2315717DD0F21EB20C864F7C3C184CC(L_10, NULL);
+		PlanetLoadedEvent_tA3765940816DE98DCA14FE62D5C14BABFD749624* L_11 = L_10;
+		PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* L_12 = ___0_planet;
+		NullCheck(L_11);
+		L_11->___Planet = L_12;
+		Il2CppCodeGenWriteBarrier((void**)(&L_11->___Planet), (void*)L_12);
+		il2cpp_codegen_runtime_class_init_inline(EventBus_tD995B8977DB6D299BE8C38F5E222C99EE6EA8B11_il2cpp_TypeInfo_var);
+		EventBus_Publish_TisPlanetLoadedEvent_tA3765940816DE98DCA14FE62D5C14BABFD749624_mA56367E579D06438AAC41E7DDB5E7EF006025DDE(L_11, EventBus_Publish_TisPlanetLoadedEvent_tA3765940816DE98DCA14FE62D5C14BABFD749624_mA56367E579D06438AAC41E7DDB5E7EF006025DDE_RuntimeMethod_var);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetController.cs:27>
+		PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* L_13 = ___0_planet;
+		NullCheck(L_13);
+		String_t* L_14;
+		L_14 = PlanetDefinition_get_DisplayName_m9B90C34BBDD2E66775A13EBF6FA084E31173B0A4_inline(L_13, NULL);
+		String_t* L_15;
+		L_15 = String_Concat_m8855A6DE10F84DA7F4EC113CADDB59873A25573B(_stringLiteral5D04F5597E4F592111E72D65DC12090A9FB5EEB7, L_14, _stringLiteral42646B33B50B6AA15E22733C8900716F0FE19E1D, NULL);
+		il2cpp_codegen_runtime_class_init_inline(SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		SULog_Info_m4F0F76BC192792291ABFF31712DB6F83FD36C8D9(L_15, 8, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetController.cs:28>
+		return;
+	}
+}
+// Method Definition Index: 132034
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void PlanetController_SpawnModel_m43E8C9901756F56ECB9A4DA5A2A5BE9FE4A9EBA2 (PlanetController_t98B98D4212B2BD0C9F16BBA07BEEA0934DD2E93D* __this, PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* ___0_planet, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_Instantiate_TisGameObject_t76FEDD663AB33C991A9C9A23129337651094216F_mD136E37F696C00A3A1D4F65724ACAE903E385181_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetController.cs:32>
+		PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* L_0 = ___0_planet;
+		NullCheck(L_0);
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_1;
+		L_1 = PlanetDefinition_get_ModelPrefab_m7015314C62AB28581E0FC93C0F70054FAA51C51D_inline(L_0, NULL);
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_2;
+		L_2 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_1, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_2)
+		{
+			goto IL_000f;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetController.cs:32>
+		return;
+	}
+
+IL_000f:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetController.cs:33>
+		PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* L_3 = ___0_planet;
+		NullCheck(L_3);
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_4;
+		L_4 = PlanetDefinition_get_ModelPrefab_m7015314C62AB28581E0FC93C0F70054FAA51C51D_inline(L_3, NULL);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_5;
+		L_5 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(__this, NULL);
+		NullCheck(L_5);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_6;
+		L_6 = Transform_get_position_m69CD5FA214FDAE7BB701552943674846C220FDE1(L_5, NULL);
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 L_7;
+		L_7 = Quaternion_get_identity_m7E701AE095ED10FD5EA0B50ABCFDE2EEFF2173A5_inline(NULL);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_8;
+		L_8 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(__this, NULL);
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_9;
+		L_9 = Object_Instantiate_TisGameObject_t76FEDD663AB33C991A9C9A23129337651094216F_mD136E37F696C00A3A1D4F65724ACAE903E385181(L_4, L_6, L_7, L_8, Object_Instantiate_TisGameObject_t76FEDD663AB33C991A9C9A23129337651094216F_mD136E37F696C00A3A1D4F65724ACAE903E385181_RuntimeMethod_var);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetController.cs:34>
+		return;
+	}
+}
+// Method Definition Index: 132035
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void PlanetController__ctor_mFF6594D9B97EEA5F4959283CDC812B17A99758CC (PlanetController_t98B98D4212B2BD0C9F16BBA07BEEA0934DD2E93D* __this, const RuntimeMethod* method) 
+{
+	{
+		MonoBehaviour__ctor_m592DB0105CA0BC97AA1C5F4AD27B12D68A3B7C1E(__this, NULL);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 132036
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileColorizer_Refresh_mE98CA3A02E0A7A0458F68C1BD271244260151AA8 (TileColorizer_tA9064ACBB2D03D01390CA92E77EC11178C734F58* __this, RuntimeObject* ___0_tiles, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IDisposable_t030E0496B4E0E4E4F086825007979AF51F7248C5_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IEnumerable_1_tE375E6588C9D62999E1A1A6C94DEA12D77798543_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IEnumerator_1_tBE1C1044442DB29BC5B1F1B07A43FC46C46C7046_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IEnumerator_t7B609C2FFA6EB5167D9C62A0C32A21DE2F666DAA_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IReadOnlyDictionary_2_t496318BAF17F74950A66C9B70ACE8BAB249DDF0E_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	RuntimeObject* V_0 = NULL;
+	TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* V_1 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:17>
+		RuntimeObject* L_0 = ___0_tiles;
+		NullCheck(L_0);
+		RuntimeObject* L_1;
+		L_1 = InterfaceFuncInvoker0< RuntimeObject* >::Invoke(4, IReadOnlyDictionary_2_t496318BAF17F74950A66C9B70ACE8BAB249DDF0E_il2cpp_TypeInfo_var, L_0);
+		NullCheck(L_1);
+		RuntimeObject* L_2;
+		L_2 = InterfaceFuncInvoker0< RuntimeObject* >::Invoke(0, IEnumerable_1_tE375E6588C9D62999E1A1A6C94DEA12D77798543_il2cpp_TypeInfo_var, L_1);
+		V_0 = L_2;
+	}
+	{
+		auto __finallyBlock = il2cpp::utils::Finally([&]
+		{
+
+FINALLY_0026:
+			{
+				{
+					RuntimeObject* L_3 = V_0;
+					if (!L_3)
+					{
+						goto IL_002f;
+					}
+				}
+				{
+					RuntimeObject* L_4 = V_0;
+					NullCheck(L_4);
+					InterfaceActionInvoker0::Invoke(0, IDisposable_t030E0496B4E0E4E4F086825007979AF51F7248C5_il2cpp_TypeInfo_var, L_4);
+				}
+
+IL_002f:
+				{
+					return;
+				}
+			}
+		});
+		try
+		{
+			{
+				goto IL_001c_1;
+			}
+
+IL_000e_1:
+			{
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:17>
+				RuntimeObject* L_5 = V_0;
+				NullCheck(L_5);
+				TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* L_6;
+				L_6 = InterfaceFuncInvoker0< TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* >::Invoke(0, IEnumerator_1_tBE1C1044442DB29BC5B1F1B07A43FC46C46C7046_il2cpp_TypeInfo_var, L_5);
+				V_1 = L_6;
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:18>
+				TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* L_7 = V_1;
+				TileColorizer_Apply_m40D0319101F92E13A25B639E0C8E71920BB80E85(__this, L_7, NULL);
+			}
+
+IL_001c_1:
+			{
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:17>
+				RuntimeObject* L_8 = V_0;
+				NullCheck(L_8);
+				bool L_9;
+				L_9 = InterfaceFuncInvoker0< bool >::Invoke(0, IEnumerator_t7B609C2FFA6EB5167D9C62A0C32A21DE2F666DAA_il2cpp_TypeInfo_var, L_8);
+				if (L_9)
+				{
+					goto IL_000e_1;
+				}
+			}
+			{
+				goto IL_0030;
+			}
+		}
+		catch(Il2CppExceptionWrapper& e)
+		{
+			__finallyBlock.StoreException(e.ex);
+		}
+	}
+
+IL_0030:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:19>
+		return;
+	}
+}
+// Method Definition Index: 132037
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileColorizer_RefreshTile_mEF2AE9B4C1AC786D248B2AEBB99B9D8539215827 (TileColorizer_tA9064ACBB2D03D01390CA92E77EC11178C734F58* __this, TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* ___0_tile, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:21>
+		TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* L_0 = ___0_tile;
+		TileColorizer_Apply_m40D0319101F92E13A25B639E0C8E71920BB80E85(__this, L_0, NULL);
+		return;
+	}
+}
+// Method Definition Index: 132038
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileColorizer_Apply_m40D0319101F92E13A25B639E0C8E71920BB80E85 (TileColorizer_tA9064ACBB2D03D01390CA92E77EC11178C734F58* __this, TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* ___0_tile, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral0B0FEB3147CE20EB2C90076367F895C59BCD14B3);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteralB210985702E2933A1D7BF40F573B3230ECDFD15A);
+		s_Il2CppMethodInitialized = true;
+	}
+	Color_tD001788D726C3A7F1379BEED0260B9591F440C1F V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	Color_tD001788D726C3A7F1379BEED0260B9591F440C1F V_1;
+	memset((&V_1), 0, sizeof(V_1));
+	int32_t V_2 = 0;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:25>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:26>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:27>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:28>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:29>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:30>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:31>
+		TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* L_0 = ___0_tile;
+		NullCheck(L_0);
+		int32_t L_1;
+		L_1 = TileData_get_State_mA1728DEA54FD632BEAEC26F74BDE591DB737E62A_inline(L_0, NULL);
+		V_2 = L_1;
+		int32_t L_2 = V_2;
+		switch (((int32_t)il2cpp_codegen_subtract((int32_t)L_2, 1)))
+		{
+			case 0:
+			{
+				goto IL_0026;
+			}
+			case 1:
+			{
+				goto IL_002f;
+			}
+			case 2:
+			{
+				goto IL_001d;
+			}
+		}
+	}
+	{
+		goto IL_0038;
+	}
+
+IL_001d:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:27>
+		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_3 = __this->____landmarkColor;
+		V_1 = L_3;
+		goto IL_003f;
+	}
+
+IL_0026:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:28>
+		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_4 = __this->____ownedColor;
+		V_1 = L_4;
+		goto IL_003f;
+	}
+
+IL_002f:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:29>
+		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_5 = __this->____othersColor;
+		V_1 = L_5;
+		goto IL_003f;
+	}
+
+IL_0038:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:30>
+		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_6 = __this->____availableColor;
+		V_1 = L_6;
+	}
+
+IL_003f:
+	{
+		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_7 = V_1;
+		V_0 = L_7;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:33>
+		HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* L_8 = __this->____hexasphere;
+		TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* L_9 = ___0_tile;
+		NullCheck(L_9);
+		String_t* L_10;
+		L_10 = TileData_get_TileId_m18EFA30B16870BDE2751E871927869366925497E_inline(L_9, NULL);
+		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_11 = V_0;
+		NullCheck(L_8);
+		HexasphereManager_SetTileColor_m8B2B3A4BBD5C49E1F627587D8423BFB7D863B258(L_8, L_10, L_11, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:34>
+		Type_t* L_12;
+		L_12 = Object_GetType_mE10A8FC1E57F3DF29972CCBC026C2DC3942263B3(__this, NULL);
+		NullCheck(L_12);
+		String_t* L_13;
+		L_13 = VirtualFuncInvoker0< String_t* >::Invoke(8, L_12);
+		TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* L_14 = ___0_tile;
+		NullCheck(L_14);
+		String_t* L_15;
+		L_15 = TileData_get_TileId_m18EFA30B16870BDE2751E871927869366925497E_inline(L_14, NULL);
+		String_t* L_16;
+		L_16 = String_Concat_m093934F71A9B351911EE46311674ED463B180006(_stringLiteral0B0FEB3147CE20EB2C90076367F895C59BCD14B3, L_13, _stringLiteralB210985702E2933A1D7BF40F573B3230ECDFD15A, L_15, NULL);
+		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
+		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(L_16, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:35>
+		return;
+	}
+}
+// Method Definition Index: 132039
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileColorizer__ctor_m7599B71E48A57C426E3C4B6C9E8A6D3D7C90A25D (TileColorizer_tA9064ACBB2D03D01390CA92E77EC11178C734F58* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:10>
+		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_0;
+		memset((&L_0), 0, sizeof(L_0));
+		Color__ctor_mCD6889CDE39F18704CD6EA8E2EFBFA48BA3E13B0_inline((&L_0), (0.400000006f), (0.400000006f), (0.400000006f), NULL);
+		__this->____availableColor = L_0;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:11>
+		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_1;
+		memset((&L_1), 0, sizeof(L_1));
+		Color__ctor_mCD6889CDE39F18704CD6EA8E2EFBFA48BA3E13B0_inline((&L_1), (0.200000003f), (0.800000012f), (0.200000003f), NULL);
+		__this->____ownedColor = L_1;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:12>
+		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_2;
+		memset((&L_2), 0, sizeof(L_2));
+		Color__ctor_mCD6889CDE39F18704CD6EA8E2EFBFA48BA3E13B0_inline((&L_2), (0.200000003f), (0.400000006f), (0.899999976f), NULL);
+		__this->____othersColor = L_2;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileColorizer.cs:13>
+		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_3;
+		memset((&L_3), 0, sizeof(L_3));
+		Color__ctor_mCD6889CDE39F18704CD6EA8E2EFBFA48BA3E13B0_inline((&L_3), (1.0f), (0.800000012f), (0.100000001f), NULL);
+		__this->____landmarkColor = L_3;
+		MonoBehaviour__ctor_m592DB0105CA0BC97AA1C5F4AD27B12D68A3B7C1E(__this, NULL);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 132040
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* TileData_get_TileId_m18EFA30B16870BDE2751E871927869366925497E (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileData.cs:7>
+		String_t* L_0 = __this->___U3CTileIdU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 132041
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* TileData_get_OwnerId_m065F5FC02233313059321629786578EB5AD68DE0 (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileData.cs:8>
+		String_t* L_0 = __this->___U3COwnerIdU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 132042
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileData_set_OwnerId_m075BBC052A365DB1787AB5D1A8274BDBDEB84DD4 (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, String_t* ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileData.cs:8>
+		String_t* L_0 = ___0_value;
+		__this->___U3COwnerIdU3Ek__BackingField = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->___U3COwnerIdU3Ek__BackingField), (void*)L_0);
+		return;
+	}
+}
+// Method Definition Index: 132043
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t TileData_get_State_mA1728DEA54FD632BEAEC26F74BDE591DB737E62A (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileData.cs:9>
+		int32_t L_0 = __this->___U3CStateU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 132044
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileData_set_State_m41D6FA690A61A9BE5879AEF5B44B103E11484CA7 (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, int32_t ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileData.cs:9>
+		int32_t L_0 = ___0_value;
+		__this->___U3CStateU3Ek__BackingField = L_0;
+		return;
+	}
+}
+// Method Definition Index: 132045
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float TileData_get_YieldRate_m93BB750DB243D730941A55F29692B57C36D3A901 (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileData.cs:10>
+		float L_0 = __this->___U3CYieldRateU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 132046
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileData_set_YieldRate_m0F23AEEABD1B383CA00084DCA704BDDCF136AE71 (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, float ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileData.cs:10>
+		float L_0 = ___0_value;
+		__this->___U3CYieldRateU3Ek__BackingField = L_0;
+		return;
+	}
+}
+// Method Definition Index: 132047
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool TileData_get_IsLandmark_m802BDEFEAD130AF617AB4E1F6923433CBD5426A5 (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileData.cs:11>
+		bool L_0 = __this->___U3CIsLandmarkU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 132048
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileData_set_IsLandmark_m501882A1819F87071A239D0AF6E449BE312EC319 (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, bool ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileData.cs:11>
+		bool L_0 = ___0_value;
+		__this->___U3CIsLandmarkU3Ek__BackingField = L_0;
+		return;
+	}
+}
+// Method Definition Index: 132049
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t TileData_get_BuildLevel_mEEBB93D2AFFDD1B9D06C2A9C8E055947B8358DDD (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileData.cs:12>
+		int32_t L_0 = __this->___U3CBuildLevelU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 132050
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileData_set_BuildLevel_m5D64DF067EDDA26F85AD852C1AFC30E9AC48A948 (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, int32_t ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileData.cs:12>
+		int32_t L_0 = ___0_value;
+		__this->___U3CBuildLevelU3Ek__BackingField = L_0;
+		return;
+	}
+}
+// Method Definition Index: 132051
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileData__ctor_mBC4A31FCECE66705FC48AC56F63E53C8DF8FB281 (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, String_t* ___0_tileId, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileData.cs:14>
+		Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2(__this, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileData.cs:14>
+		String_t* L_0 = ___0_tileId;
+		__this->___U3CTileIdU3Ek__BackingField = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CTileIdU3Ek__BackingField), (void*)L_0);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 132052
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileExtrusionView_Refresh_m8B6ECE4F3DA0185DA1CAA9063CA4C71879536F8E (TileExtrusionView_tDD2454E77A3D6A1A8E13B1083D9547D9CB4122C9* __this, RuntimeObject* ___0_tiles, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IDisposable_t030E0496B4E0E4E4F086825007979AF51F7248C5_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IEnumerable_1_tE375E6588C9D62999E1A1A6C94DEA12D77798543_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IEnumerator_1_tBE1C1044442DB29BC5B1F1B07A43FC46C46C7046_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IEnumerator_t7B609C2FFA6EB5167D9C62A0C32A21DE2F666DAA_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IReadOnlyDictionary_2_t496318BAF17F74950A66C9B70ACE8BAB249DDF0E_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	RuntimeObject* V_0 = NULL;
+	TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* V_1 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileExtrusionView.cs:14>
+		RuntimeObject* L_0 = ___0_tiles;
+		NullCheck(L_0);
+		RuntimeObject* L_1;
+		L_1 = InterfaceFuncInvoker0< RuntimeObject* >::Invoke(4, IReadOnlyDictionary_2_t496318BAF17F74950A66C9B70ACE8BAB249DDF0E_il2cpp_TypeInfo_var, L_0);
+		NullCheck(L_1);
+		RuntimeObject* L_2;
+		L_2 = InterfaceFuncInvoker0< RuntimeObject* >::Invoke(0, IEnumerable_1_tE375E6588C9D62999E1A1A6C94DEA12D77798543_il2cpp_TypeInfo_var, L_1);
+		V_0 = L_2;
+	}
+	{
+		auto __finallyBlock = il2cpp::utils::Finally([&]
+		{
+
+FINALLY_0026:
+			{
+				{
+					RuntimeObject* L_3 = V_0;
+					if (!L_3)
+					{
+						goto IL_002f;
+					}
+				}
+				{
+					RuntimeObject* L_4 = V_0;
+					NullCheck(L_4);
+					InterfaceActionInvoker0::Invoke(0, IDisposable_t030E0496B4E0E4E4F086825007979AF51F7248C5_il2cpp_TypeInfo_var, L_4);
+				}
+
+IL_002f:
+				{
+					return;
+				}
+			}
+		});
+		try
+		{
+			{
+				goto IL_001c_1;
+			}
+
+IL_000e_1:
+			{
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileExtrusionView.cs:14>
+				RuntimeObject* L_5 = V_0;
+				NullCheck(L_5);
+				TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* L_6;
+				L_6 = InterfaceFuncInvoker0< TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* >::Invoke(0, IEnumerator_1_tBE1C1044442DB29BC5B1F1B07A43FC46C46C7046_il2cpp_TypeInfo_var, L_5);
+				V_1 = L_6;
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileExtrusionView.cs:15>
+				TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* L_7 = V_1;
+				TileExtrusionView_Apply_m142B31AE6916A5D6A47C28C32A03648C6699AEAA(__this, L_7, NULL);
+			}
+
+IL_001c_1:
+			{
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileExtrusionView.cs:14>
+				RuntimeObject* L_8 = V_0;
+				NullCheck(L_8);
+				bool L_9;
+				L_9 = InterfaceFuncInvoker0< bool >::Invoke(0, IEnumerator_t7B609C2FFA6EB5167D9C62A0C32A21DE2F666DAA_il2cpp_TypeInfo_var, L_8);
+				if (L_9)
+				{
+					goto IL_000e_1;
+				}
+			}
+			{
+				goto IL_0030;
+			}
+		}
+		catch(Il2CppExceptionWrapper& e)
+		{
+			__finallyBlock.StoreException(e.ex);
+		}
+	}
+
+IL_0030:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileExtrusionView.cs:16>
+		return;
+	}
+}
+// Method Definition Index: 132053
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileExtrusionView_RefreshTile_m20D90BABBFFF58318FA02046410E0B3A8A208B09 (TileExtrusionView_tDD2454E77A3D6A1A8E13B1083D9547D9CB4122C9* __this, TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* ___0_tile, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileExtrusionView.cs:18>
+		TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* L_0 = ___0_tile;
+		TileExtrusionView_Apply_m142B31AE6916A5D6A47C28C32A03648C6699AEAA(__this, L_0, NULL);
+		return;
+	}
+}
+// Method Definition Index: 132054
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileExtrusionView_Apply_m142B31AE6916A5D6A47C28C32A03648C6699AEAA (TileExtrusionView_tDD2454E77A3D6A1A8E13B1083D9547D9CB4122C9* __this, TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* ___0_tile, const RuntimeMethod* method) 
+{
+	float V_0 = 0.0f;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileExtrusionView.cs:22>
+		TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* L_0 = ___0_tile;
+		NullCheck(L_0);
+		int32_t L_1;
+		L_1 = TileData_get_BuildLevel_mEEBB93D2AFFDD1B9D06C2A9C8E055947B8358DDD_inline(L_0, NULL);
+		EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* L_2 = __this->____economyConfig;
+		NullCheck(L_2);
+		int32_t L_3;
+		L_3 = EconomyConfig_get_MaxBuildLevel_m332B5ADA4C8A582EA81523FC9FA32E6D94A2C610_inline(L_2, NULL);
+		float L_4;
+		L_4 = Mathf_Clamp01_mA7E048DBDA832D399A581BE4D6DED9FA44CE0F14_inline(((float)(((float)L_1)/((float)L_3))), NULL);
+		V_0 = L_4;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileExtrusionView.cs:23>
+		HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* L_5 = __this->____hexasphere;
+		TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* L_6 = ___0_tile;
+		NullCheck(L_6);
+		String_t* L_7;
+		L_7 = TileData_get_TileId_m18EFA30B16870BDE2751E871927869366925497E_inline(L_6, NULL);
+		float L_8 = V_0;
+		NullCheck(L_5);
+		HexasphereManager_SetTileExtrudeAmount_m5C0063E085E629B870B2DDE4EA14F4FF99855917(L_5, L_7, L_8, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileExtrusionView.cs:24>
+		return;
+	}
+}
+// Method Definition Index: 132055
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileExtrusionView__ctor_m8228FBA2D8BA4355FF1B048CC03DFB6C17AB5F06 (TileExtrusionView_tDD2454E77A3D6A1A8E13B1083D9547D9CB4122C9* __this, const RuntimeMethod* method) 
+{
+	{
+		MonoBehaviour__ctor_m592DB0105CA0BC97AA1C5F4AD27B12D68A3B7C1E(__this, NULL);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 132056
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileSelectionController_Awake_m7462C1293ECB523760BEF56E66EC1497E524B323 (TileSelectionController_t52499162946483DB827354C72F6418BB7AAF62DD* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&TileEvent_t3392B77898A6708FA7D695CF027BB60332242782_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&TileSelectionController_OnPluginTileClick_m47AEE7AA083EEBA08490859CCF97DD6D9589DF32_RuntimeMethod_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* V_0 = NULL;
+	Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* G_B3_0 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileSelectionController.cs:12>
+		HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* L_0 = __this->____hexasphere;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_1;
+		L_1 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_0, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (L_1)
+		{
+			goto IL_0011;
+		}
+	}
+	{
+		G_B3_0 = ((Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC*)(NULL));
+		goto IL_001c;
+	}
+
+IL_0011:
+	{
+		HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* L_2 = __this->____hexasphere;
+		NullCheck(L_2);
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_3;
+		L_3 = HexasphereManager_get_PluginHexasphere_m37CAAE2F6C9100B251C76C567CF65E6C49F0151D_inline(L_2, NULL);
+		G_B3_0 = L_3;
+	}
+
+IL_001c:
+	{
+		V_0 = G_B3_0;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileSelectionController.cs:13>
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_4 = V_0;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_5;
+		L_5 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_4, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_5)
+		{
+			goto IL_0038;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileSelectionController.cs:14>
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_6 = V_0;
+		TileEvent_t3392B77898A6708FA7D695CF027BB60332242782* L_7 = (TileEvent_t3392B77898A6708FA7D695CF027BB60332242782*)il2cpp_codegen_object_new(TileEvent_t3392B77898A6708FA7D695CF027BB60332242782_il2cpp_TypeInfo_var);
+		TileEvent__ctor_mDC8E605DD8506F3DC6B0981BD02F34754D09E89F(L_7, __this, (intptr_t)((void*)TileSelectionController_OnPluginTileClick_m47AEE7AA083EEBA08490859CCF97DD6D9589DF32_RuntimeMethod_var), NULL);
+		NullCheck(L_6);
+		Hexasphere_add_OnTileClick_mBFBFB76D3017B9E24967A8B076759ACFC408FF4A(L_6, L_7, NULL);
+	}
+
+IL_0038:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileSelectionController.cs:15>
+		return;
+	}
+}
+// Method Definition Index: 132057
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileSelectionController_OnDestroy_m162EF73D25497D93E3F9AFB7B15EEFB6F7448294 (TileSelectionController_t52499162946483DB827354C72F6418BB7AAF62DD* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&TileEvent_t3392B77898A6708FA7D695CF027BB60332242782_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&TileSelectionController_OnPluginTileClick_m47AEE7AA083EEBA08490859CCF97DD6D9589DF32_RuntimeMethod_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* V_0 = NULL;
+	Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* G_B3_0 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileSelectionController.cs:19>
+		HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* L_0 = __this->____hexasphere;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_1;
+		L_1 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_0, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (L_1)
+		{
+			goto IL_0011;
+		}
+	}
+	{
+		G_B3_0 = ((Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC*)(NULL));
+		goto IL_001c;
+	}
+
+IL_0011:
+	{
+		HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* L_2 = __this->____hexasphere;
+		NullCheck(L_2);
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_3;
+		L_3 = HexasphereManager_get_PluginHexasphere_m37CAAE2F6C9100B251C76C567CF65E6C49F0151D_inline(L_2, NULL);
+		G_B3_0 = L_3;
+	}
+
+IL_001c:
+	{
+		V_0 = G_B3_0;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileSelectionController.cs:20>
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_4 = V_0;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_5;
+		L_5 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_4, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_5)
+		{
+			goto IL_0038;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileSelectionController.cs:21>
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_6 = V_0;
+		TileEvent_t3392B77898A6708FA7D695CF027BB60332242782* L_7 = (TileEvent_t3392B77898A6708FA7D695CF027BB60332242782*)il2cpp_codegen_object_new(TileEvent_t3392B77898A6708FA7D695CF027BB60332242782_il2cpp_TypeInfo_var);
+		TileEvent__ctor_mDC8E605DD8506F3DC6B0981BD02F34754D09E89F(L_7, __this, (intptr_t)((void*)TileSelectionController_OnPluginTileClick_m47AEE7AA083EEBA08490859CCF97DD6D9589DF32_RuntimeMethod_var), NULL);
+		NullCheck(L_6);
+		Hexasphere_remove_OnTileClick_m4E0425855F1AC2C083B9C9B059485BCA93CCBE3F(L_6, L_7, NULL);
+	}
+
+IL_0038:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileSelectionController.cs:22>
+		return;
+	}
+}
+// Method Definition Index: 132058
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileSelectionController_OnPluginTileClick_m47AEE7AA083EEBA08490859CCF97DD6D9589DF32 (TileSelectionController_t52499162946483DB827354C72F6418BB7AAF62DD* __this, Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* ___0_hex, int32_t ___1_tileIndex, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral2E7F9F6A92320D7FDDBABF84CA80597D099FF1F5);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileSelectionController.cs:26>
+		Type_t* L_0;
+		L_0 = Object_GetType_mE10A8FC1E57F3DF29972CCBC026C2DC3942263B3(__this, NULL);
+		NullCheck(L_0);
+		String_t* L_1;
+		L_1 = VirtualFuncInvoker0< String_t* >::Invoke(8, L_0);
+		int32_t L_2 = ___1_tileIndex;
+		int32_t L_3 = L_2;
+		RuntimeObject* L_4 = Box(il2cpp_defaults.int32_class, &L_3);
+		String_t* L_5;
+		L_5 = String_Format_mFB7DA489BD99F4670881FF50EC017BFB0A5C0987(_stringLiteral2E7F9F6A92320D7FDDBABF84CA80597D099FF1F5, L_1, L_4, NULL);
+		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
+		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(L_5, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileSelectionController.cs:27>
+		HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* L_6 = __this->____hexasphere;
+		String_t* L_7;
+		L_7 = Int32_ToString_m030E01C24E294D6762FB0B6F37CB541581F55CA5((&___1_tileIndex), NULL);
+		NullCheck(L_6);
+		HexasphereManager_SelectTile_m92E6F926C43D4A904E2095630DF5D9900A1D6B2D(L_6, L_7, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileSelectionController.cs:28>
+		return;
+	}
+}
+// Method Definition Index: 132059
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TileSelectionController__ctor_m3BE8AF4A41A6CBE9EEB0B5F27DEECE243227AB42 (TileSelectionController_t52499162946483DB827354C72F6418BB7AAF62DD* __this, const RuntimeMethod* method) 
+{
+	{
+		MonoBehaviour__ctor_m592DB0105CA0BC97AA1C5F4AD27B12D68A3B7C1E(__this, NULL);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+// Method Definition Index: 124764
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t Hexasphere_get_numDivisions_m2433897045B687D3469512DAAF274A10D82614DC_inline (Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/Plugins/Hexasphere/Scripts/Hexasphere.cs:26>
+		int32_t L_0 = __this->____numDivisions;
+		return L_0;
+	}
+}
+// Method Definition Index: 132048
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void TileData_set_IsLandmark_m501882A1819F87071A239D0AF6E449BE312EC319_inline (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, bool ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileData.cs:11>
+		bool L_0 = ___0_value;
+		__this->___U3CIsLandmarkU3Ek__BackingField = L_0;
+		return;
+	}
+}
+// Method Definition Index: 132044
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void TileData_set_State_m41D6FA690A61A9BE5879AEF5B44B103E11484CA7_inline (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, int32_t ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileData.cs:9>
+		int32_t L_0 = ___0_value;
+		__this->___U3CStateU3Ek__BackingField = L_0;
+		return;
+	}
+}
+// Method Definition Index: 64021
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Mathf_Clamp_mEB9AEA827D27D20FCC787F7375156AF46BB12BBF_inline (float ___0_value, float ___1_min, float ___2_max, const RuntimeMethod* method) 
+{
+	bool V_0 = false;
+	bool V_1 = false;
+	float V_2 = 0.0f;
+	{
+		float L_0 = ___0_value;
+		float L_1 = ___1_min;
+		V_0 = (bool)((((float)L_0) < ((float)L_1))? 1 : 0);
+		bool L_2 = V_0;
+		if (!L_2)
+		{
+			goto IL_000e;
+		}
+	}
+	{
+		float L_3 = ___1_min;
+		___0_value = L_3;
+		goto IL_0019;
+	}
+
+IL_000e:
+	{
+		float L_4 = ___0_value;
+		float L_5 = ___2_max;
+		V_1 = (bool)((((float)L_4) > ((float)L_5))? 1 : 0);
+		bool L_6 = V_1;
+		if (!L_6)
+		{
+			goto IL_0019;
+		}
+	}
+	{
+		float L_7 = ___2_max;
+		___0_value = L_7;
+	}
+
+IL_0019:
+	{
+		float L_8 = ___0_value;
+		V_2 = L_8;
+		goto IL_001d;
+	}
+
+IL_001d:
+	{
+		float L_9 = V_2;
+		return L_9;
+	}
+}
+// Method Definition Index: 63909
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector3_get_zero_m0C1249C3F25B1C70EAD3CC8B31259975A457AE39_inline (const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_0 = ((Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2_StaticFields*)il2cpp_codegen_static_fields_for(Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2_il2cpp_TypeInfo_var))->___zeroVector;
+		return L_0;
+	}
+}
+// Method Definition Index: 63917
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector3_op_Addition_m78C0EC70CB66E8DCAC225743D82B268DAEE92067_inline (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_a, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___1_b, const RuntimeMethod* method) 
+{
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	{
+		il2cpp_codegen_initobj((&V_0), sizeof(Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_0 = ___0_a;
+		float L_1 = L_0.___x;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_2 = ___1_b;
+		float L_3 = L_2.___x;
+		(&V_0)->___x = ((float)il2cpp_codegen_add(L_1, L_3));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_4 = ___0_a;
+		float L_5 = L_4.___y;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_6 = ___1_b;
+		float L_7 = L_6.___y;
+		(&V_0)->___y = ((float)il2cpp_codegen_add(L_5, L_7));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_8 = ___0_a;
+		float L_9 = L_8.___z;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_10 = ___1_b;
+		float L_11 = L_10.___z;
+		(&V_0)->___z = ((float)il2cpp_codegen_add(L_9, L_11));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_12 = V_0;
+		return L_12;
+	}
+}
+// Method Definition Index: 63965
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 Quaternion_Euler_m9262AB29E3E9CE94EF71051F38A28E82AEC73F90_inline (float ___0_x, float ___1_y, float ___2_z, const RuntimeMethod* method) 
+{
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	{
+		il2cpp_codegen_initobj((&V_0), sizeof(Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2));
+		float L_0 = ___0_x;
+		(&V_0)->___x = ((float)il2cpp_codegen_multiply(L_0, (0.0174532924f)));
+		float L_1 = ___1_y;
+		(&V_0)->___y = ((float)il2cpp_codegen_multiply(L_1, (0.0174532924f)));
+		float L_2 = ___2_z;
+		(&V_0)->___z = ((float)il2cpp_codegen_multiply(L_2, (0.0174532924f)));
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 L_3;
+		L_3 = Quaternion_Internal_FromEulerRad_mD0C4C0EFE1D70EC0EA4A92B11F1A4D5B0A134E49((&V_0), NULL);
+		return L_3;
+	}
+}
+// Method Definition Index: 63881
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void Vector3__ctor_m376936E6B999EF1ECBE57D990A386303E2283DE0_inline (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2* __this, float ___0_x, float ___1_y, float ___2_z, const RuntimeMethod* method) 
+{
+	{
+		float L_0 = ___0_x;
+		__this->___x = L_0;
+		float L_1 = ___1_y;
+		__this->___y = L_1;
+		float L_2 = ___2_z;
+		__this->___z = L_2;
+		return;
+	}
+}
+// Method Definition Index: 132032
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void PlanetController_set_CurrentPlanet_m8DFB88588759CF05746F22DA4A4F03A6F90776B0_inline (PlanetController_t98B98D4212B2BD0C9F16BBA07BEEA0934DD2E93D* __this, PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/PlanetController.cs:17>
+		PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* L_0 = ___0_value;
+		__this->___U3CCurrentPlanetU3Ek__BackingField = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CCurrentPlanetU3Ek__BackingField), (void*)L_0);
+		return;
+	}
+}
+// Method Definition Index: 131986
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t PlanetDefinition_get_TileCount_m315D304A1924B15A44D531F67E13DA30D46D4B6E_inline (PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/PlanetDefinition.cs:19>
+		int32_t L_0 = __this->____tileCount;
+		return L_0;
+	}
+}
+// Method Definition Index: 132012
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR RuntimeObject* HexasphereManager_get_Tiles_mF734D1A1D6883CCA033771EA5E3ECE0496934D87_inline (HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:23>
+		Dictionary_2_tE0A89A3DCA24039D14360C9E8E36EFD8483E2900* L_0 = __this->____tiles;
+		return L_0;
+	}
+}
+// Method Definition Index: 131984
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* PlanetDefinition_get_DisplayName_m9B90C34BBDD2E66775A13EBF6FA084E31173B0A4_inline (PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/PlanetDefinition.cs:17>
+		String_t* L_0 = __this->____displayName;
+		return L_0;
+	}
+}
+// Method Definition Index: 131985
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* PlanetDefinition_get_ModelPrefab_m7015314C62AB28581E0FC93C0F70054FAA51C51D_inline (PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/PlanetDefinition.cs:18>
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_0 = __this->____modelPrefab;
+		return L_0;
+	}
+}
+// Method Definition Index: 63954
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 Quaternion_get_identity_m7E701AE095ED10FD5EA0B50ABCFDE2EEFF2173A5_inline (const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 L_0 = ((Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974_StaticFields*)il2cpp_codegen_static_fields_for(Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974_il2cpp_TypeInfo_var))->___identityQuaternion;
+		return L_0;
+	}
+}
+// Method Definition Index: 132043
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t TileData_get_State_mA1728DEA54FD632BEAEC26F74BDE591DB737E62A_inline (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileData.cs:9>
+		int32_t L_0 = __this->___U3CStateU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 132040
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* TileData_get_TileId_m18EFA30B16870BDE2751E871927869366925497E_inline (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileData.cs:7>
+		String_t* L_0 = __this->___U3CTileIdU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 63734
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void Color__ctor_mCD6889CDE39F18704CD6EA8E2EFBFA48BA3E13B0_inline (Color_tD001788D726C3A7F1379BEED0260B9591F440C1F* __this, float ___0_r, float ___1_g, float ___2_b, const RuntimeMethod* method) 
+{
+	{
+		float L_0 = ___0_r;
+		__this->___r = L_0;
+		float L_1 = ___1_g;
+		__this->___g = L_1;
+		float L_2 = ___2_b;
+		__this->___b = L_2;
+		__this->___a = (1.0f);
+		return;
+	}
+}
+// Method Definition Index: 132049
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t TileData_get_BuildLevel_mEEBB93D2AFFDD1B9D06C2A9C8E055947B8358DDD_inline (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/TileData.cs:12>
+		int32_t L_0 = __this->___U3CBuildLevelU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 131958
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_MaxBuildLevel_m332B5ADA4C8A582EA81523FC9FA32E6D94A2C610_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:59>
+		int32_t L_0 = __this->____maxBuildLevel;
+		return L_0;
+	}
+}
+// Method Definition Index: 64023
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Mathf_Clamp01_mA7E048DBDA832D399A581BE4D6DED9FA44CE0F14_inline (float ___0_value, const RuntimeMethod* method) 
+{
+	bool V_0 = false;
+	float V_1 = 0.0f;
+	bool V_2 = false;
+	{
+		float L_0 = ___0_value;
+		V_0 = (bool)((((float)L_0) < ((float)(0.0f)))? 1 : 0);
+		bool L_1 = V_0;
+		if (!L_1)
+		{
+			goto IL_0015;
+		}
+	}
+	{
+		V_1 = (0.0f);
+		goto IL_002d;
+	}
+
+IL_0015:
+	{
+		float L_2 = ___0_value;
+		V_2 = (bool)((((float)L_2) > ((float)(1.0f)))? 1 : 0);
+		bool L_3 = V_2;
+		if (!L_3)
+		{
+			goto IL_0029;
+		}
+	}
+	{
+		V_1 = (1.0f);
+		goto IL_002d;
+	}
+
+IL_0029:
+	{
+		float L_4 = ___0_value;
+		V_1 = L_4;
+		goto IL_002d;
+	}
+
+IL_002d:
+	{
+		float L_5 = V_1;
+		return L_5;
+	}
+}
+// Method Definition Index: 132013
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* HexasphereManager_get_PluginHexasphere_m37CAAE2F6C9100B251C76C567CF65E6C49F0151D_inline (HexasphereManager_t5B45D5F9DD3165979D468FD3822C14A1FD1AD926* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/World/HexasphereManager.cs:25>
+		Hexasphere_t411FC336E4E84A83268E6209917563C9A08A02EC* L_0 = __this->____hexasphere;
+		return L_0;
+	}
+}
+// Method Definition Index: 100216
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR RuntimeObject* Enumerable_Empty_TisRuntimeObject_mA90CDE158774C34A28C07CEEA9E9EA2A61618238_gshared_inline (const RuntimeMethod* method) 
+{
+	il2cpp_rgctx_method_init(method);
+	{
+		il2cpp_codegen_runtime_class_init_inline(il2cpp_rgctx_data(method->rgctx_data, 2));
+		ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918* L_0 = ((EmptyEnumerable_1_t8C8873EF4F89FB0F86D91BA5B4D640E3A23AD28E_StaticFields*)il2cpp_codegen_static_fields_for(il2cpp_rgctx_data(method->rgctx_data, 2)))->___Instance;
+		return (RuntimeObject*)L_0;
+	}
+}
+// Method Definition Index: 11409
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t List_1_get_Count_m4407E4C389F22B8CEC282C15D56516658746C383_gshared_inline (List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D* __this, const RuntimeMethod* method) 
+{
+	{
+		int32_t L_0 = __this->____size;
+		return L_0;
+	}
+}

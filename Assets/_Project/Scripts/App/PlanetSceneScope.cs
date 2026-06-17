@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using VContainer;
 using VContainer.Unity;
 using SocialUniverse.Config;
@@ -41,6 +42,7 @@ namespace SocialUniverse.App
             // In the full app flow (Bootstrap → Planet), RootLifetimeScope provides these.
             if (parentReference.Type == null)
             {
+                builder.Register<SceneLoader>(Lifetime.Singleton);
                 builder.Register<NetworkBootstrap>(Lifetime.Singleton).AsImplementedInterfaces();
                 builder.Register<LocalMockAuthService>(Lifetime.Singleton).As<IAuthService>();
                 builder.Register<BackendClient>(Lifetime.Singleton).As<IBackendClient>();
@@ -94,6 +96,7 @@ namespace SocialUniverse.App
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.HUDController>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.MiningModePromptView>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.SocialDebugPanel>();
+            builder.RegisterComponentInHierarchy<SocialUniverse.UI.DisplayNameModal>();
 
             builder.RegisterEntryPoint<PlanetSceneBootstrapper>();
             builder.RegisterEntryPoint<MiningInputHandler>();
@@ -134,6 +137,9 @@ namespace SocialUniverse.App
         private readonly HexasphereManager _hexasphere;
         private readonly TileColorizer     _colorizer;
         private readonly IAuthService      _auth;
+        private readonly PlayerState       _playerState;
+        private readonly ProfileService    _profileService;
+        private readonly SceneLoader       _sceneLoader;
 
         public PlanetSceneBootstrapper(
             PlanetController  planetController,
@@ -146,7 +152,10 @@ namespace SocialUniverse.App
             LandRegistry      landRegistry,
             HexasphereManager hexasphere,
             TileColorizer     colorizer,
-            IAuthService      auth)
+            IAuthService      auth,
+            PlayerState       playerState,
+            ProfileService    profileService,
+            SceneLoader       sceneLoader)
         {
             _planetController = planetController;
             _asteroidSpawner  = asteroidSpawner;
@@ -159,33 +168,46 @@ namespace SocialUniverse.App
             _hexasphere       = hexasphere;
             _colorizer        = colorizer;
             _auth             = auth;
+            _playerState      = playerState;
+            _profileService   = profileService;
+            _sceneLoader      = sceneLoader;
         }
 
         public async void Start()
         {
+            // In standalone mode (Planet scene opened directly without Bootstrap/PlanetState),
+            // PlanetState has not run so the loading scene must be loaded here instead.
+            var ls = SceneManager.GetSceneByName(Constants.SceneNames.LoadingScreen);
+            if (!ls.IsValid() || !ls.isLoaded)
+                await _sceneLoader.LoadAsync(Constants.SceneNames.LoadingScreen);
+
+            EventBus.Publish(new LoadingStatusEvent(0.15f));
             _planetController.Load(_startPlanet);
             _asteroidSpawner.SpawnForPlanet(_startPlanet);
 
-            // M2: Hydrate wallet and owned tiles from server before starting the mining session.
             await HydrateServerStateAsync();
 
             var droneDef = _registry.AllDrones.FirstOrDefault();
             if (droneDef == null)
             {
                 SULog.Error("PlanetSceneBootstrapper: no DroneDefinition in DatabaseRegistry");
+                EventBus.Publish(new PlanetSceneReadyEvent());
                 return;
             }
 
+            EventBus.Publish(new LoadingStatusEvent(0.90f));
             var saved       = PlayerPrefs.GetString(SaveKeys.LastSessionEnd, "");
             var lastSession = DateTime.TryParse(saved, out var dt) ? dt : DateTime.UtcNow;
-
-            var drone = new DroneRuntime(droneDef);
+            var drone       = new DroneRuntime(droneDef);
             _miningController.StartSession(drone, lastSession);
+
+            EventBus.Publish(new PlanetSceneReadyEvent());
         }
 
         private async Task HydrateServerStateAsync()
         {
             // Hydrate wallet — non-fatal; falls back to 0 balance if server is unreachable.
+            EventBus.Publish(new LoadingStatusEvent(0.35f));
             try
             {
                 await _economy.GetWalletAsync();
@@ -196,7 +218,28 @@ namespace SocialUniverse.App
                 SULog.Warn($"PlanetSceneBootstrapper: wallet hydration failed ({ex.Message}), using local state", SULog.Channel.Economy);
             }
 
+            // Hydrate display name — prefer DisplayName (set during registration), fall back to Username, then "Player".
+            EventBus.Publish(new LoadingStatusEvent(0.55f));
+            string authId = _auth.IsSignedIn
+                ? (!string.IsNullOrEmpty(_auth.DisplayName) ? _auth.DisplayName
+                   : !string.IsNullOrEmpty(_auth.Username)  ? _auth.Username
+                   : "Player")
+                : "Player";
+            _playerState.SetDisplayName(authId);
+
+            try
+            {
+                var profile = await _profileService.GetProfileAsync(_auth.PlayerId);
+                if (profile != null && !string.IsNullOrEmpty(profile.DisplayName))
+                    _playerState.SetDisplayName(profile.DisplayName);
+            }
+            catch (Exception ex)
+            {
+                SULog.Warn($"PlanetSceneBootstrapper: profile fetch failed ({ex.Message}), using auth id", SULog.Channel.Net);
+            }
+
             // Restore owned tiles for this planet from Cloud Save.
+            EventBus.Publish(new LoadingStatusEvent(0.75f));
             try
             {
                 string saveKey  = SaveKeys.OwnedTilesKey(_startPlanet.name);

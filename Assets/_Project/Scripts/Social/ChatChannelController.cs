@@ -49,7 +49,8 @@ namespace SocialUniverse.Social
 
         // Tracks the most recently requested channel switch so SendAsync can wait
         // on it instead of failing with NoChannel while a join is still in flight.
-        private Task _pendingSwitch = Task.CompletedTask;
+        private Task   _pendingSwitch      = Task.CompletedTask;
+        private string _pendingChannelName;
 
         public Task SwitchToGlobalAsync()                => SwitchToAsync(_config.GlobalChannelName);
         public Task SwitchToLocalAsync(string planetId)  => SwitchToAsync(LocalChannelName(planetId));
@@ -109,6 +110,13 @@ namespace SocialUniverse.Social
 
         private Task SwitchToAsync(string channelName)
         {
+            // Already on this channel — nothing to do.
+            if (channelName == ActiveChannel) return Task.CompletedTask;
+            // A join to the same channel is already in flight — reuse that task
+            // instead of issuing a second JoinChannelAsync, which Vivox rejects.
+            if (channelName == _pendingChannelName) return _pendingSwitch;
+
+            _pendingChannelName = channelName;
             var task = DoSwitchAsync(channelName);
             _pendingSwitch = task;
             return task;
@@ -116,12 +124,11 @@ namespace SocialUniverse.Social
 
         private async Task DoSwitchAsync(string channelName)
         {
-            if (channelName == ActiveChannel) return;
-
             await _chat.JoinChannelAsync(channelName);
 
-            var previous  = ActiveChannel;
-            ActiveChannel = channelName;
+            var previous        = ActiveChannel;
+            ActiveChannel       = channelName;
+            _pendingChannelName = null;
 
             if (!string.IsNullOrEmpty(previous))
                 await _chat.LeaveChannelAsync(previous);

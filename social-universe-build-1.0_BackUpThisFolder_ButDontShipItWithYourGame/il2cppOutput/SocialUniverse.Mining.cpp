@@ -1,0 +1,8667 @@
+﻿#include "pch-cpp.hpp"
+
+
+
+
+
+template <typename R>
+struct VirtualFuncInvoker0
+{
+	typedef R (*Func)(void*, const RuntimeMethod*);
+
+	static inline R Invoke (Il2CppMethodSlot slot, RuntimeObject* obj)
+	{
+		const VirtualInvokeData& invokeData = il2cpp_codegen_get_virtual_invoke_data(slot, obj);
+		return ((Func)invokeData.methodPtr)(obj, invokeData.method);
+	}
+};
+struct InterfaceActionInvoker0
+{
+	typedef void (*Action)(void*, const RuntimeMethod*);
+
+	static inline void Invoke (Il2CppMethodSlot slot, RuntimeClass* declaringInterface, RuntimeObject* obj)
+	{
+		const VirtualInvokeData& invokeData = il2cpp_codegen_get_interface_invoke_data(slot, obj, declaringInterface);
+		((Action)invokeData.methodPtr)(obj, invokeData.method);
+	}
+};
+template <typename R>
+struct InterfaceFuncInvoker0
+{
+	typedef R (*Func)(void*, const RuntimeMethod*);
+
+	static inline R Invoke (Il2CppMethodSlot slot, RuntimeClass* declaringInterface, RuntimeObject* obj)
+	{
+		const VirtualInvokeData& invokeData = il2cpp_codegen_get_interface_invoke_data(slot, obj, declaringInterface);
+		return ((Func)invokeData.methodPtr)(obj, invokeData.method);
+	}
+};
+template <typename R, typename T1>
+struct InterfaceFuncInvoker1
+{
+	typedef R (*Func)(void*, T1, const RuntimeMethod*);
+
+	static inline R Invoke (Il2CppMethodSlot slot, RuntimeClass* declaringInterface, RuntimeObject* obj, T1 p1)
+	{
+		const VirtualInvokeData& invokeData = il2cpp_codegen_get_interface_invoke_data(slot, obj, declaringInterface);
+		return ((Func)invokeData.methodPtr)(obj, p1, invokeData.method);
+	}
+};
+
+struct Action_1_t16777F1C5C2E1F6A8AD4BE6559F7B85BBB810244;
+struct Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA;
+struct Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F;
+struct Action_1_tC926860F20D428DA3E93D6FBA36420E904DD903B;
+struct Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC;
+struct Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28;
+struct Action_1_t6F9EB113EB3F16226AEF811A2744F4111C116C87;
+struct Comparison_1_t9FCAC8C8CE160A96C5AAD2DE1D353DCE8A2FEEFC;
+struct Dictionary_2_t403063CE4960B4F46C688912237C6A27E550FF55;
+struct Func_1_tD59A12717D79BFB403BF973694B1BE5B85474BD1;
+struct Func_2_tB5440A0247E58087F1DB06CB65F2DFC4C1ED4047;
+struct Func_2_tD8F67CBC136C4F1DD63F067B59B7A53EE4704585;
+struct Func_2_t10F648ED396E137490D51A054ED48C9FBC0854E4;
+struct Func_2_tA8125C6B01EF913BA8EA4EA9ABC49917EF6C4369;
+struct IEnumerable_1_tF95C9E01A913DD50575531C8305932628663D9E9;
+struct IEnumerable_1_t349E66EC5F09B881A8E52EE40A1AB9EC60E08E44;
+struct IEnumerable_1_t54D5D9CCDE81C47EC540EC11BF9809E3C351A160;
+struct IEnumerator_1_tAD9A7E67D458237E591B86578D8FA346466A200D;
+struct IReadOnlyList_1_tE49285E0300C63725AA4528650C3132D8C6CCE75;
+struct List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E;
+struct List_1_tA5BDE435C735A082941CD33D212F97F4AE9FA55F;
+struct List_1_tF2FE88545EFEC788CAAE6C74EC2F78E937FCCAC3;
+struct List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D;
+struct List_1_tFE951BF9E0D595431590167E85F992760D743EEF;
+struct Predicate_1_t8342C85FF4E41CD1F7024AC0CDC3E5312A32CB12;
+struct Predicate_1_t7F48518B008C1472339EEEBABA3DE203FE1F26ED;
+struct Task_1_tE41CFF640EB7C045550D9D0D92BE67533B084C17;
+struct AsteroidU5BU5D_t09BC14D2E76C8F1A5F371BFED2176266CE3C66B9;
+struct AsteroidDefinitionU5BU5D_tBFF455AEF363CCA9AD627A7BE225FF1013BBAC04;
+struct ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031;
+struct CharU5BU5D_t799905CF001DD5F13F7DBB310181FC4D8B7D0AAB;
+struct DelegateU5BU5D_tC5AB7E8F745616680F337909D3A8E6C722CDF771;
+struct DroneDefinitionU5BU5D_tAA636C387EB20FE7DF72FCED26F01B050CA487C6;
+struct Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C;
+struct IntPtrU5BU5D_tFD177F8C806A6921AD7150264CCC62FA00CAD832;
+struct ItemDefinitionU5BU5D_t82BC7B80850116442A178D7ED60300CA6C1F92B2;
+struct ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918;
+struct PlanetDefinitionU5BU5D_t65E0C6BED4268E32EC459FA58179C184BD507514;
+struct StackTraceU5BU5D_t32FBCB20930EAF5BAE3F450FF75228E5450DA0DF;
+struct StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248;
+struct PendingRespawnU5BU5D_tF350AA9CF27C85125C7E7B71930A69376757559E;
+struct Action_tD00B0A84D7945E50C2DFFC28EFEE6ED44ED2AD07;
+struct ActiveMiningMinigame_t56A84BE8A5799A6935966B35EB277CDC5A039299;
+struct AnimationCurve_tCBFFAAD05CEBB35EF8D8631BD99914BE1A6BB354;
+struct ArgumentNullException_t327031E412FAB2351B0022DD5DAD47E67E597129;
+struct Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE;
+struct AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527;
+struct AsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70;
+struct AsteroidSelectionController_t5799B4C81049C2CBE885591F63E3A19E3B0B1A1B;
+struct AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083;
+struct AsyncCallback_t7FEF460CBDCFB9C5FA2EF776984778B9A4145F4C;
+struct BaseEventData_tE03A848325C0AE8E76C6CA15FD86395EBF83364F;
+struct BaseInputModule_tF3B7C22AF1419B2AC9ECE6589357DC1B88ED96B1;
+struct Camera_tA92CC927D7439999BC82DBEDC0AA45B470F9E184;
+struct CancellationTokenSource_tAAE1E0033BCFC233801F8CB4CED5C852B350CB7B;
+struct Collider_t1CC3163924FCD6C4CC2E816373A929C1E3D55E76;
+struct Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3;
+struct ContextCallback_tE8AFBDBFCC040FDA8DA8C1EEFE9BD66B16BDA007;
+struct DatabaseRegistry_tBD75C5774CDFE42C5FC8B3827DE1F0E1AF8BC8D1;
+struct Delegate_t;
+struct DelegateData_t9B286B493293CD2D23A5B2B5EF0E5B1324C2B77E;
+struct DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828;
+struct DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52;
+struct DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC;
+struct EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8;
+struct EventSystem_t61C51380B105BE9D2C39C4F15B7E655659957707;
+struct Exception_t;
+struct GameObject_t76FEDD663AB33C991A9C9A23129337651094216F;
+struct Gradient_tA7FEBE2FDB4929FFF6C997134841046F713DAC1E;
+struct IAsyncResult_t7B9B5A0ECB35DCEC31B8A8122C37D687369253B5;
+struct IAsyncStateMachine_t0680C7F905C553076B552D5A1A6E39E2F0F36AA2;
+struct IDictionary_t6D03155AF1FA9083817AA5B6AD7DEEACC26AB220;
+struct IEconomyService_tDDBF98E920FD3B0BE075F1F42E25AEDAC90DAB4F;
+struct IdleMiningCalculator_t942A246A242064927872B44C78D414479ACC2F05;
+struct IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149;
+struct IdleMiningSessionController_tDBF223858E8DC3FECBE0E30EBB4B3CD884FFCEEE;
+struct Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3;
+struct MethodInfo_t;
+struct MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2;
+struct MiningInputHandler_t65B94CB12CFABCF2C50299CC3C8AFDCE5F243B77;
+struct MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9;
+struct MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71;
+struct Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C;
+struct ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1;
+struct ParticleSystemRenderer_t576C271A363A738A6C576D4C6AEFB3B5B23E46C4;
+struct PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933;
+struct Random_t79716069EDE67D1D7734F60AE402D0CA3FB6B4C8;
+struct Renderer_t320575F223BCB177A982E5DDB5DB19FAA89E7FBF;
+struct SafeSerializationManager_tCBB85B95DFD1634237140CD892E82D06ECB3F5E6;
+struct Shader_tADC867D36B7876EE22427FAA2CE485105F4EE692;
+struct SphereCollider_tBA111C542CE97F6873DE742757213D6265C7D275;
+struct StackGuard_tACE063A1B7374BDF4AD472DE4585D05AD8745352;
+struct String_t;
+struct Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572;
+struct TaskFactory_tF781BD37BE23917412AD83424D1497C7C1509DF0;
+struct TaskScheduler_t3F0550EBEF7C41F74EC8C08FF4BED0D8CE66006E;
+struct Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1;
+struct UIToolkitInteroperabilityBridge_t8E98EE5D73E8CCAA894A1BE50049E2A06E592CDD;
+struct UnitySourceGeneratedAssemblyMonoScriptTypes_v1_t985FCC110D55873BCF7443ACBD26729F023CFDC8;
+struct Void_t4861ACF8F4594C3437BB48B6E56783494B843915;
+struct U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5;
+struct U3CU3Ec__DisplayClass10_0_t1AE26FC45BF34994EA766723EA87B20BB2FF845C;
+struct CameraCallback_t844E527BFE37BC0495E7F67993E43C07642DA9DD;
+struct ContingentProperties_t3FA59480914505CEA917B1002EC675F29D0CB540;
+
+IL2CPP_EXTERN_C RuntimeClass* Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Action_1_t16777F1C5C2E1F6A8AD4BE6559F7B85BBB810244_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* ArgumentNullException_t327031E412FAB2351B0022DD5DAD47E67E597129_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* AsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* DateTimeOffset_t4EE701FE2F386D6F932FAC9B11E4B74A5B30F0A4_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* EventBus_tD995B8977DB6D299BE8C38F5E222C99EE6EA8B11_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* EventSystem_t61C51380B105BE9D2C39C4F15B7E655659957707_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Exception_t_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Func_2_tA8125C6B01EF913BA8EA4EA9ABC49917EF6C4369_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Func_2_tB5440A0247E58087F1DB06CB65F2DFC4C1ED4047_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Func_2_tD8F67CBC136C4F1DD63F067B59B7A53EE4704585_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* GameObject_t76FEDD663AB33C991A9C9A23129337651094216F_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* IDisposable_t030E0496B4E0E4E4F086825007979AF51F7248C5_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* IEconomyService_tDDBF98E920FD3B0BE075F1F42E25AEDAC90DAB4F_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* IEnumerable_1_tEFECE3ABDB452675D2763BEA3DEC24313022B247_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* IEnumerator_1_tAD9A7E67D458237E591B86578D8FA346466A200D_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* IEnumerator_t7B609C2FFA6EB5167D9C62A0C32A21DE2F666DAA_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* List_1_tFE951BF9E0D595431590167E85F992760D743EEF_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Math_tEB65DE7CA8B083C412C969C92981C030865486CE_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Physics_t1244C2983AEAFA149425AFFC3DF53BC91C18ED56_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Random_t79716069EDE67D1D7734F60AE402D0CA3FB6B4C8_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* TimeSpan_t8195C5B013A2C532FEBDF0B64B6911982E750F5A_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* U3CU3Ec__DisplayClass10_0_t1AE26FC45BF34994EA766723EA87B20BB2FF845C_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeClass* Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2_il2cpp_TypeInfo_var;
+IL2CPP_EXTERN_C RuntimeField* PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390____Definition_FieldInfo_var;
+IL2CPP_EXTERN_C RuntimeField* U3CPrivateImplementationDetailsU3E_tA10B3728E3E4DA4A8E20B96EFD428EC1B4D46224____D947B5D6722A4DB48BCF862075F25059E4FB5CE5447E99AE69B2C6EDA9B2ACCF_FieldInfo_var;
+IL2CPP_EXTERN_C RuntimeField* U3CPrivateImplementationDetailsU3E_tA10B3728E3E4DA4A8E20B96EFD428EC1B4D46224____EE443271D26191F9A9F876CF130D386DFFF7F417C0DF8B704AD80866A87D4C67_FieldInfo_var;
+IL2CPP_EXTERN_C String_t* _stringLiteral027855E436E6956CCA0412C9B9AB604A1AD9A6E1;
+IL2CPP_EXTERN_C String_t* _stringLiteral0D2A7511363B774951022E41EAB67716511B2577;
+IL2CPP_EXTERN_C String_t* _stringLiteral1A2C9EEBFCE5DA83D305368E162F1B46563904B6;
+IL2CPP_EXTERN_C String_t* _stringLiteral23303B7A59732F849CA6579F45DAC52D3925F222;
+IL2CPP_EXTERN_C String_t* _stringLiteral2B45324484DD1A737379F8ABBF8D0E19FDE53610;
+IL2CPP_EXTERN_C String_t* _stringLiteral34DB910872FD0FA5D174977AFF07440CC9383AE9;
+IL2CPP_EXTERN_C String_t* _stringLiteral3A061C6D3F660CD68E657479918D4869E777CF0C;
+IL2CPP_EXTERN_C String_t* _stringLiteral3C23D0ADBC4EDEB6DD6698DD30541559D35304E6;
+IL2CPP_EXTERN_C String_t* _stringLiteral49425CF51EF67FBFD8AA098A16B840096305BF92;
+IL2CPP_EXTERN_C String_t* _stringLiteral4A3CB0B653CCA6627A2088074E16645D096E0729;
+IL2CPP_EXTERN_C String_t* _stringLiteral4B97B14F93CEEF32D646CB2A822A3C4B2324107A;
+IL2CPP_EXTERN_C String_t* _stringLiteral5CDEEA8CC8D2CFD479160A5D5B6EB534C4E8DD8C;
+IL2CPP_EXTERN_C String_t* _stringLiteral660FC878B1F4C8BA9FDA25266778D0BEB2351B7B;
+IL2CPP_EXTERN_C String_t* _stringLiteral847F2B5B56EAE1D068EECA62C307C051AADD61D9;
+IL2CPP_EXTERN_C String_t* _stringLiteral951CCB49640C8F9E81FB4E0D82730321F4E15BB3;
+IL2CPP_EXTERN_C String_t* _stringLiteral975A5F46FC6E6D8BC7943A3A38CEA489C122E4F1;
+IL2CPP_EXTERN_C String_t* _stringLiteralA5A0421C0622C7F4A8208623A0F2673A1021B874;
+IL2CPP_EXTERN_C String_t* _stringLiteralC81F6681F78FB7222ECF711CB1AE99D5896A036C;
+IL2CPP_EXTERN_C String_t* _stringLiteralDA39A3EE5E6B4B0D3255BFEF95601890AFD80709;
+IL2CPP_EXTERN_C String_t* _stringLiteralDF0FCA071541589F19A06567EF8E4FF21C023690;
+IL2CPP_EXTERN_C String_t* _stringLiteralE1786072F8F06B407951D8AB0A0C12FA4C6DC05A;
+IL2CPP_EXTERN_C String_t* _stringLiteralF85263F579BDEEADCEC89CFCDB0C3F6C51D186BF;
+IL2CPP_EXTERN_C const RuntimeMethod* AsyncTaskMethodBuilder_AwaitUnsafeOnCompleted_TisTaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833_TisU3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3_mA003A007EA9282D6D0F1E7038F94FD69E4545899_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* AsyncTaskMethodBuilder_AwaitUnsafeOnCompleted_TisTaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833_TisU3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191_mBB54921B8B4283478740CB35E94D90A3BE3A6466_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* AsyncTaskMethodBuilder_Start_TisU3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3_m50FBB105BF1B6902FC1DB5659BF19AF1B2CA05AB_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* AsyncTaskMethodBuilder_Start_TisU3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191_mE132AF1A8DAE9A1E7B958288198727FF7B652149_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Component_GetComponentInParent_TisAsteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE_m3F03C12026E7FBC098A99FF685D78943D09C33D2_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Component_GetComponent_TisCollider_t1CC3163924FCD6C4CC2E816373A929C1E3D55E76_m820398EDBF1D3766C3166A0C323A127662A29A14_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Component_GetComponent_TisParticleSystemRenderer_t576C271A363A738A6C576D4C6AEFB3B5B23E46C4_mDB29DD32DF46B9659262256BDBD5B4F1BB805023_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* DroneRuntime__ctor_mF0D6F68A37D33E8418E65FF01500094BC11802B0_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Enumerable_Count_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_m88FD29F42A4D65EED233C5F537B3B7FB63E259A1_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Enumerable_Min_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_TisDateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_m46BD8DC25289BD37A715D302EF12BFA8D1F7D5A0_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Enumerable_Select_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_TisString_t_mF74CC9B16E879C2CF2BC9EF8251AEAB111E91B24_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Enumerator_Dispose_m6B0CAA9F0906166B90D4BFE25146013F9322DC6A_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Enumerator_MoveNext_m16B1AEAEB1494F4C251EC6C9CCCE2DF5A9E6A570_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Enumerator_get_Current_mF4AC9B0A6F5DF3C91BF02F68FBBCFEE07762A356_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* EventBus_Publish_TisAsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70_mB2A1CF00203D11E91CCB25DBDE2BF12DD046EB15_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* EventBus_Subscribe_TisAsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70_m3AD23EE7EABD7E68D1EF861D36BBA564C85B0FCD_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* EventBus_Unsubscribe_TisAsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70_mBB4375B7F2E0F57906C3FEE17D0FCBDD4B2F8CCD_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* GameObject_AddComponent_TisAsteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE_mD7593790638A8A1AD0762C871D44D92EE59A1D0F_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* GameObject_AddComponent_TisParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1_mB314D473090ABA262973402E33A61D8017704EA8_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* GameObject_AddComponent_TisSphereCollider_tBA111C542CE97F6873DE742757213D6265C7D275_m3D05F19667844A2949840753F7A3287115BE029E_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* IdleMiningSessionController_OnAsteroidSelected_m2233AB1A586F6D6B3A6BB60FEF596F649AA5EC33_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* List_1_Add_m34E74E21D3B4B5F81F6C5E939C5F87485BA41859_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* List_1_Add_m8515B507329731A3BD103CDE2FB190112B081111_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* List_1_Clear_m53590F637286193B0CCCA215C8FF8236D2E6B888_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* List_1_Clear_m7FED0360877304E2F2148E8662C8FF4B2E72CA09_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* List_1_GetEnumerator_m2649543096EFB94868C4AFF6A5CB60D7239988E9_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* List_1_RemoveAt_mCD1C30F9E148FE2CB2EC5B1158AD39535FF70EFA_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* List_1_Remove_m9DA25F95AA3EA6E8BC0307832200DC803B072356_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* List_1__ctor_m683C7F0973ADCD7F2126DB1C329009E52F623487_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* List_1__ctor_mB815FB837474863131469CFB3841AC8401995270_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* List_1_get_Count_m82C83E84AE9EB3ADE637A4B3364CE9DEB25474FA_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* List_1_get_Count_mA9EACD83C83F6D35C3EEC79B165244E0FBBED3CC_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* List_1_get_Item_m8B839DF7D66E6E99E8DF210500218FE8DFACBA8F_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Nullable_1__ctor_mB17304720EA19F5469A4883827F53A75FEB492CF_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* Object_Instantiate_TisGameObject_t76FEDD663AB33C991A9C9A23129337651094216F_mD136E37F696C00A3A1D4F65724ACAE903E385181_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* U3CU3Ec_U3CSavePendingRespawnsU3Eb__17_0_mAF70EF259D3D742F9880F0FB3BBB808DCF7028D0_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* U3CU3Ec_U3Cget_NextRespawnUtcU3Eb__8_0_m2DA614FE625BC3A619E46020311E9D8009DFF39E_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeMethod* U3CU3Ec__DisplayClass10_0_U3CSpawnForPlanetU3Eb__0_mF127367C626CE2F63B555DB7DF2E26D2B952630B_RuntimeMethod_var;
+IL2CPP_EXTERN_C const RuntimeType* PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_0_0_0_var;
+struct AnimationCurve_tCBFFAAD05CEBB35EF8D8631BD99914BE1A6BB354_marshaled_com;
+struct Delegate_t_marshaled_com;
+struct Delegate_t_marshaled_pinvoke;
+struct Exception_t_marshaled_com;
+struct Exception_t_marshaled_pinvoke;
+struct Gradient_tA7FEBE2FDB4929FFF6C997134841046F713DAC1E_marshaled_com;
+
+struct AsteroidDefinitionU5BU5D_tBFF455AEF363CCA9AD627A7BE225FF1013BBAC04;
+struct ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031;
+struct ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918;
+struct StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248;
+struct PendingRespawnU5BU5D_tF350AA9CF27C85125C7E7B71930A69376757559E;
+
+IL2CPP_EXTERN_C_BEGIN
+IL2CPP_EXTERN_C_END
+
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+struct U3CModuleU3E_t11F664829E56B335E460303AB9D68D5391C5349D 
+{
+};
+struct List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E  : public RuntimeObject
+{
+	AsteroidU5BU5D_t09BC14D2E76C8F1A5F371BFED2176266CE3C66B9* ____items;
+	int32_t ____size;
+	int32_t ____version;
+	RuntimeObject* ____syncRoot;
+};
+struct List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D  : public RuntimeObject
+{
+	ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918* ____items;
+	int32_t ____size;
+	int32_t ____version;
+	RuntimeObject* ____syncRoot;
+};
+struct List_1_tFE951BF9E0D595431590167E85F992760D743EEF  : public RuntimeObject
+{
+	PendingRespawnU5BU5D_tF350AA9CF27C85125C7E7B71930A69376757559E* ____items;
+	int32_t ____size;
+	int32_t ____version;
+	RuntimeObject* ____syncRoot;
+};
+struct U3CPrivateImplementationDetailsU3E_tA10B3728E3E4DA4A8E20B96EFD428EC1B4D46224  : public RuntimeObject
+{
+};
+struct ActiveMiningMinigame_t56A84BE8A5799A6935966B35EB277CDC5A039299  : public RuntimeObject
+{
+	EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* ____config;
+	Random_t79716069EDE67D1D7734F60AE402D0CA3FB6B4C8* ____rng;
+	Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* ___OnTap;
+};
+struct AsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70  : public RuntimeObject
+{
+	Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___Asteroid;
+};
+struct DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC  : public RuntimeObject
+{
+	DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* ___U3CDefinitionU3Ek__BackingField;
+	int32_t ___U3CCargoAmountU3Ek__BackingField;
+};
+struct IdleMiningCalculator_t942A246A242064927872B44C78D414479ACC2F05  : public RuntimeObject
+{
+	EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* ____config;
+};
+struct IdleMiningSessionController_tDBF223858E8DC3FECBE0E30EBB4B3CD884FFCEEE  : public RuntimeObject
+{
+	MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* ____mining;
+	DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* ____drone;
+	IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* ____trackedSession;
+	ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* ____vfx;
+};
+struct MiningInputHandler_t65B94CB12CFABCF2C50299CC3C8AFDCE5F243B77  : public RuntimeObject
+{
+	MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* ____controller;
+};
+struct MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9  : public RuntimeObject
+{
+	int32_t ___YieldAmount;
+	bool ___IsCrit;
+};
+struct Random_t79716069EDE67D1D7734F60AE402D0CA3FB6B4C8  : public RuntimeObject
+{
+	int32_t ____inext;
+	int32_t ____inextp;
+	Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* ____seedArray;
+};
+struct String_t  : public RuntimeObject
+{
+	int32_t ____stringLength;
+	Il2CppChar ____firstChar;
+};
+struct Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572  : public RuntimeObject
+{
+	int32_t ___m_taskId;
+	Delegate_t* ___m_action;
+	RuntimeObject* ___m_stateObject;
+	TaskScheduler_t3F0550EBEF7C41F74EC8C08FF4BED0D8CE66006E* ___m_taskScheduler;
+	Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* ___m_parent;
+	int32_t ___m_stateFlags;
+	RuntimeObject* ___m_continuationObject;
+	ContingentProperties_t3FA59480914505CEA917B1002EC675F29D0CB540* ___m_contingentProperties;
+};
+struct UnitySourceGeneratedAssemblyMonoScriptTypes_v1_t985FCC110D55873BCF7443ACBD26729F023CFDC8  : public RuntimeObject
+{
+};
+struct ValueType_t6D9B272BD21782F0A9A14F2E41F85A50E97A986F  : public RuntimeObject
+{
+};
+struct ValueType_t6D9B272BD21782F0A9A14F2E41F85A50E97A986F_marshaled_pinvoke
+{
+};
+struct ValueType_t6D9B272BD21782F0A9A14F2E41F85A50E97A986F_marshaled_com
+{
+};
+struct U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5  : public RuntimeObject
+{
+};
+struct U3CU3Ec__DisplayClass10_0_t1AE26FC45BF34994EA766723EA87B20BB2FF845C  : public RuntimeObject
+{
+	AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* ___def;
+};
+struct Enumerator_t33A4A84C316F7D24C6D6E39FFFB6F96E747DD420 
+{
+	List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E* ____list;
+	int32_t ____index;
+	int32_t ____version;
+	Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ____current;
+};
+struct Enumerator_t9473BAB568A27E2339D48C1F91319E0F6D244D7A 
+{
+	List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D* ____list;
+	int32_t ____index;
+	int32_t ____version;
+	RuntimeObject* ____current;
+};
+struct AsyncMethodBuilderCore_tD5ABB3A2536319A3345B32A5481E37E23DD8CEDF 
+{
+	RuntimeObject* ___m_stateMachine;
+	Action_tD00B0A84D7945E50C2DFFC28EFEE6ED44ED2AD07* ___m_defaultContextAction;
+};
+struct AsyncMethodBuilderCore_tD5ABB3A2536319A3345B32A5481E37E23DD8CEDF_marshaled_pinvoke
+{
+	RuntimeObject* ___m_stateMachine;
+	Il2CppMethodPointer ___m_defaultContextAction;
+};
+struct AsyncMethodBuilderCore_tD5ABB3A2536319A3345B32A5481E37E23DD8CEDF_marshaled_com
+{
+	RuntimeObject* ___m_stateMachine;
+	Il2CppMethodPointer ___m_defaultContextAction;
+};
+struct Boolean_t09A6377A54BE2F9E6985A8149F19234FD7DDFE22 
+{
+	bool ___m_value;
+};
+struct Byte_t94D9231AC217BE4D2E004C4CD32DF6D099EA41A3 
+{
+	uint8_t ___m_value;
+};
+struct Char_t521A6F19B456D956AF452D926C32709DC03D6B17 
+{
+	Il2CppChar ___m_value;
+};
+struct Color_tD001788D726C3A7F1379BEED0260B9591F440C1F 
+{
+	float ___r;
+	float ___g;
+	float ___b;
+	float ___a;
+};
+struct DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D 
+{
+	uint64_t ____dateData;
+};
+struct Double_tE150EF3D1D43DEE85D533810AB4C742307EEDE5F 
+{
+	double ___m_value;
+};
+struct EntityId_t982FBD037EAC5CA077B1602A7EA40E3523AA0FC8 
+{
+	union
+	{
+		struct
+		{
+			int32_t ___m_Data;
+		};
+		uint8_t EntityId_t982FBD037EAC5CA077B1602A7EA40E3523AA0FC8__padding[4];
+	};
+};
+struct Enum_t2A1A94B24E3B776EEF4E5E485E290BB9D4D072E2  : public ValueType_t6D9B272BD21782F0A9A14F2E41F85A50E97A986F
+{
+};
+struct Enum_t2A1A94B24E3B776EEF4E5E485E290BB9D4D072E2_marshaled_pinvoke
+{
+};
+struct Enum_t2A1A94B24E3B776EEF4E5E485E290BB9D4D072E2_marshaled_com
+{
+};
+struct Int32_t680FF22E76F6EFAD4375103CBBFFA0421349384C 
+{
+	int32_t ___m_value;
+};
+struct Int64_t092CFB123BE63C28ACDAF65C68F21A526050DBA3 
+{
+	int64_t ___m_value;
+};
+struct IntPtr_t 
+{
+	void* ___m_value;
+};
+struct LayerMask_t97CB6BDADEDC3D6423C7BCFEA7F86DA2EC6241DB 
+{
+	int32_t ___m_Mask;
+};
+struct Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 
+{
+	float ___x;
+	float ___y;
+	float ___z;
+	float ___w;
+};
+struct Single_t4530F2FF86FCB0DC29F35385CA1BD21BE294761C 
+{
+	float ___m_value;
+};
+struct TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833 
+{
+	Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* ___m_task;
+};
+struct TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833_marshaled_pinvoke
+{
+	Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* ___m_task;
+};
+struct TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833_marshaled_com
+{
+	Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* ___m_task;
+};
+struct TimeSpan_t8195C5B013A2C532FEBDF0B64B6911982E750F5A 
+{
+	int64_t ____ticks;
+};
+struct Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 
+{
+	float ___x;
+	float ___y;
+};
+struct Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 
+{
+	float ___x;
+	float ___y;
+	float ___z;
+};
+struct Void_t4861ACF8F4594C3437BB48B6E56783494B843915 
+{
+	union
+	{
+		struct
+		{
+		};
+		uint8_t Void_t4861ACF8F4594C3437BB48B6E56783494B843915__padding[1];
+	};
+};
+#pragma pack(push, tp, 1)
+struct __StaticArrayInitTypeSizeU3D639_t6F7C0DB6F2B04E99D389073B920F73D65A5BFA4D 
+{
+	union
+	{
+		struct
+		{
+			union
+			{
+			};
+		};
+		uint8_t __StaticArrayInitTypeSizeU3D639_t6F7C0DB6F2B04E99D389073B920F73D65A5BFA4D__padding[639];
+	};
+};
+#pragma pack(pop, tp)
+#pragma pack(push, tp, 1)
+struct __StaticArrayInitTypeSizeU3D668_t41D051F408BB42C27752A0F8E5C3D5D569FF783A 
+{
+	union
+	{
+		struct
+		{
+			union
+			{
+			};
+		};
+		uint8_t __StaticArrayInitTypeSizeU3D668_t41D051F408BB42C27752A0F8E5C3D5D569FF783A__padding[668];
+	};
+};
+#pragma pack(pop, tp)
+struct UIToolkitOverrideConfigOld_tE63BCF42BC8CC79144B2817BE309C5C19015FD88 
+{
+	EventSystem_t61C51380B105BE9D2C39C4F15B7E655659957707* ___activeEventSystem;
+	bool ___sendEvents;
+	bool ___createPanelGameObjectsOnStart;
+};
+struct UIToolkitOverrideConfigOld_tE63BCF42BC8CC79144B2817BE309C5C19015FD88_marshaled_pinvoke
+{
+	EventSystem_t61C51380B105BE9D2C39C4F15B7E655659957707* ___activeEventSystem;
+	int32_t ___sendEvents;
+	int32_t ___createPanelGameObjectsOnStart;
+};
+struct UIToolkitOverrideConfigOld_tE63BCF42BC8CC79144B2817BE309C5C19015FD88_marshaled_com
+{
+	EventSystem_t61C51380B105BE9D2C39C4F15B7E655659957707* ___activeEventSystem;
+	int32_t ___sendEvents;
+	int32_t ___createPanelGameObjectsOnStart;
+};
+struct EmissionModule_t0F469FA4A08003F6D9C610D2F716A9DFDB9A3678 
+{
+	ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* ___m_ParticleSystem;
+};
+struct EmissionModule_t0F469FA4A08003F6D9C610D2F716A9DFDB9A3678_marshaled_pinvoke
+{
+	ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* ___m_ParticleSystem;
+};
+struct EmissionModule_t0F469FA4A08003F6D9C610D2F716A9DFDB9A3678_marshaled_com
+{
+	ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* ___m_ParticleSystem;
+};
+struct MainModule_tC7ECD8330C14B0808478A748048988A6085CE2A9 
+{
+	ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* ___m_ParticleSystem;
+};
+struct MainModule_tC7ECD8330C14B0808478A748048988A6085CE2A9_marshaled_pinvoke
+{
+	ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* ___m_ParticleSystem;
+};
+struct MainModule_tC7ECD8330C14B0808478A748048988A6085CE2A9_marshaled_com
+{
+	ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* ___m_ParticleSystem;
+};
+struct ShapeModule_tAA38A0C5305DF2F9D96F89D4B8F762E2D034D8B2 
+{
+	ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* ___m_ParticleSystem;
+};
+struct ShapeModule_tAA38A0C5305DF2F9D96F89D4B8F762E2D034D8B2_marshaled_pinvoke
+{
+	ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* ___m_ParticleSystem;
+};
+struct ShapeModule_tAA38A0C5305DF2F9D96F89D4B8F762E2D034D8B2_marshaled_com
+{
+	ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* ___m_ParticleSystem;
+};
+struct MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2 
+{
+	ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* ___FilePathsData;
+	ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* ___TypesData;
+	int32_t ___TotalTypes;
+	int32_t ___TotalFiles;
+	bool ___IsEditorOnly;
+};
+struct MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2_marshaled_pinvoke
+{
+	Il2CppSafeArray* ___FilePathsData;
+	Il2CppSafeArray* ___TypesData;
+	int32_t ___TotalTypes;
+	int32_t ___TotalFiles;
+	int32_t ___IsEditorOnly;
+};
+struct MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2_marshaled_com
+{
+	Il2CppSafeArray* ___FilePathsData;
+	Il2CppSafeArray* ___TypesData;
+	int32_t ___TotalTypes;
+	int32_t ___TotalFiles;
+	int32_t ___IsEditorOnly;
+};
+struct AsyncTaskMethodBuilder_1_tE88892A6B2F97B5D44B7C3EE2DBEED85743412AC 
+{
+	AsyncMethodBuilderCore_tD5ABB3A2536319A3345B32A5481E37E23DD8CEDF ___m_coreState;
+	Task_1_tE41CFF640EB7C045550D9D0D92BE67533B084C17* ___m_task;
+};
+struct Nullable_1_tEADC262F7F8B8BC4CC0A003DBDD3CA7C1B63F9AC 
+{
+	bool ___hasValue;
+	DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D ___value;
+};
+struct Nullable_1_t33D5AB3CF72EDE570A226DE48EF7C3A10F25A7C4 
+{
+	bool ___hasValue;
+	UIToolkitOverrideConfigOld_tE63BCF42BC8CC79144B2817BE309C5C19015FD88 ___value;
+};
+struct AnimationCurve_tCBFFAAD05CEBB35EF8D8631BD99914BE1A6BB354  : public RuntimeObject
+{
+	intptr_t ___m_Ptr;
+	bool ___m_RequiresNativeCleanup;
+};
+struct AnimationCurve_tCBFFAAD05CEBB35EF8D8631BD99914BE1A6BB354_marshaled_pinvoke
+{
+	intptr_t ___m_Ptr;
+	int32_t ___m_RequiresNativeCleanup;
+};
+struct AnimationCurve_tCBFFAAD05CEBB35EF8D8631BD99914BE1A6BB354_marshaled_com
+{
+	intptr_t ___m_Ptr;
+	int32_t ___m_RequiresNativeCleanup;
+};
+struct DateTimeOffset_t4EE701FE2F386D6F932FAC9B11E4B74A5B30F0A4 
+{
+	DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D ____dateTime;
+	int16_t ____offsetMinutes;
+};
+struct Delegate_t  : public RuntimeObject
+{
+	intptr_t ___method_ptr;
+	intptr_t ___invoke_impl;
+	RuntimeObject* ___m_target;
+	intptr_t ___method;
+	intptr_t ___delegate_trampoline;
+	intptr_t ___extra_arg;
+	intptr_t ___method_code;
+	intptr_t ___interp_method;
+	intptr_t ___interp_invoke_impl;
+	MethodInfo_t* ___method_info;
+	MethodInfo_t* ___original_method_info;
+	DelegateData_t9B286B493293CD2D23A5B2B5EF0E5B1324C2B77E* ___data;
+	bool ___method_is_virtual;
+};
+struct Delegate_t_marshaled_pinvoke
+{
+	intptr_t ___method_ptr;
+	intptr_t ___invoke_impl;
+	Il2CppIUnknown* ___m_target;
+	intptr_t ___method;
+	intptr_t ___delegate_trampoline;
+	intptr_t ___extra_arg;
+	intptr_t ___method_code;
+	intptr_t ___interp_method;
+	intptr_t ___interp_invoke_impl;
+	MethodInfo_t* ___method_info;
+	MethodInfo_t* ___original_method_info;
+	DelegateData_t9B286B493293CD2D23A5B2B5EF0E5B1324C2B77E* ___data;
+	int32_t ___method_is_virtual;
+};
+struct Delegate_t_marshaled_com
+{
+	intptr_t ___method_ptr;
+	intptr_t ___invoke_impl;
+	Il2CppIUnknown* ___m_target;
+	intptr_t ___method;
+	intptr_t ___delegate_trampoline;
+	intptr_t ___extra_arg;
+	intptr_t ___method_code;
+	intptr_t ___interp_method;
+	intptr_t ___interp_invoke_impl;
+	MethodInfo_t* ___method_info;
+	MethodInfo_t* ___original_method_info;
+	DelegateData_t9B286B493293CD2D23A5B2B5EF0E5B1324C2B77E* ___data;
+	int32_t ___method_is_virtual;
+};
+struct Exception_t  : public RuntimeObject
+{
+	String_t* ____className;
+	String_t* ____message;
+	RuntimeObject* ____data;
+	Exception_t* ____innerException;
+	String_t* ____helpURL;
+	RuntimeObject* ____stackTrace;
+	String_t* ____stackTraceString;
+	String_t* ____remoteStackTraceString;
+	int32_t ____remoteStackIndex;
+	RuntimeObject* ____dynamicMethods;
+	int32_t ____HResult;
+	String_t* ____source;
+	SafeSerializationManager_tCBB85B95DFD1634237140CD892E82D06ECB3F5E6* ____safeSerializationManager;
+	StackTraceU5BU5D_t32FBCB20930EAF5BAE3F450FF75228E5450DA0DF* ___captured_traces;
+	IntPtrU5BU5D_tFD177F8C806A6921AD7150264CCC62FA00CAD832* ___native_trace_ips;
+	int32_t ___caught_in_unmanaged;
+};
+struct Exception_t_marshaled_pinvoke
+{
+	char* ____className;
+	char* ____message;
+	RuntimeObject* ____data;
+	Exception_t_marshaled_pinvoke* ____innerException;
+	char* ____helpURL;
+	Il2CppIUnknown* ____stackTrace;
+	char* ____stackTraceString;
+	char* ____remoteStackTraceString;
+	int32_t ____remoteStackIndex;
+	Il2CppIUnknown* ____dynamicMethods;
+	int32_t ____HResult;
+	char* ____source;
+	SafeSerializationManager_tCBB85B95DFD1634237140CD892E82D06ECB3F5E6* ____safeSerializationManager;
+	StackTraceU5BU5D_t32FBCB20930EAF5BAE3F450FF75228E5450DA0DF* ___captured_traces;
+	Il2CppSafeArray* ___native_trace_ips;
+	int32_t ___caught_in_unmanaged;
+};
+struct Exception_t_marshaled_com
+{
+	Il2CppChar* ____className;
+	Il2CppChar* ____message;
+	RuntimeObject* ____data;
+	Exception_t_marshaled_com* ____innerException;
+	Il2CppChar* ____helpURL;
+	Il2CppIUnknown* ____stackTrace;
+	Il2CppChar* ____stackTraceString;
+	Il2CppChar* ____remoteStackTraceString;
+	int32_t ____remoteStackIndex;
+	Il2CppIUnknown* ____dynamicMethods;
+	int32_t ____HResult;
+	Il2CppChar* ____source;
+	SafeSerializationManager_tCBB85B95DFD1634237140CD892E82D06ECB3F5E6* ____safeSerializationManager;
+	StackTraceU5BU5D_t32FBCB20930EAF5BAE3F450FF75228E5450DA0DF* ___captured_traces;
+	Il2CppSafeArray* ___native_trace_ips;
+	int32_t ___caught_in_unmanaged;
+};
+struct Gradient_tA7FEBE2FDB4929FFF6C997134841046F713DAC1E  : public RuntimeObject
+{
+	intptr_t ___m_Ptr;
+	bool ___m_RequiresNativeCleanup;
+};
+struct Gradient_tA7FEBE2FDB4929FFF6C997134841046F713DAC1E_marshaled_pinvoke
+{
+	intptr_t ___m_Ptr;
+	int32_t ___m_RequiresNativeCleanup;
+};
+struct Gradient_tA7FEBE2FDB4929FFF6C997134841046F713DAC1E_marshaled_com
+{
+	intptr_t ___m_Ptr;
+	int32_t ___m_RequiresNativeCleanup;
+};
+struct HideFlags_tC514182ACEFD3B847988C45D5DB812FF6DB1BF4A 
+{
+	int32_t ___value__;
+};
+struct IdleMiningStage_tDBD0BE5F7A7D15963F5659FEF854A85AB725C405 
+{
+	int32_t ___value__;
+};
+struct Int32Enum_tCBAC8BA2BFF3A845FA599F303093BBBA374B6F0C 
+{
+	int32_t ___value__;
+};
+struct KeyCode_t75B9ECCC26D858F55040DDFF9523681E996D17E9 
+{
+	int32_t ___value__;
+};
+struct MiningPhase_t4CE83D876D123EF3BA9455EA6F79E02DFEA4E2FB 
+{
+	int32_t ___value__;
+};
+struct Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C  : public RuntimeObject
+{
+	intptr_t ___m_CachedPtr;
+};
+struct Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_marshaled_pinvoke
+{
+	intptr_t ___m_CachedPtr;
+};
+struct Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_marshaled_com
+{
+	intptr_t ___m_CachedPtr;
+};
+struct ParticleSystemCurveMode_t8BE38B5D6B050709BAE31B5556CFC3DA69FC8405 
+{
+	int32_t ___value__;
+};
+struct ParticleSystemGradientMode_t5525A27D816AC28297038E5A98856B29095C4C1A 
+{
+	int32_t ___value__;
+};
+struct ParticleSystemShapeType_tADE62D07EDA71578326A03B50871391EE01F73BB 
+{
+	int32_t ___value__;
+};
+struct ParticleSystemStopBehavior_tF7B793FED90171151C8A57A5AF7E1CCF8AF0729F 
+{
+	int32_t ___value__;
+};
+struct PrimitiveType_t72F3E6BA10E41F934F63C4F6DF88388E57911C44 
+{
+	int32_t ___value__;
+};
+struct Ray_t2B1742D7958DC05BDC3EFC7461D3593E1430DC00 
+{
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___m_Origin;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___m_Direction;
+};
+struct RaycastHit_t6F30BD0B38B56401CA833A1B87BD74F2ACD2F2B5 
+{
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___m_Point;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___m_Normal;
+	uint32_t ___m_FaceID;
+	float ___m_Distance;
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___m_UV;
+	EntityId_t982FBD037EAC5CA077B1602A7EA40E3523AA0FC8 ___m_Collider;
+};
+struct RuntimeFieldHandle_t6E4C45B6D2EA12FC99185805A7E77527899B25C5 
+{
+	intptr_t ___value;
+};
+struct Space_tF043E93E06B702DD05199C28C6F779049B38A969 
+{
+	int32_t ___value__;
+};
+struct StringSplitOptions_t4DD892C76C70DD4800FC1B76054D69826F770062 
+{
+	int32_t ___value__;
+};
+struct TouchPhase_t54E0A1AF80465997849420A72317B733E1D49A9E 
+{
+	int32_t ___value__;
+};
+struct TouchType_t84F82C73BC1A6012141735AD84DA67AA7F7AB43F 
+{
+	int32_t ___value__;
+};
+struct PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 
+{
+	AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* ___Definition;
+	DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D ___RespawnAtUtc;
+};
+struct PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_marshaled_pinvoke
+{
+	AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* ___Definition;
+	DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D ___RespawnAtUtc;
+};
+struct PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_marshaled_com
+{
+	AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* ___Definition;
+	DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D ___RespawnAtUtc;
+};
+struct Activity_tD9BC06A45D6BC0405EFA789D55AE3B9D128224D6 
+{
+	int32_t ___value__;
+};
+struct Channel_t77A89A22C692E6EF33F073D7A4B8313A22992599 
+{
+	int32_t ___value__;
+};
+struct AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06 
+{
+	AsyncTaskMethodBuilder_1_tE88892A6B2F97B5D44B7C3EE2DBEED85743412AC ___m_builder;
+};
+struct AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06_marshaled_pinvoke
+{
+	AsyncTaskMethodBuilder_1_tE88892A6B2F97B5D44B7C3EE2DBEED85743412AC ___m_builder;
+};
+struct AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06_marshaled_com
+{
+	AsyncTaskMethodBuilder_1_tE88892A6B2F97B5D44B7C3EE2DBEED85743412AC ___m_builder;
+};
+struct Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3  : public Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C
+{
+};
+struct GameObject_t76FEDD663AB33C991A9C9A23129337651094216F  : public Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C
+{
+};
+struct IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149  : public RuntimeObject
+{
+	Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___U3CAsteroidU3Ek__BackingField;
+	int32_t ___U3CStageU3Ek__BackingField;
+	float ___U3CMiningProgress01U3Ek__BackingField;
+	int32_t ___U3CClaimTapsRequiredU3Ek__BackingField;
+	int32_t ___U3CClaimTapsRemainingU3Ek__BackingField;
+	Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* ___OnStageChanged;
+	float ____miningDuration;
+	float ____elapsed;
+};
+struct Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3  : public Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C
+{
+};
+struct MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2  : public RuntimeObject
+{
+	RuntimeObject* ____economy;
+	IdleMiningCalculator_t942A246A242064927872B44C78D414479ACC2F05* ____idleCalc;
+	ActiveMiningMinigame_t56A84BE8A5799A6935966B35EB277CDC5A039299* ____minigame;
+	AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* ____spawner;
+	EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* ____config;
+	int32_t ___U3CPhaseU3Ek__BackingField;
+	DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* ___U3CDroneU3Ek__BackingField;
+	Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___U3CCurrentTargetU3Ek__BackingField;
+	IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* ___U3CCurrentIdleSessionU3Ek__BackingField;
+	Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___U3CClaimingAsteroidU3Ek__BackingField;
+	Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* ___OnPhaseChanged;
+	Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* ___OnIdleSessionChanged;
+};
+struct MulticastDelegate_t  : public Delegate_t
+{
+	DelegateU5BU5D_tC5AB7E8F745616680F337909D3A8E6C722CDF771* ___delegates;
+};
+struct MulticastDelegate_t_marshaled_pinvoke : public Delegate_t_marshaled_pinvoke
+{
+	Delegate_t_marshaled_pinvoke** ___delegates;
+};
+struct MulticastDelegate_t_marshaled_com : public Delegate_t_marshaled_com
+{
+	Delegate_t_marshaled_com** ___delegates;
+};
+struct ScriptableObject_tB3BFDB921A1B1795B38A5417D3B97A89A140436A  : public Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C
+{
+};
+struct ScriptableObject_tB3BFDB921A1B1795B38A5417D3B97A89A140436A_marshaled_pinvoke : public Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_marshaled_pinvoke
+{
+};
+struct ScriptableObject_tB3BFDB921A1B1795B38A5417D3B97A89A140436A_marshaled_com : public Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_marshaled_com
+{
+};
+struct Shader_tADC867D36B7876EE22427FAA2CE485105F4EE692  : public Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C
+{
+};
+struct SystemException_tCC48D868298F4C0705279823E34B00F4FBDB7295  : public Exception_t
+{
+};
+struct Touch_t03E51455ED508492B3F278903A0114FA0E87B417 
+{
+	int32_t ___m_FingerId;
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___m_Position;
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___m_RawPosition;
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___m_PositionDelta;
+	float ___m_TimeDelta;
+	int32_t ___m_TapCount;
+	int32_t ___m_Phase;
+	int32_t ___m_Type;
+	float ___m_Pressure;
+	float ___m_maximumPossiblePressure;
+	float ___m_Radius;
+	float ___m_RadiusVariance;
+	float ___m_AltitudeAngle;
+	float ___m_AzimuthAngle;
+};
+struct MinMaxCurve_t812D571297EED6498776CC58949A42B172E60E23 
+{
+	int32_t ___m_Mode;
+	float ___m_CurveMultiplier;
+	AnimationCurve_tCBFFAAD05CEBB35EF8D8631BD99914BE1A6BB354* ___m_CurveMin;
+	AnimationCurve_tCBFFAAD05CEBB35EF8D8631BD99914BE1A6BB354* ___m_CurveMax;
+	float ___m_ConstantMin;
+	float ___m_ConstantMax;
+};
+struct MinMaxCurve_t812D571297EED6498776CC58949A42B172E60E23_marshaled_pinvoke
+{
+	int32_t ___m_Mode;
+	float ___m_CurveMultiplier;
+	AnimationCurve_tCBFFAAD05CEBB35EF8D8631BD99914BE1A6BB354_marshaled_pinvoke ___m_CurveMin;
+	AnimationCurve_tCBFFAAD05CEBB35EF8D8631BD99914BE1A6BB354_marshaled_pinvoke ___m_CurveMax;
+	float ___m_ConstantMin;
+	float ___m_ConstantMax;
+};
+struct MinMaxCurve_t812D571297EED6498776CC58949A42B172E60E23_marshaled_com
+{
+	int32_t ___m_Mode;
+	float ___m_CurveMultiplier;
+	AnimationCurve_tCBFFAAD05CEBB35EF8D8631BD99914BE1A6BB354_marshaled_com* ___m_CurveMin;
+	AnimationCurve_tCBFFAAD05CEBB35EF8D8631BD99914BE1A6BB354_marshaled_com* ___m_CurveMax;
+	float ___m_ConstantMin;
+	float ___m_ConstantMax;
+};
+struct MinMaxGradient_tFF31B8EC2855D0074AB86E8B37BEA6609070AC69 
+{
+	int32_t ___m_Mode;
+	Gradient_tA7FEBE2FDB4929FFF6C997134841046F713DAC1E* ___m_GradientMin;
+	Gradient_tA7FEBE2FDB4929FFF6C997134841046F713DAC1E* ___m_GradientMax;
+	Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ___m_ColorMin;
+	Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ___m_ColorMax;
+};
+struct MinMaxGradient_tFF31B8EC2855D0074AB86E8B37BEA6609070AC69_marshaled_pinvoke
+{
+	int32_t ___m_Mode;
+	Gradient_tA7FEBE2FDB4929FFF6C997134841046F713DAC1E_marshaled_pinvoke ___m_GradientMin;
+	Gradient_tA7FEBE2FDB4929FFF6C997134841046F713DAC1E_marshaled_pinvoke ___m_GradientMax;
+	Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ___m_ColorMin;
+	Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ___m_ColorMax;
+};
+struct MinMaxGradient_tFF31B8EC2855D0074AB86E8B37BEA6609070AC69_marshaled_com
+{
+	int32_t ___m_Mode;
+	Gradient_tA7FEBE2FDB4929FFF6C997134841046F713DAC1E_marshaled_com* ___m_GradientMin;
+	Gradient_tA7FEBE2FDB4929FFF6C997134841046F713DAC1E_marshaled_com* ___m_GradientMax;
+	Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ___m_ColorMin;
+	Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ___m_ColorMax;
+};
+struct Action_1_t16777F1C5C2E1F6A8AD4BE6559F7B85BBB810244  : public MulticastDelegate_t
+{
+};
+struct Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA  : public MulticastDelegate_t
+{
+};
+struct Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F  : public MulticastDelegate_t
+{
+};
+struct Action_1_tC926860F20D428DA3E93D6FBA36420E904DD903B  : public MulticastDelegate_t
+{
+};
+struct Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC  : public MulticastDelegate_t
+{
+};
+struct Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28  : public MulticastDelegate_t
+{
+};
+struct Action_1_t6F9EB113EB3F16226AEF811A2744F4111C116C87  : public MulticastDelegate_t
+{
+};
+struct Func_2_tB5440A0247E58087F1DB06CB65F2DFC4C1ED4047  : public MulticastDelegate_t
+{
+};
+struct Func_2_tD8F67CBC136C4F1DD63F067B59B7A53EE4704585  : public MulticastDelegate_t
+{
+};
+struct Func_2_tA8125C6B01EF913BA8EA4EA9ABC49917EF6C4369  : public MulticastDelegate_t
+{
+};
+struct ArgumentException_tAD90411542A20A9C72D5CDA3A84181D8B947A263  : public SystemException_tCC48D868298F4C0705279823E34B00F4FBDB7295
+{
+	String_t* ____paramName;
+};
+struct AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527  : public ScriptableObject_tB3BFDB921A1B1795B38A5417D3B97A89A140436A
+{
+	String_t* ____mineralType;
+	int32_t ____tier;
+	int32_t ____baseYield;
+	float ____rarity;
+	int32_t ____coinsPerUnit;
+	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ____modelPrefab;
+};
+struct Behaviour_t01970CFBBA658497AE30F311C447DB0440BAB7FA  : public Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3
+{
+};
+struct Collider_t1CC3163924FCD6C4CC2E816373A929C1E3D55E76  : public Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3
+{
+};
+struct DatabaseRegistry_tBD75C5774CDFE42C5FC8B3827DE1F0E1AF8BC8D1  : public ScriptableObject_tB3BFDB921A1B1795B38A5417D3B97A89A140436A
+{
+	PlanetDefinitionU5BU5D_t65E0C6BED4268E32EC459FA58179C184BD507514* ____planets;
+	AsteroidDefinitionU5BU5D_tBFF455AEF363CCA9AD627A7BE225FF1013BBAC04* ____asteroids;
+	DroneDefinitionU5BU5D_tAA636C387EB20FE7DF72FCED26F01B050CA487C6* ____drones;
+	ItemDefinitionU5BU5D_t82BC7B80850116442A178D7ED60300CA6C1F92B2* ____items;
+};
+struct DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52  : public ScriptableObject_tB3BFDB921A1B1795B38A5417D3B97A89A140436A
+{
+	String_t* ____droneId;
+	String_t* ____displayName;
+	float ____travelSpeed;
+	int32_t ____cargoCap;
+	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ____modelPrefab;
+};
+struct EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8  : public ScriptableObject_tB3BFDB921A1B1795B38A5417D3B97A89A140436A
+{
+	String_t* ____coinsCurrencyId;
+	String_t* ____stardustCurrencyId;
+	int32_t ____startingCoins;
+	int32_t ____startingStardust;
+	int32_t ____baseLandPrice;
+	int32_t ____upkeepPerTilePerDay;
+	float ____landRegistryPollIntervalSec;
+	int32_t ____maxBuildLevel;
+	float ____baseYieldPerTilePerHour;
+	float ____buildLevelYieldMultiplier;
+	float ____visitYieldBonus;
+	float ____maxYieldAccrualHours;
+	int32_t ____maxVisitCount;
+	float ____upkeepPollIntervalSec;
+	float ____landResaleRate;
+	float ____idleMiningRate;
+	float ____maxOfflineHours;
+	float ____idleSessionDuration;
+	int32_t ____idleSessionClaimTaps;
+	float ____asteroidRespawnHours;
+	int32_t ____activeTapYield;
+	float ____critChance;
+	float ____critMultiplier;
+};
+struct ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1  : public Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3
+{
+};
+struct PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933  : public ScriptableObject_tB3BFDB921A1B1795B38A5417D3B97A89A140436A
+{
+	String_t* ____planetId;
+	String_t* ____displayName;
+	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ____modelPrefab;
+	int32_t ____tileCount;
+	float ____landPriceMultiplier;
+	int32_t ____asteroidTier;
+	AsteroidDefinitionU5BU5D_tBFF455AEF363CCA9AD627A7BE225FF1013BBAC04* ____asteroidTypes;
+};
+struct Renderer_t320575F223BCB177A982E5DDB5DB19FAA89E7FBF  : public Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3
+{
+};
+struct Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1  : public Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3
+{
+};
+struct U3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3 
+{
+	int32_t ___U3CU3E1__state;
+	AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06 ___U3CU3Et__builder;
+	MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* ___U3CU3E4__this;
+	int32_t ___U3ChauledU3E5__2;
+	int32_t ___U3CcoinsU3E5__3;
+	TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833 ___U3CU3Eu__1;
+};
+struct U3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191 
+{
+	int32_t ___U3CU3E1__state;
+	AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06 ___U3CU3Et__builder;
+	MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* ___U3CU3E4__this;
+	Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___asteroid;
+	int32_t ___U3CminedU3E5__2;
+	int32_t ___U3CcoinsU3E5__3;
+	TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833 ___U3CU3Eu__1;
+};
+struct ArgumentNullException_t327031E412FAB2351B0022DD5DAD47E67E597129  : public ArgumentException_tAD90411542A20A9C72D5CDA3A84181D8B947A263
+{
+};
+struct Camera_tA92CC927D7439999BC82DBEDC0AA45B470F9E184  : public Behaviour_t01970CFBBA658497AE30F311C447DB0440BAB7FA
+{
+	uint32_t ___m_NonSerializedVersion;
+};
+struct MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71  : public Behaviour_t01970CFBBA658497AE30F311C447DB0440BAB7FA
+{
+	CancellationTokenSource_tAAE1E0033BCFC233801F8CB4CED5C852B350CB7B* ___m_CancellationTokenSource;
+};
+struct ParticleSystemRenderer_t576C271A363A738A6C576D4C6AEFB3B5B23E46C4  : public Renderer_t320575F223BCB177A982E5DDB5DB19FAA89E7FBF
+{
+};
+struct SphereCollider_tBA111C542CE97F6873DE742757213D6265C7D275  : public Collider_t1CC3163924FCD6C4CC2E816373A929C1E3D55E76
+{
+};
+struct Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE  : public MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71
+{
+	float ____minRotationSpeed;
+	float ____maxRotationSpeed;
+	AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* ___U3CDefinitionU3Ek__BackingField;
+	int32_t ___U3CRemainingYieldU3Ek__BackingField;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ____rotationAxis;
+	float ____rotationSpeed;
+};
+struct AsteroidSelectionController_t5799B4C81049C2CBE885591F63E3A19E3B0B1A1B  : public MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71
+{
+	Camera_tA92CC927D7439999BC82DBEDC0AA45B470F9E184* ____camera;
+	LayerMask_t97CB6BDADEDC3D6423C7BCFEA7F86DA2EC6241DB ____asteroidLayers;
+};
+struct AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083  : public MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71
+{
+	float ____orbitRadius;
+	int32_t ____maxPerType;
+	DatabaseRegistry_tBD75C5774CDFE42C5FC8B3827DE1F0E1AF8BC8D1* ____registry;
+	List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E* ____active;
+	List_1_tFE951BF9E0D595431590167E85F992760D743EEF* ____pending;
+};
+struct DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828  : public MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71
+{
+	float ____travelSpeed;
+	float ____stopDistance;
+	float ____orbitSpeed;
+	float ____turnSpeed;
+	ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* ____travelingEffect;
+	ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* ____miningEffect;
+	Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ____baseAnchor;
+	Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ____target;
+	bool ____orbiting;
+	bool ____isMoving;
+	bool ____returningToBase;
+	float ____orbitAngle;
+	int32_t ____activity;
+};
+struct UIBehaviour_tB9D4295827BD2EEDEF0749200C6CA7090C742A9D  : public MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71
+{
+};
+struct EventSystem_t61C51380B105BE9D2C39C4F15B7E655659957707  : public UIBehaviour_tB9D4295827BD2EEDEF0749200C6CA7090C742A9D
+{
+	List_1_tA5BDE435C735A082941CD33D212F97F4AE9FA55F* ___m_SystemInputModules;
+	BaseInputModule_tF3B7C22AF1419B2AC9ECE6589357DC1B88ED96B1* ___m_CurrentInputModule;
+	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ___m_FirstSelected;
+	bool ___m_sendNavigationEvents;
+	int32_t ___m_DragThreshold;
+	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ___m_CurrentSelected;
+	bool ___m_HasFocus;
+	bool ___m_SelectionGuard;
+	BaseEventData_tE03A848325C0AE8E76C6CA15FD86395EBF83364F* ___m_DummyData;
+	UIToolkitInteroperabilityBridge_t8E98EE5D73E8CCAA894A1BE50049E2A06E592CDD* ___m_UIToolkitInterop;
+};
+struct List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E_StaticFields
+{
+	AsteroidU5BU5D_t09BC14D2E76C8F1A5F371BFED2176266CE3C66B9* ___s_emptyArray;
+};
+struct List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D_StaticFields
+{
+	ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918* ___s_emptyArray;
+};
+struct List_1_tFE951BF9E0D595431590167E85F992760D743EEF_StaticFields
+{
+	PendingRespawnU5BU5D_tF350AA9CF27C85125C7E7B71930A69376757559E* ___s_emptyArray;
+};
+struct U3CPrivateImplementationDetailsU3E_tA10B3728E3E4DA4A8E20B96EFD428EC1B4D46224_StaticFields
+{
+	__StaticArrayInitTypeSizeU3D639_t6F7C0DB6F2B04E99D389073B920F73D65A5BFA4D ___D947B5D6722A4DB48BCF862075F25059E4FB5CE5447E99AE69B2C6EDA9B2ACCF;
+	__StaticArrayInitTypeSizeU3D668_t41D051F408BB42C27752A0F8E5C3D5D569FF783A ___EE443271D26191F9A9F876CF130D386DFFF7F417C0DF8B704AD80866A87D4C67;
+};
+struct Random_t79716069EDE67D1D7734F60AE402D0CA3FB6B4C8_StaticFields
+{
+	Random_t79716069EDE67D1D7734F60AE402D0CA3FB6B4C8* ___s_globalRandom;
+};
+struct Random_t79716069EDE67D1D7734F60AE402D0CA3FB6B4C8_ThreadStaticFields
+{
+	Random_t79716069EDE67D1D7734F60AE402D0CA3FB6B4C8* ___t_threadRandom;
+};
+struct String_t_StaticFields
+{
+	String_t* ___Empty;
+};
+struct Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572_StaticFields
+{
+	int32_t ___s_taskIdCounter;
+	RuntimeObject* ___s_taskCompletionSentinel;
+	bool ___s_asyncDebuggingEnabled;
+	Action_1_t6F9EB113EB3F16226AEF811A2744F4111C116C87* ___s_taskCancelCallback;
+	Func_1_tD59A12717D79BFB403BF973694B1BE5B85474BD1* ___s_createContingentProperties;
+	TaskFactory_tF781BD37BE23917412AD83424D1497C7C1509DF0* ___U3CFactoryU3Ek__BackingField;
+	Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* ___U3CCompletedTaskU3Ek__BackingField;
+	Predicate_1_t7F48518B008C1472339EEEBABA3DE203FE1F26ED* ___s_IsExceptionObservedByParentPredicate;
+	ContextCallback_tE8AFBDBFCC040FDA8DA8C1EEFE9BD66B16BDA007* ___s_ecCallback;
+	Predicate_1_t8342C85FF4E41CD1F7024AC0CDC3E5312A32CB12* ___s_IsTaskContinuationNullPredicate;
+	Dictionary_2_t403063CE4960B4F46C688912237C6A27E550FF55* ___s_currentActiveTasks;
+	RuntimeObject* ___s_activeTasksLock;
+};
+struct Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572_ThreadStaticFields
+{
+	Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* ___t_currentTask;
+	StackGuard_tACE063A1B7374BDF4AD472DE4585D05AD8745352* ___t_stackGuard;
+};
+struct U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_StaticFields
+{
+	U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5* ___U3CU3E9;
+	Func_2_tD8F67CBC136C4F1DD63F067B59B7A53EE4704585* ___U3CU3E9__8_0;
+	Func_2_tA8125C6B01EF913BA8EA4EA9ABC49917EF6C4369* ___U3CU3E9__17_0;
+};
+struct Boolean_t09A6377A54BE2F9E6985A8149F19234FD7DDFE22_StaticFields
+{
+	String_t* ___TrueString;
+	String_t* ___FalseString;
+};
+struct Char_t521A6F19B456D956AF452D926C32709DC03D6B17_StaticFields
+{
+	ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* ___s_categoryForLatin1;
+};
+struct DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_StaticFields
+{
+	Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* ___s_daysToMonth365;
+	Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* ___s_daysToMonth366;
+	DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D ___MinValue;
+	DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D ___MaxValue;
+	DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D ___UnixEpoch;
+};
+struct IntPtr_t_StaticFields
+{
+	intptr_t ___Zero;
+};
+struct Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974_StaticFields
+{
+	Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 ___identityQuaternion;
+};
+struct TimeSpan_t8195C5B013A2C532FEBDF0B64B6911982E750F5A_StaticFields
+{
+	TimeSpan_t8195C5B013A2C532FEBDF0B64B6911982E750F5A ___Zero;
+	TimeSpan_t8195C5B013A2C532FEBDF0B64B6911982E750F5A ___MaxValue;
+	TimeSpan_t8195C5B013A2C532FEBDF0B64B6911982E750F5A ___MinValue;
+};
+struct Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7_StaticFields
+{
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___zeroVector;
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___oneVector;
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___upVector;
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___downVector;
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___leftVector;
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___rightVector;
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___positiveInfinityVector;
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___negativeInfinityVector;
+};
+struct Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2_StaticFields
+{
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___zeroVector;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___oneVector;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___upVector;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___downVector;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___leftVector;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___rightVector;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___forwardVector;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___backVector;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___positiveInfinityVector;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___negativeInfinityVector;
+};
+struct DateTimeOffset_t4EE701FE2F386D6F932FAC9B11E4B74A5B30F0A4_StaticFields
+{
+	DateTimeOffset_t4EE701FE2F386D6F932FAC9B11E4B74A5B30F0A4 ___MinValue;
+	DateTimeOffset_t4EE701FE2F386D6F932FAC9B11E4B74A5B30F0A4 ___MaxValue;
+	DateTimeOffset_t4EE701FE2F386D6F932FAC9B11E4B74A5B30F0A4 ___UnixEpoch;
+};
+struct Exception_t_StaticFields
+{
+	RuntimeObject* ___s_EDILock;
+};
+struct Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_StaticFields
+{
+	int32_t ___OffsetOfInstanceIDInCPlusPlusObject;
+};
+struct AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06_StaticFields
+{
+	Task_1_tE41CFF640EB7C045550D9D0D92BE67533B084C17* ___s_cachedCompleted;
+};
+struct Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3_StaticFields
+{
+	int32_t ___k_ColorId;
+	int32_t ___k_MainTexId;
+};
+struct Camera_tA92CC927D7439999BC82DBEDC0AA45B470F9E184_StaticFields
+{
+	CameraCallback_t844E527BFE37BC0495E7F67993E43C07642DA9DD* ___onPreCull;
+	CameraCallback_t844E527BFE37BC0495E7F67993E43C07642DA9DD* ___onPreRender;
+	CameraCallback_t844E527BFE37BC0495E7F67993E43C07642DA9DD* ___onPostRender;
+};
+struct EventSystem_t61C51380B105BE9D2C39C4F15B7E655659957707_StaticFields
+{
+	List_1_tF2FE88545EFEC788CAAE6C74EC2F78E937FCCAC3* ___m_EventSystems;
+	Comparison_1_t9FCAC8C8CE160A96C5AAD2DE1D353DCE8A2FEEFC* ___s_RaycastComparer;
+	Nullable_1_t33D5AB3CF72EDE570A226DE48EF7C3A10F25A7C4 ___s_UIToolkitOverrideConfigOld;
+};
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+struct ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031  : public RuntimeArray
+{
+	ALIGN_FIELD (8) uint8_t m_Items[1];
+
+	inline uint8_t GetAt(il2cpp_array_size_t index) const
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		return m_Items[index];
+	}
+	inline uint8_t* GetAddressAt(il2cpp_array_size_t index)
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		return m_Items + index;
+	}
+	inline void SetAt(il2cpp_array_size_t index, uint8_t value)
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		m_Items[index] = value;
+	}
+	inline uint8_t GetAtUnchecked(il2cpp_array_size_t index) const
+	{
+		return m_Items[index];
+	}
+	inline uint8_t* GetAddressAtUnchecked(il2cpp_array_size_t index)
+	{
+		return m_Items + index;
+	}
+	inline void SetAtUnchecked(il2cpp_array_size_t index, uint8_t value)
+	{
+		m_Items[index] = value;
+	}
+};
+struct AsteroidDefinitionU5BU5D_tBFF455AEF363CCA9AD627A7BE225FF1013BBAC04  : public RuntimeArray
+{
+	ALIGN_FIELD (8) AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* m_Items[1];
+
+	inline AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* GetAt(il2cpp_array_size_t index) const
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		return m_Items[index];
+	}
+	inline AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527** GetAddressAt(il2cpp_array_size_t index)
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		return m_Items + index;
+	}
+	inline void SetAt(il2cpp_array_size_t index, AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* value)
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		m_Items[index] = value;
+		Il2CppCodeGenWriteBarrier((void**)m_Items + index, (void*)value);
+	}
+	inline AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* GetAtUnchecked(il2cpp_array_size_t index) const
+	{
+		return m_Items[index];
+	}
+	inline AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527** GetAddressAtUnchecked(il2cpp_array_size_t index)
+	{
+		return m_Items + index;
+	}
+	inline void SetAtUnchecked(il2cpp_array_size_t index, AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* value)
+	{
+		m_Items[index] = value;
+		Il2CppCodeGenWriteBarrier((void**)m_Items + index, (void*)value);
+	}
+};
+struct StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248  : public RuntimeArray
+{
+	ALIGN_FIELD (8) String_t* m_Items[1];
+
+	inline String_t* GetAt(il2cpp_array_size_t index) const
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		return m_Items[index];
+	}
+	inline String_t** GetAddressAt(il2cpp_array_size_t index)
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		return m_Items + index;
+	}
+	inline void SetAt(il2cpp_array_size_t index, String_t* value)
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		m_Items[index] = value;
+		Il2CppCodeGenWriteBarrier((void**)m_Items + index, (void*)value);
+	}
+	inline String_t* GetAtUnchecked(il2cpp_array_size_t index) const
+	{
+		return m_Items[index];
+	}
+	inline String_t** GetAddressAtUnchecked(il2cpp_array_size_t index)
+	{
+		return m_Items + index;
+	}
+	inline void SetAtUnchecked(il2cpp_array_size_t index, String_t* value)
+	{
+		m_Items[index] = value;
+		Il2CppCodeGenWriteBarrier((void**)m_Items + index, (void*)value);
+	}
+};
+struct ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918  : public RuntimeArray
+{
+	ALIGN_FIELD (8) RuntimeObject* m_Items[1];
+
+	inline RuntimeObject* GetAt(il2cpp_array_size_t index) const
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		return m_Items[index];
+	}
+	inline RuntimeObject** GetAddressAt(il2cpp_array_size_t index)
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		return m_Items + index;
+	}
+	inline void SetAt(il2cpp_array_size_t index, RuntimeObject* value)
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		m_Items[index] = value;
+		Il2CppCodeGenWriteBarrier((void**)m_Items + index, (void*)value);
+	}
+	inline RuntimeObject* GetAtUnchecked(il2cpp_array_size_t index) const
+	{
+		return m_Items[index];
+	}
+	inline RuntimeObject** GetAddressAtUnchecked(il2cpp_array_size_t index)
+	{
+		return m_Items + index;
+	}
+	inline void SetAtUnchecked(il2cpp_array_size_t index, RuntimeObject* value)
+	{
+		m_Items[index] = value;
+		Il2CppCodeGenWriteBarrier((void**)m_Items + index, (void*)value);
+	}
+};
+struct PendingRespawnU5BU5D_tF350AA9CF27C85125C7E7B71930A69376757559E  : public RuntimeArray
+{
+	ALIGN_FIELD (8) PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 m_Items[1];
+
+	inline PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 GetAt(il2cpp_array_size_t index) const
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		return m_Items[index];
+	}
+	inline PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390* GetAddressAt(il2cpp_array_size_t index)
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		return m_Items + index;
+	}
+	inline void SetAt(il2cpp_array_size_t index, PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 value)
+	{
+		IL2CPP_ARRAY_BOUNDS_CHECK(index, (uint32_t)(this)->max_length);
+		m_Items[index] = value;
+		Il2CppCodeGenWriteBarrier((void**)&((m_Items + index)->___Definition), (void*)NULL);
+	}
+	inline PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 GetAtUnchecked(il2cpp_array_size_t index) const
+	{
+		return m_Items[index];
+	}
+	inline PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390* GetAddressAtUnchecked(il2cpp_array_size_t index)
+	{
+		return m_Items + index;
+	}
+	inline void SetAtUnchecked(il2cpp_array_size_t index, PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 value)
+	{
+		m_Items[index] = value;
+		Il2CppCodeGenWriteBarrier((void**)&((m_Items + index)->___Definition), (void*)NULL);
+	}
+};
+
+
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void Action_1_Invoke_mF2422B2DD29F74CE66F791C3F68E288EC7C3DB9E_gshared_inline (Action_1_t6F9EB113EB3F16226AEF811A2744F4111C116C87* __this, RuntimeObject* ___0_obj, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* Component_GetComponent_TisRuntimeObject_m7181F81CAEC2CF53F5D2BC79B7425C16E1F80D33_gshared (Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* GameObject_AddComponent_TisRuntimeObject_m69B93700FACCF372F5753371C6E8FB780800B824_gshared (GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* Component_GetComponentInParent_TisRuntimeObject_m6746D6BB99912B1B509746C993906492F86CD119_gshared (Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void EventBus_Publish_TisRuntimeObject_mB7AA04208004390A25C200E40136DB1876C07724_gshared (RuntimeObject* ___0_evt, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t List_1_get_Count_mA9EACD83C83F6D35C3EEC79B165244E0FBBED3CC_gshared_inline (List_1_tFE951BF9E0D595431590167E85F992760D743EEF* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Func_2__ctor_m5140E1E90A4EBE7A401216A3B910C7C859B9B2E0_gshared (Func_2_tD8F67CBC136C4F1DD63F067B59B7A53EE4704585* __this, RuntimeObject* ___0_object, intptr_t ___1_method, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D Enumerable_Min_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_TisDateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_m46BD8DC25289BD37A715D302EF12BFA8D1F7D5A0_gshared (RuntimeObject* ___0_source, Func_2_tD8F67CBC136C4F1DD63F067B59B7A53EE4704585* ___1_selector, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Nullable_1__ctor_mB17304720EA19F5469A4883827F53A75FEB492CF_gshared (Nullable_1_tEADC262F7F8B8BC4CC0A003DBDD3CA7C1B63F9AC* __this, DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D ___0_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Func_2__ctor_m49D91C73D959737178977155C7E0F731F947BD73_gshared (Func_2_tB5440A0247E58087F1DB06CB65F2DFC4C1ED4047* __this, RuntimeObject* ___0_object, intptr_t ___1_method, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Enumerable_Count_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_m88FD29F42A4D65EED233C5F537B3B7FB63E259A1_gshared (RuntimeObject* ___0_source, Func_2_tB5440A0247E58087F1DB06CB65F2DFC4C1ED4047* ___1_predicate, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t List_1_get_Count_m4407E4C389F22B8CEC282C15D56516658746C383_gshared_inline (List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Enumerator_t9473BAB568A27E2339D48C1F91319E0F6D244D7A List_1_GetEnumerator_mD8294A7FA2BEB1929487127D476F8EC1CDC23BFC_gshared (List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Enumerator_Dispose_mD9DC3E3C3697830A4823047AB29A77DBBB5ED419_gshared (Enumerator_t9473BAB568A27E2339D48C1F91319E0F6D244D7A* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR RuntimeObject* Enumerator_get_Current_m6330F15D18EE4F547C05DF9BF83C5EB710376027_gshared_inline (Enumerator_t9473BAB568A27E2339D48C1F91319E0F6D244D7A* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool Enumerator_MoveNext_mE921CC8F29FBBDE7CC3209A0ED0D921D58D00BCB_gshared (Enumerator_t9473BAB568A27E2339D48C1F91319E0F6D244D7A* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void List_1_Clear_m16C1F2C61FED5955F10EB36BC1CB2DF34B128994_gshared_inline (List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool List_1_Remove_m4DFA48F4CEB9169601E75FC28517C5C06EFA5AD7_gshared (List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D* __this, RuntimeObject* ___0_item, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void List_1_Add_m8515B507329731A3BD103CDE2FB190112B081111_gshared_inline (List_1_tFE951BF9E0D595431590167E85F992760D743EEF* __this, PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 ___0_item, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 List_1_get_Item_m8B839DF7D66E6E99E8DF210500218FE8DFACBA8F_gshared (List_1_tFE951BF9E0D595431590167E85F992760D743EEF* __this, int32_t ___0_index, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void List_1_RemoveAt_mCD1C30F9E148FE2CB2EC5B1158AD39535FF70EFA_gshared (List_1_tFE951BF9E0D595431590167E85F992760D743EEF* __this, int32_t ___0_index, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* Object_Instantiate_TisRuntimeObject_m5F38AE6B74636F569647D545E365C5579E5F59CE_gshared (RuntimeObject* ___0_original, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___1_position, Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 ___2_rotation, Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ___3_parent, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void List_1_Add_mEBCF994CC3814631017F46A387B1A192ED6C85C7_gshared_inline (List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D* __this, RuntimeObject* ___0_item, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void List_1_Clear_m53590F637286193B0CCCA215C8FF8236D2E6B888_gshared_inline (List_1_tFE951BF9E0D595431590167E85F992760D743EEF* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Func_2__ctor_mA3D195811C69ABA107FDCD8DC66DE4B0B46DAD46_gshared (Func_2_t10F648ED396E137490D51A054ED48C9FBC0854E4* __this, RuntimeObject* ___0_object, intptr_t ___1_method, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* Enumerable_Select_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_TisRuntimeObject_mD975FAD40A79EDD7EF773CFE605853C825D87834_gshared (RuntimeObject* ___0_source, Func_2_t10F648ED396E137490D51A054ED48C9FBC0854E4* ___1_selector, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void List_1__ctor_m7F078BB342729BDF11327FD89D7872265328F690_gshared (List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void List_1__ctor_m683C7F0973ADCD7F2126DB1C329009E52F623487_gshared (List_1_tFE951BF9E0D595431590167E85F992760D743EEF* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void Action_1_Invoke_mBF7DDBCD230E9D28EDF45D3E65F907DE1AE0CCBC_gshared_inline (Action_1_tC926860F20D428DA3E93D6FBA36420E904DD903B* __this, int32_t ___0_obj, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Action_1__ctor_m2E1DFA67718FC1A0B6E5DFEB78831FFE9C059EB4_gshared (Action_1_t6F9EB113EB3F16226AEF811A2744F4111C116C87* __this, RuntimeObject* ___0_object, intptr_t ___1_method, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void EventBus_Subscribe_TisRuntimeObject_m37CC12EE3A0894ABF9E64EF5DE998EA39739F9FA_gshared (Action_1_t6F9EB113EB3F16226AEF811A2744F4111C116C87* ___0_handler, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void EventBus_Unsubscribe_TisRuntimeObject_mE60E8A97A84AF5A9FACE4A73008C273E52778EB5_gshared (Action_1_t6F9EB113EB3F16226AEF811A2744F4111C116C87* ___0_handler, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsyncTaskMethodBuilder_Start_TisU3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191_mE132AF1A8DAE9A1E7B958288198727FF7B652149_gshared (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* __this, U3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191* ___0_stateMachine, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsyncTaskMethodBuilder_Start_TisU3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3_m50FBB105BF1B6902FC1DB5659BF19AF1B2CA05AB_gshared (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* __this, U3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3* ___0_stateMachine, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsyncTaskMethodBuilder_AwaitUnsafeOnCompleted_TisTaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833_TisU3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3_mA003A007EA9282D6D0F1E7038F94FD69E4545899_gshared (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* __this, TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833* ___0_awaiter, U3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3* ___1_stateMachine, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsyncTaskMethodBuilder_AwaitUnsafeOnCompleted_TisTaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833_TisU3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191_mBB54921B8B4283478740CB35E94D90A3BE3A6466_gshared (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* __this, TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833* ___0_awaiter, U3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191* ___1_stateMachine, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_NO_INLINE IL2CPP_METHOD_ATTR void List_1_AddWithResize_m3D6C8AA7B48945A5EA47E49BA5695473BAE9D0A5_gshared (List_1_tFE951BF9E0D595431590167E85F992760D743EEF* __this, PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 ___0_item, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_NO_INLINE IL2CPP_METHOD_ATTR void List_1_AddWithResize_m79A9BF770BEF9C06BE40D5401E55E375F2726CC4_gshared (List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D* __this, RuntimeObject* ___0_item, const RuntimeMethod* method) ;
+
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void RuntimeHelpers_InitializeArray_m751372AA3F24FBF6DA9B9D687CBFA2DE436CAB9B (RuntimeArray* ___0_array, RuntimeFieldHandle_t6E4C45B6D2EA12FC99185805A7E77527899B25C5 ___1_fldHandle, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2 (RuntimeObject* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Delegate_t* Delegate_Combine_m1F725AEF318BE6F0426863490691A6F4606E7D00 (Delegate_t* ___0_a, Delegate_t* ___1_b, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Delegate_t* Delegate_Remove_m8B7DD5661308FA972E23CA1CC3FC9CEB355504E3 (Delegate_t* ___0_source, Delegate_t* ___1_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Random__ctor_m151183BD4F021499A98B9DE8502DAD4B12DD16AC (Random_t79716069EDE67D1D7734F60AE402D0CA3FB6B4C8* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605 (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* ___0_x, Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* ___1_y, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool Asteroid_get_IsDepleted_m1ABBB3F673D0DB021949162990F4A731BE599CEA (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool DroneRuntime_get_IsCargoFull_mF6102A59BA1912BBEA50225FC33192949D34F3FE (DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float EconomyConfig_get_CritChance_mB5A7BCDB0DF8BBDB0A24F668FADA0D3EA41C1586_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float EconomyConfig_get_CritMultiplier_mC44A9271FCCA9646E5D4406C92B3A78E527B198D_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_ActiveTapYield_m382F77556233E1E7CE7F542BC741BAA2728BCC52_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Asteroid_Mine_mF50CA5AEA6258890FFA94FB0B1A091A318F23792 (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* __this, int32_t ___0_amount, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t DroneRuntime_AddCargo_m59F367284CC714BFDD2747E964E97BD733DF4F37 (DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* __this, int32_t ___0_amount, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningTapResult__ctor_m58D12DC0C581AE84B9F8FFC4E879C969F765C3A8 (MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* __this, const RuntimeMethod* method) ;
+inline void Action_1_Invoke_mE706A2496C7548DDABE696B4714CD8ADE4D1F0DC_inline (Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* __this, MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* ___0_obj, const RuntimeMethod* method)
+{
+	((  void (*) (Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28*, MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9*, const RuntimeMethod*))Action_1_Invoke_mF2422B2DD29F74CE66F791C3F68E288EC7C3DB9E_gshared_inline)(__this, ___0_obj, method);
+}
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t Asteroid_get_RemainingYield_m54B12AE864776D53F386632318B5CC83C944DDAB_inline (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void Asteroid_set_Definition_m3C6064211E2CCEE9D8164E1E87D6985F21C80A19_inline (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* __this, AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* ___0_value, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t AsteroidDefinition_get_BaseYield_m426E4DD3482DCE010A29156A5E99832471B653D5_inline (AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float Random_Range_m5236C99A7D8AE6AC9190592DC66016652A2D2494 (float ___0_minInclusive, float ___1_maxInclusive, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t Mathf_RoundToInt_m60F8B66CF27F1FA75AA219342BD184B75771EB4B_inline (float ___0_f, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void Asteroid_set_RemainingYield_mC72EC5D6BB442ADF7C742D604E426A1303E42C69_inline (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* __this, int32_t ___0_value, const RuntimeMethod* method) ;
+inline Collider_t1CC3163924FCD6C4CC2E816373A929C1E3D55E76* Component_GetComponent_TisCollider_t1CC3163924FCD6C4CC2E816373A929C1E3D55E76_m820398EDBF1D3766C3166A0C323A127662A29A14 (Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3* __this, const RuntimeMethod* method)
+{
+	return ((  Collider_t1CC3163924FCD6C4CC2E816373A929C1E3D55E76* (*) (Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3*, const RuntimeMethod*))Component_GetComponent_TisRuntimeObject_m7181F81CAEC2CF53F5D2BC79B7425C16E1F80D33_gshared)(__this, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* Component_get_gameObject_m57AEFBB14DB39EC476F740BA000E170355DE691B (Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3* __this, const RuntimeMethod* method) ;
+inline SphereCollider_tBA111C542CE97F6873DE742757213D6265C7D275* GameObject_AddComponent_TisSphereCollider_tBA111C542CE97F6873DE742757213D6265C7D275_m3D05F19667844A2949840753F7A3287115BE029E (GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* __this, const RuntimeMethod* method)
+{
+	return ((  SphereCollider_tBA111C542CE97F6873DE742757213D6265C7D275* (*) (GameObject_t76FEDD663AB33C991A9C9A23129337651094216F*, const RuntimeMethod*))GameObject_AddComponent_TisRuntimeObject_m69B93700FACCF372F5753371C6E8FB780800B824_gshared)(__this, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SphereCollider_set_radius_m6119FE18C6739B077AB17334B1B53984911017FF (SphereCollider_tBA111C542CE97F6873DE742757213D6265C7D275* __this, float ___0_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Random_get_onUnitSphere_mA7FD531C3043945E5EA290F670E79A78EFAC0D92 (const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t Mathf_Min_m888083F74FF5655778F0403BB5E9608BEFDEA8CB_inline (int32_t ___0_a, int32_t ___1_b, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371 (Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float Time_get_deltaTime_mC3195000401F0FD167DD2F948FD2BC58330D0865 (const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Transform_Rotate_m683E67853797040312868B69E963D0E97F433EEB (Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* __this, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_axis, float ___1_angle, int32_t ___2_relativeTo, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MonoBehaviour__ctor_m592DB0105CA0BC97AA1C5F4AD27B12D68A3B7C1E (MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Camera_tA92CC927D7439999BC82DBEDC0AA45B470F9E184* Camera_get_main_m52C992F18E05355ABB9EEB64A4BF2215E12762DF (const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Input_get_touchCount_m057388BFC67A0F4CA53764B1022867ED81D01E39 (const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Touch_t03E51455ED508492B3F278903A0114FA0E87B417 Input_GetTouch_m75D99FE801A94279874FA8DC6B6ADAD35F5123B1 (int32_t ___0_index, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Touch_get_phase_mB82409FB2BE1C32ABDBA6A72E52A099D28AB70B0 (Touch_t03E51455ED508492B3F278903A0114FA0E87B417* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool AsteroidSelectionController_IsOverGui_m98C1C69731D8E22E343ED519C1D271C8C465B53C (const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 Touch_get_position_m41B9EB0F3F3E1BE98CEB388253A9E31979CB964A (Touch_t03E51455ED508492B3F278903A0114FA0E87B417* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidSelectionController_TrySelect_mB10C07CEE5CA2CF3A8276ED79E91D76D38763EAC (AsteroidSelectionController_t5799B4C81049C2CBE885591F63E3A19E3B0B1A1B* __this, Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___0_screenPosition, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool Input_GetMouseButtonUp_mBE89CC9C69BBEA9A863819E77EA54411B0476ED6 (int32_t ___0_button, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Input_get_mousePosition_mFF21FBD2647DAE2A23BD4C45571CA95D05A0A42C (const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 Vector2_op_Implicit_mE8EBEE9291F11BB02F062D6E000F4798968CBD96_inline (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_v, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector2_op_Implicit_m6D9CABB2C791A192867D7A4559D132BE86DD3EB7_inline (Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___0_v, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Ray_t2B1742D7958DC05BDC3EFC7461D3593E1430DC00 Camera_ScreenPointToRay_m2887B9A49880B7AB670C57D66B67D6A6689FE315 (Camera_tA92CC927D7439999BC82DBEDC0AA45B470F9E184* __this, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_pos, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t LayerMask_op_Implicit_m7F5A5B9D079281AC445ED39DEE1FCFA9D795810D (LayerMask_t97CB6BDADEDC3D6423C7BCFEA7F86DA2EC6241DB ___0_mask, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool Physics_Raycast_m34AC1210E893A9EF969BD2C7104B10BE5B580025 (Ray_t2B1742D7958DC05BDC3EFC7461D3593E1430DC00 ___0_ray, RaycastHit_t6F30BD0B38B56401CA833A1B87BD74F2ACD2F2B5* ___1_hitInfo, float ___2_maxDistance, int32_t ___3_layerMask, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Collider_t1CC3163924FCD6C4CC2E816373A929C1E3D55E76* RaycastHit_get_collider_m84B160439BBEAB6D9E94B799F720E25C9E2D444D (RaycastHit_t6F30BD0B38B56401CA833A1B87BD74F2ACD2F2B5* __this, const RuntimeMethod* method) ;
+inline Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* Component_GetComponentInParent_TisAsteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE_m3F03C12026E7FBC098A99FF685D78943D09C33D2 (Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3* __this, const RuntimeMethod* method)
+{
+	return ((  Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* (*) (Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3*, const RuntimeMethod*))Component_GetComponentInParent_TisRuntimeObject_m6746D6BB99912B1B509746C993906492F86CD119_gshared)(__this, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* Object_get_name_mAC2F6B897CF1303BA4249B4CB55271AFACBB6392 (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* String_Concat_m9E3155FB84015C823606188F53B47CB44C444991 (String_t* ___0_str0, String_t* ___1_str1, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SULog_Info_m4F0F76BC192792291ABFF31712DB6F83FD36C8D9 (String_t* ___0_msg, int32_t ___1_channel, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidSelectedEvent__ctor_m689E000782977F31CDA0824C9064193339B869B1 (AsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70* __this, const RuntimeMethod* method) ;
+inline void EventBus_Publish_TisAsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70_mB2A1CF00203D11E91CCB25DBDE2BF12DD046EB15 (AsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70* ___0_evt, const RuntimeMethod* method)
+{
+	((  void (*) (AsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70*, const RuntimeMethod*))EventBus_Publish_TisRuntimeObject_mB7AA04208004390A25C200E40136DB1876C07724_gshared)(___0_evt, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR EventSystem_t61C51380B105BE9D2C39C4F15B7E655659957707* EventSystem_get_current_mC87C69FB418563DC2A571A10E2F9DB59A6785016 (const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602 (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* ___0_x, Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* ___1_y, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool EventSystem_IsPointerOverGameObject_mC89BFEA46B0DA67F914B9B90356E63BFBE11EB38 (EventSystem_t61C51380B105BE9D2C39C4F15B7E655659957707* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR LayerMask_t97CB6BDADEDC3D6423C7BCFEA7F86DA2EC6241DB LayerMask_op_Implicit_m01C8996A2CB2085328B9C33539C43139660D8222 (int32_t ___0_intVal, const RuntimeMethod* method) ;
+inline int32_t List_1_get_Count_mA9EACD83C83F6D35C3EEC79B165244E0FBBED3CC_inline (List_1_tFE951BF9E0D595431590167E85F992760D743EEF* __this, const RuntimeMethod* method)
+{
+	return ((  int32_t (*) (List_1_tFE951BF9E0D595431590167E85F992760D743EEF*, const RuntimeMethod*))List_1_get_Count_mA9EACD83C83F6D35C3EEC79B165244E0FBBED3CC_gshared_inline)(__this, method);
+}
+inline void Func_2__ctor_m5140E1E90A4EBE7A401216A3B910C7C859B9B2E0 (Func_2_tD8F67CBC136C4F1DD63F067B59B7A53EE4704585* __this, RuntimeObject* ___0_object, intptr_t ___1_method, const RuntimeMethod* method)
+{
+	((  void (*) (Func_2_tD8F67CBC136C4F1DD63F067B59B7A53EE4704585*, RuntimeObject*, intptr_t, const RuntimeMethod*))Func_2__ctor_m5140E1E90A4EBE7A401216A3B910C7C859B9B2E0_gshared)(__this, ___0_object, ___1_method, method);
+}
+inline DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D Enumerable_Min_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_TisDateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_m46BD8DC25289BD37A715D302EF12BFA8D1F7D5A0 (RuntimeObject* ___0_source, Func_2_tD8F67CBC136C4F1DD63F067B59B7A53EE4704585* ___1_selector, const RuntimeMethod* method)
+{
+	return ((  DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D (*) (RuntimeObject*, Func_2_tD8F67CBC136C4F1DD63F067B59B7A53EE4704585*, const RuntimeMethod*))Enumerable_Min_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_TisDateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_m46BD8DC25289BD37A715D302EF12BFA8D1F7D5A0_gshared)(___0_source, ___1_selector, method);
+}
+inline void Nullable_1__ctor_mB17304720EA19F5469A4883827F53A75FEB492CF (Nullable_1_tEADC262F7F8B8BC4CC0A003DBDD3CA7C1B63F9AC* __this, DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D ___0_value, const RuntimeMethod* method)
+{
+	((  void (*) (Nullable_1_tEADC262F7F8B8BC4CC0A003DBDD3CA7C1B63F9AC*, DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D, const RuntimeMethod*))Nullable_1__ctor_mB17304720EA19F5469A4883827F53A75FEB492CF_gshared)(__this, ___0_value, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidSpawner_ClearAll_mBBF34BC1757855ECC5107AAA4BE1309FFB985D9E (AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidSpawner_LoadPendingRespawns_mE32574A70392CE2D625CE7A528130045AF741158 (AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR AsteroidDefinitionU5BU5D_tBFF455AEF363CCA9AD627A7BE225FF1013BBAC04* PlanetDefinition_get_AsteroidTypes_mE1C79D48B07E8EC7DF76D476D21574B9638483B0_inline (PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* PlanetDefinition_get_DisplayName_m9B90C34BBDD2E66775A13EBF6FA084E31173B0A4_inline (PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* String_Concat_m8855A6DE10F84DA7F4EC113CADDB59873A25573B (String_t* ___0_str0, String_t* ___1_str1, String_t* ___2_str2, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SULog_Warn_m1EA0A6F04845F06AD7CBCEB8E788FEEEF143BE4F (String_t* ___0_msg, int32_t ___1_channel, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CU3Ec__DisplayClass10_0__ctor_m8B5944B095C23063DA2EFBA2B4B94F91260E9747 (U3CU3Ec__DisplayClass10_0_t1AE26FC45BF34994EA766723EA87B20BB2FF845C* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float AsteroidDefinition_get_Rarity_mF437404B743658CD88A81189FAECDEB22DE4563A_inline (AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t Mathf_Max_m7FA442918DE37E3A00106D1F2E789D65829792B8_inline (int32_t ___0_a, int32_t ___1_b, const RuntimeMethod* method) ;
+inline void Func_2__ctor_m49D91C73D959737178977155C7E0F731F947BD73 (Func_2_tB5440A0247E58087F1DB06CB65F2DFC4C1ED4047* __this, RuntimeObject* ___0_object, intptr_t ___1_method, const RuntimeMethod* method)
+{
+	((  void (*) (Func_2_tB5440A0247E58087F1DB06CB65F2DFC4C1ED4047*, RuntimeObject*, intptr_t, const RuntimeMethod*))Func_2__ctor_m49D91C73D959737178977155C7E0F731F947BD73_gshared)(__this, ___0_object, ___1_method, method);
+}
+inline int32_t Enumerable_Count_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_m88FD29F42A4D65EED233C5F537B3B7FB63E259A1 (RuntimeObject* ___0_source, Func_2_tB5440A0247E58087F1DB06CB65F2DFC4C1ED4047* ___1_predicate, const RuntimeMethod* method)
+{
+	return ((  int32_t (*) (RuntimeObject*, Func_2_tB5440A0247E58087F1DB06CB65F2DFC4C1ED4047*, const RuntimeMethod*))Enumerable_Count_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_m88FD29F42A4D65EED233C5F537B3B7FB63E259A1_gshared)(___0_source, ___1_predicate, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidSpawner_SpawnOne_mE492BDC7E1DBDDA88EB76E190CD3A5608BFCE88E (AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* __this, AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* ___0_def, const RuntimeMethod* method) ;
+inline int32_t List_1_get_Count_m82C83E84AE9EB3ADE637A4B3364CE9DEB25474FA_inline (List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E* __this, const RuntimeMethod* method)
+{
+	return ((  int32_t (*) (List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E*, const RuntimeMethod*))List_1_get_Count_m4407E4C389F22B8CEC282C15D56516658746C383_gshared_inline)(__this, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* String_Format_mFB7DA489BD99F4670881FF50EC017BFB0A5C0987 (String_t* ___0_format, RuntimeObject* ___1_arg0, RuntimeObject* ___2_arg1, const RuntimeMethod* method) ;
+inline Enumerator_t33A4A84C316F7D24C6D6E39FFFB6F96E747DD420 List_1_GetEnumerator_m2649543096EFB94868C4AFF6A5CB60D7239988E9 (List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E* __this, const RuntimeMethod* method)
+{
+	return ((  Enumerator_t33A4A84C316F7D24C6D6E39FFFB6F96E747DD420 (*) (List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E*, const RuntimeMethod*))List_1_GetEnumerator_mD8294A7FA2BEB1929487127D476F8EC1CDC23BFC_gshared)(__this, method);
+}
+inline void Enumerator_Dispose_m6B0CAA9F0906166B90D4BFE25146013F9322DC6A (Enumerator_t33A4A84C316F7D24C6D6E39FFFB6F96E747DD420* __this, const RuntimeMethod* method)
+{
+	((  void (*) (Enumerator_t33A4A84C316F7D24C6D6E39FFFB6F96E747DD420*, const RuntimeMethod*))Enumerator_Dispose_mD9DC3E3C3697830A4823047AB29A77DBBB5ED419_gshared)(__this, method);
+}
+inline Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* Enumerator_get_Current_mF4AC9B0A6F5DF3C91BF02F68FBBCFEE07762A356_inline (Enumerator_t33A4A84C316F7D24C6D6E39FFFB6F96E747DD420* __this, const RuntimeMethod* method)
+{
+	return ((  Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* (*) (Enumerator_t33A4A84C316F7D24C6D6E39FFFB6F96E747DD420*, const RuntimeMethod*))Enumerator_get_Current_m6330F15D18EE4F547C05DF9BF83C5EB710376027_gshared_inline)(__this, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Object_Destroy_mE97D0A766419A81296E8D4E5C23D01D3FE91ACBB (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* ___0_obj, const RuntimeMethod* method) ;
+inline bool Enumerator_MoveNext_m16B1AEAEB1494F4C251EC6C9CCCE2DF5A9E6A570 (Enumerator_t33A4A84C316F7D24C6D6E39FFFB6F96E747DD420* __this, const RuntimeMethod* method)
+{
+	return ((  bool (*) (Enumerator_t33A4A84C316F7D24C6D6E39FFFB6F96E747DD420*, const RuntimeMethod*))Enumerator_MoveNext_mE921CC8F29FBBDE7CC3209A0ED0D921D58D00BCB_gshared)(__this, method);
+}
+inline void List_1_Clear_m7FED0360877304E2F2148E8662C8FF4B2E72CA09_inline (List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E* __this, const RuntimeMethod* method)
+{
+	((  void (*) (List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E*, const RuntimeMethod*))List_1_Clear_m16C1F2C61FED5955F10EB36BC1CB2DF34B128994_gshared_inline)(__this, method);
+}
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* Asteroid_get_Definition_m46EC7FF414861479BD994A979FE4526B15827BE9_inline (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* __this, const RuntimeMethod* method) ;
+inline bool List_1_Remove_m9DA25F95AA3EA6E8BC0307832200DC803B072356 (List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E* __this, Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___0_item, const RuntimeMethod* method)
+{
+	return ((  bool (*) (List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E*, Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE*, const RuntimeMethod*))List_1_Remove_m4DFA48F4CEB9169601E75FC28517C5C06EFA5AD7_gshared)(__this, ___0_item, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D DateTime_get_UtcNow_m06B6E9995FE16846A0F71EC9DB23E90BE2C5F9FA (const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D DateTime_AddHours_m99C41C078F2F480BF9965F8A4BAB8C8B75C39C02 (DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D* __this, double ___0_value, const RuntimeMethod* method) ;
+inline void List_1_Add_m8515B507329731A3BD103CDE2FB190112B081111_inline (List_1_tFE951BF9E0D595431590167E85F992760D743EEF* __this, PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 ___0_item, const RuntimeMethod* method)
+{
+	((  void (*) (List_1_tFE951BF9E0D595431590167E85F992760D743EEF*, PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390, const RuntimeMethod*))List_1_Add_m8515B507329731A3BD103CDE2FB190112B081111_gshared_inline)(__this, ___0_item, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidSpawner_SavePendingRespawns_m956287006EC5D387CB0638CA3112F9F410540CEA (AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* AsteroidDefinition_get_MineralType_m1F1D8CC7612117CDA1E8C6B490BD695C19E4124B_inline (AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* __this, const RuntimeMethod* method) ;
+inline PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 List_1_get_Item_m8B839DF7D66E6E99E8DF210500218FE8DFACBA8F (List_1_tFE951BF9E0D595431590167E85F992760D743EEF* __this, int32_t ___0_index, const RuntimeMethod* method)
+{
+	return ((  PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 (*) (List_1_tFE951BF9E0D595431590167E85F992760D743EEF*, int32_t, const RuntimeMethod*))List_1_get_Item_m8B839DF7D66E6E99E8DF210500218FE8DFACBA8F_gshared)(__this, ___0_index, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool DateTime_op_LessThan_m2A02FFF5F35E33417FB32CB9F948769CA15AED17 (DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D ___0_t1, DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D ___1_t2, const RuntimeMethod* method) ;
+inline void List_1_RemoveAt_mCD1C30F9E148FE2CB2EC5B1158AD39535FF70EFA (List_1_tFE951BF9E0D595431590167E85F992760D743EEF* __this, int32_t ___0_index, const RuntimeMethod* method)
+{
+	((  void (*) (List_1_tFE951BF9E0D595431590167E85F992760D743EEF*, int32_t, const RuntimeMethod*))List_1_RemoveAt_mCD1C30F9E148FE2CB2EC5B1158AD39535FF70EFA_gshared)(__this, ___0_index, method);
+}
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* AsteroidDefinition_get_ModelPrefab_mE05A5C7658D3150A8D9B40A34B3D15BFF1755D06_inline (AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 AsteroidSpawner_RandomOrbitPoint_m30B5D297D49D8564D1ADB06CC545C294EA4A651A (AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 Random_get_rotation_m8B04B3FB3927208F0CB8C65295B0226E7FC7E9E2 (const RuntimeMethod* method) ;
+inline GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* Object_Instantiate_TisGameObject_t76FEDD663AB33C991A9C9A23129337651094216F_mD136E37F696C00A3A1D4F65724ACAE903E385181 (GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ___0_original, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___1_position, Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 ___2_rotation, Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ___3_parent, const RuntimeMethod* method)
+{
+	return ((  GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* (*) (GameObject_t76FEDD663AB33C991A9C9A23129337651094216F*, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2, Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974, Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1*, const RuntimeMethod*))Object_Instantiate_TisRuntimeObject_m5F38AE6B74636F569647D545E365C5579E5F59CE_gshared)(___0_original, ___1_position, ___2_rotation, ___3_parent, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* GameObject_CreatePrimitive_m13C0A691E679A83DD595913200A1DD9A906EB47B (int32_t ___0_type, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* GameObject_get_transform_m0BC10ADFA1632166AE5544BDF9038A2650C2AE56 (GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Transform_SetParent_m6677538B60246D958DD91F931C50F969CCBB5250 (Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* __this, Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ___0_p, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Transform_set_position_mA1A817124BB41B685043DED2A9BA48CDF37C4156 (Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* __this, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Transform_set_rotation_m61340DE74726CF0F9946743A727C4D444397331D (Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* __this, Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 ___0_value, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector3_get_one_mC9B289F1E15C42C597180C9FE6FB492495B51D02_inline (const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector3_op_Multiply_m87BA7C578F96C8E49BB07088DAAC4649F83B0353_inline (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_a, float ___1_d, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Transform_set_localScale_mBA79E811BAF6C47B80FF76414C12B47B3CD03633 (Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* __this, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Object_set_name_mC79E6DC8FFD72479C90F0C4CC7F42A0FEAF5AE47 (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* __this, String_t* ___0_value, const RuntimeMethod* method) ;
+inline Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* GameObject_AddComponent_TisAsteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE_mD7593790638A8A1AD0762C871D44D92EE59A1D0F (GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* __this, const RuntimeMethod* method)
+{
+	return ((  Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* (*) (GameObject_t76FEDD663AB33C991A9C9A23129337651094216F*, const RuntimeMethod*))GameObject_AddComponent_TisRuntimeObject_m69B93700FACCF372F5753371C6E8FB780800B824_gshared)(__this, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Asteroid_Initialize_m251A33F17229EB169A820D133C63171A35FEE4BC (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* __this, AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* ___0_definition, const RuntimeMethod* method) ;
+inline void List_1_Add_m34E74E21D3B4B5F81F6C5E939C5F87485BA41859_inline (List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E* __this, Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___0_item, const RuntimeMethod* method)
+{
+	((  void (*) (List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E*, Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE*, const RuntimeMethod*))List_1_Add_mEBCF994CC3814631017F46A387B1A192ED6C85C7_gshared_inline)(__this, ___0_item, method);
+}
+inline void List_1_Clear_m53590F637286193B0CCCA215C8FF8236D2E6B888_inline (List_1_tFE951BF9E0D595431590167E85F992760D743EEF* __this, const RuntimeMethod* method)
+{
+	((  void (*) (List_1_tFE951BF9E0D595431590167E85F992760D743EEF*, const RuntimeMethod*))List_1_Clear_m53590F637286193B0CCCA215C8FF8236D2E6B888_gshared_inline)(__this, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* PlayerPrefs_GetString_mE80FED64ACC3134149C8202FDDDE774C29CB0AF2 (String_t* ___0_key, String_t* ___1_defaultValue, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool String_IsNullOrEmpty_mEA9E3FB005AC28FE02E69FCF95A7B8456192B478 (String_t* ___0_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248* String_Split_m9530B73D02054692283BF35C3A27C8F2230946F4 (String_t* __this, Il2CppChar ___0_separator, int32_t ___1_options, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool Int64_TryParse_m3FC0128C89CC2331239FC2A0A749BF33455F03D2 (String_t* ___0_s, int64_t* ___1_result, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* DatabaseRegistry_GetAsteroid_m6B60D2DCF681B929B98F92D1693EC1E0F56778B5 (DatabaseRegistry_tBD75C5774CDFE42C5FC8B3827DE1F0E1AF8BC8D1* __this, String_t* ___0_mineral, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR DateTimeOffset_t4EE701FE2F386D6F932FAC9B11E4B74A5B30F0A4 DateTimeOffset_FromUnixTimeSeconds_mE1FA5E04CCCE8A0E8903C9DACC64526C721C0A47 (int64_t ___0_seconds, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D DateTimeOffset_get_UtcDateTime_mE7EB39F361C89E1367CBC03C3410BA34F194DA40 (DateTimeOffset_t4EE701FE2F386D6F932FAC9B11E4B74A5B30F0A4* __this, const RuntimeMethod* method) ;
+inline void Func_2__ctor_m28655FE32734CEEFC09C3CC3C9FB957A6B5F4C28 (Func_2_tA8125C6B01EF913BA8EA4EA9ABC49917EF6C4369* __this, RuntimeObject* ___0_object, intptr_t ___1_method, const RuntimeMethod* method)
+{
+	((  void (*) (Func_2_tA8125C6B01EF913BA8EA4EA9ABC49917EF6C4369*, RuntimeObject*, intptr_t, const RuntimeMethod*))Func_2__ctor_mA3D195811C69ABA107FDCD8DC66DE4B0B46DAD46_gshared)(__this, ___0_object, ___1_method, method);
+}
+inline RuntimeObject* Enumerable_Select_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_TisString_t_mF74CC9B16E879C2CF2BC9EF8251AEAB111E91B24 (RuntimeObject* ___0_source, Func_2_tA8125C6B01EF913BA8EA4EA9ABC49917EF6C4369* ___1_selector, const RuntimeMethod* method)
+{
+	return ((  RuntimeObject* (*) (RuntimeObject*, Func_2_tA8125C6B01EF913BA8EA4EA9ABC49917EF6C4369*, const RuntimeMethod*))Enumerable_Select_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_TisRuntimeObject_mD975FAD40A79EDD7EF773CFE605853C825D87834_gshared)(___0_source, ___1_selector, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* String_Join_m8159F953B3D62AA54A0853A6E9573CDC0F63E158 (String_t* ___0_separator, RuntimeObject* ___1_values, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void PlayerPrefs_SetString_mF4F457C81BB75F0213547C6287BA36E15E1F0256 (String_t* ___0_key, String_t* ___1_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void PlayerPrefs_Save_m82567E045D69C838112EA204B60C144D4C1EA3AE (const RuntimeMethod* method) ;
+inline void List_1__ctor_mB815FB837474863131469CFB3841AC8401995270 (List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E* __this, const RuntimeMethod* method)
+{
+	((  void (*) (List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E*, const RuntimeMethod*))List_1__ctor_m7F078BB342729BDF11327FD89D7872265328F690_gshared)(__this, method);
+}
+inline void List_1__ctor_m683C7F0973ADCD7F2126DB1C329009E52F623487 (List_1_tFE951BF9E0D595431590167E85F992760D743EEF* __this, const RuntimeMethod* method)
+{
+	((  void (*) (List_1_tFE951BF9E0D595431590167E85F992760D743EEF*, const RuntimeMethod*))List_1__ctor_m683C7F0973ADCD7F2126DB1C329009E52F623487_gshared)(__this, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CU3Ec__ctor_m1960FC6D1463A5262FF1A2FC6490B5B5A71A516B (U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DateTimeOffset__ctor_mB1671EA00463E92811C8DEA80797DC89B2FFCA62 (DateTimeOffset_t4EE701FE2F386D6F932FAC9B11E4B74A5B30F0A4* __this, DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D ___0_dateTime, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int64_t DateTimeOffset_ToUnixTimeSeconds_m91F88288451BAB5A8373467A94DAEA359AAF34BD (DateTimeOffset_t4EE701FE2F386D6F932FAC9B11E4B74A5B30F0A4* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Transform_get_position_m69CD5FA214FDAE7BB701552943674846C220FDE1 (Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Vector3_Distance_m2314DB9B8BD01157E013DF87BEA557375C7F9FF9_inline (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_a, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___1_b, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameObject__ctor_m37D512B05D292F954792225E6C6EEE95293A9B88 (GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* __this, String_t* ___0_name, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Object_set_hideFlags_mACB8BFC903FB3B01BBD427753E791BF28B5E33D4 (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C* __this, int32_t ___0_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* Transform_get_parent_m65354E28A4C94EC00EBCF03532F7B0718380791E (Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Transform_SetParent_m9BDD7B7476714B2D7919B10BDC22CE75C0A0A195 (Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* __this, Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ___0_parent, bool ___1_worldPositionStays, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DroneController_SetActivity_m7BC4B7E55775CEC14C3BC25FFA00CBE4D1803B0A (DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* __this, int32_t ___0_activity, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector3_MoveTowards_m0363264647799F3173AC37F8E819F98298249B08_inline (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_current, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___1_target, float ___2_maxDistanceDelta, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DroneController_FaceTowards_m1453B053FAAA528D31B3D5B8AB8D4803AE56B364 (DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* __this, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_point, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DroneController_OrbitTarget_m847A7E769E9BC060575871F928331E065F81928E (DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DroneController_SetEffect_m17AC1D299913E45CE4891786A78EAA17C026144A (ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* ___0_effect, bool ___1_play, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void ParticleSystem_Play_mD943E601BFE16CB9BB5D1F5E6AED5C36F5F11EF5 (ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void ParticleSystem_Stop_mB5761CB85083F593FFEC3D27931CACF1855A6326 (ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* __this, bool ___0_withChildren, int32_t ___1_stopBehavior, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector3_op_Subtraction_mE42023FF80067CB44A1D4A27EB7CF2B24CABB828_inline (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_a, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___1_b, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Vector3_get_sqrMagnitude_m43C27DEC47C4811FB30AB474FF2131A963B66FC8_inline (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 Quaternion_LookRotation_mDB2CCA75B8E1AB98104F2A6E1A1EA57D0D1298D7_inline (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_forward, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 Transform_get_rotation_m32AF40CA0D50C797DA639A696F8EAEC7524C179C (Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 Quaternion_RotateTowards_m50EF9D609C80CD423CDA856EA3481DE2004633A3_inline (Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 ___0_from, Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 ___1_to, float ___2_maxDegreesDelta, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Mathf_Repeat_m6F1560A163481BB311D685294E1B463C3E4EB3BA_inline (float ___0_t, float ___1_length, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 Quaternion_Euler_m9262AB29E3E9CE94EF71051F38A28E82AEC73F90_inline (float ___0_x, float ___1_y, float ___2_z, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector3_get_forward_mAA55A7034304DF8B2152EAD49AE779FC4CA2EB4A_inline (const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Quaternion_op_Multiply_mE1EBA73F9173432B50F8F17CE8190C5A7986FB8C (Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 ___0_rotation, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___1_point, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector3_op_Addition_m78C0EC70CB66E8DCAC225743D82B268DAEE92067_inline (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_a, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___1_b, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Transform_LookAt_mFEF7353E4CAEB85D5F7CEEF9276C3B8D6E314C6C (Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* __this, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_worldPosition, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t DroneRuntime_get_CargoAmount_m78D7D131E2AE0ACBE4442CD70B873A02F8EA87E6_inline (DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* DroneRuntime_get_Definition_m124A7D00CDAC10CDFEF4997B6191D19A7E455EE5_inline (DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t DroneDefinition_get_CargoCap_m1BCA7661910C280D60CAA6779EC56CD3F8B20751_inline (DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void ArgumentNullException__ctor_m444AE141157E333844FC1A9500224C2F9FD24F4B (ArgumentNullException_t327031E412FAB2351B0022DD5DAD47E67E597129* __this, String_t* ___0_paramName, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Math_Min_m53C488772A34D53917BCA2A491E79A0A5356ED52 (int32_t ___0_val1, int32_t ___1_val2, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void DroneRuntime_set_CargoAmount_mF99DD5E095D858C53F043E7653C6E6BF8BB01B0C_inline (DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* __this, int32_t ___0_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR TimeSpan_t8195C5B013A2C532FEBDF0B64B6911982E750F5A DateTime_op_Subtraction_m64D26F5ABFAE6E166A7E567093D025F6C69F0123 (DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D ___0_d1, DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D ___1_d2, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR double TimeSpan_get_TotalSeconds_mED686E7CECE6A76A7DC38518698B9199DB8CDEA8 (TimeSpan_t8195C5B013A2C532FEBDF0B64B6911982E750F5A* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float EconomyConfig_get_MaxOfflineHours_m27C723AEF635D7A46084272EE14281433FB11639_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float Math_Min_mE913811A2F7566294BF4649A434282634E7254B3 (float ___0_val1, float ___1_val2, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float EconomyConfig_get_IdleMiningRate_mAE386036D06761D813CB566DE6B0D662BA696E7A_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Mathf_Max_mF5379E63D2BBAC76D090748695D833934F8AD051_inline (float ___0_a, float ___1_b, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t IdleMiningSession_get_ClaimTapsRequired_m6307FD9F00111F4A35AA5A86513C495394C0CB87_inline (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void IdleMiningSession_set_ClaimTapsRemaining_m2238335211D89ED2EC1B86E5DA48AFEB6107F7BB_inline (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, int32_t ___0_value, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void IdleMiningSession_set_Stage_m3325A7C137559EFF18D67C7802400D369BD692AC_inline (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, int32_t ___0_value, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t IdleMiningSession_get_Stage_m547A9299CDCBC46129B15218DE70B358A7457312_inline (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSession_SetStage_mE5C0DCFE23A066A1DF6C90DAB1A605D83C8B77E2 (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, int32_t ___0_stage, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Mathf_Clamp01_mA7E048DBDA832D399A581BE4D6DED9FA44CE0F14_inline (float ___0_value, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void IdleMiningSession_set_MiningProgress01_m82ABC86363B457D3D6243EBBB2F58DEB6BC73749_inline (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, float ___0_value, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t IdleMiningSession_get_ClaimTapsRemaining_mFC2664C261EDBC4805E0DEC0D885D73858614D8A_inline (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, const RuntimeMethod* method) ;
+inline void Action_1_Invoke_m32D3D79465D74BD413CB1E945630C1540539DD51_inline (Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* __this, int32_t ___0_obj, const RuntimeMethod* method)
+{
+	((  void (*) (Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F*, int32_t, const RuntimeMethod*))Action_1_Invoke_mBF7DDBCD230E9D28EDF45D3E65F907DE1AE0CCBC_gshared_inline)(__this, ___0_obj, method);
+}
+inline void Action_1__ctor_m63E21C83CAEEE7C7548456D2E04B8F72AE345BEB (Action_1_t16777F1C5C2E1F6A8AD4BE6559F7B85BBB810244* __this, RuntimeObject* ___0_object, intptr_t ___1_method, const RuntimeMethod* method)
+{
+	((  void (*) (Action_1_t16777F1C5C2E1F6A8AD4BE6559F7B85BBB810244*, RuntimeObject*, intptr_t, const RuntimeMethod*))Action_1__ctor_m2E1DFA67718FC1A0B6E5DFEB78831FFE9C059EB4_gshared)(__this, ___0_object, ___1_method, method);
+}
+inline void EventBus_Subscribe_TisAsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70_m3AD23EE7EABD7E68D1EF861D36BBA564C85B0FCD (Action_1_t16777F1C5C2E1F6A8AD4BE6559F7B85BBB810244* ___0_handler, const RuntimeMethod* method)
+{
+	((  void (*) (Action_1_t16777F1C5C2E1F6A8AD4BE6559F7B85BBB810244*, const RuntimeMethod*))EventBus_Subscribe_TisRuntimeObject_m37CC12EE3A0894ABF9E64EF5DE998EA39739F9FA_gshared)(___0_handler, method);
+}
+inline void EventBus_Unsubscribe_TisAsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70_mBB4375B7F2E0F57906C3FEE17D0FCBDD4B2F8CCD (Action_1_t16777F1C5C2E1F6A8AD4BE6559F7B85BBB810244* ___0_handler, const RuntimeMethod* method)
+{
+	((  void (*) (Action_1_t16777F1C5C2E1F6A8AD4BE6559F7B85BBB810244*, const RuntimeMethod*))EventBus_Unsubscribe_TisRuntimeObject_mE60E8A97A84AF5A9FACE4A73008C273E52778EB5_gshared)(___0_handler, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSessionController_DespawnVfx_m4E044B9049A2BDD6E7CE10E86714FCEC3497D76D (IdleMiningSessionController_tDBF223858E8DC3FECBE0E30EBB4B3CD884FFCEEE* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* MiningController_get_CurrentIdleSession_m9DCDD0E6C3A9073CBE660CB651E14F9CC20D64EF_inline (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* IdleMiningSession_get_Asteroid_mF059A51CA217E34F32F4009D308982A63BCFDEB9_inline (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DroneController_SetTarget_mC964139AABA8347EFC29EB47DAB843D9B564C13A (DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* __this, Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ___0_target, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DroneController_ReturnToBase_m3D10BEC31F48E3BDA5C471405C6FA3D7CB4BE7BD (DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool DroneController_get_IsAtTarget_m8208018018A04BF515CEAD4E7A3722976174A8AF (DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSession_BeginMining_m8453F6ABE25CDB2F584E035BA725333B69368B84 (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningController_NotifyIdleSessionStageChanged_m00A44A05A41B45E61186625D8F80BB889E9D8D81 (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSession_Tick_m606C26A7265DA0AFB25CA996263FFE71672ABDBC (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, float ___0_deltaTime, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* MiningController_RegisterIdleClaimTapAsync_m921E3A35DEB4703FD29DAB8CEC4EA0A5345BF89A (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___0_asteroid, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector3_get_zero_m0C1249C3F25B1C70EAD3CC8B31259975A457AE39_inline (const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Transform_set_localPosition_mDE1C997F7D79C0885210B7732B4BA50EE7D73134 (Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* __this, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_value, const RuntimeMethod* method) ;
+inline ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* GameObject_AddComponent_TisParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1_mB314D473090ABA262973402E33A61D8017704EA8 (GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* __this, const RuntimeMethod* method)
+{
+	return ((  ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* (*) (GameObject_t76FEDD663AB33C991A9C9A23129337651094216F*, const RuntimeMethod*))GameObject_AddComponent_TisRuntimeObject_m69B93700FACCF372F5753371C6E8FB780800B824_gshared)(__this, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR MainModule_tC7ECD8330C14B0808478A748048988A6085CE2A9 ParticleSystem_get_main_mD86DFCD96150E2CE760CD2F37052BB3BCA33C189 (ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR MinMaxCurve_t812D571297EED6498776CC58949A42B172E60E23 MinMaxCurve_op_Implicit_m133028E91CF2F823F5E20F6B19A3332A02404086 (float ___0_constant, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MainModule_set_startLifetime_mDFC2433853CB12C0C93C8BF16FEDB4EA2E0B3514 (MainModule_tC7ECD8330C14B0808478A748048988A6085CE2A9* __this, MinMaxCurve_t812D571297EED6498776CC58949A42B172E60E23 ___0_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MainModule_set_startSpeed_mE6041E4BA54F01117AF6B81B1E53C5C9C669AC75 (MainModule_tC7ECD8330C14B0808478A748048988A6085CE2A9* __this, MinMaxCurve_t812D571297EED6498776CC58949A42B172E60E23 ___0_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MainModule_set_startSize_m44C3A39EAF1AE9A526A126D93160128223BE827B (MainModule_tC7ECD8330C14B0808478A748048988A6085CE2A9* __this, MinMaxCurve_t812D571297EED6498776CC58949A42B172E60E23 ___0_value, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void Color__ctor_mCD6889CDE39F18704CD6EA8E2EFBFA48BA3E13B0_inline (Color_tD001788D726C3A7F1379BEED0260B9591F440C1F* __this, float ___0_r, float ___1_g, float ___2_b, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR MinMaxGradient_tFF31B8EC2855D0074AB86E8B37BEA6609070AC69 MinMaxGradient_op_Implicit_mAA6154D6644E72BBA49EB34DC957538EE929DE02 (Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ___0_color, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MainModule_set_startColor_m504911284CAC53A7C1B97B5D01BBDD2FA67D0E7A (MainModule_tC7ECD8330C14B0808478A748048988A6085CE2A9* __this, MinMaxGradient_tFF31B8EC2855D0074AB86E8B37BEA6609070AC69 ___0_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MainModule_set_maxParticles_mF9E7A56D7E1A528904BE1A8C0E14F15C3AF0F748 (MainModule_tC7ECD8330C14B0808478A748048988A6085CE2A9* __this, int32_t ___0_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR EmissionModule_t0F469FA4A08003F6D9C610D2F716A9DFDB9A3678 ParticleSystem_get_emission_mD9402CE632A3607DA0B0486F9F58F7FB2B44CF08 (ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void EmissionModule_set_rateOverTime_m71BF3C0A80EA572CD87EFF5944E8FA680F51DC20 (EmissionModule_t0F469FA4A08003F6D9C610D2F716A9DFDB9A3678* __this, MinMaxCurve_t812D571297EED6498776CC58949A42B172E60E23 ___0_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR ShapeModule_tAA38A0C5305DF2F9D96F89D4B8F762E2D034D8B2 ParticleSystem_get_shape_mD7F072CC18587858138AA7B3A882995493AA7C80 (ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void ShapeModule_set_shapeType_m4B5D1EA91037AD7065FE1D23652D919FED4D6D7F (ShapeModule_tAA38A0C5305DF2F9D96F89D4B8F762E2D034D8B2* __this, int32_t ___0_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void ShapeModule_set_radius_m37F79E13EB60FA39EAE36B49DAC4AC880416E89C (ShapeModule_tAA38A0C5305DF2F9D96F89D4B8F762E2D034D8B2* __this, float ___0_value, const RuntimeMethod* method) ;
+inline ParticleSystemRenderer_t576C271A363A738A6C576D4C6AEFB3B5B23E46C4* Component_GetComponent_TisParticleSystemRenderer_t576C271A363A738A6C576D4C6AEFB3B5B23E46C4_mDB29DD32DF46B9659262256BDBD5B4F1BB805023 (Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3* __this, const RuntimeMethod* method)
+{
+	return ((  ParticleSystemRenderer_t576C271A363A738A6C576D4C6AEFB3B5B23E46C4* (*) (Component_t39FBE53E5EFCF4409111FB22C15FF73717632EC3*, const RuntimeMethod*))Component_GetComponent_TisRuntimeObject_m7181F81CAEC2CF53F5D2BC79B7425C16E1F80D33_gshared)(__this, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Shader_tADC867D36B7876EE22427FAA2CE485105F4EE692* Shader_Find_m183AA54F78320212DDEC811592F98456898A41C5 (String_t* ___0_name, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Material__ctor_m7FDF47105D66D19591BE505A0C42B0F90D88C9BF (Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3* __this, Shader_tADC867D36B7876EE22427FAA2CE485105F4EE692* ___0_shader, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Renderer_set_material_m21E88977071E0A914D62F3D9CFF0193B3117C45A (Renderer_t320575F223BCB177A982E5DDB5DB19FAA89E7FBF* __this, Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3* ___0_value, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void MiningController_set_Drone_m1CBB4F68183C623A35881D9DAC3EE1A799AE3058_inline (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* ___0_value, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t IdleMiningCalculator_Calculate_mED3CA18A383E3E6D2AD26333B8C6678635EFFA2A (IdleMiningCalculator_t942A246A242064927872B44C78D414479ACC2F05* __this, DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D ___0_lastSessionEnd, DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* ___1_drone, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* String_Format_mA8DBB4C2516B9723C5A41E6CB1E2FAF4BBE96DD8 (String_t* ___0_format, RuntimeObject* ___1_arg0, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* MiningController_CommitCargoAsync_m0285DAD0EB1FF9C1C0612A752E4AEBCCFF93CD97 (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningController_PickNextTarget_mD013AFE53D919B3BCB68B4E9C067434663F58062 (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningController_SetPhase_m8728387A6A802E1F094717378E76D7435E3C14DC (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, int32_t ___0_phase, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* MiningController_get_CurrentTarget_m575E661CF18C8C808BD1715E112DBF512CA7C320_inline (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* MiningController_get_Drone_mCC5FEDE0CDCA9B6A307E71E7E3C8DDF5E35843F8_inline (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* ActiveMiningMinigame_Tap_m1AAE17FBB5CEC16ADFAD0F98B90EF2A3D09C0D0D (ActiveMiningMinigame_t56A84BE8A5799A6935966B35EB277CDC5A039299* __this, Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___0_target, DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* ___1_drone, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float EconomyConfig_get_IdleSessionDuration_m7577026567440F6DFA3AC706FD4FB8FA23765ABF_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_IdleSessionClaimTaps_mA16EC38BEC077D5D3117A149FCD56633A7BFBACD_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSession__ctor_m5594563E9A7C16597487F6F918F5017642235439 (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___0_asteroid, float ___1_miningDuration, int32_t ___2_claimTapsRequired, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void MiningController_set_CurrentIdleSession_m03C3E70F8CA7DBF9209CD9194EAC707681828544_inline (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* ___0_value, const RuntimeMethod* method) ;
+inline void Action_1_Invoke_m552CD7F56F7FE2EEBA456AE40D37D295E65E8A97_inline (Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* __this, IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* ___0_obj, const RuntimeMethod* method)
+{
+	((  void (*) (Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA*, IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149*, const RuntimeMethod*))Action_1_Invoke_mF2422B2DD29F74CE66F791C3F68E288EC7C3DB9E_gshared_inline)(__this, ___0_obj, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06 AsyncTaskMethodBuilder_Create_m24F3F260A79CA2B9EC4F1F15693A33F5EC58735A (const RuntimeMethod* method) ;
+inline void AsyncTaskMethodBuilder_Start_TisU3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191_mE132AF1A8DAE9A1E7B958288198727FF7B652149 (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* __this, U3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191* ___0_stateMachine, const RuntimeMethod* method)
+{
+	((  void (*) (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06*, U3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191*, const RuntimeMethod*))AsyncTaskMethodBuilder_Start_TisU3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191_mE132AF1A8DAE9A1E7B958288198727FF7B652149_gshared)(__this, ___0_stateMachine, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* AsyncTaskMethodBuilder_get_Task_mE9125D5F8B96F26D1BA5A5347ED82669521C7F9E (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* __this, const RuntimeMethod* method) ;
+inline void AsyncTaskMethodBuilder_Start_TisU3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3_m50FBB105BF1B6902FC1DB5659BF19AF1B2CA05AB (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* __this, U3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3* ___0_stateMachine, const RuntimeMethod* method)
+{
+	((  void (*) (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06*, U3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3*, const RuntimeMethod*))AsyncTaskMethodBuilder_Start_TisU3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3_m50FBB105BF1B6902FC1DB5659BF19AF1B2CA05AB_gshared)(__this, ___0_stateMachine, method);
+}
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void MiningController_set_CurrentTarget_m041D4A66BB466BBDDB24B2CC18270093E181ABEF_inline (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___0_value, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR RuntimeObject* AsteroidSpawner_get_ActiveAsteroids_m89B1CFD46F1FCE1BD79D2894B756CF481A7DFE4A_inline (AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void MiningController_set_Phase_mF0A188AEF665BA9F6FF76C2188E6CE22F4CFD591_inline (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, int32_t ___0_value, const RuntimeMethod* method) ;
+inline void Action_1_Invoke_mC68BE221A397D2B3D492399D3BA130C50799385B_inline (Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* __this, int32_t ___0_obj, const RuntimeMethod* method)
+{
+	((  void (*) (Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC*, int32_t, const RuntimeMethod*))Action_1_Invoke_mBF7DDBCD230E9D28EDF45D3E65F907DE1AE0CCBC_gshared_inline)(__this, ___0_obj, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t DroneRuntime_EmptyCargo_m65F96F26E0E0F447DA15A0ED684928D8E51EE3ED (DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t AsteroidDefinition_get_CoinsPerUnit_mB475756F13E4FB4BFA247F1F7E35BBA4A310B76F_inline (AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833 Task_GetAwaiter_m08B368EAC939DD35D0AC428180822255A442CA29 (Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool TaskAwaiter_get_IsCompleted_mC236D276FBE3A271B56EE13FCAF2C96E48453ED8 (TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833* __this, const RuntimeMethod* method) ;
+inline void AsyncTaskMethodBuilder_AwaitUnsafeOnCompleted_TisTaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833_TisU3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3_mA003A007EA9282D6D0F1E7038F94FD69E4545899 (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* __this, TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833* ___0_awaiter, U3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3* ___1_stateMachine, const RuntimeMethod* method)
+{
+	((  void (*) (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06*, TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833*, U3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3*, const RuntimeMethod*))AsyncTaskMethodBuilder_AwaitUnsafeOnCompleted_TisTaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833_TisU3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3_mA003A007EA9282D6D0F1E7038F94FD69E4545899_gshared)(__this, ___0_awaiter, ___1_stateMachine, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TaskAwaiter_GetResult_mC1D712500AE49B4A89C85D6B79D87D1BA9A6B94D (TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsyncTaskMethodBuilder_SetException_mBE41863F0571E0177A15731294087DE45E1FC10B (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* __this, Exception_t* ___0_exception, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsyncTaskMethodBuilder_SetResult_m76D8B84F0068257C1823B1200B00E58E0C8DDDDE (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CCommitCargoAsyncU3Ed__37_MoveNext_m5CC762D3749F034690DA07ACE8AA8C3A298EEC66 (U3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsyncTaskMethodBuilder_SetStateMachine_mE52B5B6B076025592A7AB462E3D26FA434AEB795 (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* __this, RuntimeObject* ___0_stateMachine, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CCommitCargoAsyncU3Ed__37_SetStateMachine_m84B049106B8C6B4E1EF677B9446D947CF1C073DA (U3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3* __this, RuntimeObject* ___0_stateMachine, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool IdleMiningSession_RegisterClaimTap_m6605D2E842A3364DE7A3F284E41169C1EF17CC0F (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void MiningController_set_ClaimingAsteroid_m9A07BEE3597629C0C3FCC42C0B42970D1D6A0222_inline (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___0_value, const RuntimeMethod* method) ;
+inline void AsyncTaskMethodBuilder_AwaitUnsafeOnCompleted_TisTaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833_TisU3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191_mBB54921B8B4283478740CB35E94D90A3BE3A6466 (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* __this, TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833* ___0_awaiter, U3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191* ___1_stateMachine, const RuntimeMethod* method)
+{
+	((  void (*) (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06*, TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833*, U3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191*, const RuntimeMethod*))AsyncTaskMethodBuilder_AwaitUnsafeOnCompleted_TisTaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833_TisU3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191_mBB54921B8B4283478740CB35E94D90A3BE3A6466_gshared)(__this, ___0_awaiter, ___1_stateMachine, method);
+}
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* String_Format_mA0534D6E2AE4D67A6BD8D45B3321323930EB930C (String_t* ___0_format, RuntimeObject* ___1_arg0, RuntimeObject* ___2_arg1, RuntimeObject* ___3_arg2, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float EconomyConfig_get_AsteroidRespawnHours_m334566DDB9DB4E65A9920F27C0978DDBDB309231_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidSpawner_ScheduleRespawn_m4128EAB25592CA8A632C3CC9C6BA314D600E9BC9 (AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* __this, Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___0_asteroid, float ___1_respawnHours, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CRegisterIdleClaimTapAsyncU3Ed__36_MoveNext_m1CB78D14F16733554AB86348655AC92BD1FFC9BF (U3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CRegisterIdleClaimTapAsyncU3Ed__36_SetStateMachine_m8B288616BA98E69B594128705DE0D002D19826F1 (U3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191* __this, RuntimeObject* ___0_stateMachine, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t MiningController_get_Phase_m6C23A4972433CE18F4A948BF37757C59EE2D35F2_inline (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool Input_GetKeyDown_mB237DEA6244132670D38990BAB77D813FBB028D2 (int32_t ___0_key, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* MiningController_Tap_m010763480980E057059A32E4E9138540A8340A37 (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector3_get_up_m128AF3FDC820BF59D5DE86D973E7DE3F20C3AEBA_inline (const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 Quaternion_Internal_LookRotation_m489E6A5E916949FFE91C0B11A60C6016D996C1E0 (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2* ___0_forward, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2* ___1_upwards, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Quaternion_Angle_m6F61044E1B167471D24A2B26A85AF2C064F46BC9_inline (Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* ___0_a, Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* ___1_b, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Mathf_Min_m747CA71A9483CDB394B13BD0AD048EE17E48FFE4_inline (float ___0_a, float ___1_b, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 Quaternion_SlerpUnclamped_m6EE729E421AF8BF8672942540951427AF8AC856C_inline (Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* ___0_a, Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* ___1_b, float ___2_t, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Mathf_Clamp_mEB9AEA827D27D20FCC787F7375156AF46BB12BBF_inline (float ___0_value, float ___1_min, float ___2_max, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 Quaternion_Internal_FromEulerRad_mD0C4C0EFE1D70EC0EA4A92B11F1A4D5B0A134E49 (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2* ___0_euler, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Array_Clear_m50BAA3751899858B097D3FF2ED31F284703FE5CB (RuntimeArray* ___0_array, int32_t ___1_index, int32_t ___2_length, const RuntimeMethod* method) ;
+inline void List_1_AddWithResize_m3D6C8AA7B48945A5EA47E49BA5695473BAE9D0A5 (List_1_tFE951BF9E0D595431590167E85F992760D743EEF* __this, PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 ___0_item, const RuntimeMethod* method)
+{
+	((  void (*) (List_1_tFE951BF9E0D595431590167E85F992760D743EEF*, PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390, const RuntimeMethod*))List_1_AddWithResize_m3D6C8AA7B48945A5EA47E49BA5695473BAE9D0A5_gshared)(__this, ___0_item, method);
+}
+inline void List_1_AddWithResize_m79A9BF770BEF9C06BE40D5401E55E375F2726CC4 (List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D* __this, RuntimeObject* ___0_item, const RuntimeMethod* method)
+{
+	((  void (*) (List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D*, RuntimeObject*, const RuntimeMethod*))List_1_AddWithResize_m79A9BF770BEF9C06BE40D5401E55E375F2726CC4_gshared)(__this, ___0_item, method);
+}
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Quaternion_Dot_m80E67A0F9F1FD9EAD0C8EEF7D5396ADF612FA105_inline (Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* ___0_a, Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* ___1_b, const RuntimeMethod* method) ;
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR bool Quaternion_IsEqualUsingDot_m9C672201C918C2D1E739F559DBE4406F95997CBD_inline (float ___0_dot, const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 Quaternion_Internal_SlerpUnclamped_m4EFC678DD99CE1E8E8AACF1A647558B75E2C231A (Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* ___0_a, Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* ___1_b, float ___2_t, const RuntimeMethod* method) ;
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 130711
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2 UnitySourceGeneratedAssemblyMonoScriptTypes_v1_Get_mBF8BFFCD83AAFDEEC5C12462019D63B86B38CE09 (const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&U3CPrivateImplementationDetailsU3E_tA10B3728E3E4DA4A8E20B96EFD428EC1B4D46224____D947B5D6722A4DB48BCF862075F25059E4FB5CE5447E99AE69B2C6EDA9B2ACCF_FieldInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&U3CPrivateImplementationDetailsU3E_tA10B3728E3E4DA4A8E20B96EFD428EC1B4D46224____EE443271D26191F9A9F876CF130D386DFFF7F417C0DF8B704AD80866A87D4C67_FieldInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2 V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	{
+		il2cpp_codegen_initobj((&V_0), sizeof(MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2));
+		ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* L_0 = (ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)SZArrayNew(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031_il2cpp_TypeInfo_var, (uint32_t)((int32_t)668));
+		ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* L_1 = L_0;
+		RuntimeFieldHandle_t6E4C45B6D2EA12FC99185805A7E77527899B25C5 L_2 = { reinterpret_cast<intptr_t> (U3CPrivateImplementationDetailsU3E_tA10B3728E3E4DA4A8E20B96EFD428EC1B4D46224____EE443271D26191F9A9F876CF130D386DFFF7F417C0DF8B704AD80866A87D4C67_FieldInfo_var) };
+		RuntimeHelpers_InitializeArray_m751372AA3F24FBF6DA9B9D687CBFA2DE436CAB9B((RuntimeArray*)L_1, L_2, NULL);
+		(&V_0)->___FilePathsData = L_1;
+		Il2CppCodeGenWriteBarrier((void**)(&(&V_0)->___FilePathsData), (void*)L_1);
+		ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* L_3 = (ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)SZArrayNew(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031_il2cpp_TypeInfo_var, (uint32_t)((int32_t)639));
+		ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* L_4 = L_3;
+		RuntimeFieldHandle_t6E4C45B6D2EA12FC99185805A7E77527899B25C5 L_5 = { reinterpret_cast<intptr_t> (U3CPrivateImplementationDetailsU3E_tA10B3728E3E4DA4A8E20B96EFD428EC1B4D46224____D947B5D6722A4DB48BCF862075F25059E4FB5CE5447E99AE69B2C6EDA9B2ACCF_FieldInfo_var) };
+		RuntimeHelpers_InitializeArray_m751372AA3F24FBF6DA9B9D687CBFA2DE436CAB9B((RuntimeArray*)L_4, L_5, NULL);
+		(&V_0)->___TypesData = L_4;
+		Il2CppCodeGenWriteBarrier((void**)(&(&V_0)->___TypesData), (void*)L_4);
+		(&V_0)->___TotalFiles = ((int32_t)11);
+		(&V_0)->___TotalTypes = ((int32_t)14);
+		(&V_0)->___IsEditorOnly = (bool)0;
+		MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2 L_6 = V_0;
+		return L_6;
+	}
+}
+// Method Definition Index: 130712
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void UnitySourceGeneratedAssemblyMonoScriptTypes_v1__ctor_mAA59C0DD7D304375955EB469E1BA2427E1531A69 (UnitySourceGeneratedAssemblyMonoScriptTypes_v1_t985FCC110D55873BCF7443ACBD26729F023CFDC8* __this, const RuntimeMethod* method) 
+{
+	{
+		Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2(__this, NULL);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+IL2CPP_EXTERN_C void MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2_marshal_pinvoke(const MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2& unmarshaled, MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2_marshaled_pinvoke& marshaled)
+{
+	marshaled.___FilePathsData = il2cpp_codegen_com_marshal_safe_array(IL2CPP_VT_I1, unmarshaled.___FilePathsData);
+	marshaled.___TypesData = il2cpp_codegen_com_marshal_safe_array(IL2CPP_VT_I1, unmarshaled.___TypesData);
+	marshaled.___TotalTypes = unmarshaled.___TotalTypes;
+	marshaled.___TotalFiles = unmarshaled.___TotalFiles;
+	marshaled.___IsEditorOnly = static_cast<int32_t>(unmarshaled.___IsEditorOnly);
+}
+IL2CPP_EXTERN_C void MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2_marshal_pinvoke_back(const MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2_marshaled_pinvoke& marshaled, MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2& unmarshaled)
+{
+	unmarshaled.___FilePathsData = (ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)il2cpp_codegen_com_marshal_safe_array_result(IL2CPP_VT_I1, il2cpp_defaults.byte_class, marshaled.___FilePathsData);
+	Il2CppCodeGenWriteBarrier((void**)(&unmarshaled.___FilePathsData), (void*)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)il2cpp_codegen_com_marshal_safe_array_result(IL2CPP_VT_I1, il2cpp_defaults.byte_class, marshaled.___FilePathsData));
+	unmarshaled.___TypesData = (ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)il2cpp_codegen_com_marshal_safe_array_result(IL2CPP_VT_I1, il2cpp_defaults.byte_class, marshaled.___TypesData);
+	Il2CppCodeGenWriteBarrier((void**)(&unmarshaled.___TypesData), (void*)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)il2cpp_codegen_com_marshal_safe_array_result(IL2CPP_VT_I1, il2cpp_defaults.byte_class, marshaled.___TypesData));
+	int32_t unmarshaledTotalTypes_temp_2 = 0;
+	unmarshaledTotalTypes_temp_2 = marshaled.___TotalTypes;
+	unmarshaled.___TotalTypes = unmarshaledTotalTypes_temp_2;
+	int32_t unmarshaledTotalFiles_temp_3 = 0;
+	unmarshaledTotalFiles_temp_3 = marshaled.___TotalFiles;
+	unmarshaled.___TotalFiles = unmarshaledTotalFiles_temp_3;
+	bool unmarshaledIsEditorOnly_temp_4 = false;
+	unmarshaledIsEditorOnly_temp_4 = static_cast<bool>(marshaled.___IsEditorOnly);
+	unmarshaled.___IsEditorOnly = unmarshaledIsEditorOnly_temp_4;
+}
+IL2CPP_EXTERN_C void MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2_marshal_pinvoke_cleanup(MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2_marshaled_pinvoke& marshaled)
+{
+	il2cpp_codegen_com_destroy_safe_array(marshaled.___FilePathsData);
+	marshaled.___FilePathsData = NULL;
+	il2cpp_codegen_com_destroy_safe_array(marshaled.___TypesData);
+	marshaled.___TypesData = NULL;
+}
+IL2CPP_EXTERN_C void MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2_marshal_com(const MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2& unmarshaled, MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2_marshaled_com& marshaled)
+{
+	marshaled.___FilePathsData = il2cpp_codegen_com_marshal_safe_array(IL2CPP_VT_I1, unmarshaled.___FilePathsData);
+	marshaled.___TypesData = il2cpp_codegen_com_marshal_safe_array(IL2CPP_VT_I1, unmarshaled.___TypesData);
+	marshaled.___TotalTypes = unmarshaled.___TotalTypes;
+	marshaled.___TotalFiles = unmarshaled.___TotalFiles;
+	marshaled.___IsEditorOnly = static_cast<int32_t>(unmarshaled.___IsEditorOnly);
+}
+IL2CPP_EXTERN_C void MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2_marshal_com_back(const MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2_marshaled_com& marshaled, MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2& unmarshaled)
+{
+	unmarshaled.___FilePathsData = (ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)il2cpp_codegen_com_marshal_safe_array_result(IL2CPP_VT_I1, il2cpp_defaults.byte_class, marshaled.___FilePathsData);
+	Il2CppCodeGenWriteBarrier((void**)(&unmarshaled.___FilePathsData), (void*)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)il2cpp_codegen_com_marshal_safe_array_result(IL2CPP_VT_I1, il2cpp_defaults.byte_class, marshaled.___FilePathsData));
+	unmarshaled.___TypesData = (ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)il2cpp_codegen_com_marshal_safe_array_result(IL2CPP_VT_I1, il2cpp_defaults.byte_class, marshaled.___TypesData);
+	Il2CppCodeGenWriteBarrier((void**)(&unmarshaled.___TypesData), (void*)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)il2cpp_codegen_com_marshal_safe_array_result(IL2CPP_VT_I1, il2cpp_defaults.byte_class, marshaled.___TypesData));
+	int32_t unmarshaledTotalTypes_temp_2 = 0;
+	unmarshaledTotalTypes_temp_2 = marshaled.___TotalTypes;
+	unmarshaled.___TotalTypes = unmarshaledTotalTypes_temp_2;
+	int32_t unmarshaledTotalFiles_temp_3 = 0;
+	unmarshaledTotalFiles_temp_3 = marshaled.___TotalFiles;
+	unmarshaled.___TotalFiles = unmarshaledTotalFiles_temp_3;
+	bool unmarshaledIsEditorOnly_temp_4 = false;
+	unmarshaledIsEditorOnly_temp_4 = static_cast<bool>(marshaled.___IsEditorOnly);
+	unmarshaled.___IsEditorOnly = unmarshaledIsEditorOnly_temp_4;
+}
+IL2CPP_EXTERN_C void MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2_marshal_com_cleanup(MonoScriptData_t082EC74C7CDBA3DF82079B9495249F9A2BCE1BF2_marshaled_com& marshaled)
+{
+	il2cpp_codegen_com_destroy_safe_array(marshaled.___FilePathsData);
+	marshaled.___FilePathsData = NULL;
+	il2cpp_codegen_com_destroy_safe_array(marshaled.___TypesData);
+	marshaled.___TypesData = NULL;
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 130713
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningTapResult__ctor_m58D12DC0C581AE84B9F8FFC4E879C969F765C3A8 (MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* __this, const RuntimeMethod* method) 
+{
+	{
+		Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2(__this, NULL);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 130714
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void ActiveMiningMinigame_add_OnTap_mABEFB74C2D34F03CD04AF199039FA784D87A6746 (ActiveMiningMinigame_t56A84BE8A5799A6935966B35EB277CDC5A039299* __this, Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* ___0_value, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* V_0 = NULL;
+	Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* V_1 = NULL;
+	Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* V_2 = NULL;
+	{
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* L_0 = __this->___OnTap;
+		V_0 = L_0;
+	}
+
+IL_0007:
+	{
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* L_1 = V_0;
+		V_1 = L_1;
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* L_2 = V_1;
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* L_3 = ___0_value;
+		Delegate_t* L_4;
+		L_4 = Delegate_Combine_m1F725AEF318BE6F0426863490691A6F4606E7D00(L_2, L_3, NULL);
+		V_2 = ((Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28*)Castclass((RuntimeObject*)L_4, Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28_il2cpp_TypeInfo_var));
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28** L_5 = (Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28**)(&__this->___OnTap);
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* L_6 = V_2;
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* L_7 = V_1;
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* L_8;
+		L_8 = InterlockedCompareExchangeImpl<Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28*>(L_5, L_6, L_7);
+		V_0 = L_8;
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* L_9 = V_0;
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* L_10 = V_1;
+		if ((!(((RuntimeObject*)(Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28*)L_9) == ((RuntimeObject*)(Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28*)L_10))))
+		{
+			goto IL_0007;
+		}
+	}
+	{
+		return;
+	}
+}
+// Method Definition Index: 130715
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void ActiveMiningMinigame_remove_OnTap_m5A45CB64FDE3AD5A052731E74CEE2D130B55DCBF (ActiveMiningMinigame_t56A84BE8A5799A6935966B35EB277CDC5A039299* __this, Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* ___0_value, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* V_0 = NULL;
+	Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* V_1 = NULL;
+	Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* V_2 = NULL;
+	{
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* L_0 = __this->___OnTap;
+		V_0 = L_0;
+	}
+
+IL_0007:
+	{
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* L_1 = V_0;
+		V_1 = L_1;
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* L_2 = V_1;
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* L_3 = ___0_value;
+		Delegate_t* L_4;
+		L_4 = Delegate_Remove_m8B7DD5661308FA972E23CA1CC3FC9CEB355504E3(L_2, L_3, NULL);
+		V_2 = ((Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28*)Castclass((RuntimeObject*)L_4, Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28_il2cpp_TypeInfo_var));
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28** L_5 = (Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28**)(&__this->___OnTap);
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* L_6 = V_2;
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* L_7 = V_1;
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* L_8;
+		L_8 = InterlockedCompareExchangeImpl<Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28*>(L_5, L_6, L_7);
+		V_0 = L_8;
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* L_9 = V_0;
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* L_10 = V_1;
+		if ((!(((RuntimeObject*)(Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28*)L_9) == ((RuntimeObject*)(Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28*)L_10))))
+		{
+			goto IL_0007;
+		}
+	}
+	{
+		return;
+	}
+}
+// Method Definition Index: 130716
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void ActiveMiningMinigame__ctor_m9A846AC14173994843298E7557AD52BB2FA36854 (ActiveMiningMinigame_t56A84BE8A5799A6935966B35EB277CDC5A039299* __this, EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* ___0_config, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Random_t79716069EDE67D1D7734F60AE402D0CA3FB6B4C8_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/ActiveMiningMinigame.cs:15>
+		Random_t79716069EDE67D1D7734F60AE402D0CA3FB6B4C8* L_0 = (Random_t79716069EDE67D1D7734F60AE402D0CA3FB6B4C8*)il2cpp_codegen_object_new(Random_t79716069EDE67D1D7734F60AE402D0CA3FB6B4C8_il2cpp_TypeInfo_var);
+		Random__ctor_m151183BD4F021499A98B9DE8502DAD4B12DD16AC(L_0, NULL);
+		__this->____rng = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____rng), (void*)L_0);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/ActiveMiningMinigame.cs:19>
+		Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2(__this, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/ActiveMiningMinigame.cs:19>
+		EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* L_1 = ___0_config;
+		__this->____config = L_1;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____config), (void*)L_1);
+		return;
+	}
+}
+// Method Definition Index: 130717
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* ActiveMiningMinigame_Tap_m1AAE17FBB5CEC16ADFAD0F98B90EF2A3D09C0D0D (ActiveMiningMinigame_t56A84BE8A5799A6935966B35EB277CDC5A039299* __this, Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___0_target, DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* ___1_drone, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	bool V_0 = false;
+	float V_1 = 0.0f;
+	int32_t V_2 = 0;
+	int32_t V_3 = 0;
+	MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* V_4 = NULL;
+	float G_B7_0 = 0.0f;
+	Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* G_B9_0 = NULL;
+	Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* G_B8_0 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/ActiveMiningMinigame.cs:23>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_0 = ___0_target;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_1;
+		L_1 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (L_1)
+		{
+			goto IL_0019;
+		}
+	}
+	{
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_2 = ___0_target;
+		NullCheck(L_2);
+		bool L_3;
+		L_3 = Asteroid_get_IsDepleted_m1ABBB3F673D0DB021949162990F4A731BE599CEA(L_2, NULL);
+		if (L_3)
+		{
+			goto IL_0019;
+		}
+	}
+	{
+		DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* L_4 = ___1_drone;
+		NullCheck(L_4);
+		bool L_5;
+		L_5 = DroneRuntime_get_IsCargoFull_mF6102A59BA1912BBEA50225FC33192949D34F3FE(L_4, NULL);
+		if (!L_5)
+		{
+			goto IL_001b;
+		}
+	}
+
+IL_0019:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/ActiveMiningMinigame.cs:24>
+		return (MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9*)NULL;
+	}
+
+IL_001b:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/ActiveMiningMinigame.cs:26>
+		Random_t79716069EDE67D1D7734F60AE402D0CA3FB6B4C8* L_6 = __this->____rng;
+		NullCheck(L_6);
+		double L_7;
+		L_7 = VirtualFuncInvoker0< double >::Invoke(8, L_6);
+		EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* L_8 = __this->____config;
+		NullCheck(L_8);
+		float L_9;
+		L_9 = EconomyConfig_get_CritChance_mB5A7BCDB0DF8BBDB0A24F668FADA0D3EA41C1586_inline(L_8, NULL);
+		V_0 = (bool)((((double)L_7) < ((double)((double)L_9)))? 1 : 0);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/ActiveMiningMinigame.cs:27>
+		bool L_10 = V_0;
+		if (L_10)
+		{
+			goto IL_003f;
+		}
+	}
+	{
+		G_B7_0 = (1.0f);
+		goto IL_004a;
+	}
+
+IL_003f:
+	{
+		EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* L_11 = __this->____config;
+		NullCheck(L_11);
+		float L_12;
+		L_12 = EconomyConfig_get_CritMultiplier_mC44A9271FCCA9646E5D4406C92B3A78E527B198D_inline(L_11, NULL);
+		G_B7_0 = L_12;
+	}
+
+IL_004a:
+	{
+		V_1 = G_B7_0;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/ActiveMiningMinigame.cs:28>
+		EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* L_13 = __this->____config;
+		NullCheck(L_13);
+		int32_t L_14;
+		L_14 = EconomyConfig_get_ActiveTapYield_m382F77556233E1E7CE7F542BC741BAA2728BCC52_inline(L_13, NULL);
+		float L_15 = V_1;
+		V_2 = il2cpp_codegen_cast_double_to_int<int32_t>(((float)il2cpp_codegen_multiply(((float)L_14), L_15)));
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/ActiveMiningMinigame.cs:29>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_16 = ___0_target;
+		int32_t L_17 = V_2;
+		NullCheck(L_16);
+		int32_t L_18;
+		L_18 = Asteroid_Mine_mF50CA5AEA6258890FFA94FB0B1A091A318F23792(L_16, L_17, NULL);
+		V_3 = L_18;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/ActiveMiningMinigame.cs:30>
+		DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* L_19 = ___1_drone;
+		int32_t L_20 = V_3;
+		NullCheck(L_19);
+		int32_t L_21;
+		L_21 = DroneRuntime_AddCargo_m59F367284CC714BFDD2747E964E97BD733DF4F37(L_19, L_20, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/ActiveMiningMinigame.cs:32>
+		MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* L_22 = (MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9*)il2cpp_codegen_object_new(MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9_il2cpp_TypeInfo_var);
+		MiningTapResult__ctor_m58D12DC0C581AE84B9F8FFC4E879C969F765C3A8(L_22, NULL);
+		MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* L_23 = L_22;
+		int32_t L_24 = V_3;
+		NullCheck(L_23);
+		L_23->___YieldAmount = L_24;
+		MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* L_25 = L_23;
+		bool L_26 = V_0;
+		NullCheck(L_25);
+		L_25->___IsCrit = L_26;
+		V_4 = L_25;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/ActiveMiningMinigame.cs:33>
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* L_27 = __this->___OnTap;
+		Action_1_t528D73ABD928BBFABA983A6813356F55805CFB28* L_28 = L_27;
+		if (L_28)
+		{
+			G_B9_0 = L_28;
+			goto IL_008c;
+		}
+		G_B8_0 = L_28;
+	}
+	{
+		goto IL_0093;
+	}
+
+IL_008c:
+	{
+		MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* L_29 = V_4;
+		NullCheck(G_B9_0);
+		Action_1_Invoke_mE706A2496C7548DDABE696B4714CD8ADE4D1F0DC_inline(G_B9_0, L_29, NULL);
+	}
+
+IL_0093:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/ActiveMiningMinigame.cs:34>
+		MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* L_30 = V_4;
+		return L_30;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 130718
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidSelectedEvent__ctor_m689E000782977F31CDA0824C9064193339B869B1 (AsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70* __this, const RuntimeMethod* method) 
+{
+	{
+		Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2(__this, NULL);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 130719
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* Asteroid_get_Definition_m46EC7FF414861479BD994A979FE4526B15827BE9 (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:13>
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_0 = __this->___U3CDefinitionU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 130720
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Asteroid_set_Definition_m3C6064211E2CCEE9D8164E1E87D6985F21C80A19 (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* __this, AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:13>
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_0 = ___0_value;
+		__this->___U3CDefinitionU3Ek__BackingField = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CDefinitionU3Ek__BackingField), (void*)L_0);
+		return;
+	}
+}
+// Method Definition Index: 130721
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Asteroid_get_RemainingYield_m54B12AE864776D53F386632318B5CC83C944DDAB (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:14>
+		int32_t L_0 = __this->___U3CRemainingYieldU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 130722
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Asteroid_set_RemainingYield_mC72EC5D6BB442ADF7C742D604E426A1303E42C69 (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* __this, int32_t ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:14>
+		int32_t L_0 = ___0_value;
+		__this->___U3CRemainingYieldU3Ek__BackingField = L_0;
+		return;
+	}
+}
+// Method Definition Index: 130723
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool Asteroid_get_IsDepleted_m1ABBB3F673D0DB021949162990F4A731BE599CEA (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:15>
+		int32_t L_0;
+		L_0 = Asteroid_get_RemainingYield_m54B12AE864776D53F386632318B5CC83C944DDAB_inline(__this, NULL);
+		return (bool)((((int32_t)((((int32_t)L_0) > ((int32_t)0))? 1 : 0)) == ((int32_t)0))? 1 : 0);
+	}
+}
+// Method Definition Index: 130724
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Asteroid_Initialize_m251A33F17229EB169A820D133C63171A35FEE4BC (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* __this, AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* ___0_definition, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Component_GetComponent_TisCollider_t1CC3163924FCD6C4CC2E816373A929C1E3D55E76_m820398EDBF1D3766C3166A0C323A127662A29A14_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&GameObject_AddComponent_TisSphereCollider_tBA111C542CE97F6873DE742757213D6265C7D275_m3D05F19667844A2949840753F7A3287115BE029E_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:22>
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_0 = ___0_definition;
+		Asteroid_set_Definition_m3C6064211E2CCEE9D8164E1E87D6985F21C80A19_inline(__this, L_0, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:23>
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_1 = ___0_definition;
+		NullCheck(L_1);
+		int32_t L_2;
+		L_2 = AsteroidDefinition_get_BaseYield_m426E4DD3482DCE010A29156A5E99832471B653D5_inline(L_1, NULL);
+		float L_3;
+		L_3 = Random_Range_m5236C99A7D8AE6AC9190592DC66016652A2D2494((0.800000012f), (1.20000005f), NULL);
+		int32_t L_4;
+		L_4 = Mathf_RoundToInt_m60F8B66CF27F1FA75AA219342BD184B75771EB4B_inline(((float)il2cpp_codegen_multiply(((float)L_2), L_3)), NULL);
+		Asteroid_set_RemainingYield_mC72EC5D6BB442ADF7C742D604E426A1303E42C69_inline(__this, L_4, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:25>
+		Collider_t1CC3163924FCD6C4CC2E816373A929C1E3D55E76* L_5;
+		L_5 = Component_GetComponent_TisCollider_t1CC3163924FCD6C4CC2E816373A929C1E3D55E76_m820398EDBF1D3766C3166A0C323A127662A29A14(__this, Component_GetComponent_TisCollider_t1CC3163924FCD6C4CC2E816373A929C1E3D55E76_m820398EDBF1D3766C3166A0C323A127662A29A14_RuntimeMethod_var);
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_6;
+		L_6 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_5, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_6)
+		{
+			goto IL_004c;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:27>
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_7;
+		L_7 = Component_get_gameObject_m57AEFBB14DB39EC476F740BA000E170355DE691B(__this, NULL);
+		NullCheck(L_7);
+		SphereCollider_tBA111C542CE97F6873DE742757213D6265C7D275* L_8;
+		L_8 = GameObject_AddComponent_TisSphereCollider_tBA111C542CE97F6873DE742757213D6265C7D275_m3D05F19667844A2949840753F7A3287115BE029E(L_7, GameObject_AddComponent_TisSphereCollider_tBA111C542CE97F6873DE742757213D6265C7D275_m3D05F19667844A2949840753F7A3287115BE029E_RuntimeMethod_var);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:28>
+		NullCheck(L_8);
+		SphereCollider_set_radius_m6119FE18C6739B077AB17334B1B53984911017FF(L_8, (0.5f), NULL);
+	}
+
+IL_004c:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:31>
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_9;
+		L_9 = Random_get_onUnitSphere_mA7FD531C3043945E5EA290F670E79A78EFAC0D92(NULL);
+		__this->____rotationAxis = L_9;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:32>
+		float L_10 = __this->____minRotationSpeed;
+		float L_11 = __this->____maxRotationSpeed;
+		float L_12;
+		L_12 = Random_Range_m5236C99A7D8AE6AC9190592DC66016652A2D2494(L_10, L_11, NULL);
+		__this->____rotationSpeed = L_12;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:33>
+		return;
+	}
+}
+// Method Definition Index: 130725
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Asteroid_Mine_mF50CA5AEA6258890FFA94FB0B1A091A318F23792 (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* __this, int32_t ___0_amount, const RuntimeMethod* method) 
+{
+	int32_t V_0 = 0;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:37>
+		int32_t L_0 = ___0_amount;
+		int32_t L_1;
+		L_1 = Asteroid_get_RemainingYield_m54B12AE864776D53F386632318B5CC83C944DDAB_inline(__this, NULL);
+		int32_t L_2;
+		L_2 = Mathf_Min_m888083F74FF5655778F0403BB5E9608BEFDEA8CB_inline(L_0, L_1, NULL);
+		V_0 = L_2;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:38>
+		int32_t L_3;
+		L_3 = Asteroid_get_RemainingYield_m54B12AE864776D53F386632318B5CC83C944DDAB_inline(__this, NULL);
+		int32_t L_4 = V_0;
+		Asteroid_set_RemainingYield_mC72EC5D6BB442ADF7C742D604E426A1303E42C69_inline(__this, ((int32_t)il2cpp_codegen_subtract(L_3, L_4)), NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:39>
+		int32_t L_5 = V_0;
+		return L_5;
+	}
+}
+// Method Definition Index: 130726
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Asteroid_Update_m66D2C224C54B02FE51C3AB66E5400A1901DCC8AF (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:45>
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_0;
+		L_0 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(__this, NULL);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_1 = __this->____rotationAxis;
+		float L_2 = __this->____rotationSpeed;
+		float L_3;
+		L_3 = Time_get_deltaTime_mC3195000401F0FD167DD2F948FD2BC58330D0865(NULL);
+		NullCheck(L_0);
+		Transform_Rotate_m683E67853797040312868B69E963D0E97F433EEB(L_0, L_1, ((float)il2cpp_codegen_multiply(L_2, L_3)), 0, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:46>
+		return;
+	}
+}
+// Method Definition Index: 130727
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Asteroid__ctor_mE31DA6BB0549E7ACFB9BEF9B94E529465510D514 (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:10>
+		__this->____minRotationSpeed = (5.0f);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:11>
+		__this->____maxRotationSpeed = (20.0f);
+		MonoBehaviour__ctor_m592DB0105CA0BC97AA1C5F4AD27B12D68A3B7C1E(__this, NULL);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 130728
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidSelectionController_Awake_m0BF59F3FEE462BB7DCE7ADB545201FEDE643B745 (AsteroidSelectionController_t5799B4C81049C2CBE885591F63E3A19E3B0B1A1B* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:15>
+		Camera_tA92CC927D7439999BC82DBEDC0AA45B470F9E184* L_0 = __this->____camera;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_1;
+		L_1 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_1)
+		{
+			goto IL_0019;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:15>
+		Camera_tA92CC927D7439999BC82DBEDC0AA45B470F9E184* L_2;
+		L_2 = Camera_get_main_m52C992F18E05355ABB9EEB64A4BF2215E12762DF(NULL);
+		__this->____camera = L_2;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____camera), (void*)L_2);
+	}
+
+IL_0019:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:16>
+		return;
+	}
+}
+// Method Definition Index: 130729
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidSelectionController_Update_m3E7F15509128517D62A6A917823C47A6F1F23C44 (AsteroidSelectionController_t5799B4C81049C2CBE885591F63E3A19E3B0B1A1B* __this, const RuntimeMethod* method) 
+{
+	Touch_t03E51455ED508492B3F278903A0114FA0E87B417 V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:20>
+		int32_t L_0;
+		L_0 = Input_get_touchCount_m057388BFC67A0F4CA53764B1022867ED81D01E39(NULL);
+		if ((((int32_t)L_0) <= ((int32_t)0)))
+		{
+			goto IL_002e;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:22>
+		Touch_t03E51455ED508492B3F278903A0114FA0E87B417 L_1;
+		L_1 = Input_GetTouch_m75D99FE801A94279874FA8DC6B6ADAD35F5123B1(0, NULL);
+		V_0 = L_1;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:23>
+		int32_t L_2;
+		L_2 = Touch_get_phase_mB82409FB2BE1C32ABDBA6A72E52A099D28AB70B0((&V_0), NULL);
+		if ((!(((uint32_t)L_2) == ((uint32_t)3))))
+		{
+			goto IL_004d;
+		}
+	}
+	{
+		bool L_3;
+		L_3 = AsteroidSelectionController_IsOverGui_m98C1C69731D8E22E343ED519C1D271C8C465B53C(NULL);
+		if (L_3)
+		{
+			goto IL_004d;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:24>
+		Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 L_4;
+		L_4 = Touch_get_position_m41B9EB0F3F3E1BE98CEB388253A9E31979CB964A((&V_0), NULL);
+		AsteroidSelectionController_TrySelect_mB10C07CEE5CA2CF3A8276ED79E91D76D38763EAC(__this, L_4, NULL);
+		return;
+	}
+
+IL_002e:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:26>
+		bool L_5;
+		L_5 = Input_GetMouseButtonUp_mBE89CC9C69BBEA9A863819E77EA54411B0476ED6(0, NULL);
+		if (!L_5)
+		{
+			goto IL_004d;
+		}
+	}
+	{
+		bool L_6;
+		L_6 = AsteroidSelectionController_IsOverGui_m98C1C69731D8E22E343ED519C1D271C8C465B53C(NULL);
+		if (L_6)
+		{
+			goto IL_004d;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:28>
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_7;
+		L_7 = Input_get_mousePosition_mFF21FBD2647DAE2A23BD4C45571CA95D05A0A42C(NULL);
+		Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 L_8;
+		L_8 = Vector2_op_Implicit_mE8EBEE9291F11BB02F062D6E000F4798968CBD96_inline(L_7, NULL);
+		AsteroidSelectionController_TrySelect_mB10C07CEE5CA2CF3A8276ED79E91D76D38763EAC(__this, L_8, NULL);
+	}
+
+IL_004d:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:30>
+		return;
+	}
+}
+// Method Definition Index: 130730
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidSelectionController_TrySelect_mB10C07CEE5CA2CF3A8276ED79E91D76D38763EAC (AsteroidSelectionController_t5799B4C81049C2CBE885591F63E3A19E3B0B1A1B* __this, Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___0_screenPosition, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&AsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Component_GetComponentInParent_TisAsteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE_m3F03C12026E7FBC098A99FF685D78943D09C33D2_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&EventBus_Publish_TisAsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70_mB2A1CF00203D11E91CCB25DBDE2BF12DD046EB15_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&EventBus_tD995B8977DB6D299BE8C38F5E222C99EE6EA8B11_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Physics_t1244C2983AEAFA149425AFFC3DF53BC91C18ED56_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral0D2A7511363B774951022E41EAB67716511B2577);
+		s_Il2CppMethodInitialized = true;
+	}
+	RaycastHit_t6F30BD0B38B56401CA833A1B87BD74F2ACD2F2B5 V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* V_1 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:34>
+		Camera_tA92CC927D7439999BC82DBEDC0AA45B470F9E184* L_0 = __this->____camera;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_1;
+		L_1 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_1)
+		{
+			goto IL_000f;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:34>
+		return;
+	}
+
+IL_000f:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:36>
+		Camera_tA92CC927D7439999BC82DBEDC0AA45B470F9E184* L_2 = __this->____camera;
+		Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 L_3 = ___0_screenPosition;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_4;
+		L_4 = Vector2_op_Implicit_m6D9CABB2C791A192867D7A4559D132BE86DD3EB7_inline(L_3, NULL);
+		NullCheck(L_2);
+		Ray_t2B1742D7958DC05BDC3EFC7461D3593E1430DC00 L_5;
+		L_5 = Camera_ScreenPointToRay_m2887B9A49880B7AB670C57D66B67D6A6689FE315(L_2, L_4, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:37>
+		LayerMask_t97CB6BDADEDC3D6423C7BCFEA7F86DA2EC6241DB L_6 = __this->____asteroidLayers;
+		int32_t L_7;
+		L_7 = LayerMask_op_Implicit_m7F5A5B9D079281AC445ED39DEE1FCFA9D795810D(L_6, NULL);
+		il2cpp_codegen_runtime_class_init_inline(Physics_t1244C2983AEAFA149425AFFC3DF53BC91C18ED56_il2cpp_TypeInfo_var);
+		bool L_8;
+		L_8 = Physics_Raycast_m34AC1210E893A9EF969BD2C7104B10BE5B580025(L_5, (&V_0), (std::numeric_limits<float>::infinity()), L_7, NULL);
+		if (L_8)
+		{
+			goto IL_003a;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:37>
+		return;
+	}
+
+IL_003a:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:39>
+		Collider_t1CC3163924FCD6C4CC2E816373A929C1E3D55E76* L_9;
+		L_9 = RaycastHit_get_collider_m84B160439BBEAB6D9E94B799F720E25C9E2D444D((&V_0), NULL);
+		NullCheck(L_9);
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_10;
+		L_10 = Component_GetComponentInParent_TisAsteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE_m3F03C12026E7FBC098A99FF685D78943D09C33D2(L_9, Component_GetComponentInParent_TisAsteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE_m3F03C12026E7FBC098A99FF685D78943D09C33D2_RuntimeMethod_var);
+		V_1 = L_10;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:40>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_11 = V_1;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_12;
+		L_12 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_11, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_12)
+		{
+			goto IL_0051;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:40>
+		return;
+	}
+
+IL_0051:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:42>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_13 = V_1;
+		NullCheck(L_13);
+		String_t* L_14;
+		L_14 = Object_get_name_mAC2F6B897CF1303BA4249B4CB55271AFACBB6392(L_13, NULL);
+		String_t* L_15;
+		L_15 = String_Concat_m9E3155FB84015C823606188F53B47CB44C444991(_stringLiteral0D2A7511363B774951022E41EAB67716511B2577, L_14, NULL);
+		il2cpp_codegen_runtime_class_init_inline(SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		SULog_Info_m4F0F76BC192792291ABFF31712DB6F83FD36C8D9(L_15, ((int32_t)16), NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:43>
+		AsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70* L_16 = (AsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70*)il2cpp_codegen_object_new(AsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70_il2cpp_TypeInfo_var);
+		AsteroidSelectedEvent__ctor_m689E000782977F31CDA0824C9064193339B869B1(L_16, NULL);
+		AsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70* L_17 = L_16;
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_18 = V_1;
+		NullCheck(L_17);
+		L_17->___Asteroid = L_18;
+		Il2CppCodeGenWriteBarrier((void**)(&L_17->___Asteroid), (void*)L_18);
+		il2cpp_codegen_runtime_class_init_inline(EventBus_tD995B8977DB6D299BE8C38F5E222C99EE6EA8B11_il2cpp_TypeInfo_var);
+		EventBus_Publish_TisAsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70_mB2A1CF00203D11E91CCB25DBDE2BF12DD046EB15(L_17, EventBus_Publish_TisAsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70_mB2A1CF00203D11E91CCB25DBDE2BF12DD046EB15_RuntimeMethod_var);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:44>
+		return;
+	}
+}
+// Method Definition Index: 130731
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool AsteroidSelectionController_IsOverGui_m98C1C69731D8E22E343ED519C1D271C8C465B53C (const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&EventSystem_t61C51380B105BE9D2C39C4F15B7E655659957707_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	EventSystem_t61C51380B105BE9D2C39C4F15B7E655659957707* V_0 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:52>
+		il2cpp_codegen_runtime_class_init_inline(EventSystem_t61C51380B105BE9D2C39C4F15B7E655659957707_il2cpp_TypeInfo_var);
+		EventSystem_t61C51380B105BE9D2C39C4F15B7E655659957707* L_0;
+		L_0 = EventSystem_get_current_mC87C69FB418563DC2A571A10E2F9DB59A6785016(NULL);
+		V_0 = L_0;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:53>
+		EventSystem_t61C51380B105BE9D2C39C4F15B7E655659957707* L_1 = V_0;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_2;
+		L_2 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_1, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_2)
+		{
+			goto IL_0016;
+		}
+	}
+	{
+		EventSystem_t61C51380B105BE9D2C39C4F15B7E655659957707* L_3 = V_0;
+		NullCheck(L_3);
+		bool L_4;
+		L_4 = EventSystem_IsPointerOverGameObject_mC89BFEA46B0DA67F914B9B90356E63BFBE11EB38(L_3, NULL);
+		return L_4;
+	}
+
+IL_0016:
+	{
+		return (bool)0;
+	}
+}
+// Method Definition Index: 130732
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidSelectionController__ctor_m0BCCA5F4DDE9F93FF216513237EB2B681BC56BB3 (AsteroidSelectionController_t5799B4C81049C2CBE885591F63E3A19E3B0B1A1B* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSelectionController.cs:11>
+		LayerMask_t97CB6BDADEDC3D6423C7BCFEA7F86DA2EC6241DB L_0;
+		L_0 = LayerMask_op_Implicit_m01C8996A2CB2085328B9C33539C43139660D8222((-1), NULL);
+		__this->____asteroidLayers = L_0;
+		MonoBehaviour__ctor_m592DB0105CA0BC97AA1C5F4AD27B12D68A3B7C1E(__this, NULL);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 130733
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* AsteroidSpawner_get_ActiveAsteroids_m89B1CFD46F1FCE1BD79D2894B756CF481A7DFE4A (AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:21>
+		List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E* L_0 = __this->____active;
+		return L_0;
+	}
+}
+// Method Definition Index: 130734
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Nullable_1_tEADC262F7F8B8BC4CC0A003DBDD3CA7C1B63F9AC AsteroidSpawner_get_NextRespawnUtc_mC499EE7317182FDA5503E6323A0C8A80042ED095 (AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Enumerable_Min_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_TisDateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_m46BD8DC25289BD37A715D302EF12BFA8D1F7D5A0_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Func_2_tD8F67CBC136C4F1DD63F067B59B7A53EE4704585_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1_get_Count_mA9EACD83C83F6D35C3EEC79B165244E0FBBED3CC_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Nullable_1__ctor_mB17304720EA19F5469A4883827F53A75FEB492CF_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&U3CU3Ec_U3Cget_NextRespawnUtcU3Eb__8_0_m2DA614FE625BC3A619E46020311E9D8009DFF39E_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Nullable_1_tEADC262F7F8B8BC4CC0A003DBDD3CA7C1B63F9AC V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	Func_2_tD8F67CBC136C4F1DD63F067B59B7A53EE4704585* G_B4_0 = NULL;
+	List_1_tFE951BF9E0D595431590167E85F992760D743EEF* G_B4_1 = NULL;
+	Func_2_tD8F67CBC136C4F1DD63F067B59B7A53EE4704585* G_B3_0 = NULL;
+	List_1_tFE951BF9E0D595431590167E85F992760D743EEF* G_B3_1 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:25>
+		List_1_tFE951BF9E0D595431590167E85F992760D743EEF* L_0 = __this->____pending;
+		NullCheck(L_0);
+		int32_t L_1;
+		L_1 = List_1_get_Count_mA9EACD83C83F6D35C3EEC79B165244E0FBBED3CC_inline(L_0, List_1_get_Count_mA9EACD83C83F6D35C3EEC79B165244E0FBBED3CC_RuntimeMethod_var);
+		if ((((int32_t)L_1) > ((int32_t)0)))
+		{
+			goto IL_0018;
+		}
+	}
+	{
+		il2cpp_codegen_initobj((&V_0), sizeof(Nullable_1_tEADC262F7F8B8BC4CC0A003DBDD3CA7C1B63F9AC));
+		Nullable_1_tEADC262F7F8B8BC4CC0A003DBDD3CA7C1B63F9AC L_2 = V_0;
+		return L_2;
+	}
+
+IL_0018:
+	{
+		List_1_tFE951BF9E0D595431590167E85F992760D743EEF* L_3 = __this->____pending;
+		il2cpp_codegen_runtime_class_init_inline(U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_il2cpp_TypeInfo_var);
+		Func_2_tD8F67CBC136C4F1DD63F067B59B7A53EE4704585* L_4 = ((U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_il2cpp_TypeInfo_var))->___U3CU3E9__8_0;
+		Func_2_tD8F67CBC136C4F1DD63F067B59B7A53EE4704585* L_5 = L_4;
+		if (L_5)
+		{
+			G_B4_0 = L_5;
+			G_B4_1 = L_3;
+			goto IL_003d;
+		}
+		G_B3_0 = L_5;
+		G_B3_1 = L_3;
+	}
+	{
+		il2cpp_codegen_runtime_class_init_inline(U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_il2cpp_TypeInfo_var);
+		U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5* L_6 = ((U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_il2cpp_TypeInfo_var))->___U3CU3E9;
+		Func_2_tD8F67CBC136C4F1DD63F067B59B7A53EE4704585* L_7 = (Func_2_tD8F67CBC136C4F1DD63F067B59B7A53EE4704585*)il2cpp_codegen_object_new(Func_2_tD8F67CBC136C4F1DD63F067B59B7A53EE4704585_il2cpp_TypeInfo_var);
+		Func_2__ctor_m5140E1E90A4EBE7A401216A3B910C7C859B9B2E0(L_7, L_6, (intptr_t)((void*)U3CU3Ec_U3Cget_NextRespawnUtcU3Eb__8_0_m2DA614FE625BC3A619E46020311E9D8009DFF39E_RuntimeMethod_var), NULL);
+		Func_2_tD8F67CBC136C4F1DD63F067B59B7A53EE4704585* L_8 = L_7;
+		((U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_il2cpp_TypeInfo_var))->___U3CU3E9__8_0 = L_8;
+		Il2CppCodeGenWriteBarrier((void**)(&((U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_il2cpp_TypeInfo_var))->___U3CU3E9__8_0), (void*)L_8);
+		G_B4_0 = L_8;
+		G_B4_1 = G_B3_1;
+	}
+
+IL_003d:
+	{
+		DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D L_9;
+		L_9 = Enumerable_Min_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_TisDateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_m46BD8DC25289BD37A715D302EF12BFA8D1F7D5A0(G_B4_1, G_B4_0, Enumerable_Min_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_TisDateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_m46BD8DC25289BD37A715D302EF12BFA8D1F7D5A0_RuntimeMethod_var);
+		Nullable_1_tEADC262F7F8B8BC4CC0A003DBDD3CA7C1B63F9AC L_10;
+		memset((&L_10), 0, sizeof(L_10));
+		Nullable_1__ctor_mB17304720EA19F5469A4883827F53A75FEB492CF((&L_10), L_9, Nullable_1__ctor_mB17304720EA19F5469A4883827F53A75FEB492CF_RuntimeMethod_var);
+		return L_10;
+	}
+}
+// Method Definition Index: 130735
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidSpawner_SpawnForPlanet_m3EF22F71A8081D0DC70F488811EF66E74A9EBF9F (AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* __this, PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* ___0_planet, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Enumerable_Count_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_m88FD29F42A4D65EED233C5F537B3B7FB63E259A1_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Func_2_tB5440A0247E58087F1DB06CB65F2DFC4C1ED4047_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1_get_Count_m82C83E84AE9EB3ADE637A4B3364CE9DEB25474FA_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1_get_Count_mA9EACD83C83F6D35C3EEC79B165244E0FBBED3CC_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&U3CU3Ec__DisplayClass10_0_U3CSpawnForPlanetU3Eb__0_mF127367C626CE2F63B555DB7DF2E26D2B952630B_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&U3CU3Ec__DisplayClass10_0_t1AE26FC45BF34994EA766723EA87B20BB2FF845C_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral3A061C6D3F660CD68E657479918D4869E777CF0C);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral4A3CB0B653CCA6627A2088074E16645D096E0729);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral660FC878B1F4C8BA9FDA25266778D0BEB2351B7B);
+		s_Il2CppMethodInitialized = true;
+	}
+	AsteroidDefinitionU5BU5D_tBFF455AEF363CCA9AD627A7BE225FF1013BBAC04* V_0 = NULL;
+	int32_t V_1 = 0;
+	U3CU3Ec__DisplayClass10_0_t1AE26FC45BF34994EA766723EA87B20BB2FF845C* V_2 = NULL;
+	int32_t V_3 = 0;
+	int32_t V_4 = 0;
+	int32_t V_5 = 0;
+	int32_t V_6 = 0;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:35>
+		AsteroidSpawner_ClearAll_mBBF34BC1757855ECC5107AAA4BE1309FFB985D9E(__this, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:36>
+		AsteroidSpawner_LoadPendingRespawns_mE32574A70392CE2D625CE7A528130045AF741158(__this, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:38>
+		PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* L_0 = ___0_planet;
+		NullCheck(L_0);
+		AsteroidDefinitionU5BU5D_tBFF455AEF363CCA9AD627A7BE225FF1013BBAC04* L_1;
+		L_1 = PlanetDefinition_get_AsteroidTypes_mE1C79D48B07E8EC7DF76D476D21574B9638483B0_inline(L_0, NULL);
+		if (!L_1)
+		{
+			goto IL_001d;
+		}
+	}
+	{
+		PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* L_2 = ___0_planet;
+		NullCheck(L_2);
+		AsteroidDefinitionU5BU5D_tBFF455AEF363CCA9AD627A7BE225FF1013BBAC04* L_3;
+		L_3 = PlanetDefinition_get_AsteroidTypes_mE1C79D48B07E8EC7DF76D476D21574B9638483B0_inline(L_2, NULL);
+		NullCheck(L_3);
+		if ((((RuntimeArray*)L_3)->max_length))
+		{
+			goto IL_003a;
+		}
+	}
+
+IL_001d:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:40>
+		PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* L_4 = ___0_planet;
+		NullCheck(L_4);
+		String_t* L_5;
+		L_5 = PlanetDefinition_get_DisplayName_m9B90C34BBDD2E66775A13EBF6FA084E31173B0A4_inline(L_4, NULL);
+		String_t* L_6;
+		L_6 = String_Concat_m8855A6DE10F84DA7F4EC113CADDB59873A25573B(_stringLiteral660FC878B1F4C8BA9FDA25266778D0BEB2351B7B, L_5, _stringLiteral4A3CB0B653CCA6627A2088074E16645D096E0729, NULL);
+		il2cpp_codegen_runtime_class_init_inline(SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		SULog_Warn_m1EA0A6F04845F06AD7CBCEB8E788FEEEF143BE4F(L_6, ((int32_t)16), NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:41>
+		return;
+	}
+
+IL_003a:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:44>
+		PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* L_7 = ___0_planet;
+		NullCheck(L_7);
+		AsteroidDefinitionU5BU5D_tBFF455AEF363CCA9AD627A7BE225FF1013BBAC04* L_8;
+		L_8 = PlanetDefinition_get_AsteroidTypes_mE1C79D48B07E8EC7DF76D476D21574B9638483B0_inline(L_7, NULL);
+		V_0 = L_8;
+		V_1 = 0;
+		goto IL_00bf;
+	}
+
+IL_0045:
+	{
+		U3CU3Ec__DisplayClass10_0_t1AE26FC45BF34994EA766723EA87B20BB2FF845C* L_9 = (U3CU3Ec__DisplayClass10_0_t1AE26FC45BF34994EA766723EA87B20BB2FF845C*)il2cpp_codegen_object_new(U3CU3Ec__DisplayClass10_0_t1AE26FC45BF34994EA766723EA87B20BB2FF845C_il2cpp_TypeInfo_var);
+		U3CU3Ec__DisplayClass10_0__ctor_m8B5944B095C23063DA2EFBA2B4B94F91260E9747(L_9, NULL);
+		V_2 = L_9;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:44>
+		U3CU3Ec__DisplayClass10_0_t1AE26FC45BF34994EA766723EA87B20BB2FF845C* L_10 = V_2;
+		AsteroidDefinitionU5BU5D_tBFF455AEF363CCA9AD627A7BE225FF1013BBAC04* L_11 = V_0;
+		int32_t L_12 = V_1;
+		NullCheck(L_11);
+		int32_t L_13 = L_12;
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_14 = (L_11)->GetAt(static_cast<il2cpp_array_size_t>(L_13));
+		NullCheck(L_10);
+		L_10->___def = L_14;
+		Il2CppCodeGenWriteBarrier((void**)(&L_10->___def), (void*)L_14);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:46>
+		int32_t L_15 = __this->____maxPerType;
+		U3CU3Ec__DisplayClass10_0_t1AE26FC45BF34994EA766723EA87B20BB2FF845C* L_16 = V_2;
+		NullCheck(L_16);
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_17 = L_16->___def;
+		NullCheck(L_17);
+		float L_18;
+		L_18 = AsteroidDefinition_get_Rarity_mF437404B743658CD88A81189FAECDEB22DE4563A_inline(L_17, NULL);
+		int32_t L_19;
+		L_19 = Mathf_RoundToInt_m60F8B66CF27F1FA75AA219342BD184B75771EB4B_inline(((float)il2cpp_codegen_multiply(((float)L_15), ((float)il2cpp_codegen_subtract((1.0f), L_18)))), NULL);
+		int32_t L_20;
+		L_20 = Mathf_Max_m7FA442918DE37E3A00106D1F2E789D65829792B8_inline(1, L_19, NULL);
+		V_3 = L_20;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:47>
+		List_1_tFE951BF9E0D595431590167E85F992760D743EEF* L_21 = __this->____pending;
+		U3CU3Ec__DisplayClass10_0_t1AE26FC45BF34994EA766723EA87B20BB2FF845C* L_22 = V_2;
+		Func_2_tB5440A0247E58087F1DB06CB65F2DFC4C1ED4047* L_23 = (Func_2_tB5440A0247E58087F1DB06CB65F2DFC4C1ED4047*)il2cpp_codegen_object_new(Func_2_tB5440A0247E58087F1DB06CB65F2DFC4C1ED4047_il2cpp_TypeInfo_var);
+		Func_2__ctor_m49D91C73D959737178977155C7E0F731F947BD73(L_23, L_22, (intptr_t)((void*)U3CU3Ec__DisplayClass10_0_U3CSpawnForPlanetU3Eb__0_mF127367C626CE2F63B555DB7DF2E26D2B952630B_RuntimeMethod_var), NULL);
+		int32_t L_24;
+		L_24 = Enumerable_Count_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_m88FD29F42A4D65EED233C5F537B3B7FB63E259A1(L_21, L_23, Enumerable_Count_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_m88FD29F42A4D65EED233C5F537B3B7FB63E259A1_RuntimeMethod_var);
+		V_4 = L_24;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:48>
+		int32_t L_25 = V_3;
+		int32_t L_26 = V_4;
+		int32_t L_27;
+		L_27 = Mathf_Max_m7FA442918DE37E3A00106D1F2E789D65829792B8_inline(0, ((int32_t)il2cpp_codegen_subtract(L_25, L_26)), NULL);
+		V_5 = L_27;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:50>
+		V_6 = 0;
+		goto IL_00b5;
+	}
+
+IL_00a3:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:51>
+		U3CU3Ec__DisplayClass10_0_t1AE26FC45BF34994EA766723EA87B20BB2FF845C* L_28 = V_2;
+		NullCheck(L_28);
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_29 = L_28->___def;
+		AsteroidSpawner_SpawnOne_mE492BDC7E1DBDDA88EB76E190CD3A5608BFCE88E(__this, L_29, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:50>
+		int32_t L_30 = V_6;
+		V_6 = ((int32_t)il2cpp_codegen_add(L_30, 1));
+	}
+
+IL_00b5:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:50>
+		int32_t L_31 = V_6;
+		int32_t L_32 = V_5;
+		if ((((int32_t)L_31) < ((int32_t)L_32)))
+		{
+			goto IL_00a3;
+		}
+	}
+	{
+		int32_t L_33 = V_1;
+		V_1 = ((int32_t)il2cpp_codegen_add(L_33, 1));
+	}
+
+IL_00bf:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:44>
+		int32_t L_34 = V_1;
+		AsteroidDefinitionU5BU5D_tBFF455AEF363CCA9AD627A7BE225FF1013BBAC04* L_35 = V_0;
+		NullCheck(L_35);
+		if ((((int32_t)L_34) < ((int32_t)((int32_t)(((RuntimeArray*)L_35)->max_length)))))
+		{
+			goto IL_0045;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:54>
+		List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E* L_36 = __this->____active;
+		NullCheck(L_36);
+		int32_t L_37;
+		L_37 = List_1_get_Count_m82C83E84AE9EB3ADE637A4B3364CE9DEB25474FA_inline(L_36, List_1_get_Count_m82C83E84AE9EB3ADE637A4B3364CE9DEB25474FA_RuntimeMethod_var);
+		int32_t L_38 = L_37;
+		RuntimeObject* L_39 = Box(il2cpp_defaults.int32_class, &L_38);
+		List_1_tFE951BF9E0D595431590167E85F992760D743EEF* L_40 = __this->____pending;
+		NullCheck(L_40);
+		int32_t L_41;
+		L_41 = List_1_get_Count_mA9EACD83C83F6D35C3EEC79B165244E0FBBED3CC_inline(L_40, List_1_get_Count_mA9EACD83C83F6D35C3EEC79B165244E0FBBED3CC_RuntimeMethod_var);
+		int32_t L_42 = L_41;
+		RuntimeObject* L_43 = Box(il2cpp_defaults.int32_class, &L_42);
+		String_t* L_44;
+		L_44 = String_Format_mFB7DA489BD99F4670881FF50EC017BFB0A5C0987(_stringLiteral3A061C6D3F660CD68E657479918D4869E777CF0C, L_39, L_43, NULL);
+		il2cpp_codegen_runtime_class_init_inline(SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		SULog_Info_m4F0F76BC192792291ABFF31712DB6F83FD36C8D9(L_44, ((int32_t)16), NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:55>
+		return;
+	}
+}
+// Method Definition Index: 130736
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidSpawner_ClearAll_mBBF34BC1757855ECC5107AAA4BE1309FFB985D9E (AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Enumerator_Dispose_m6B0CAA9F0906166B90D4BFE25146013F9322DC6A_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Enumerator_MoveNext_m16B1AEAEB1494F4C251EC6C9CCCE2DF5A9E6A570_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Enumerator_get_Current_mF4AC9B0A6F5DF3C91BF02F68FBBCFEE07762A356_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1_Clear_m7FED0360877304E2F2148E8662C8FF4B2E72CA09_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1_GetEnumerator_m2649543096EFB94868C4AFF6A5CB60D7239988E9_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Enumerator_t33A4A84C316F7D24C6D6E39FFFB6F96E747DD420 V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* V_1 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:59>
+		List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E* L_0 = __this->____active;
+		NullCheck(L_0);
+		Enumerator_t33A4A84C316F7D24C6D6E39FFFB6F96E747DD420 L_1;
+		L_1 = List_1_GetEnumerator_m2649543096EFB94868C4AFF6A5CB60D7239988E9(L_0, List_1_GetEnumerator_m2649543096EFB94868C4AFF6A5CB60D7239988E9_RuntimeMethod_var);
+		V_0 = L_1;
+	}
+	{
+		auto __finallyBlock = il2cpp::utils::Finally([&]
+		{
+
+FINALLY_0035:
+			{
+				Enumerator_Dispose_m6B0CAA9F0906166B90D4BFE25146013F9322DC6A((&V_0), Enumerator_Dispose_m6B0CAA9F0906166B90D4BFE25146013F9322DC6A_RuntimeMethod_var);
+				return;
+			}
+		});
+		try
+		{
+			{
+				goto IL_002a_1;
+			}
+
+IL_000e_1:
+			{
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:59>
+				Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_2;
+				L_2 = Enumerator_get_Current_mF4AC9B0A6F5DF3C91BF02F68FBBCFEE07762A356_inline((&V_0), Enumerator_get_Current_mF4AC9B0A6F5DF3C91BF02F68FBBCFEE07762A356_RuntimeMethod_var);
+				V_1 = L_2;
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:60>
+				Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_3 = V_1;
+				il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+				bool L_4;
+				L_4 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_3, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+				if (!L_4)
+				{
+					goto IL_002a_1;
+				}
+			}
+			{
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:60>
+				Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_5 = V_1;
+				NullCheck(L_5);
+				GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_6;
+				L_6 = Component_get_gameObject_m57AEFBB14DB39EC476F740BA000E170355DE691B(L_5, NULL);
+				il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+				Object_Destroy_mE97D0A766419A81296E8D4E5C23D01D3FE91ACBB(L_6, NULL);
+			}
+
+IL_002a_1:
+			{
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:59>
+				bool L_7;
+				L_7 = Enumerator_MoveNext_m16B1AEAEB1494F4C251EC6C9CCCE2DF5A9E6A570((&V_0), Enumerator_MoveNext_m16B1AEAEB1494F4C251EC6C9CCCE2DF5A9E6A570_RuntimeMethod_var);
+				if (L_7)
+				{
+					goto IL_000e_1;
+				}
+			}
+			{
+				goto IL_0043;
+			}
+		}
+		catch(Il2CppExceptionWrapper& e)
+		{
+			__finallyBlock.StoreException(e.ex);
+		}
+	}
+
+IL_0043:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:61>
+		List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E* L_8 = __this->____active;
+		NullCheck(L_8);
+		List_1_Clear_m7FED0360877304E2F2148E8662C8FF4B2E72CA09_inline(L_8, List_1_Clear_m7FED0360877304E2F2148E8662C8FF4B2E72CA09_RuntimeMethod_var);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:62>
+		return;
+	}
+}
+// Method Definition Index: 130737
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidSpawner_ScheduleRespawn_m4128EAB25592CA8A632C3CC9C6BA314D600E9BC9 (AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* __this, Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___0_asteroid, float ___1_respawnHours, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1_Add_m8515B507329731A3BD103CDE2FB190112B081111_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1_Remove_m9DA25F95AA3EA6E8BC0307832200DC803B072356_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral4B97B14F93CEEF32D646CB2A822A3C4B2324107A);
+		s_Il2CppMethodInitialized = true;
+	}
+	AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* V_0 = NULL;
+	PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 V_1;
+	memset((&V_1), 0, sizeof(V_1));
+	DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D V_2;
+	memset((&V_2), 0, sizeof(V_2));
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:67>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_0 = ___0_asteroid;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_1;
+		L_1 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_1)
+		{
+			goto IL_000a;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:67>
+		return;
+	}
+
+IL_000a:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:69>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_2 = ___0_asteroid;
+		NullCheck(L_2);
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_3;
+		L_3 = Asteroid_get_Definition_m46EC7FF414861479BD994A979FE4526B15827BE9_inline(L_2, NULL);
+		V_0 = L_3;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:70>
+		List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E* L_4 = __this->____active;
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_5 = ___0_asteroid;
+		NullCheck(L_4);
+		bool L_6;
+		L_6 = List_1_Remove_m9DA25F95AA3EA6E8BC0307832200DC803B072356(L_4, L_5, List_1_Remove_m9DA25F95AA3EA6E8BC0307832200DC803B072356_RuntimeMethod_var);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:71>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_7 = ___0_asteroid;
+		NullCheck(L_7);
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_8;
+		L_8 = Component_get_gameObject_m57AEFBB14DB39EC476F740BA000E170355DE691B(L_7, NULL);
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		Object_Destroy_mE97D0A766419A81296E8D4E5C23D01D3FE91ACBB(L_8, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:73>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:74>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:75>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:76>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:77>
+		List_1_tFE951BF9E0D595431590167E85F992760D743EEF* L_9 = __this->____pending;
+		il2cpp_codegen_initobj((&V_1), sizeof(PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390));
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_10 = V_0;
+		(&V_1)->___Definition = L_10;
+		Il2CppCodeGenWriteBarrier((void**)(&(&V_1)->___Definition), (void*)L_10);
+		il2cpp_codegen_runtime_class_init_inline(DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_il2cpp_TypeInfo_var);
+		DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D L_11;
+		L_11 = DateTime_get_UtcNow_m06B6E9995FE16846A0F71EC9DB23E90BE2C5F9FA(NULL);
+		V_2 = L_11;
+		float L_12 = ___1_respawnHours;
+		DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D L_13;
+		L_13 = DateTime_AddHours_m99C41C078F2F480BF9965F8A4BAB8C8B75C39C02((&V_2), ((double)L_12), NULL);
+		(&V_1)->___RespawnAtUtc = L_13;
+		PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 L_14 = V_1;
+		NullCheck(L_9);
+		List_1_Add_m8515B507329731A3BD103CDE2FB190112B081111_inline(L_9, L_14, List_1_Add_m8515B507329731A3BD103CDE2FB190112B081111_RuntimeMethod_var);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:78>
+		AsteroidSpawner_SavePendingRespawns_m956287006EC5D387CB0638CA3112F9F410540CEA(__this, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:80>
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_15 = V_0;
+		NullCheck(L_15);
+		String_t* L_16;
+		L_16 = AsteroidDefinition_get_MineralType_m1F1D8CC7612117CDA1E8C6B490BD695C19E4124B_inline(L_15, NULL);
+		float L_17 = ___1_respawnHours;
+		float L_18 = L_17;
+		RuntimeObject* L_19 = Box(il2cpp_defaults.single_class, &L_18);
+		String_t* L_20;
+		L_20 = String_Format_mFB7DA489BD99F4670881FF50EC017BFB0A5C0987(_stringLiteral4B97B14F93CEEF32D646CB2A822A3C4B2324107A, L_16, L_19, NULL);
+		il2cpp_codegen_runtime_class_init_inline(SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		SULog_Info_m4F0F76BC192792291ABFF31712DB6F83FD36C8D9(L_20, ((int32_t)16), NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:81>
+		return;
+	}
+}
+// Method Definition Index: 130738
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidSpawner_Update_mD45DCB7026C94B1554B70DA943E34BE334BD0668 (AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1_RemoveAt_mCD1C30F9E148FE2CB2EC5B1158AD39535FF70EFA_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1_get_Count_mA9EACD83C83F6D35C3EEC79B165244E0FBBED3CC_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1_get_Item_m8B839DF7D66E6E99E8DF210500218FE8DFACBA8F_RuntimeMethod_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	bool V_1 = false;
+	int32_t V_2 = 0;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:85>
+		List_1_tFE951BF9E0D595431590167E85F992760D743EEF* L_0 = __this->____pending;
+		NullCheck(L_0);
+		int32_t L_1;
+		L_1 = List_1_get_Count_mA9EACD83C83F6D35C3EEC79B165244E0FBBED3CC_inline(L_0, List_1_get_Count_mA9EACD83C83F6D35C3EEC79B165244E0FBBED3CC_RuntimeMethod_var);
+		if (L_1)
+		{
+			goto IL_000e;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:85>
+		return;
+	}
+
+IL_000e:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:87>
+		il2cpp_codegen_runtime_class_init_inline(DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_il2cpp_TypeInfo_var);
+		DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D L_2;
+		L_2 = DateTime_get_UtcNow_m06B6E9995FE16846A0F71EC9DB23E90BE2C5F9FA(NULL);
+		V_0 = L_2;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:88>
+		V_1 = (bool)0;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:90>
+		List_1_tFE951BF9E0D595431590167E85F992760D743EEF* L_3 = __this->____pending;
+		NullCheck(L_3);
+		int32_t L_4;
+		L_4 = List_1_get_Count_mA9EACD83C83F6D35C3EEC79B165244E0FBBED3CC_inline(L_3, List_1_get_Count_mA9EACD83C83F6D35C3EEC79B165244E0FBBED3CC_RuntimeMethod_var);
+		V_2 = ((int32_t)il2cpp_codegen_subtract(L_4, 1));
+		goto IL_0068;
+	}
+
+IL_0026:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:92>
+		DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D L_5 = V_0;
+		List_1_tFE951BF9E0D595431590167E85F992760D743EEF* L_6 = __this->____pending;
+		int32_t L_7 = V_2;
+		NullCheck(L_6);
+		PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 L_8;
+		L_8 = List_1_get_Item_m8B839DF7D66E6E99E8DF210500218FE8DFACBA8F(L_6, L_7, List_1_get_Item_m8B839DF7D66E6E99E8DF210500218FE8DFACBA8F_RuntimeMethod_var);
+		DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D L_9 = L_8.___RespawnAtUtc;
+		il2cpp_codegen_runtime_class_init_inline(DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_il2cpp_TypeInfo_var);
+		bool L_10;
+		L_10 = DateTime_op_LessThan_m2A02FFF5F35E33417FB32CB9F948769CA15AED17(L_5, L_9, NULL);
+		if (L_10)
+		{
+			goto IL_0064;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:94>
+		List_1_tFE951BF9E0D595431590167E85F992760D743EEF* L_11 = __this->____pending;
+		int32_t L_12 = V_2;
+		NullCheck(L_11);
+		PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 L_13;
+		L_13 = List_1_get_Item_m8B839DF7D66E6E99E8DF210500218FE8DFACBA8F(L_11, L_12, List_1_get_Item_m8B839DF7D66E6E99E8DF210500218FE8DFACBA8F_RuntimeMethod_var);
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_14 = L_13.___Definition;
+		AsteroidSpawner_SpawnOne_mE492BDC7E1DBDDA88EB76E190CD3A5608BFCE88E(__this, L_14, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:95>
+		List_1_tFE951BF9E0D595431590167E85F992760D743EEF* L_15 = __this->____pending;
+		int32_t L_16 = V_2;
+		NullCheck(L_15);
+		List_1_RemoveAt_mCD1C30F9E148FE2CB2EC5B1158AD39535FF70EFA(L_15, L_16, List_1_RemoveAt_mCD1C30F9E148FE2CB2EC5B1158AD39535FF70EFA_RuntimeMethod_var);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:96>
+		V_1 = (bool)1;
+	}
+
+IL_0064:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:90>
+		int32_t L_17 = V_2;
+		V_2 = ((int32_t)il2cpp_codegen_subtract(L_17, 1));
+	}
+
+IL_0068:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:90>
+		int32_t L_18 = V_2;
+		if ((((int32_t)L_18) >= ((int32_t)0)))
+		{
+			goto IL_0026;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:99>
+		bool L_19 = V_1;
+		if (!L_19)
+		{
+			goto IL_0075;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:99>
+		AsteroidSpawner_SavePendingRespawns_m956287006EC5D387CB0638CA3112F9F410540CEA(__this, NULL);
+	}
+
+IL_0075:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:100>
+		return;
+	}
+}
+// Method Definition Index: 130739
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidSpawner_SpawnOne_mE492BDC7E1DBDDA88EB76E190CD3A5608BFCE88E (AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* __this, AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* ___0_def, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&GameObject_AddComponent_TisAsteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE_mD7593790638A8A1AD0762C871D44D92EE59A1D0F_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1_Add_m34E74E21D3B4B5F81F6C5E939C5F87485BA41859_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_Instantiate_TisGameObject_t76FEDD663AB33C991A9C9A23129337651094216F_mD136E37F696C00A3A1D4F65724ACAE903E385181_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral847F2B5B56EAE1D068EECA62C307C051AADD61D9);
+		s_Il2CppMethodInitialized = true;
+	}
+	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* V_0 = NULL;
+	Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* V_1 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:105>
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_0 = ___0_def;
+		NullCheck(L_0);
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_1;
+		L_1 = AsteroidDefinition_get_ModelPrefab_mE05A5C7658D3150A8D9B40A34B3D15BFF1755D06_inline(L_0, NULL);
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_2;
+		L_2 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_1, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_2)
+		{
+			goto IL_002d;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:107>
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_3 = ___0_def;
+		NullCheck(L_3);
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_4;
+		L_4 = AsteroidDefinition_get_ModelPrefab_mE05A5C7658D3150A8D9B40A34B3D15BFF1755D06_inline(L_3, NULL);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_5;
+		L_5 = AsteroidSpawner_RandomOrbitPoint_m30B5D297D49D8564D1ADB06CC545C294EA4A651A(__this, NULL);
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 L_6;
+		L_6 = Random_get_rotation_m8B04B3FB3927208F0CB8C65295B0226E7FC7E9E2(NULL);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_7;
+		L_7 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(__this, NULL);
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_8;
+		L_8 = Object_Instantiate_TisGameObject_t76FEDD663AB33C991A9C9A23129337651094216F_mD136E37F696C00A3A1D4F65724ACAE903E385181(L_4, L_5, L_6, L_7, Object_Instantiate_TisGameObject_t76FEDD663AB33C991A9C9A23129337651094216F_mD136E37F696C00A3A1D4F65724ACAE903E385181_RuntimeMethod_var);
+		V_0 = L_8;
+		goto IL_0080;
+	}
+
+IL_002d:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:111>
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_9;
+		L_9 = GameObject_CreatePrimitive_m13C0A691E679A83DD595913200A1DD9A906EB47B(0, NULL);
+		V_0 = L_9;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:112>
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_10 = V_0;
+		NullCheck(L_10);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_11;
+		L_11 = GameObject_get_transform_m0BC10ADFA1632166AE5544BDF9038A2650C2AE56(L_10, NULL);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_12;
+		L_12 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(__this, NULL);
+		NullCheck(L_11);
+		Transform_SetParent_m6677538B60246D958DD91F931C50F969CCBB5250(L_11, L_12, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:113>
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_13 = V_0;
+		NullCheck(L_13);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_14;
+		L_14 = GameObject_get_transform_m0BC10ADFA1632166AE5544BDF9038A2650C2AE56(L_13, NULL);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_15;
+		L_15 = AsteroidSpawner_RandomOrbitPoint_m30B5D297D49D8564D1ADB06CC545C294EA4A651A(__this, NULL);
+		NullCheck(L_14);
+		Transform_set_position_mA1A817124BB41B685043DED2A9BA48CDF37C4156(L_14, L_15, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:114>
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_16 = V_0;
+		NullCheck(L_16);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_17;
+		L_17 = GameObject_get_transform_m0BC10ADFA1632166AE5544BDF9038A2650C2AE56(L_16, NULL);
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 L_18;
+		L_18 = Random_get_rotation_m8B04B3FB3927208F0CB8C65295B0226E7FC7E9E2(NULL);
+		NullCheck(L_17);
+		Transform_set_rotation_m61340DE74726CF0F9946743A727C4D444397331D(L_17, L_18, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:115>
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_19 = V_0;
+		NullCheck(L_19);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_20;
+		L_20 = GameObject_get_transform_m0BC10ADFA1632166AE5544BDF9038A2650C2AE56(L_19, NULL);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_21;
+		L_21 = Vector3_get_one_mC9B289F1E15C42C597180C9FE6FB492495B51D02_inline(NULL);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_22;
+		L_22 = Vector3_op_Multiply_m87BA7C578F96C8E49BB07088DAAC4649F83B0353_inline(L_21, (0.5f), NULL);
+		NullCheck(L_20);
+		Transform_set_localScale_mBA79E811BAF6C47B80FF76414C12B47B3CD03633(L_20, L_22, NULL);
+	}
+
+IL_0080:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:118>
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_23 = V_0;
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_24 = ___0_def;
+		NullCheck(L_24);
+		String_t* L_25;
+		L_25 = AsteroidDefinition_get_MineralType_m1F1D8CC7612117CDA1E8C6B490BD695C19E4124B_inline(L_24, NULL);
+		String_t* L_26;
+		L_26 = String_Concat_m9E3155FB84015C823606188F53B47CB44C444991(_stringLiteral847F2B5B56EAE1D068EECA62C307C051AADD61D9, L_25, NULL);
+		NullCheck(L_23);
+		Object_set_name_mC79E6DC8FFD72479C90F0C4CC7F42A0FEAF5AE47(L_23, L_26, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:119>
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_27 = V_0;
+		NullCheck(L_27);
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_28;
+		L_28 = GameObject_AddComponent_TisAsteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE_mD7593790638A8A1AD0762C871D44D92EE59A1D0F(L_27, GameObject_AddComponent_TisAsteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE_mD7593790638A8A1AD0762C871D44D92EE59A1D0F_RuntimeMethod_var);
+		V_1 = L_28;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:120>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_29 = V_1;
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_30 = ___0_def;
+		NullCheck(L_29);
+		Asteroid_Initialize_m251A33F17229EB169A820D133C63171A35FEE4BC(L_29, L_30, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:121>
+		List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E* L_31 = __this->____active;
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_32 = V_1;
+		NullCheck(L_31);
+		List_1_Add_m34E74E21D3B4B5F81F6C5E939C5F87485BA41859_inline(L_31, L_32, List_1_Add_m34E74E21D3B4B5F81F6C5E939C5F87485BA41859_RuntimeMethod_var);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:122>
+		return;
+	}
+}
+// Method Definition Index: 130740
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 AsteroidSpawner_RandomOrbitPoint_m30B5D297D49D8564D1ADB06CC545C294EA4A651A (AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:124>
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_0;
+		L_0 = Random_get_onUnitSphere_mA7FD531C3043945E5EA290F670E79A78EFAC0D92(NULL);
+		float L_1 = __this->____orbitRadius;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_2;
+		L_2 = Vector3_op_Multiply_m87BA7C578F96C8E49BB07088DAAC4649F83B0353_inline(L_0, L_1, NULL);
+		return L_2;
+	}
+}
+// Method Definition Index: 130741
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidSpawner_LoadPendingRespawns_mE32574A70392CE2D625CE7A528130045AF741158 (AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&DateTimeOffset_t4EE701FE2F386D6F932FAC9B11E4B74A5B30F0A4_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1_Add_m8515B507329731A3BD103CDE2FB190112B081111_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1_Clear_m53590F637286193B0CCCA215C8FF8236D2E6B888_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral027855E436E6956CCA0412C9B9AB604A1AD9A6E1);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteralDA39A3EE5E6B4B0D3255BFEF95601890AFD80709);
+		s_Il2CppMethodInitialized = true;
+	}
+	String_t* V_0 = NULL;
+	StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248* V_1 = NULL;
+	int32_t V_2 = 0;
+	StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248* V_3 = NULL;
+	int64_t V_4 = 0;
+	AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* V_5 = NULL;
+	PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 V_6;
+	memset((&V_6), 0, sizeof(V_6));
+	DateTimeOffset_t4EE701FE2F386D6F932FAC9B11E4B74A5B30F0A4 V_7;
+	memset((&V_7), 0, sizeof(V_7));
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:128>
+		List_1_tFE951BF9E0D595431590167E85F992760D743EEF* L_0 = __this->____pending;
+		NullCheck(L_0);
+		List_1_Clear_m53590F637286193B0CCCA215C8FF8236D2E6B888_inline(L_0, List_1_Clear_m53590F637286193B0CCCA215C8FF8236D2E6B888_RuntimeMethod_var);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:130>
+		String_t* L_1;
+		L_1 = PlayerPrefs_GetString_mE80FED64ACC3134149C8202FDDDE774C29CB0AF2(_stringLiteral027855E436E6956CCA0412C9B9AB604A1AD9A6E1, _stringLiteralDA39A3EE5E6B4B0D3255BFEF95601890AFD80709, NULL);
+		V_0 = L_1;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:131>
+		String_t* L_2 = V_0;
+		bool L_3;
+		L_3 = String_IsNullOrEmpty_mEA9E3FB005AC28FE02E69FCF95A7B8456192B478(L_2, NULL);
+		if (!L_3)
+		{
+			goto IL_0024;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:131>
+		return;
+	}
+
+IL_0024:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:133>
+		String_t* L_4 = V_0;
+		NullCheck(L_4);
+		StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248* L_5;
+		L_5 = String_Split_m9530B73D02054692283BF35C3A27C8F2230946F4(L_4, ((int32_t)59), 1, NULL);
+		V_1 = L_5;
+		V_2 = 0;
+		goto IL_00a3;
+	}
+
+IL_0032:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:133>
+		StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248* L_6 = V_1;
+		int32_t L_7 = V_2;
+		NullCheck(L_6);
+		int32_t L_8 = L_7;
+		String_t* L_9 = (L_6)->GetAt(static_cast<il2cpp_array_size_t>(L_8));
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:135>
+		NullCheck(L_9);
+		StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248* L_10;
+		L_10 = String_Split_m9530B73D02054692283BF35C3A27C8F2230946F4(L_9, ((int32_t)124), 0, NULL);
+		V_3 = L_10;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:136>
+		StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248* L_11 = V_3;
+		NullCheck(L_11);
+		if ((!(((uint32_t)((int32_t)(((RuntimeArray*)L_11)->max_length))) == ((uint32_t)2))))
+		{
+			goto IL_009f;
+		}
+	}
+	{
+		StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248* L_12 = V_3;
+		NullCheck(L_12);
+		int32_t L_13 = 1;
+		String_t* L_14 = (L_12)->GetAt(static_cast<il2cpp_array_size_t>(L_13));
+		bool L_15;
+		L_15 = Int64_TryParse_m3FC0128C89CC2331239FC2A0A749BF33455F03D2(L_14, (&V_4), NULL);
+		if (!L_15)
+		{
+			goto IL_009f;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:138>
+		DatabaseRegistry_tBD75C5774CDFE42C5FC8B3827DE1F0E1AF8BC8D1* L_16 = __this->____registry;
+		StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248* L_17 = V_3;
+		NullCheck(L_17);
+		int32_t L_18 = 0;
+		String_t* L_19 = (L_17)->GetAt(static_cast<il2cpp_array_size_t>(L_18));
+		NullCheck(L_16);
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_20;
+		L_20 = DatabaseRegistry_GetAsteroid_m6B60D2DCF681B929B98F92D1693EC1E0F56778B5(L_16, L_19, NULL);
+		V_5 = L_20;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:139>
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_21 = V_5;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_22;
+		L_22 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_21, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (L_22)
+		{
+			goto IL_009f;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:141>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:142>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:143>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:144>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:145>
+		List_1_tFE951BF9E0D595431590167E85F992760D743EEF* L_23 = __this->____pending;
+		il2cpp_codegen_initobj((&V_6), sizeof(PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390));
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_24 = V_5;
+		(&V_6)->___Definition = L_24;
+		Il2CppCodeGenWriteBarrier((void**)(&(&V_6)->___Definition), (void*)L_24);
+		int64_t L_25 = V_4;
+		il2cpp_codegen_runtime_class_init_inline(DateTimeOffset_t4EE701FE2F386D6F932FAC9B11E4B74A5B30F0A4_il2cpp_TypeInfo_var);
+		DateTimeOffset_t4EE701FE2F386D6F932FAC9B11E4B74A5B30F0A4 L_26;
+		L_26 = DateTimeOffset_FromUnixTimeSeconds_mE1FA5E04CCCE8A0E8903C9DACC64526C721C0A47(L_25, NULL);
+		V_7 = L_26;
+		DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D L_27;
+		L_27 = DateTimeOffset_get_UtcDateTime_mE7EB39F361C89E1367CBC03C3410BA34F194DA40((&V_7), NULL);
+		(&V_6)->___RespawnAtUtc = L_27;
+		PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 L_28 = V_6;
+		NullCheck(L_23);
+		List_1_Add_m8515B507329731A3BD103CDE2FB190112B081111_inline(L_23, L_28, List_1_Add_m8515B507329731A3BD103CDE2FB190112B081111_RuntimeMethod_var);
+	}
+
+IL_009f:
+	{
+		int32_t L_29 = V_2;
+		V_2 = ((int32_t)il2cpp_codegen_add(L_29, 1));
+	}
+
+IL_00a3:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:133>
+		int32_t L_30 = V_2;
+		StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248* L_31 = V_1;
+		NullCheck(L_31);
+		if ((((int32_t)L_30) < ((int32_t)((int32_t)(((RuntimeArray*)L_31)->max_length)))))
+		{
+			goto IL_0032;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:147>
+		return;
+	}
+}
+// Method Definition Index: 130742
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidSpawner_SavePendingRespawns_m956287006EC5D387CB0638CA3112F9F410540CEA (AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Enumerable_Select_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_TisString_t_mF74CC9B16E879C2CF2BC9EF8251AEAB111E91B24_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Func_2_tA8125C6B01EF913BA8EA4EA9ABC49917EF6C4369_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&U3CU3Ec_U3CSavePendingRespawnsU3Eb__17_0_mAF70EF259D3D742F9880F0FB3BBB808DCF7028D0_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral027855E436E6956CCA0412C9B9AB604A1AD9A6E1);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral951CCB49640C8F9E81FB4E0D82730321F4E15BB3);
+		s_Il2CppMethodInitialized = true;
+	}
+	String_t* V_0 = NULL;
+	Func_2_tA8125C6B01EF913BA8EA4EA9ABC49917EF6C4369* G_B2_0 = NULL;
+	List_1_tFE951BF9E0D595431590167E85F992760D743EEF* G_B2_1 = NULL;
+	String_t* G_B2_2 = NULL;
+	Func_2_tA8125C6B01EF913BA8EA4EA9ABC49917EF6C4369* G_B1_0 = NULL;
+	List_1_tFE951BF9E0D595431590167E85F992760D743EEF* G_B1_1 = NULL;
+	String_t* G_B1_2 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:151>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:152>
+		List_1_tFE951BF9E0D595431590167E85F992760D743EEF* L_0 = __this->____pending;
+		il2cpp_codegen_runtime_class_init_inline(U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_il2cpp_TypeInfo_var);
+		Func_2_tA8125C6B01EF913BA8EA4EA9ABC49917EF6C4369* L_1 = ((U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_il2cpp_TypeInfo_var))->___U3CU3E9__17_0;
+		Func_2_tA8125C6B01EF913BA8EA4EA9ABC49917EF6C4369* L_2 = L_1;
+		if (L_2)
+		{
+			G_B2_0 = L_2;
+			G_B2_1 = L_0;
+			G_B2_2 = _stringLiteral951CCB49640C8F9E81FB4E0D82730321F4E15BB3;
+			goto IL_002a;
+		}
+		G_B1_0 = L_2;
+		G_B1_1 = L_0;
+		G_B1_2 = _stringLiteral951CCB49640C8F9E81FB4E0D82730321F4E15BB3;
+	}
+	{
+		il2cpp_codegen_runtime_class_init_inline(U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_il2cpp_TypeInfo_var);
+		U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5* L_3 = ((U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_il2cpp_TypeInfo_var))->___U3CU3E9;
+		Func_2_tA8125C6B01EF913BA8EA4EA9ABC49917EF6C4369* L_4 = (Func_2_tA8125C6B01EF913BA8EA4EA9ABC49917EF6C4369*)il2cpp_codegen_object_new(Func_2_tA8125C6B01EF913BA8EA4EA9ABC49917EF6C4369_il2cpp_TypeInfo_var);
+		Func_2__ctor_m28655FE32734CEEFC09C3CC3C9FB957A6B5F4C28(L_4, L_3, (intptr_t)((void*)U3CU3Ec_U3CSavePendingRespawnsU3Eb__17_0_mAF70EF259D3D742F9880F0FB3BBB808DCF7028D0_RuntimeMethod_var), NULL);
+		Func_2_tA8125C6B01EF913BA8EA4EA9ABC49917EF6C4369* L_5 = L_4;
+		((U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_il2cpp_TypeInfo_var))->___U3CU3E9__17_0 = L_5;
+		Il2CppCodeGenWriteBarrier((void**)(&((U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_il2cpp_TypeInfo_var))->___U3CU3E9__17_0), (void*)L_5);
+		G_B2_0 = L_5;
+		G_B2_1 = G_B1_1;
+		G_B2_2 = G_B1_2;
+	}
+
+IL_002a:
+	{
+		RuntimeObject* L_6;
+		L_6 = Enumerable_Select_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_TisString_t_mF74CC9B16E879C2CF2BC9EF8251AEAB111E91B24(G_B2_1, G_B2_0, Enumerable_Select_TisPendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_TisString_t_mF74CC9B16E879C2CF2BC9EF8251AEAB111E91B24_RuntimeMethod_var);
+		String_t* L_7;
+		L_7 = String_Join_m8159F953B3D62AA54A0853A6E9573CDC0F63E158(G_B2_2, L_6, NULL);
+		V_0 = L_7;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:154>
+		String_t* L_8 = V_0;
+		PlayerPrefs_SetString_mF4F457C81BB75F0213547C6287BA36E15E1F0256(_stringLiteral027855E436E6956CCA0412C9B9AB604A1AD9A6E1, L_8, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:155>
+		PlayerPrefs_Save_m82567E045D69C838112EA204B60C144D4C1EA3AE(NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:156>
+		return;
+	}
+}
+// Method Definition Index: 130743
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidSpawner__ctor_m35859B1B0012AA1EC1447168630FBD2390834406 (AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1__ctor_m683C7F0973ADCD7F2126DB1C329009E52F623487_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1__ctor_mB815FB837474863131469CFB3841AC8401995270_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1_tFE951BF9E0D595431590167E85F992760D743EEF_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:13>
+		__this->____orbitRadius = (15.0f);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:14>
+		__this->____maxPerType = 4;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:18>
+		List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E* L_0 = (List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E*)il2cpp_codegen_object_new(List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E_il2cpp_TypeInfo_var);
+		List_1__ctor_mB815FB837474863131469CFB3841AC8401995270(L_0, List_1__ctor_mB815FB837474863131469CFB3841AC8401995270_RuntimeMethod_var);
+		__this->____active = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____active), (void*)L_0);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:19>
+		List_1_tFE951BF9E0D595431590167E85F992760D743EEF* L_1 = (List_1_tFE951BF9E0D595431590167E85F992760D743EEF*)il2cpp_codegen_object_new(List_1_tFE951BF9E0D595431590167E85F992760D743EEF_il2cpp_TypeInfo_var);
+		List_1__ctor_m683C7F0973ADCD7F2126DB1C329009E52F623487(L_1, List_1__ctor_m683C7F0973ADCD7F2126DB1C329009E52F623487_RuntimeMethod_var);
+		__this->____pending = L_1;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____pending), (void*)L_1);
+		MonoBehaviour__ctor_m592DB0105CA0BC97AA1C5F4AD27B12D68A3B7C1E(__this, NULL);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+IL2CPP_EXTERN_C void PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_marshal_pinvoke(const PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390& unmarshaled, PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_marshaled_pinvoke& marshaled)
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_0_0_0_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390____Definition_FieldInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Exception_t* ___DefinitionException = il2cpp_codegen_get_marshal_directive_exception("Cannot marshal field '%s' of type '%s': Reference type field marshaling is not supported.", PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390____Definition_FieldInfo_var, PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_0_0_0_var);
+	IL2CPP_RAISE_MANAGED_EXCEPTION(___DefinitionException, NULL);
+}
+IL2CPP_EXTERN_C void PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_marshal_pinvoke_back(const PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_marshaled_pinvoke& marshaled, PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390& unmarshaled)
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_0_0_0_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390____Definition_FieldInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Exception_t* ___DefinitionException = il2cpp_codegen_get_marshal_directive_exception("Cannot marshal field '%s' of type '%s': Reference type field marshaling is not supported.", PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390____Definition_FieldInfo_var, PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_0_0_0_var);
+	IL2CPP_RAISE_MANAGED_EXCEPTION(___DefinitionException, NULL);
+}
+IL2CPP_EXTERN_C void PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_marshal_pinvoke_cleanup(PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_marshaled_pinvoke& marshaled)
+{
+}
+IL2CPP_EXTERN_C void PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_marshal_com(const PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390& unmarshaled, PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_marshaled_com& marshaled)
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_0_0_0_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390____Definition_FieldInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Exception_t* ___DefinitionException = il2cpp_codegen_get_marshal_directive_exception("Cannot marshal field '%s' of type '%s': Reference type field marshaling is not supported.", PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390____Definition_FieldInfo_var, PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_0_0_0_var);
+	IL2CPP_RAISE_MANAGED_EXCEPTION(___DefinitionException, NULL);
+}
+IL2CPP_EXTERN_C void PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_marshal_com_back(const PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_marshaled_com& marshaled, PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390& unmarshaled)
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_0_0_0_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390____Definition_FieldInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Exception_t* ___DefinitionException = il2cpp_codegen_get_marshal_directive_exception("Cannot marshal field '%s' of type '%s': Reference type field marshaling is not supported.", PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390____Definition_FieldInfo_var, PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_0_0_0_var);
+	IL2CPP_RAISE_MANAGED_EXCEPTION(___DefinitionException, NULL);
+}
+IL2CPP_EXTERN_C void PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_marshal_com_cleanup(PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390_marshaled_com& marshaled)
+{
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 130744
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CU3Ec__cctor_mD200219807F5DA3853A05C3B2354B294C73D568F (const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5* L_0 = (U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5*)il2cpp_codegen_object_new(U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_il2cpp_TypeInfo_var);
+		U3CU3Ec__ctor_m1960FC6D1463A5262FF1A2FC6490B5B5A71A516B(L_0, NULL);
+		((U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_il2cpp_TypeInfo_var))->___U3CU3E9 = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&((U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5_il2cpp_TypeInfo_var))->___U3CU3E9), (void*)L_0);
+		return;
+	}
+}
+// Method Definition Index: 130745
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CU3Ec__ctor_m1960FC6D1463A5262FF1A2FC6490B5B5A71A516B (U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5* __this, const RuntimeMethod* method) 
+{
+	{
+		Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2(__this, NULL);
+		return;
+	}
+}
+// Method Definition Index: 130746
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D U3CU3Ec_U3Cget_NextRespawnUtcU3Eb__8_0_m2DA614FE625BC3A619E46020311E9D8009DFF39E (U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5* __this, PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 ___0_p, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:25>
+		PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 L_0 = ___0_p;
+		DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D L_1 = L_0.___RespawnAtUtc;
+		return L_1;
+	}
+}
+// Method Definition Index: 130747
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* U3CU3Ec_U3CSavePendingRespawnsU3Eb__17_0_mAF70EF259D3D742F9880F0FB3BBB808DCF7028D0 (U3CU3Ec_t453FF137E3A8D5BC214FA18B47D19F356EEE85B5* __this, PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 ___0_p, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&DateTimeOffset_t4EE701FE2F386D6F932FAC9B11E4B74A5B30F0A4_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteralC81F6681F78FB7222ECF711CB1AE99D5896A036C);
+		s_Il2CppMethodInitialized = true;
+	}
+	DateTimeOffset_t4EE701FE2F386D6F932FAC9B11E4B74A5B30F0A4 V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:152>
+		PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 L_0 = ___0_p;
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_1 = L_0.___Definition;
+		NullCheck(L_1);
+		String_t* L_2;
+		L_2 = AsteroidDefinition_get_MineralType_m1F1D8CC7612117CDA1E8C6B490BD695C19E4124B_inline(L_1, NULL);
+		PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 L_3 = ___0_p;
+		DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D L_4 = L_3.___RespawnAtUtc;
+		DateTimeOffset_t4EE701FE2F386D6F932FAC9B11E4B74A5B30F0A4 L_5;
+		memset((&L_5), 0, sizeof(L_5));
+		DateTimeOffset__ctor_mB1671EA00463E92811C8DEA80797DC89B2FFCA62((&L_5), L_4, NULL);
+		V_0 = L_5;
+		il2cpp_codegen_runtime_class_init_inline(DateTimeOffset_t4EE701FE2F386D6F932FAC9B11E4B74A5B30F0A4_il2cpp_TypeInfo_var);
+		int64_t L_6;
+		L_6 = DateTimeOffset_ToUnixTimeSeconds_m91F88288451BAB5A8373467A94DAEA359AAF34BD((&V_0), NULL);
+		int64_t L_7 = L_6;
+		RuntimeObject* L_8 = Box(il2cpp_defaults.int64_class, &L_7);
+		String_t* L_9;
+		L_9 = String_Format_mFB7DA489BD99F4670881FF50EC017BFB0A5C0987(_stringLiteralC81F6681F78FB7222ECF711CB1AE99D5896A036C, L_2, L_8, NULL);
+		return L_9;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 130748
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CU3Ec__DisplayClass10_0__ctor_m8B5944B095C23063DA2EFBA2B4B94F91260E9747 (U3CU3Ec__DisplayClass10_0_t1AE26FC45BF34994EA766723EA87B20BB2FF845C* __this, const RuntimeMethod* method) 
+{
+	{
+		Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2(__this, NULL);
+		return;
+	}
+}
+// Method Definition Index: 130749
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool U3CU3Ec__DisplayClass10_0_U3CSpawnForPlanetU3Eb__0_mF127367C626CE2F63B555DB7DF2E26D2B952630B (U3CU3Ec__DisplayClass10_0_t1AE26FC45BF34994EA766723EA87B20BB2FF845C* __this, PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 ___0_p, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:47>
+		PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 L_0 = ___0_p;
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_1 = L_0.___Definition;
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_2 = __this->___def;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_3;
+		L_3 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_1, L_2, NULL);
+		return L_3;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 130750
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool DroneController_get_IsAtTarget_m8208018018A04BF515CEAD4E7A3722976174A8AF (DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:29>
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_0 = __this->____target;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_1;
+		L_1 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (L_1)
+		{
+			goto IL_003b;
+		}
+	}
+	{
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_2;
+		L_2 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(__this, NULL);
+		NullCheck(L_2);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_3;
+		L_3 = Transform_get_position_m69CD5FA214FDAE7BB701552943674846C220FDE1(L_2, NULL);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_4 = __this->____target;
+		NullCheck(L_4);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_5;
+		L_5 = Transform_get_position_m69CD5FA214FDAE7BB701552943674846C220FDE1(L_4, NULL);
+		float L_6;
+		L_6 = Vector3_Distance_m2314DB9B8BD01157E013DF87BEA557375C7F9FF9_inline(L_3, L_5, NULL);
+		float L_7 = __this->____stopDistance;
+		return (bool)((((int32_t)((!(((float)L_6) <= ((float)((float)il2cpp_codegen_add(L_7, (0.0500000007f))))))? 1 : 0)) == ((int32_t)0))? 1 : 0);
+	}
+
+IL_003b:
+	{
+		return (bool)1;
+	}
+}
+// Method Definition Index: 130751
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DroneController_Awake_mA86A5D26C7F973876C7021C7389B0D5D748BB841 (DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&GameObject_t76FEDD663AB33C991A9C9A23129337651094216F_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral34DB910872FD0FA5D174977AFF07440CC9383AE9);
+		s_Il2CppMethodInitialized = true;
+	}
+	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* V_0 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:33>
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_0 = __this->____baseAnchor;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_1;
+		L_1 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_1)
+		{
+			goto IL_0059;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:35>
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_2 = (GameObject_t76FEDD663AB33C991A9C9A23129337651094216F*)il2cpp_codegen_object_new(GameObject_t76FEDD663AB33C991A9C9A23129337651094216F_il2cpp_TypeInfo_var);
+		GameObject__ctor_m37D512B05D292F954792225E6C6EEE95293A9B88(L_2, _stringLiteral34DB910872FD0FA5D174977AFF07440CC9383AE9, NULL);
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_3 = L_2;
+		NullCheck(L_3);
+		Object_set_hideFlags_mACB8BFC903FB3B01BBD427753E791BF28B5E33D4(L_3, 1, NULL);
+		V_0 = L_3;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:36>
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_4 = V_0;
+		NullCheck(L_4);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_5;
+		L_5 = GameObject_get_transform_m0BC10ADFA1632166AE5544BDF9038A2650C2AE56(L_4, NULL);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_6;
+		L_6 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(__this, NULL);
+		NullCheck(L_6);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_7;
+		L_7 = Transform_get_parent_m65354E28A4C94EC00EBCF03532F7B0718380791E(L_6, NULL);
+		NullCheck(L_5);
+		Transform_SetParent_m9BDD7B7476714B2D7919B10BDC22CE75C0A0A195(L_5, L_7, (bool)1, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:37>
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_8 = V_0;
+		NullCheck(L_8);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_9;
+		L_9 = GameObject_get_transform_m0BC10ADFA1632166AE5544BDF9038A2650C2AE56(L_8, NULL);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_10;
+		L_10 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(__this, NULL);
+		NullCheck(L_10);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_11;
+		L_11 = Transform_get_position_m69CD5FA214FDAE7BB701552943674846C220FDE1(L_10, NULL);
+		NullCheck(L_9);
+		Transform_set_position_mA1A817124BB41B685043DED2A9BA48CDF37C4156(L_9, L_11, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:38>
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_12 = V_0;
+		NullCheck(L_12);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_13;
+		L_13 = GameObject_get_transform_m0BC10ADFA1632166AE5544BDF9038A2650C2AE56(L_12, NULL);
+		__this->____baseAnchor = L_13;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____baseAnchor), (void*)L_13);
+	}
+
+IL_0059:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:40>
+		return;
+	}
+}
+// Method Definition Index: 130752
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DroneController_SetTarget_mC964139AABA8347EFC29EB47DAB843D9B564C13A (DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* __this, Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ___0_target, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:44>
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_0 = ___0_target;
+		__this->____target = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____target), (void*)L_0);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:45>
+		__this->____orbiting = (bool)0;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:46>
+		__this->____isMoving = (bool)1;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:47>
+		__this->____returningToBase = (bool)0;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:48>
+		return;
+	}
+}
+// Method Definition Index: 130753
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DroneController_ReturnToBase_m3D10BEC31F48E3BDA5C471405C6FA3D7CB4BE7BD (DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:53>
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_0 = __this->____baseAnchor;
+		__this->____target = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____target), (void*)L_0);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:54>
+		__this->____orbiting = (bool)0;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:55>
+		__this->____isMoving = (bool)1;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:56>
+		__this->____returningToBase = (bool)1;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:57>
+		return;
+	}
+}
+// Method Definition Index: 130754
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DroneController_Update_mF0E37E7F6A2DBC05BC7A2C0D091E66AC8F5FC07D (DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:61>
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_0 = __this->____target;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_1;
+		L_1 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_1)
+		{
+			goto IL_0016;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:63>
+		DroneController_SetActivity_m7BC4B7E55775CEC14C3BC25FFA00CBE4D1803B0A(__this, 0, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:64>
+		return;
+	}
+
+IL_0016:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:67>
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_2;
+		L_2 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(__this, NULL);
+		NullCheck(L_2);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_3;
+		L_3 = Transform_get_position_m69CD5FA214FDAE7BB701552943674846C220FDE1(L_2, NULL);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_4 = __this->____target;
+		NullCheck(L_4);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_5;
+		L_5 = Transform_get_position_m69CD5FA214FDAE7BB701552943674846C220FDE1(L_4, NULL);
+		float L_6;
+		L_6 = Vector3_Distance_m2314DB9B8BD01157E013DF87BEA557375C7F9FF9_inline(L_3, L_5, NULL);
+		float L_7 = __this->____stopDistance;
+		if ((!(((float)L_6) > ((float)L_7))))
+		{
+			goto IL_0093;
+		}
+	}
+	{
+		bool L_8 = __this->____isMoving;
+		if (!L_8)
+		{
+			goto IL_0093;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:69>
+		__this->____orbiting = (bool)0;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:70>
+		DroneController_SetActivity_m7BC4B7E55775CEC14C3BC25FFA00CBE4D1803B0A(__this, 1, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:71>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:72>
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_9;
+		L_9 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(__this, NULL);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_10;
+		L_10 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(__this, NULL);
+		NullCheck(L_10);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_11;
+		L_11 = Transform_get_position_m69CD5FA214FDAE7BB701552943674846C220FDE1(L_10, NULL);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_12 = __this->____target;
+		NullCheck(L_12);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_13;
+		L_13 = Transform_get_position_m69CD5FA214FDAE7BB701552943674846C220FDE1(L_12, NULL);
+		float L_14 = __this->____travelSpeed;
+		float L_15;
+		L_15 = Time_get_deltaTime_mC3195000401F0FD167DD2F948FD2BC58330D0865(NULL);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_16;
+		L_16 = Vector3_MoveTowards_m0363264647799F3173AC37F8E819F98298249B08_inline(L_11, L_13, ((float)il2cpp_codegen_multiply(L_14, L_15)), NULL);
+		NullCheck(L_9);
+		Transform_set_position_mA1A817124BB41B685043DED2A9BA48CDF37C4156(L_9, L_16, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:73>
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_17 = __this->____target;
+		NullCheck(L_17);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_18;
+		L_18 = Transform_get_position_m69CD5FA214FDAE7BB701552943674846C220FDE1(L_17, NULL);
+		DroneController_FaceTowards_m1453B053FAAA528D31B3D5B8AB8D4803AE56B364(__this, L_18, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:74>
+		return;
+	}
+
+IL_0093:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:77>
+		__this->____isMoving = (bool)0;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:79>
+		bool L_19 = __this->____returningToBase;
+		if (!L_19)
+		{
+			goto IL_00ce;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:81>
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_20;
+		L_20 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(__this, NULL);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_21 = __this->____target;
+		NullCheck(L_21);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_22;
+		L_22 = Transform_get_position_m69CD5FA214FDAE7BB701552943674846C220FDE1(L_21, NULL);
+		NullCheck(L_20);
+		Transform_set_position_mA1A817124BB41B685043DED2A9BA48CDF37C4156(L_20, L_22, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:82>
+		__this->____target = (Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____target), (void*)(Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1*)NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:83>
+		__this->____returningToBase = (bool)0;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:84>
+		DroneController_SetActivity_m7BC4B7E55775CEC14C3BC25FFA00CBE4D1803B0A(__this, 0, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:85>
+		return;
+	}
+
+IL_00ce:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:88>
+		DroneController_SetActivity_m7BC4B7E55775CEC14C3BC25FFA00CBE4D1803B0A(__this, 2, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:89>
+		DroneController_OrbitTarget_m847A7E769E9BC060575871F928331E065F81928E(__this, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:90>
+		return;
+	}
+}
+// Method Definition Index: 130755
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DroneController_SetActivity_m7BC4B7E55775CEC14C3BC25FFA00CBE4D1803B0A (DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* __this, int32_t ___0_activity, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:94>
+		int32_t L_0 = __this->____activity;
+		int32_t L_1 = ___0_activity;
+		if ((!(((uint32_t)L_0) == ((uint32_t)L_1))))
+		{
+			goto IL_000a;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:94>
+		return;
+	}
+
+IL_000a:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:95>
+		int32_t L_2 = ___0_activity;
+		__this->____activity = L_2;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:97>
+		ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* L_3 = __this->____travelingEffect;
+		int32_t L_4 = ___0_activity;
+		DroneController_SetEffect_m17AC1D299913E45CE4891786A78EAA17C026144A(L_3, (bool)((((int32_t)L_4) == ((int32_t)1))? 1 : 0), NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:98>
+		ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* L_5 = __this->____miningEffect;
+		int32_t L_6 = ___0_activity;
+		DroneController_SetEffect_m17AC1D299913E45CE4891786A78EAA17C026144A(L_5, (bool)((((int32_t)L_6) == ((int32_t)2))? 1 : 0), NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:99>
+		return;
+	}
+}
+// Method Definition Index: 130756
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DroneController_SetEffect_m17AC1D299913E45CE4891786A78EAA17C026144A (ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* ___0_effect, bool ___1_play, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:103>
+		ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* L_0 = ___0_effect;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_1;
+		L_1 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_1)
+		{
+			goto IL_000a;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:103>
+		return;
+	}
+
+IL_000a:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:104>
+		bool L_2 = ___1_play;
+		if (!L_2)
+		{
+			goto IL_0014;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:104>
+		ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* L_3 = ___0_effect;
+		NullCheck(L_3);
+		ParticleSystem_Play_mD943E601BFE16CB9BB5D1F5E6AED5C36F5F11EF5(L_3, NULL);
+		return;
+	}
+
+IL_0014:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:105>
+		ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* L_4 = ___0_effect;
+		NullCheck(L_4);
+		ParticleSystem_Stop_mB5761CB85083F593FFEC3D27931CACF1855A6326(L_4, (bool)1, 0, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:106>
+		return;
+	}
+}
+// Method Definition Index: 130757
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DroneController_FaceTowards_m1453B053FAAA528D31B3D5B8AB8D4803AE56B364 (DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* __this, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_point, const RuntimeMethod* method) 
+{
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 V_1;
+	memset((&V_1), 0, sizeof(V_1));
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:111>
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_0 = ___0_point;
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_1;
+		L_1 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(__this, NULL);
+		NullCheck(L_1);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_2;
+		L_2 = Transform_get_position_m69CD5FA214FDAE7BB701552943674846C220FDE1(L_1, NULL);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_3;
+		L_3 = Vector3_op_Subtraction_mE42023FF80067CB44A1D4A27EB7CF2B24CABB828_inline(L_0, L_2, NULL);
+		V_0 = L_3;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:112>
+		float L_4;
+		L_4 = Vector3_get_sqrMagnitude_m43C27DEC47C4811FB30AB474FF2131A963B66FC8_inline((&V_0), NULL);
+		if ((!(((float)L_4) < ((float)(9.99999975E-05f)))))
+		{
+			goto IL_0021;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:112>
+		return;
+	}
+
+IL_0021:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:114>
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_5 = V_0;
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 L_6;
+		L_6 = Quaternion_LookRotation_mDB2CCA75B8E1AB98104F2A6E1A1EA57D0D1298D7_inline(L_5, NULL);
+		V_1 = L_6;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:115>
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_7;
+		L_7 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(__this, NULL);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_8;
+		L_8 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(__this, NULL);
+		NullCheck(L_8);
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 L_9;
+		L_9 = Transform_get_rotation_m32AF40CA0D50C797DA639A696F8EAEC7524C179C(L_8, NULL);
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 L_10 = V_1;
+		float L_11 = __this->____turnSpeed;
+		float L_12;
+		L_12 = Time_get_deltaTime_mC3195000401F0FD167DD2F948FD2BC58330D0865(NULL);
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 L_13;
+		L_13 = Quaternion_RotateTowards_m50EF9D609C80CD423CDA856EA3481DE2004633A3_inline(L_9, L_10, ((float)il2cpp_codegen_multiply(L_11, L_12)), NULL);
+		NullCheck(L_7);
+		Transform_set_rotation_m61340DE74726CF0F9946743A727C4D444397331D(L_7, L_13, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:116>
+		return;
+	}
+}
+// Method Definition Index: 130758
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DroneController_OrbitTarget_m847A7E769E9BC060575871F928331E065F81928E (DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* __this, const RuntimeMethod* method) 
+{
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 V_1;
+	memset((&V_1), 0, sizeof(V_1));
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:121>
+		bool L_0 = __this->____orbiting;
+		if (L_0)
+		{
+			goto IL_0048;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:123>
+		__this->____orbiting = (bool)1;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:124>
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_1;
+		L_1 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(__this, NULL);
+		NullCheck(L_1);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_2;
+		L_2 = Transform_get_position_m69CD5FA214FDAE7BB701552943674846C220FDE1(L_1, NULL);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_3 = __this->____target;
+		NullCheck(L_3);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_4;
+		L_4 = Transform_get_position_m69CD5FA214FDAE7BB701552943674846C220FDE1(L_3, NULL);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_5;
+		L_5 = Vector3_op_Subtraction_mE42023FF80067CB44A1D4A27EB7CF2B24CABB828_inline(L_2, L_4, NULL);
+		V_1 = L_5;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:125>
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_6 = V_1;
+		float L_7 = L_6.___x;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_8 = V_1;
+		float L_9 = L_8.___z;
+		float L_10;
+		L_10 = atan2f(L_7, L_9);
+		__this->____orbitAngle = ((float)il2cpp_codegen_multiply(L_10, (57.2957802f)));
+	}
+
+IL_0048:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:128>
+		float L_11 = __this->____orbitAngle;
+		float L_12 = __this->____orbitSpeed;
+		float L_13;
+		L_13 = Time_get_deltaTime_mC3195000401F0FD167DD2F948FD2BC58330D0865(NULL);
+		float L_14;
+		L_14 = Mathf_Repeat_m6F1560A163481BB311D685294E1B463C3E4EB3BA_inline(((float)il2cpp_codegen_add(L_11, ((float)il2cpp_codegen_multiply(L_12, L_13)))), (360.0f), NULL);
+		__this->____orbitAngle = L_14;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:130>
+		float L_15 = __this->____orbitAngle;
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 L_16;
+		L_16 = Quaternion_Euler_m9262AB29E3E9CE94EF71051F38A28E82AEC73F90_inline((0.0f), L_15, (0.0f), NULL);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_17;
+		L_17 = Vector3_get_forward_mAA55A7034304DF8B2152EAD49AE779FC4CA2EB4A_inline(NULL);
+		float L_18 = __this->____stopDistance;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_19;
+		L_19 = Vector3_op_Multiply_m87BA7C578F96C8E49BB07088DAAC4649F83B0353_inline(L_17, L_18, NULL);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_20;
+		L_20 = Quaternion_op_Multiply_mE1EBA73F9173432B50F8F17CE8190C5A7986FB8C(L_16, L_19, NULL);
+		V_0 = L_20;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:131>
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_21;
+		L_21 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(__this, NULL);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_22 = __this->____target;
+		NullCheck(L_22);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_23;
+		L_23 = Transform_get_position_m69CD5FA214FDAE7BB701552943674846C220FDE1(L_22, NULL);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_24 = V_0;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_25;
+		L_25 = Vector3_op_Addition_m78C0EC70CB66E8DCAC225743D82B268DAEE92067_inline(L_23, L_24, NULL);
+		NullCheck(L_21);
+		Transform_set_position_mA1A817124BB41B685043DED2A9BA48CDF37C4156(L_21, L_25, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:132>
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_26;
+		L_26 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(__this, NULL);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_27 = __this->____target;
+		NullCheck(L_27);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_28;
+		L_28 = Transform_get_position_m69CD5FA214FDAE7BB701552943674846C220FDE1(L_27, NULL);
+		NullCheck(L_26);
+		Transform_LookAt_mFEF7353E4CAEB85D5F7CEEF9276C3B8D6E314C6C(L_26, L_28, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:133>
+		return;
+	}
+}
+// Method Definition Index: 130759
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DroneController__ctor_m032E4D62BE31FD0B6D24BCC97963818577969E88 (DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:7>
+		__this->____travelSpeed = (5.0f);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:8>
+		__this->____stopDistance = (1.5f);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:9>
+		__this->____orbitSpeed = (60.0f);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneController.cs:10>
+		__this->____turnSpeed = (180.0f);
+		MonoBehaviour__ctor_m592DB0105CA0BC97AA1C5F4AD27B12D68A3B7C1E(__this, NULL);
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 130760
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* DroneRuntime_get_Definition_m124A7D00CDAC10CDFEF4997B6191D19A7E455EE5 (DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneRuntime.cs:8>
+		DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* L_0 = __this->___U3CDefinitionU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 130761
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t DroneRuntime_get_CargoAmount_m78D7D131E2AE0ACBE4442CD70B873A02F8EA87E6 (DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneRuntime.cs:9>
+		int32_t L_0 = __this->___U3CCargoAmountU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 130762
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DroneRuntime_set_CargoAmount_mF99DD5E095D858C53F043E7653C6E6BF8BB01B0C (DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* __this, int32_t ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneRuntime.cs:9>
+		int32_t L_0 = ___0_value;
+		__this->___U3CCargoAmountU3Ek__BackingField = L_0;
+		return;
+	}
+}
+// Method Definition Index: 130763
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool DroneRuntime_get_IsCargoFull_mF6102A59BA1912BBEA50225FC33192949D34F3FE (DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneRuntime.cs:10>
+		int32_t L_0;
+		L_0 = DroneRuntime_get_CargoAmount_m78D7D131E2AE0ACBE4442CD70B873A02F8EA87E6_inline(__this, NULL);
+		DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* L_1;
+		L_1 = DroneRuntime_get_Definition_m124A7D00CDAC10CDFEF4997B6191D19A7E455EE5_inline(__this, NULL);
+		NullCheck(L_1);
+		int32_t L_2;
+		L_2 = DroneDefinition_get_CargoCap_m1BCA7661910C280D60CAA6779EC56CD3F8B20751_inline(L_1, NULL);
+		return (bool)((((int32_t)((((int32_t)L_0) < ((int32_t)L_2))? 1 : 0)) == ((int32_t)0))? 1 : 0);
+	}
+}
+// Method Definition Index: 130764
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DroneRuntime__ctor_mF0D6F68A37D33E8418E65FF01500094BC11802B0 (DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* __this, DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* ___0_definition, const RuntimeMethod* method) 
+{
+	DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* G_B2_0 = NULL;
+	DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* G_B2_1 = NULL;
+	DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* G_B1_0 = NULL;
+	DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* G_B1_1 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneRuntime.cs:12>
+		Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2(__this, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneRuntime.cs:14>
+		DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* L_0 = ___0_definition;
+		DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* L_1 = L_0;
+		if (L_1)
+		{
+			G_B2_0 = L_1;
+			G_B2_1 = __this;
+			goto IL_0017;
+		}
+		G_B1_0 = L_1;
+		G_B1_1 = __this;
+	}
+	{
+		ArgumentNullException_t327031E412FAB2351B0022DD5DAD47E67E597129* L_2 = (ArgumentNullException_t327031E412FAB2351B0022DD5DAD47E67E597129*)il2cpp_codegen_object_new(((RuntimeClass*)il2cpp_codegen_initialize_runtime_metadata_inline((uintptr_t*)&ArgumentNullException_t327031E412FAB2351B0022DD5DAD47E67E597129_il2cpp_TypeInfo_var)));
+		ArgumentNullException__ctor_m444AE141157E333844FC1A9500224C2F9FD24F4B(L_2, ((String_t*)il2cpp_codegen_initialize_runtime_metadata_inline((uintptr_t*)&_stringLiteral1A2C9EEBFCE5DA83D305368E162F1B46563904B6)), NULL);
+		IL2CPP_RAISE_MANAGED_EXCEPTION(L_2, ((RuntimeMethod*)il2cpp_codegen_initialize_runtime_metadata_inline((uintptr_t*)&DroneRuntime__ctor_mF0D6F68A37D33E8418E65FF01500094BC11802B0_RuntimeMethod_var)));
+	}
+
+IL_0017:
+	{
+		NullCheck(G_B2_1);
+		G_B2_1->___U3CDefinitionU3Ek__BackingField = G_B2_0;
+		Il2CppCodeGenWriteBarrier((void**)(&G_B2_1->___U3CDefinitionU3Ek__BackingField), (void*)G_B2_0);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneRuntime.cs:15>
+		return;
+	}
+}
+// Method Definition Index: 130765
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t DroneRuntime_AddCargo_m59F367284CC714BFDD2747E964E97BD733DF4F37 (DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* __this, int32_t ___0_amount, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Math_tEB65DE7CA8B083C412C969C92981C030865486CE_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	int32_t V_0 = 0;
+	int32_t V_1 = 0;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneRuntime.cs:19>
+		DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* L_0;
+		L_0 = DroneRuntime_get_Definition_m124A7D00CDAC10CDFEF4997B6191D19A7E455EE5_inline(__this, NULL);
+		NullCheck(L_0);
+		int32_t L_1;
+		L_1 = DroneDefinition_get_CargoCap_m1BCA7661910C280D60CAA6779EC56CD3F8B20751_inline(L_0, NULL);
+		int32_t L_2;
+		L_2 = DroneRuntime_get_CargoAmount_m78D7D131E2AE0ACBE4442CD70B873A02F8EA87E6_inline(__this, NULL);
+		V_0 = ((int32_t)il2cpp_codegen_subtract(L_1, L_2));
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneRuntime.cs:20>
+		int32_t L_3 = ___0_amount;
+		int32_t L_4 = V_0;
+		il2cpp_codegen_runtime_class_init_inline(Math_tEB65DE7CA8B083C412C969C92981C030865486CE_il2cpp_TypeInfo_var);
+		int32_t L_5;
+		L_5 = Math_Min_m53C488772A34D53917BCA2A491E79A0A5356ED52(L_3, L_4, NULL);
+		V_1 = L_5;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneRuntime.cs:21>
+		int32_t L_6;
+		L_6 = DroneRuntime_get_CargoAmount_m78D7D131E2AE0ACBE4442CD70B873A02F8EA87E6_inline(__this, NULL);
+		int32_t L_7 = V_1;
+		DroneRuntime_set_CargoAmount_mF99DD5E095D858C53F043E7653C6E6BF8BB01B0C_inline(__this, ((int32_t)il2cpp_codegen_add(L_6, L_7)), NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneRuntime.cs:22>
+		int32_t L_8 = V_1;
+		return L_8;
+	}
+}
+// Method Definition Index: 130766
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t DroneRuntime_EmptyCargo_m65F96F26E0E0F447DA15A0ED684928D8E51EE3ED (DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneRuntime.cs:27>
+		int32_t L_0;
+		L_0 = DroneRuntime_get_CargoAmount_m78D7D131E2AE0ACBE4442CD70B873A02F8EA87E6_inline(__this, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneRuntime.cs:28>
+		DroneRuntime_set_CargoAmount_mF99DD5E095D858C53F043E7653C6E6BF8BB01B0C_inline(__this, 0, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneRuntime.cs:29>
+		return L_0;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 130767
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningCalculator__ctor_mAA2E401C142DA318090D5E72A53925C40B3259FF (IdleMiningCalculator_t942A246A242064927872B44C78D414479ACC2F05* __this, EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* ___0_config, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningCalculator.cs:10>
+		Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2(__this, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningCalculator.cs:10>
+		EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* L_0 = ___0_config;
+		__this->____config = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____config), (void*)L_0);
+		return;
+	}
+}
+// Method Definition Index: 130768
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t IdleMiningCalculator_Calculate_mED3CA18A383E3E6D2AD26333B8C6678635EFFA2A (IdleMiningCalculator_t942A246A242064927872B44C78D414479ACC2F05* __this, DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D ___0_lastSessionEnd, DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* ___1_drone, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Math_tEB65DE7CA8B083C412C969C92981C030865486CE_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&TimeSpan_t8195C5B013A2C532FEBDF0B64B6911982E750F5A_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	int32_t V_0 = 0;
+	TimeSpan_t8195C5B013A2C532FEBDF0B64B6911982E750F5A V_1;
+	memset((&V_1), 0, sizeof(V_1));
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningCalculator.cs:14>
+		il2cpp_codegen_runtime_class_init_inline(DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_il2cpp_TypeInfo_var);
+		DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D L_0;
+		L_0 = DateTime_get_UtcNow_m06B6E9995FE16846A0F71EC9DB23E90BE2C5F9FA(NULL);
+		DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D L_1 = ___0_lastSessionEnd;
+		TimeSpan_t8195C5B013A2C532FEBDF0B64B6911982E750F5A L_2;
+		L_2 = DateTime_op_Subtraction_m64D26F5ABFAE6E166A7E567093D025F6C69F0123(L_0, L_1, NULL);
+		V_1 = L_2;
+		il2cpp_codegen_runtime_class_init_inline(TimeSpan_t8195C5B013A2C532FEBDF0B64B6911982E750F5A_il2cpp_TypeInfo_var);
+		double L_3;
+		L_3 = TimeSpan_get_TotalSeconds_mED686E7CECE6A76A7DC38518698B9199DB8CDEA8((&V_1), NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningCalculator.cs:15>
+		EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* L_4 = __this->____config;
+		NullCheck(L_4);
+		float L_5;
+		L_5 = EconomyConfig_get_MaxOfflineHours_m27C723AEF635D7A46084272EE14281433FB11639_inline(L_4, NULL);
+		il2cpp_codegen_runtime_class_init_inline(Math_tEB65DE7CA8B083C412C969C92981C030865486CE_il2cpp_TypeInfo_var);
+		float L_6;
+		L_6 = Math_Min_mE913811A2F7566294BF4649A434282634E7254B3(((float)L_3), ((float)il2cpp_codegen_multiply(L_5, (3600.0f))), NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningCalculator.cs:16>
+		EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* L_7 = __this->____config;
+		NullCheck(L_7);
+		float L_8;
+		L_8 = EconomyConfig_get_IdleMiningRate_mAE386036D06761D813CB566DE6B0D662BA696E7A_inline(L_7, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningCalculator.cs:17>
+		DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* L_9 = ___1_drone;
+		NullCheck(L_9);
+		DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* L_10;
+		L_10 = DroneRuntime_get_Definition_m124A7D00CDAC10CDFEF4997B6191D19A7E455EE5_inline(L_9, NULL);
+		NullCheck(L_10);
+		int32_t L_11;
+		L_11 = DroneDefinition_get_CargoCap_m1BCA7661910C280D60CAA6779EC56CD3F8B20751_inline(L_10, NULL);
+		DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* L_12 = ___1_drone;
+		NullCheck(L_12);
+		int32_t L_13;
+		L_13 = DroneRuntime_get_CargoAmount_m78D7D131E2AE0ACBE4442CD70B873A02F8EA87E6_inline(L_12, NULL);
+		V_0 = ((int32_t)il2cpp_codegen_subtract(L_11, L_13));
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningCalculator.cs:18>
+		int32_t L_14 = V_0;
+		int32_t L_15;
+		L_15 = Math_Min_m53C488772A34D53917BCA2A491E79A0A5356ED52(il2cpp_codegen_cast_double_to_int<int32_t>(((float)il2cpp_codegen_multiply(L_6, L_8))), L_14, NULL);
+		return L_15;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 130769
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* IdleMiningSession_get_Asteroid_mF059A51CA217E34F32F4009D308982A63BCFDEB9 (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:12>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_0 = __this->___U3CAsteroidU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 130770
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t IdleMiningSession_get_Stage_m547A9299CDCBC46129B15218DE70B358A7457312 (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:13>
+		int32_t L_0 = __this->___U3CStageU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 130771
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSession_set_Stage_m3325A7C137559EFF18D67C7802400D369BD692AC (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, int32_t ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:13>
+		int32_t L_0 = ___0_value;
+		__this->___U3CStageU3Ek__BackingField = L_0;
+		return;
+	}
+}
+// Method Definition Index: 130772
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float IdleMiningSession_get_MiningProgress01_mE5007987C6EFE3624357C4D3C2D600F2D876110C (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:14>
+		float L_0 = __this->___U3CMiningProgress01U3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 130773
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSession_set_MiningProgress01_m82ABC86363B457D3D6243EBBB2F58DEB6BC73749 (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, float ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:14>
+		float L_0 = ___0_value;
+		__this->___U3CMiningProgress01U3Ek__BackingField = L_0;
+		return;
+	}
+}
+// Method Definition Index: 130774
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t IdleMiningSession_get_ClaimTapsRequired_m6307FD9F00111F4A35AA5A86513C495394C0CB87 (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:15>
+		int32_t L_0 = __this->___U3CClaimTapsRequiredU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 130775
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t IdleMiningSession_get_ClaimTapsRemaining_mFC2664C261EDBC4805E0DEC0D885D73858614D8A (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:16>
+		int32_t L_0 = __this->___U3CClaimTapsRemainingU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 130776
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSession_set_ClaimTapsRemaining_m2238335211D89ED2EC1B86E5DA48AFEB6107F7BB (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, int32_t ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:16>
+		int32_t L_0 = ___0_value;
+		__this->___U3CClaimTapsRemainingU3Ek__BackingField = L_0;
+		return;
+	}
+}
+// Method Definition Index: 130777
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSession_add_OnStageChanged_m7A58FE0D866748877F34B1471C2E69EB691FD246 (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* ___0_value, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* V_0 = NULL;
+	Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* V_1 = NULL;
+	Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* V_2 = NULL;
+	{
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* L_0 = __this->___OnStageChanged;
+		V_0 = L_0;
+	}
+
+IL_0007:
+	{
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* L_1 = V_0;
+		V_1 = L_1;
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* L_2 = V_1;
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* L_3 = ___0_value;
+		Delegate_t* L_4;
+		L_4 = Delegate_Combine_m1F725AEF318BE6F0426863490691A6F4606E7D00(L_2, L_3, NULL);
+		V_2 = ((Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F*)Castclass((RuntimeObject*)L_4, Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F_il2cpp_TypeInfo_var));
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F** L_5 = (Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F**)(&__this->___OnStageChanged);
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* L_6 = V_2;
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* L_7 = V_1;
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* L_8;
+		L_8 = InterlockedCompareExchangeImpl<Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F*>(L_5, L_6, L_7);
+		V_0 = L_8;
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* L_9 = V_0;
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* L_10 = V_1;
+		if ((!(((RuntimeObject*)(Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F*)L_9) == ((RuntimeObject*)(Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F*)L_10))))
+		{
+			goto IL_0007;
+		}
+	}
+	{
+		return;
+	}
+}
+// Method Definition Index: 130778
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSession_remove_OnStageChanged_m8AD228810669673D2999629432927AB41C04710D (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* ___0_value, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* V_0 = NULL;
+	Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* V_1 = NULL;
+	Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* V_2 = NULL;
+	{
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* L_0 = __this->___OnStageChanged;
+		V_0 = L_0;
+	}
+
+IL_0007:
+	{
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* L_1 = V_0;
+		V_1 = L_1;
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* L_2 = V_1;
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* L_3 = ___0_value;
+		Delegate_t* L_4;
+		L_4 = Delegate_Remove_m8B7DD5661308FA972E23CA1CC3FC9CEB355504E3(L_2, L_3, NULL);
+		V_2 = ((Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F*)Castclass((RuntimeObject*)L_4, Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F_il2cpp_TypeInfo_var));
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F** L_5 = (Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F**)(&__this->___OnStageChanged);
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* L_6 = V_2;
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* L_7 = V_1;
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* L_8;
+		L_8 = InterlockedCompareExchangeImpl<Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F*>(L_5, L_6, L_7);
+		V_0 = L_8;
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* L_9 = V_0;
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* L_10 = V_1;
+		if ((!(((RuntimeObject*)(Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F*)L_9) == ((RuntimeObject*)(Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F*)L_10))))
+		{
+			goto IL_0007;
+		}
+	}
+	{
+		return;
+	}
+}
+// Method Definition Index: 130779
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSession__ctor_m5594563E9A7C16597487F6F918F5017642235439 (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___0_asteroid, float ___1_miningDuration, int32_t ___2_claimTapsRequired, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:23>
+		Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2(__this, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:25>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_0 = ___0_asteroid;
+		__this->___U3CAsteroidU3Ek__BackingField = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CAsteroidU3Ek__BackingField), (void*)L_0);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:26>
+		float L_1 = ___1_miningDuration;
+		float L_2;
+		L_2 = Mathf_Max_mF5379E63D2BBAC76D090748695D833934F8AD051_inline((0.00999999978f), L_1, NULL);
+		__this->____miningDuration = L_2;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:27>
+		int32_t L_3 = ___2_claimTapsRequired;
+		int32_t L_4;
+		L_4 = Mathf_Max_m7FA442918DE37E3A00106D1F2E789D65829792B8_inline(1, L_3, NULL);
+		__this->___U3CClaimTapsRequiredU3Ek__BackingField = L_4;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:28>
+		int32_t L_5;
+		L_5 = IdleMiningSession_get_ClaimTapsRequired_m6307FD9F00111F4A35AA5A86513C495394C0CB87_inline(__this, NULL);
+		IdleMiningSession_set_ClaimTapsRemaining_m2238335211D89ED2EC1B86E5DA48AFEB6107F7BB_inline(__this, L_5, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:29>
+		IdleMiningSession_set_Stage_m3325A7C137559EFF18D67C7802400D369BD692AC_inline(__this, 0, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:30>
+		return;
+	}
+}
+// Method Definition Index: 130780
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSession_BeginMining_m8453F6ABE25CDB2F584E035BA725333B69368B84 (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:34>
+		int32_t L_0;
+		L_0 = IdleMiningSession_get_Stage_m547A9299CDCBC46129B15218DE70B358A7457312_inline(__this, NULL);
+		if (!L_0)
+		{
+			goto IL_0009;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:34>
+		return;
+	}
+
+IL_0009:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:36>
+		__this->____elapsed = (0.0f);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:37>
+		IdleMiningSession_SetStage_mE5C0DCFE23A066A1DF6C90DAB1A605D83C8B77E2(__this, 1, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:38>
+		return;
+	}
+}
+// Method Definition Index: 130781
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSession_Tick_m606C26A7265DA0AFB25CA996263FFE71672ABDBC (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, float ___0_deltaTime, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:42>
+		int32_t L_0;
+		L_0 = IdleMiningSession_get_Stage_m547A9299CDCBC46129B15218DE70B358A7457312_inline(__this, NULL);
+		if ((((int32_t)L_0) == ((int32_t)1)))
+		{
+			goto IL_000a;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:42>
+		return;
+	}
+
+IL_000a:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:44>
+		float L_1 = __this->____elapsed;
+		float L_2 = ___0_deltaTime;
+		__this->____elapsed = ((float)il2cpp_codegen_add(L_1, L_2));
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:45>
+		float L_3 = __this->____elapsed;
+		float L_4 = __this->____miningDuration;
+		float L_5;
+		L_5 = Mathf_Clamp01_mA7E048DBDA832D399A581BE4D6DED9FA44CE0F14_inline(((float)(L_3/L_4)), NULL);
+		IdleMiningSession_set_MiningProgress01_m82ABC86363B457D3D6243EBBB2F58DEB6BC73749_inline(__this, L_5, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:47>
+		float L_6 = __this->____elapsed;
+		float L_7 = __this->____miningDuration;
+		if ((!(((float)L_6) >= ((float)L_7))))
+		{
+			goto IL_0045;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:48>
+		IdleMiningSession_SetStage_mE5C0DCFE23A066A1DF6C90DAB1A605D83C8B77E2(__this, 2, NULL);
+	}
+
+IL_0045:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:49>
+		return;
+	}
+}
+// Method Definition Index: 130782
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool IdleMiningSession_RegisterClaimTap_m6605D2E842A3364DE7A3F284E41169C1EF17CC0F (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:54>
+		int32_t L_0;
+		L_0 = IdleMiningSession_get_Stage_m547A9299CDCBC46129B15218DE70B358A7457312_inline(__this, NULL);
+		if ((((int32_t)L_0) == ((int32_t)2)))
+		{
+			goto IL_000b;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:54>
+		return (bool)0;
+	}
+
+IL_000b:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:56>
+		int32_t L_1;
+		L_1 = IdleMiningSession_get_ClaimTapsRemaining_mFC2664C261EDBC4805E0DEC0D885D73858614D8A_inline(__this, NULL);
+		int32_t L_2;
+		L_2 = Mathf_Max_m7FA442918DE37E3A00106D1F2E789D65829792B8_inline(0, ((int32_t)il2cpp_codegen_subtract(L_1, 1)), NULL);
+		IdleMiningSession_set_ClaimTapsRemaining_m2238335211D89ED2EC1B86E5DA48AFEB6107F7BB_inline(__this, L_2, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:57>
+		int32_t L_3;
+		L_3 = IdleMiningSession_get_ClaimTapsRemaining_mFC2664C261EDBC4805E0DEC0D885D73858614D8A_inline(__this, NULL);
+		if (L_3)
+		{
+			goto IL_002e;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:58>
+		IdleMiningSession_SetStage_mE5C0DCFE23A066A1DF6C90DAB1A605D83C8B77E2(__this, 3, NULL);
+	}
+
+IL_002e:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:60>
+		int32_t L_4;
+		L_4 = IdleMiningSession_get_Stage_m547A9299CDCBC46129B15218DE70B358A7457312_inline(__this, NULL);
+		return (bool)((((int32_t)L_4) == ((int32_t)3))? 1 : 0);
+	}
+}
+// Method Definition Index: 130783
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSession_SetStage_mE5C0DCFE23A066A1DF6C90DAB1A605D83C8B77E2 (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, int32_t ___0_stage, const RuntimeMethod* method) 
+{
+	Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* G_B2_0 = NULL;
+	Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* G_B1_0 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:65>
+		int32_t L_0 = ___0_stage;
+		IdleMiningSession_set_Stage_m3325A7C137559EFF18D67C7802400D369BD692AC_inline(__this, L_0, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:66>
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* L_1 = __this->___OnStageChanged;
+		Action_1_tAFC1040CDBAB2AC7903C8875C3E652A9092D095F* L_2 = L_1;
+		if (L_2)
+		{
+			G_B2_0 = L_2;
+			goto IL_0012;
+		}
+		G_B1_0 = L_2;
+	}
+	{
+		return;
+	}
+
+IL_0012:
+	{
+		int32_t L_3 = ___0_stage;
+		NullCheck(G_B2_0);
+		Action_1_Invoke_m32D3D79465D74BD413CB1E945630C1540539DD51_inline(G_B2_0, L_3, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:67>
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 130784
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSessionController__ctor_mF96ADD93C4CDFAF306FB9088737B6BDDE477F7B5 (IdleMiningSessionController_tDBF223858E8DC3FECBE0E30EBB4B3CD884FFCEEE* __this, MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* ___0_mining, DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* ___1_drone, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:18>
+		Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2(__this, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:20>
+		MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_0 = ___0_mining;
+		__this->____mining = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____mining), (void*)L_0);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:21>
+		DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* L_1 = ___1_drone;
+		__this->____drone = L_1;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____drone), (void*)L_1);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:22>
+		return;
+	}
+}
+// Method Definition Index: 130785
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSessionController_Start_m4603BBC6D8A7F733BD184F3985D86BEA47D4FE95 (IdleMiningSessionController_tDBF223858E8DC3FECBE0E30EBB4B3CD884FFCEEE* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Action_1_t16777F1C5C2E1F6A8AD4BE6559F7B85BBB810244_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&EventBus_Subscribe_TisAsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70_m3AD23EE7EABD7E68D1EF861D36BBA564C85B0FCD_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&EventBus_tD995B8977DB6D299BE8C38F5E222C99EE6EA8B11_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IdleMiningSessionController_OnAsteroidSelected_m2233AB1A586F6D6B3A6BB60FEF596F649AA5EC33_RuntimeMethod_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:24>
+		Action_1_t16777F1C5C2E1F6A8AD4BE6559F7B85BBB810244* L_0 = (Action_1_t16777F1C5C2E1F6A8AD4BE6559F7B85BBB810244*)il2cpp_codegen_object_new(Action_1_t16777F1C5C2E1F6A8AD4BE6559F7B85BBB810244_il2cpp_TypeInfo_var);
+		Action_1__ctor_m63E21C83CAEEE7C7548456D2E04B8F72AE345BEB(L_0, __this, (intptr_t)((void*)IdleMiningSessionController_OnAsteroidSelected_m2233AB1A586F6D6B3A6BB60FEF596F649AA5EC33_RuntimeMethod_var), NULL);
+		il2cpp_codegen_runtime_class_init_inline(EventBus_tD995B8977DB6D299BE8C38F5E222C99EE6EA8B11_il2cpp_TypeInfo_var);
+		EventBus_Subscribe_TisAsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70_m3AD23EE7EABD7E68D1EF861D36BBA564C85B0FCD(L_0, EventBus_Subscribe_TisAsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70_m3AD23EE7EABD7E68D1EF861D36BBA564C85B0FCD_RuntimeMethod_var);
+		return;
+	}
+}
+// Method Definition Index: 130786
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSessionController_Dispose_m0C5A00231C0C6E9493F17AB9F733D21045249CB8 (IdleMiningSessionController_tDBF223858E8DC3FECBE0E30EBB4B3CD884FFCEEE* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Action_1_t16777F1C5C2E1F6A8AD4BE6559F7B85BBB810244_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&EventBus_Unsubscribe_TisAsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70_mBB4375B7F2E0F57906C3FEE17D0FCBDD4B2F8CCD_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&EventBus_tD995B8977DB6D299BE8C38F5E222C99EE6EA8B11_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IdleMiningSessionController_OnAsteroidSelected_m2233AB1A586F6D6B3A6BB60FEF596F649AA5EC33_RuntimeMethod_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:28>
+		Action_1_t16777F1C5C2E1F6A8AD4BE6559F7B85BBB810244* L_0 = (Action_1_t16777F1C5C2E1F6A8AD4BE6559F7B85BBB810244*)il2cpp_codegen_object_new(Action_1_t16777F1C5C2E1F6A8AD4BE6559F7B85BBB810244_il2cpp_TypeInfo_var);
+		Action_1__ctor_m63E21C83CAEEE7C7548456D2E04B8F72AE345BEB(L_0, __this, (intptr_t)((void*)IdleMiningSessionController_OnAsteroidSelected_m2233AB1A586F6D6B3A6BB60FEF596F649AA5EC33_RuntimeMethod_var), NULL);
+		il2cpp_codegen_runtime_class_init_inline(EventBus_tD995B8977DB6D299BE8C38F5E222C99EE6EA8B11_il2cpp_TypeInfo_var);
+		EventBus_Unsubscribe_TisAsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70_mBB4375B7F2E0F57906C3FEE17D0FCBDD4B2F8CCD(L_0, EventBus_Unsubscribe_TisAsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70_mBB4375B7F2E0F57906C3FEE17D0FCBDD4B2F8CCD_RuntimeMethod_var);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:29>
+		IdleMiningSessionController_DespawnVfx_m4E044B9049A2BDD6E7CE10E86714FCEC3497D76D(__this, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:30>
+		return;
+	}
+}
+// Method Definition Index: 130787
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSessionController_Tick_m77DC8ED46AA942CBF38FA9D82B8F24E1B419CEFD (IdleMiningSessionController_tDBF223858E8DC3FECBE0E30EBB4B3CD884FFCEEE* __this, const RuntimeMethod* method) 
+{
+	IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* V_0 = NULL;
+	int32_t V_1 = 0;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:34>
+		MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_0 = __this->____mining;
+		NullCheck(L_0);
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_1;
+		L_1 = MiningController_get_CurrentIdleSession_m9DCDD0E6C3A9073CBE660CB651E14F9CC20D64EF_inline(L_0, NULL);
+		V_0 = L_1;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:36>
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_2 = V_0;
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_3 = __this->____trackedSession;
+		if ((((RuntimeObject*)(IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149*)L_2) == ((RuntimeObject*)(IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149*)L_3)))
+		{
+			goto IL_0048;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:38>
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_4 = V_0;
+		__this->____trackedSession = L_4;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____trackedSession), (void*)L_4);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:39>
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_5 = V_0;
+		if (!L_5)
+		{
+			goto IL_0037;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:41>
+		DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* L_6 = __this->____drone;
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_7 = V_0;
+		NullCheck(L_7);
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_8;
+		L_8 = IdleMiningSession_get_Asteroid_mF059A51CA217E34F32F4009D308982A63BCFDEB9_inline(L_7, NULL);
+		NullCheck(L_8);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_9;
+		L_9 = Component_get_transform_m2919A1D81931E6932C7F06D4C2F0AB8DDA9A5371(L_8, NULL);
+		NullCheck(L_6);
+		DroneController_SetTarget_mC964139AABA8347EFC29EB47DAB843D9B564C13A(L_6, L_9, NULL);
+		goto IL_0048;
+	}
+
+IL_0037:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:45>
+		IdleMiningSessionController_DespawnVfx_m4E044B9049A2BDD6E7CE10E86714FCEC3497D76D(__this, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:46>
+		DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* L_10 = __this->____drone;
+		NullCheck(L_10);
+		DroneController_ReturnToBase_m3D10BEC31F48E3BDA5C471405C6FA3D7CB4BE7BD(L_10, NULL);
+	}
+
+IL_0048:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:50>
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_11 = V_0;
+		if (L_11)
+		{
+			goto IL_004c;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:50>
+		return;
+	}
+
+IL_004c:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:52>
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_12 = V_0;
+		NullCheck(L_12);
+		int32_t L_13;
+		L_13 = IdleMiningSession_get_Stage_m547A9299CDCBC46129B15218DE70B358A7457312_inline(L_12, NULL);
+		V_1 = L_13;
+		int32_t L_14 = V_1;
+		if (!L_14)
+		{
+			goto IL_005b;
+		}
+	}
+	{
+		int32_t L_15 = V_1;
+		if ((((int32_t)L_15) == ((int32_t)1)))
+		{
+			goto IL_007a;
+		}
+	}
+	{
+		return;
+	}
+
+IL_005b:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:55>
+		DroneController_t12B20B667B567DC414CA41BFA98C952E817A0828* L_16 = __this->____drone;
+		NullCheck(L_16);
+		bool L_17;
+		L_17 = DroneController_get_IsAtTarget_m8208018018A04BF515CEAD4E7A3722976174A8AF(L_16, NULL);
+		if (!L_17)
+		{
+			goto IL_0099;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:57>
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_18 = V_0;
+		NullCheck(L_18);
+		IdleMiningSession_BeginMining_m8453F6ABE25CDB2F584E035BA725333B69368B84(L_18, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:59>
+		MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_19 = __this->____mining;
+		NullCheck(L_19);
+		MiningController_NotifyIdleSessionStageChanged_m00A44A05A41B45E61186625D8F80BB889E9D8D81(L_19, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:61>
+		return;
+	}
+
+IL_007a:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:64>
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_20 = V_0;
+		float L_21;
+		L_21 = Time_get_deltaTime_mC3195000401F0FD167DD2F948FD2BC58330D0865(NULL);
+		NullCheck(L_20);
+		IdleMiningSession_Tick_m606C26A7265DA0AFB25CA996263FFE71672ABDBC(L_20, L_21, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:65>
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_22 = V_0;
+		NullCheck(L_22);
+		int32_t L_23;
+		L_23 = IdleMiningSession_get_Stage_m547A9299CDCBC46129B15218DE70B358A7457312_inline(L_22, NULL);
+		if ((!(((uint32_t)L_23) == ((uint32_t)2))))
+		{
+			goto IL_0099;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:68>
+		MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_24 = __this->____mining;
+		NullCheck(L_24);
+		MiningController_NotifyIdleSessionStageChanged_m00A44A05A41B45E61186625D8F80BB889E9D8D81(L_24, NULL);
+	}
+
+IL_0099:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:72>
+		return;
+	}
+}
+// Method Definition Index: 130788
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSessionController_OnAsteroidSelected_m2233AB1A586F6D6B3A6BB60FEF596F649AA5EC33 (IdleMiningSessionController_tDBF223858E8DC3FECBE0E30EBB4B3CD884FFCEEE* __this, AsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70* ___0_e, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* V_0 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:76>
+		MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_0 = __this->____mining;
+		NullCheck(L_0);
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_1;
+		L_1 = MiningController_get_CurrentIdleSession_m9DCDD0E6C3A9073CBE660CB651E14F9CC20D64EF_inline(L_0, NULL);
+		V_0 = L_1;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:77>
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_2 = V_0;
+		if (!L_2)
+		{
+			goto IL_003d;
+		}
+	}
+	{
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_3 = V_0;
+		NullCheck(L_3);
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_4;
+		L_4 = IdleMiningSession_get_Asteroid_mF059A51CA217E34F32F4009D308982A63BCFDEB9_inline(L_3, NULL);
+		AsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70* L_5 = ___0_e;
+		NullCheck(L_5);
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_6 = L_5->___Asteroid;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_7;
+		L_7 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_4, L_6, NULL);
+		if (!L_7)
+		{
+			goto IL_003d;
+		}
+	}
+	{
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_8 = V_0;
+		NullCheck(L_8);
+		int32_t L_9;
+		L_9 = IdleMiningSession_get_Stage_m547A9299CDCBC46129B15218DE70B358A7457312_inline(L_8, NULL);
+		if ((!(((uint32_t)L_9) == ((uint32_t)2))))
+		{
+			goto IL_003d;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:78>
+		MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_10 = __this->____mining;
+		AsteroidSelectedEvent_t2C81CE32BC6A275AB99A6D4F7D41BCCE7599AC70* L_11 = ___0_e;
+		NullCheck(L_11);
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_12 = L_11->___Asteroid;
+		NullCheck(L_10);
+		Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* L_13;
+		L_13 = MiningController_RegisterIdleClaimTapAsync_m921E3A35DEB4703FD29DAB8CEC4EA0A5345BF89A(L_10, L_12, NULL);
+	}
+
+IL_003d:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:79>
+		return;
+	}
+}
+// Method Definition Index: 130789
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSessionController_SpawnVfx_m92D05C8F40A1DFD8CA0C0BBD60709C2B06EAA23A (IdleMiningSessionController_tDBF223858E8DC3FECBE0E30EBB4B3CD884FFCEEE* __this, Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ___0_target, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Component_GetComponent_TisParticleSystemRenderer_t576C271A363A738A6C576D4C6AEFB3B5B23E46C4_mDB29DD32DF46B9659262256BDBD5B4F1BB805023_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&GameObject_AddComponent_TisParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1_mB314D473090ABA262973402E33A61D8017704EA8_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&GameObject_t76FEDD663AB33C991A9C9A23129337651094216F_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral49425CF51EF67FBFD8AA098A16B840096305BF92);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral5CDEEA8CC8D2CFD479160A5D5B6EB534C4E8DD8C);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral975A5F46FC6E6D8BC7943A3A38CEA489C122E4F1);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteralF85263F579BDEEADCEC89CFCDB0C3F6C51D186BF);
+		s_Il2CppMethodInitialized = true;
+	}
+	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* V_0 = NULL;
+	MainModule_tC7ECD8330C14B0808478A748048988A6085CE2A9 V_1;
+	memset((&V_1), 0, sizeof(V_1));
+	EmissionModule_t0F469FA4A08003F6D9C610D2F716A9DFDB9A3678 V_2;
+	memset((&V_2), 0, sizeof(V_2));
+	ShapeModule_tAA38A0C5305DF2F9D96F89D4B8F762E2D034D8B2 V_3;
+	memset((&V_3), 0, sizeof(V_3));
+	ParticleSystemRenderer_t576C271A363A738A6C576D4C6AEFB3B5B23E46C4* V_4 = NULL;
+	Shader_tADC867D36B7876EE22427FAA2CE485105F4EE692* V_5 = NULL;
+	Shader_tADC867D36B7876EE22427FAA2CE485105F4EE692* G_B3_0 = NULL;
+	Shader_tADC867D36B7876EE22427FAA2CE485105F4EE692* G_B1_0 = NULL;
+	Shader_tADC867D36B7876EE22427FAA2CE485105F4EE692* G_B2_0 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:83>
+		IdleMiningSessionController_DespawnVfx_m4E044B9049A2BDD6E7CE10E86714FCEC3497D76D(__this, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:85>
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_0 = (GameObject_t76FEDD663AB33C991A9C9A23129337651094216F*)il2cpp_codegen_object_new(GameObject_t76FEDD663AB33C991A9C9A23129337651094216F_il2cpp_TypeInfo_var);
+		GameObject__ctor_m37D512B05D292F954792225E6C6EEE95293A9B88(L_0, _stringLiteral5CDEEA8CC8D2CFD479160A5D5B6EB534C4E8DD8C, NULL);
+		V_0 = L_0;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:86>
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_1 = V_0;
+		NullCheck(L_1);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_2;
+		L_2 = GameObject_get_transform_m0BC10ADFA1632166AE5544BDF9038A2650C2AE56(L_1, NULL);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_3 = ___0_target;
+		NullCheck(L_2);
+		Transform_SetParent_m9BDD7B7476714B2D7919B10BDC22CE75C0A0A195(L_2, L_3, (bool)0, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:87>
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_4 = V_0;
+		NullCheck(L_4);
+		Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* L_5;
+		L_5 = GameObject_get_transform_m0BC10ADFA1632166AE5544BDF9038A2650C2AE56(L_4, NULL);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_6;
+		L_6 = Vector3_get_zero_m0C1249C3F25B1C70EAD3CC8B31259975A457AE39_inline(NULL);
+		NullCheck(L_5);
+		Transform_set_localPosition_mDE1C997F7D79C0885210B7732B4BA50EE7D73134(L_5, L_6, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:89>
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_7 = V_0;
+		NullCheck(L_7);
+		ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* L_8;
+		L_8 = GameObject_AddComponent_TisParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1_mB314D473090ABA262973402E33A61D8017704EA8(L_7, GameObject_AddComponent_TisParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1_mB314D473090ABA262973402E33A61D8017704EA8_RuntimeMethod_var);
+		__this->____vfx = L_8;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____vfx), (void*)L_8);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:91>
+		ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* L_9 = __this->____vfx;
+		NullCheck(L_9);
+		MainModule_tC7ECD8330C14B0808478A748048988A6085CE2A9 L_10;
+		L_10 = ParticleSystem_get_main_mD86DFCD96150E2CE760CD2F37052BB3BCA33C189(L_9, NULL);
+		V_1 = L_10;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:92>
+		MinMaxCurve_t812D571297EED6498776CC58949A42B172E60E23 L_11;
+		L_11 = MinMaxCurve_op_Implicit_m133028E91CF2F823F5E20F6B19A3332A02404086((0.600000024f), NULL);
+		MainModule_set_startLifetime_mDFC2433853CB12C0C93C8BF16FEDB4EA2E0B3514((&V_1), L_11, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:93>
+		MinMaxCurve_t812D571297EED6498776CC58949A42B172E60E23 L_12;
+		L_12 = MinMaxCurve_op_Implicit_m133028E91CF2F823F5E20F6B19A3332A02404086((1.20000005f), NULL);
+		MainModule_set_startSpeed_mE6041E4BA54F01117AF6B81B1E53C5C9C669AC75((&V_1), L_12, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:94>
+		MinMaxCurve_t812D571297EED6498776CC58949A42B172E60E23 L_13;
+		L_13 = MinMaxCurve_op_Implicit_m133028E91CF2F823F5E20F6B19A3332A02404086((0.0799999982f), NULL);
+		MainModule_set_startSize_m44C3A39EAF1AE9A526A126D93160128223BE827B((&V_1), L_13, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:95>
+		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_14;
+		memset((&L_14), 0, sizeof(L_14));
+		Color__ctor_mCD6889CDE39F18704CD6EA8E2EFBFA48BA3E13B0_inline((&L_14), (1.0f), (0.649999976f), (0.200000003f), NULL);
+		MinMaxGradient_tFF31B8EC2855D0074AB86E8B37BEA6609070AC69 L_15;
+		L_15 = MinMaxGradient_op_Implicit_mAA6154D6644E72BBA49EB34DC957538EE929DE02(L_14, NULL);
+		MainModule_set_startColor_m504911284CAC53A7C1B97B5D01BBDD2FA67D0E7A((&V_1), L_15, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:96>
+		MainModule_set_maxParticles_mF9E7A56D7E1A528904BE1A8C0E14F15C3AF0F748((&V_1), ((int32_t)60), NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:98>
+		ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* L_16 = __this->____vfx;
+		NullCheck(L_16);
+		EmissionModule_t0F469FA4A08003F6D9C610D2F716A9DFDB9A3678 L_17;
+		L_17 = ParticleSystem_get_emission_mD9402CE632A3607DA0B0486F9F58F7FB2B44CF08(L_16, NULL);
+		V_2 = L_17;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:99>
+		MinMaxCurve_t812D571297EED6498776CC58949A42B172E60E23 L_18;
+		L_18 = MinMaxCurve_op_Implicit_m133028E91CF2F823F5E20F6B19A3332A02404086((25.0f), NULL);
+		EmissionModule_set_rateOverTime_m71BF3C0A80EA572CD87EFF5944E8FA680F51DC20((&V_2), L_18, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:101>
+		ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* L_19 = __this->____vfx;
+		NullCheck(L_19);
+		ShapeModule_tAA38A0C5305DF2F9D96F89D4B8F762E2D034D8B2 L_20;
+		L_20 = ParticleSystem_get_shape_mD7F072CC18587858138AA7B3A882995493AA7C80(L_19, NULL);
+		V_3 = L_20;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:102>
+		ShapeModule_set_shapeType_m4B5D1EA91037AD7065FE1D23652D919FED4D6D7F((&V_3), 0, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:103>
+		ShapeModule_set_radius_m37F79E13EB60FA39EAE36B49DAC4AC880416E89C((&V_3), (0.600000024f), NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:105>
+		ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* L_21 = __this->____vfx;
+		NullCheck(L_21);
+		ParticleSystemRenderer_t576C271A363A738A6C576D4C6AEFB3B5B23E46C4* L_22;
+		L_22 = Component_GetComponent_TisParticleSystemRenderer_t576C271A363A738A6C576D4C6AEFB3B5B23E46C4_mDB29DD32DF46B9659262256BDBD5B4F1BB805023(L_21, Component_GetComponent_TisParticleSystemRenderer_t576C271A363A738A6C576D4C6AEFB3B5B23E46C4_mDB29DD32DF46B9659262256BDBD5B4F1BB805023_RuntimeMethod_var);
+		V_4 = L_22;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:106>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:107>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:108>
+		Shader_tADC867D36B7876EE22427FAA2CE485105F4EE692* L_23;
+		L_23 = Shader_Find_m183AA54F78320212DDEC811592F98456898A41C5(_stringLiteral49425CF51EF67FBFD8AA098A16B840096305BF92, NULL);
+		Shader_tADC867D36B7876EE22427FAA2CE485105F4EE692* L_24 = L_23;
+		if (L_24)
+		{
+			G_B3_0 = L_24;
+			goto IL_0112;
+		}
+		G_B1_0 = L_24;
+	}
+	{
+		Shader_tADC867D36B7876EE22427FAA2CE485105F4EE692* L_25;
+		L_25 = Shader_Find_m183AA54F78320212DDEC811592F98456898A41C5(_stringLiteralF85263F579BDEEADCEC89CFCDB0C3F6C51D186BF, NULL);
+		Shader_tADC867D36B7876EE22427FAA2CE485105F4EE692* L_26 = L_25;
+		if (L_26)
+		{
+			G_B3_0 = L_26;
+			goto IL_0112;
+		}
+		G_B2_0 = L_26;
+	}
+	{
+		Shader_tADC867D36B7876EE22427FAA2CE485105F4EE692* L_27;
+		L_27 = Shader_Find_m183AA54F78320212DDEC811592F98456898A41C5(_stringLiteral975A5F46FC6E6D8BC7943A3A38CEA489C122E4F1, NULL);
+		G_B3_0 = L_27;
+	}
+
+IL_0112:
+	{
+		V_5 = G_B3_0;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:109>
+		Shader_tADC867D36B7876EE22427FAA2CE485105F4EE692* L_28 = V_5;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_29;
+		L_29 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_28, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_29)
+		{
+			goto IL_012c;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:110>
+		ParticleSystemRenderer_t576C271A363A738A6C576D4C6AEFB3B5B23E46C4* L_30 = V_4;
+		Shader_tADC867D36B7876EE22427FAA2CE485105F4EE692* L_31 = V_5;
+		Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3* L_32 = (Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3*)il2cpp_codegen_object_new(Material_t18053F08F347D0DCA5E1140EC7EC4533DD8A14E3_il2cpp_TypeInfo_var);
+		Material__ctor_m7FDF47105D66D19591BE505A0C42B0F90D88C9BF(L_32, L_31, NULL);
+		NullCheck(L_30);
+		Renderer_set_material_m21E88977071E0A914D62F3D9CFF0193B3117C45A(L_30, L_32, NULL);
+	}
+
+IL_012c:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:112>
+		ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* L_33 = __this->____vfx;
+		NullCheck(L_33);
+		ParticleSystem_Play_mD943E601BFE16CB9BB5D1F5E6AED5C36F5F11EF5(L_33, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:113>
+		return;
+	}
+}
+// Method Definition Index: 130790
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void IdleMiningSessionController_DespawnVfx_m4E044B9049A2BDD6E7CE10E86714FCEC3497D76D (IdleMiningSessionController_tDBF223858E8DC3FECBE0E30EBB4B3CD884FFCEEE* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:117>
+		ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* L_0 = __this->____vfx;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_1;
+		L_1 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_1)
+		{
+			goto IL_000f;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:117>
+		return;
+	}
+
+IL_000f:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:118>
+		ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1* L_2 = __this->____vfx;
+		NullCheck(L_2);
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_3;
+		L_3 = Component_get_gameObject_m57AEFBB14DB39EC476F740BA000E170355DE691B(L_2, NULL);
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		Object_Destroy_mE97D0A766419A81296E8D4E5C23D01D3FE91ACBB(L_3, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:119>
+		__this->____vfx = (ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____vfx), (void*)(ParticleSystem_tB19986EE308BD63D36FB6025EEEAFBEDB97C67C1*)NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs:120>
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 130791
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t MiningController_get_Phase_m6C23A4972433CE18F4A948BF37757C59EE2D35F2 (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:20>
+		int32_t L_0 = __this->___U3CPhaseU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 130792
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningController_set_Phase_mF0A188AEF665BA9F6FF76C2188E6CE22F4CFD591 (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, int32_t ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:20>
+		int32_t L_0 = ___0_value;
+		__this->___U3CPhaseU3Ek__BackingField = L_0;
+		return;
+	}
+}
+// Method Definition Index: 130793
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* MiningController_get_Drone_mCC5FEDE0CDCA9B6A307E71E7E3C8DDF5E35843F8 (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:21>
+		DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* L_0 = __this->___U3CDroneU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 130794
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningController_set_Drone_m1CBB4F68183C623A35881D9DAC3EE1A799AE3058 (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:21>
+		DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* L_0 = ___0_value;
+		__this->___U3CDroneU3Ek__BackingField = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CDroneU3Ek__BackingField), (void*)L_0);
+		return;
+	}
+}
+// Method Definition Index: 130795
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* MiningController_get_CurrentTarget_m575E661CF18C8C808BD1715E112DBF512CA7C320 (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:22>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_0 = __this->___U3CCurrentTargetU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 130796
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningController_set_CurrentTarget_m041D4A66BB466BBDDB24B2CC18270093E181ABEF (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:22>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_0 = ___0_value;
+		__this->___U3CCurrentTargetU3Ek__BackingField = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CCurrentTargetU3Ek__BackingField), (void*)L_0);
+		return;
+	}
+}
+// Method Definition Index: 130797
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* MiningController_get_CurrentIdleSession_m9DCDD0E6C3A9073CBE660CB651E14F9CC20D64EF (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:24>
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_0 = __this->___U3CCurrentIdleSessionU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 130798
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningController_set_CurrentIdleSession_m03C3E70F8CA7DBF9209CD9194EAC707681828544 (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:24>
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_0 = ___0_value;
+		__this->___U3CCurrentIdleSessionU3Ek__BackingField = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CCurrentIdleSessionU3Ek__BackingField), (void*)L_0);
+		return;
+	}
+}
+// Method Definition Index: 130799
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* MiningController_get_ClaimingAsteroid_mF4F7C0B803943B549B91AF3BC9A6FFE4610BD315 (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:25>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_0 = __this->___U3CClaimingAsteroidU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 130800
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningController_set_ClaimingAsteroid_m9A07BEE3597629C0C3FCC42C0B42970D1D6A0222 (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:25>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_0 = ___0_value;
+		__this->___U3CClaimingAsteroidU3Ek__BackingField = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CClaimingAsteroidU3Ek__BackingField), (void*)L_0);
+		return;
+	}
+}
+// Method Definition Index: 130801
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningController_add_OnPhaseChanged_m580B033DF630078566B82D2FD0AF1A37F6EF1C3D (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* ___0_value, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* V_0 = NULL;
+	Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* V_1 = NULL;
+	Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* V_2 = NULL;
+	{
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* L_0 = __this->___OnPhaseChanged;
+		V_0 = L_0;
+	}
+
+IL_0007:
+	{
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* L_1 = V_0;
+		V_1 = L_1;
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* L_2 = V_1;
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* L_3 = ___0_value;
+		Delegate_t* L_4;
+		L_4 = Delegate_Combine_m1F725AEF318BE6F0426863490691A6F4606E7D00(L_2, L_3, NULL);
+		V_2 = ((Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC*)Castclass((RuntimeObject*)L_4, Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC_il2cpp_TypeInfo_var));
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC** L_5 = (Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC**)(&__this->___OnPhaseChanged);
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* L_6 = V_2;
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* L_7 = V_1;
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* L_8;
+		L_8 = InterlockedCompareExchangeImpl<Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC*>(L_5, L_6, L_7);
+		V_0 = L_8;
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* L_9 = V_0;
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* L_10 = V_1;
+		if ((!(((RuntimeObject*)(Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC*)L_9) == ((RuntimeObject*)(Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC*)L_10))))
+		{
+			goto IL_0007;
+		}
+	}
+	{
+		return;
+	}
+}
+// Method Definition Index: 130802
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningController_remove_OnPhaseChanged_m95258178BFDE68BF859EE202E6CC70FF668AD6AA (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* ___0_value, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* V_0 = NULL;
+	Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* V_1 = NULL;
+	Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* V_2 = NULL;
+	{
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* L_0 = __this->___OnPhaseChanged;
+		V_0 = L_0;
+	}
+
+IL_0007:
+	{
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* L_1 = V_0;
+		V_1 = L_1;
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* L_2 = V_1;
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* L_3 = ___0_value;
+		Delegate_t* L_4;
+		L_4 = Delegate_Remove_m8B7DD5661308FA972E23CA1CC3FC9CEB355504E3(L_2, L_3, NULL);
+		V_2 = ((Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC*)Castclass((RuntimeObject*)L_4, Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC_il2cpp_TypeInfo_var));
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC** L_5 = (Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC**)(&__this->___OnPhaseChanged);
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* L_6 = V_2;
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* L_7 = V_1;
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* L_8;
+		L_8 = InterlockedCompareExchangeImpl<Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC*>(L_5, L_6, L_7);
+		V_0 = L_8;
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* L_9 = V_0;
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* L_10 = V_1;
+		if ((!(((RuntimeObject*)(Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC*)L_9) == ((RuntimeObject*)(Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC*)L_10))))
+		{
+			goto IL_0007;
+		}
+	}
+	{
+		return;
+	}
+}
+// Method Definition Index: 130803
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningController_add_OnIdleSessionChanged_m919AF5AD150813B47663D66D5EFA23983F5CA344 (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* ___0_value, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* V_0 = NULL;
+	Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* V_1 = NULL;
+	Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* V_2 = NULL;
+	{
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_0 = __this->___OnIdleSessionChanged;
+		V_0 = L_0;
+	}
+
+IL_0007:
+	{
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_1 = V_0;
+		V_1 = L_1;
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_2 = V_1;
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_3 = ___0_value;
+		Delegate_t* L_4;
+		L_4 = Delegate_Combine_m1F725AEF318BE6F0426863490691A6F4606E7D00(L_2, L_3, NULL);
+		V_2 = ((Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA*)Castclass((RuntimeObject*)L_4, Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA_il2cpp_TypeInfo_var));
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA** L_5 = (Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA**)(&__this->___OnIdleSessionChanged);
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_6 = V_2;
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_7 = V_1;
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_8;
+		L_8 = InterlockedCompareExchangeImpl<Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA*>(L_5, L_6, L_7);
+		V_0 = L_8;
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_9 = V_0;
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_10 = V_1;
+		if ((!(((RuntimeObject*)(Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA*)L_9) == ((RuntimeObject*)(Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA*)L_10))))
+		{
+			goto IL_0007;
+		}
+	}
+	{
+		return;
+	}
+}
+// Method Definition Index: 130804
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningController_remove_OnIdleSessionChanged_m4C0B843A22DB18FA9BA61F56D42579AB40E6D7BD (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* ___0_value, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* V_0 = NULL;
+	Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* V_1 = NULL;
+	Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* V_2 = NULL;
+	{
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_0 = __this->___OnIdleSessionChanged;
+		V_0 = L_0;
+	}
+
+IL_0007:
+	{
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_1 = V_0;
+		V_1 = L_1;
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_2 = V_1;
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_3 = ___0_value;
+		Delegate_t* L_4;
+		L_4 = Delegate_Remove_m8B7DD5661308FA972E23CA1CC3FC9CEB355504E3(L_2, L_3, NULL);
+		V_2 = ((Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA*)Castclass((RuntimeObject*)L_4, Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA_il2cpp_TypeInfo_var));
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA** L_5 = (Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA**)(&__this->___OnIdleSessionChanged);
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_6 = V_2;
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_7 = V_1;
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_8;
+		L_8 = InterlockedCompareExchangeImpl<Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA*>(L_5, L_6, L_7);
+		V_0 = L_8;
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_9 = V_0;
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_10 = V_1;
+		if ((!(((RuntimeObject*)(Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA*)L_9) == ((RuntimeObject*)(Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA*)L_10))))
+		{
+			goto IL_0007;
+		}
+	}
+	{
+		return;
+	}
+}
+// Method Definition Index: 130805
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningController__ctor_m330BEA8E58E9BFD172AA9EFC4412749872DF5996 (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, RuntimeObject* ___0_economy, IdleMiningCalculator_t942A246A242064927872B44C78D414479ACC2F05* ___1_idleCalc, ActiveMiningMinigame_t56A84BE8A5799A6935966B35EB277CDC5A039299* ___2_minigame, AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* ___3_spawner, EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* ___4_config, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:30>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:31>
+		Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2(__this, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:33>
+		RuntimeObject* L_0 = ___0_economy;
+		__this->____economy = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____economy), (void*)L_0);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:34>
+		IdleMiningCalculator_t942A246A242064927872B44C78D414479ACC2F05* L_1 = ___1_idleCalc;
+		__this->____idleCalc = L_1;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____idleCalc), (void*)L_1);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:35>
+		ActiveMiningMinigame_t56A84BE8A5799A6935966B35EB277CDC5A039299* L_2 = ___2_minigame;
+		__this->____minigame = L_2;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____minigame), (void*)L_2);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:36>
+		AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* L_3 = ___3_spawner;
+		__this->____spawner = L_3;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____spawner), (void*)L_3);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:37>
+		EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* L_4 = ___4_config;
+		__this->____config = L_4;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____config), (void*)L_4);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:38>
+		return;
+	}
+}
+// Method Definition Index: 130806
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningController_StartSession_mBD19733FECB775614B109543E56EE304D302D36A (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* ___0_drone, DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D ___1_lastSessionEnd, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteralA5A0421C0622C7F4A8208623A0F2673A1021B874);
+		s_Il2CppMethodInitialized = true;
+	}
+	int32_t V_0 = 0;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:42>
+		DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* L_0 = ___0_drone;
+		MiningController_set_Drone_m1CBB4F68183C623A35881D9DAC3EE1A799AE3058_inline(__this, L_0, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:44>
+		IdleMiningCalculator_t942A246A242064927872B44C78D414479ACC2F05* L_1 = __this->____idleCalc;
+		DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D L_2 = ___1_lastSessionEnd;
+		DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* L_3 = ___0_drone;
+		NullCheck(L_1);
+		int32_t L_4;
+		L_4 = IdleMiningCalculator_Calculate_mED3CA18A383E3E6D2AD26333B8C6678635EFFA2A(L_1, L_2, L_3, NULL);
+		V_0 = L_4;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:45>
+		int32_t L_5 = V_0;
+		if ((((int32_t)L_5) <= ((int32_t)0)))
+		{
+			goto IL_0040;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:47>
+		DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* L_6 = ___0_drone;
+		int32_t L_7 = V_0;
+		NullCheck(L_6);
+		int32_t L_8;
+		L_8 = DroneRuntime_AddCargo_m59F367284CC714BFDD2747E964E97BD733DF4F37(L_6, L_7, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:48>
+		int32_t L_9 = V_0;
+		int32_t L_10 = L_9;
+		RuntimeObject* L_11 = Box(il2cpp_defaults.int32_class, &L_10);
+		String_t* L_12;
+		L_12 = String_Format_mA8DBB4C2516B9723C5A41E6CB1E2FAF4BBE96DD8(_stringLiteralA5A0421C0622C7F4A8208623A0F2673A1021B874, L_11, NULL);
+		il2cpp_codegen_runtime_class_init_inline(SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		SULog_Info_m4F0F76BC192792291ABFF31712DB6F83FD36C8D9(L_12, ((int32_t)16), NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:49>
+		Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* L_13;
+		L_13 = MiningController_CommitCargoAsync_m0285DAD0EB1FF9C1C0612A752E4AEBCCFF93CD97(__this, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:50>
+		return;
+	}
+
+IL_0040:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:53>
+		MiningController_PickNextTarget_mD013AFE53D919B3BCB68B4E9C067434663F58062(__this, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:54>
+		MiningController_SetPhase_m8728387A6A802E1F094717378E76D7435E3C14DC(__this, 1, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:55>
+		return;
+	}
+}
+// Method Definition Index: 130807
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* MiningController_Tap_m010763480980E057059A32E4E9138540A8340A37 (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* G_B5_0 = NULL;
+	MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* G_B3_0 = NULL;
+	MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* G_B4_0 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:59>
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_0;
+		L_0 = MiningController_get_CurrentIdleSession_m9DCDD0E6C3A9073CBE660CB651E14F9CC20D64EF_inline(__this, NULL);
+		if (!L_0)
+		{
+			goto IL_000a;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:59>
+		return (MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9*)NULL;
+	}
+
+IL_000a:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:61>
+		ActiveMiningMinigame_t56A84BE8A5799A6935966B35EB277CDC5A039299* L_1 = __this->____minigame;
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_2;
+		L_2 = MiningController_get_CurrentTarget_m575E661CF18C8C808BD1715E112DBF512CA7C320_inline(__this, NULL);
+		DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* L_3;
+		L_3 = MiningController_get_Drone_mCC5FEDE0CDCA9B6A307E71E7E3C8DDF5E35843F8_inline(__this, NULL);
+		NullCheck(L_1);
+		MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* L_4;
+		L_4 = ActiveMiningMinigame_Tap_m1AAE17FBB5CEC16ADFAD0F98B90EF2A3D09C0D0D(L_1, L_2, L_3, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:62>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_5;
+		L_5 = MiningController_get_CurrentTarget_m575E661CF18C8C808BD1715E112DBF512CA7C320_inline(__this, NULL);
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_6;
+		L_6 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_5, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_6)
+		{
+			G_B5_0 = L_4;
+			goto IL_0042;
+		}
+		G_B3_0 = L_4;
+	}
+	{
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_7;
+		L_7 = MiningController_get_CurrentTarget_m575E661CF18C8C808BD1715E112DBF512CA7C320_inline(__this, NULL);
+		NullCheck(L_7);
+		bool L_8;
+		L_8 = Asteroid_get_IsDepleted_m1ABBB3F673D0DB021949162990F4A731BE599CEA(L_7, NULL);
+		if (!L_8)
+		{
+			G_B5_0 = G_B3_0;
+			goto IL_0042;
+		}
+		G_B4_0 = G_B3_0;
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:63>
+		MiningController_PickNextTarget_mD013AFE53D919B3BCB68B4E9C067434663F58062(__this, NULL);
+		G_B5_0 = G_B4_0;
+	}
+
+IL_0042:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:64>
+		return G_B5_0;
+	}
+}
+// Method Definition Index: 130808
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool MiningController_BeginIdleMining_m45F1DCA71EF4B59C1CB0BFA0E2D7C5A9A75347B0 (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___0_asteroid, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral2B45324484DD1A737379F8ABBF8D0E19FDE53610);
+		s_Il2CppMethodInitialized = true;
+	}
+	Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* G_B6_0 = NULL;
+	Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* G_B5_0 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:70>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_0 = ___0_asteroid;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_1;
+		L_1 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_0, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (L_1)
+		{
+			goto IL_0019;
+		}
+	}
+	{
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_2 = ___0_asteroid;
+		NullCheck(L_2);
+		bool L_3;
+		L_3 = Asteroid_get_IsDepleted_m1ABBB3F673D0DB021949162990F4A731BE599CEA(L_2, NULL);
+		if (L_3)
+		{
+			goto IL_0019;
+		}
+	}
+	{
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_4;
+		L_4 = MiningController_get_CurrentIdleSession_m9DCDD0E6C3A9073CBE660CB651E14F9CC20D64EF_inline(__this, NULL);
+		if (!L_4)
+		{
+			goto IL_001b;
+		}
+	}
+
+IL_0019:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:71>
+		return (bool)0;
+	}
+
+IL_001b:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:73>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_5 = ___0_asteroid;
+		EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* L_6 = __this->____config;
+		NullCheck(L_6);
+		float L_7;
+		L_7 = EconomyConfig_get_IdleSessionDuration_m7577026567440F6DFA3AC706FD4FB8FA23765ABF_inline(L_6, NULL);
+		EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* L_8 = __this->____config;
+		NullCheck(L_8);
+		int32_t L_9;
+		L_9 = EconomyConfig_get_IdleSessionClaimTaps_mA16EC38BEC077D5D3117A149FCD56633A7BFBACD_inline(L_8, NULL);
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_10 = (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149*)il2cpp_codegen_object_new(IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149_il2cpp_TypeInfo_var);
+		IdleMiningSession__ctor_m5594563E9A7C16597487F6F918F5017642235439(L_10, L_5, L_7, L_9, NULL);
+		MiningController_set_CurrentIdleSession_m03C3E70F8CA7DBF9209CD9194EAC707681828544_inline(__this, L_10, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:74>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_11 = ___0_asteroid;
+		NullCheck(L_11);
+		String_t* L_12;
+		L_12 = Object_get_name_mAC2F6B897CF1303BA4249B4CB55271AFACBB6392(L_11, NULL);
+		String_t* L_13;
+		L_13 = String_Concat_m9E3155FB84015C823606188F53B47CB44C444991(_stringLiteral2B45324484DD1A737379F8ABBF8D0E19FDE53610, L_12, NULL);
+		il2cpp_codegen_runtime_class_init_inline(SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		SULog_Info_m4F0F76BC192792291ABFF31712DB6F83FD36C8D9(L_13, ((int32_t)16), NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:75>
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_14 = __this->___OnIdleSessionChanged;
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_15 = L_14;
+		if (L_15)
+		{
+			G_B6_0 = L_15;
+			goto IL_0060;
+		}
+		G_B5_0 = L_15;
+	}
+	{
+		goto IL_006b;
+	}
+
+IL_0060:
+	{
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_16;
+		L_16 = MiningController_get_CurrentIdleSession_m9DCDD0E6C3A9073CBE660CB651E14F9CC20D64EF_inline(__this, NULL);
+		NullCheck(G_B6_0);
+		Action_1_Invoke_m552CD7F56F7FE2EEBA456AE40D37D295E65E8A97_inline(G_B6_0, L_16, NULL);
+	}
+
+IL_006b:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:76>
+		return (bool)1;
+	}
+}
+// Method Definition Index: 130809
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningController_NotifyIdleSessionStageChanged_m00A44A05A41B45E61186625D8F80BB889E9D8D81 (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) 
+{
+	Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* G_B2_0 = NULL;
+	Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* G_B1_0 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:79>
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_0 = __this->___OnIdleSessionChanged;
+		Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_1 = L_0;
+		if (L_1)
+		{
+			G_B2_0 = L_1;
+			goto IL_000b;
+		}
+		G_B1_0 = L_1;
+	}
+	{
+		return;
+	}
+
+IL_000b:
+	{
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_2;
+		L_2 = MiningController_get_CurrentIdleSession_m9DCDD0E6C3A9073CBE660CB651E14F9CC20D64EF_inline(__this, NULL);
+		NullCheck(G_B2_0);
+		Action_1_Invoke_m552CD7F56F7FE2EEBA456AE40D37D295E65E8A97_inline(G_B2_0, L_2, NULL);
+		return;
+	}
+}
+// Method Definition Index: 130810
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* MiningController_RegisterIdleClaimTapAsync_m921E3A35DEB4703FD29DAB8CEC4EA0A5345BF89A (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___0_asteroid, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&AsyncTaskMethodBuilder_Start_TisU3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191_mE132AF1A8DAE9A1E7B958288198727FF7B652149_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	U3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191 V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	{
+		il2cpp_codegen_runtime_class_init_inline(AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06_il2cpp_TypeInfo_var);
+		AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06 L_0;
+		L_0 = AsyncTaskMethodBuilder_Create_m24F3F260A79CA2B9EC4F1F15693A33F5EC58735A(NULL);
+		(&V_0)->___U3CU3Et__builder = L_0;
+		Il2CppCodeGenWriteBarrier((void**)&((&((&(((&(&V_0)->___U3CU3Et__builder))->___m_builder))->___m_coreState))->___m_stateMachine), (void*)NULL);
+		#if IL2CPP_ENABLE_STRICT_WRITE_BARRIERS
+		Il2CppCodeGenWriteBarrier((void**)&((&((&(((&(&V_0)->___U3CU3Et__builder))->___m_builder))->___m_coreState))->___m_defaultContextAction), (void*)NULL);
+		#endif
+		#if IL2CPP_ENABLE_STRICT_WRITE_BARRIERS
+		Il2CppCodeGenWriteBarrier((void**)&((&(((&(&V_0)->___U3CU3Et__builder))->___m_builder))->___m_task), (void*)NULL);
+		#endif
+		(&V_0)->___U3CU3E4__this = __this;
+		Il2CppCodeGenWriteBarrier((void**)(&(&V_0)->___U3CU3E4__this), (void*)__this);
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_1 = ___0_asteroid;
+		(&V_0)->___asteroid = L_1;
+		Il2CppCodeGenWriteBarrier((void**)(&(&V_0)->___asteroid), (void*)L_1);
+		(&V_0)->___U3CU3E1__state = (-1);
+		AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* L_2 = (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06*)(&(&V_0)->___U3CU3Et__builder);
+		AsyncTaskMethodBuilder_Start_TisU3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191_mE132AF1A8DAE9A1E7B958288198727FF7B652149(L_2, (&V_0), AsyncTaskMethodBuilder_Start_TisU3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191_mE132AF1A8DAE9A1E7B958288198727FF7B652149_RuntimeMethod_var);
+		AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* L_3 = (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06*)(&(&V_0)->___U3CU3Et__builder);
+		Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* L_4;
+		L_4 = AsyncTaskMethodBuilder_get_Task_mE9125D5F8B96F26D1BA5A5347ED82669521C7F9E(L_3, NULL);
+		return L_4;
+	}
+}
+// Method Definition Index: 130811
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* MiningController_CommitCargoAsync_m0285DAD0EB1FF9C1C0612A752E4AEBCCFF93CD97 (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&AsyncTaskMethodBuilder_Start_TisU3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3_m50FBB105BF1B6902FC1DB5659BF19AF1B2CA05AB_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	U3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3 V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	{
+		il2cpp_codegen_runtime_class_init_inline(AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06_il2cpp_TypeInfo_var);
+		AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06 L_0;
+		L_0 = AsyncTaskMethodBuilder_Create_m24F3F260A79CA2B9EC4F1F15693A33F5EC58735A(NULL);
+		(&V_0)->___U3CU3Et__builder = L_0;
+		Il2CppCodeGenWriteBarrier((void**)&((&((&(((&(&V_0)->___U3CU3Et__builder))->___m_builder))->___m_coreState))->___m_stateMachine), (void*)NULL);
+		#if IL2CPP_ENABLE_STRICT_WRITE_BARRIERS
+		Il2CppCodeGenWriteBarrier((void**)&((&((&(((&(&V_0)->___U3CU3Et__builder))->___m_builder))->___m_coreState))->___m_defaultContextAction), (void*)NULL);
+		#endif
+		#if IL2CPP_ENABLE_STRICT_WRITE_BARRIERS
+		Il2CppCodeGenWriteBarrier((void**)&((&(((&(&V_0)->___U3CU3Et__builder))->___m_builder))->___m_task), (void*)NULL);
+		#endif
+		(&V_0)->___U3CU3E4__this = __this;
+		Il2CppCodeGenWriteBarrier((void**)(&(&V_0)->___U3CU3E4__this), (void*)__this);
+		(&V_0)->___U3CU3E1__state = (-1);
+		AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* L_1 = (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06*)(&(&V_0)->___U3CU3Et__builder);
+		AsyncTaskMethodBuilder_Start_TisU3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3_m50FBB105BF1B6902FC1DB5659BF19AF1B2CA05AB(L_1, (&V_0), AsyncTaskMethodBuilder_Start_TisU3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3_m50FBB105BF1B6902FC1DB5659BF19AF1B2CA05AB_RuntimeMethod_var);
+		AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* L_2 = (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06*)(&(&V_0)->___U3CU3Et__builder);
+		Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* L_3;
+		L_3 = AsyncTaskMethodBuilder_get_Task_mE9125D5F8B96F26D1BA5A5347ED82669521C7F9E(L_2, NULL);
+		return L_3;
+	}
+}
+// Method Definition Index: 130812
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningController_PickNextTarget_mD013AFE53D919B3BCB68B4E9C067434663F58062 (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IDisposable_t030E0496B4E0E4E4F086825007979AF51F7248C5_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IEnumerable_1_tEFECE3ABDB452675D2763BEA3DEC24313022B247_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IEnumerator_1_tAD9A7E67D458237E591B86578D8FA346466A200D_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IEnumerator_t7B609C2FFA6EB5167D9C62A0C32A21DE2F666DAA_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	RuntimeObject* V_0 = NULL;
+	Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* V_1 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:131>
+		MiningController_set_CurrentTarget_m041D4A66BB466BBDDB24B2CC18270093E181ABEF_inline(__this, (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE*)NULL, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:132>
+		AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* L_0 = __this->____spawner;
+		NullCheck(L_0);
+		RuntimeObject* L_1;
+		L_1 = AsteroidSpawner_get_ActiveAsteroids_m89B1CFD46F1FCE1BD79D2894B756CF481A7DFE4A_inline(L_0, NULL);
+		NullCheck(L_1);
+		RuntimeObject* L_2;
+		L_2 = InterfaceFuncInvoker0< RuntimeObject* >::Invoke(0, IEnumerable_1_tEFECE3ABDB452675D2763BEA3DEC24313022B247_il2cpp_TypeInfo_var, L_1);
+		V_0 = L_2;
+	}
+	{
+		auto __finallyBlock = il2cpp::utils::Finally([&]
+		{
+
+FINALLY_003c:
+			{
+				{
+					RuntimeObject* L_3 = V_0;
+					if (!L_3)
+					{
+						goto IL_0045;
+					}
+				}
+				{
+					RuntimeObject* L_4 = V_0;
+					NullCheck(L_4);
+					InterfaceActionInvoker0::Invoke(0, IDisposable_t030E0496B4E0E4E4F086825007979AF51F7248C5_il2cpp_TypeInfo_var, L_4);
+				}
+
+IL_0045:
+				{
+					return;
+				}
+			}
+		});
+		try
+		{
+			{
+				goto IL_0032_1;
+			}
+
+IL_001a_1:
+			{
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:132>
+				RuntimeObject* L_5 = V_0;
+				NullCheck(L_5);
+				Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_6;
+				L_6 = InterfaceFuncInvoker0< Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* >::Invoke(0, IEnumerator_1_tAD9A7E67D458237E591B86578D8FA346466A200D_il2cpp_TypeInfo_var, L_5);
+				V_1 = L_6;
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:134>
+				Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_7 = V_1;
+				NullCheck(L_7);
+				bool L_8;
+				L_8 = Asteroid_get_IsDepleted_m1ABBB3F673D0DB021949162990F4A731BE599CEA(L_7, NULL);
+				if (L_8)
+				{
+					goto IL_0032_1;
+				}
+			}
+			{
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:134>
+				Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_9 = V_1;
+				MiningController_set_CurrentTarget_m041D4A66BB466BBDDB24B2CC18270093E181ABEF_inline(__this, L_9, NULL);
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:134>
+				goto IL_0046;
+			}
+
+IL_0032_1:
+			{
+				//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:132>
+				RuntimeObject* L_10 = V_0;
+				NullCheck(L_10);
+				bool L_11;
+				L_11 = InterfaceFuncInvoker0< bool >::Invoke(0, IEnumerator_t7B609C2FFA6EB5167D9C62A0C32A21DE2F666DAA_il2cpp_TypeInfo_var, L_10);
+				if (L_11)
+				{
+					goto IL_001a_1;
+				}
+			}
+			{
+				goto IL_0046;
+			}
+		}
+		catch(Il2CppExceptionWrapper& e)
+		{
+			__finallyBlock.StoreException(e.ex);
+		}
+	}
+
+IL_0046:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:136>
+		return;
+	}
+}
+// Method Definition Index: 130813
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningController_SetPhase_m8728387A6A802E1F094717378E76D7435E3C14DC (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, int32_t ___0_phase, const RuntimeMethod* method) 
+{
+	Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* G_B2_0 = NULL;
+	Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* G_B1_0 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:140>
+		int32_t L_0 = ___0_phase;
+		MiningController_set_Phase_mF0A188AEF665BA9F6FF76C2188E6CE22F4CFD591_inline(__this, L_0, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:141>
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* L_1 = __this->___OnPhaseChanged;
+		Action_1_t0FB635188EEFF805083BE116CC2C224A63E9D3DC* L_2 = L_1;
+		if (L_2)
+		{
+			G_B2_0 = L_2;
+			goto IL_0012;
+		}
+		G_B1_0 = L_2;
+	}
+	{
+		return;
+	}
+
+IL_0012:
+	{
+		int32_t L_3 = ___0_phase;
+		NullCheck(G_B2_0);
+		Action_1_Invoke_mC68BE221A397D2B3D492399D3BA130C50799385B_inline(G_B2_0, L_3, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:142>
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 130814
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CCommitCargoAsyncU3Ed__37_MoveNext_m5CC762D3749F034690DA07ACE8AA8C3A298EEC66 (U3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&AsyncTaskMethodBuilder_AwaitUnsafeOnCompleted_TisTaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833_TisU3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3_mA003A007EA9282D6D0F1E7038F94FD69E4545899_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IEconomyService_tDDBF98E920FD3B0BE075F1F42E25AEDAC90DAB4F_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral3C23D0ADBC4EDEB6DD6698DD30541559D35304E6);
+		s_Il2CppMethodInitialized = true;
+	}
+	int32_t V_0 = 0;
+	MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* V_1 = NULL;
+	TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833 V_2;
+	memset((&V_2), 0, sizeof(V_2));
+	Exception_t* V_3 = NULL;
+	il2cpp::utils::ExceptionSupportStack<RuntimeObject*, 1> __active_exceptions;
+	Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* G_B5_0 = NULL;
+	int32_t G_B5_1 = 0;
+	U3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3* G_B5_2 = NULL;
+	Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* G_B4_0 = NULL;
+	int32_t G_B4_1 = 0;
+	U3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3* G_B4_2 = NULL;
+	int32_t G_B6_0 = 0;
+	int32_t G_B6_1 = 0;
+	U3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3* G_B6_2 = NULL;
+	{
+		int32_t L_0 = __this->___U3CU3E1__state;
+		V_0 = L_0;
+		MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_1 = __this->___U3CU3E4__this;
+		V_1 = L_1;
+	}
+	try
+	{
+		{
+			int32_t L_2 = V_0;
+			if (!L_2)
+			{
+				goto IL_009f_1;
+			}
+		}
+		{
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:115>
+			MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_3 = V_1;
+			NullCheck(L_3);
+			MiningController_SetPhase_m8728387A6A802E1F094717378E76D7435E3C14DC(L_3, 2, NULL);
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:116>
+			MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_4 = V_1;
+			NullCheck(L_4);
+			DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* L_5;
+			L_5 = MiningController_get_Drone_mCC5FEDE0CDCA9B6A307E71E7E3C8DDF5E35843F8_inline(L_4, NULL);
+			NullCheck(L_5);
+			int32_t L_6;
+			L_6 = DroneRuntime_EmptyCargo_m65F96F26E0E0F447DA15A0ED684928D8E51EE3ED(L_5, NULL);
+			__this->___U3ChauledU3E5__2 = L_6;
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:118>
+			int32_t L_7 = __this->___U3ChauledU3E5__2;
+			if ((((int32_t)L_7) <= ((int32_t)0)))
+			{
+				goto IL_00e9_1;
+			}
+		}
+		{
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:120>
+			int32_t L_8 = __this->___U3ChauledU3E5__2;
+			MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_9 = V_1;
+			NullCheck(L_9);
+			Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_10;
+			L_10 = MiningController_get_CurrentTarget_m575E661CF18C8C808BD1715E112DBF512CA7C320_inline(L_9, NULL);
+			Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_11 = L_10;
+			if (L_11)
+			{
+				G_B5_0 = L_11;
+				G_B5_1 = L_8;
+				G_B5_2 = __this;
+				goto IL_004c_1;
+			}
+			G_B4_0 = L_11;
+			G_B4_1 = L_8;
+			G_B4_2 = __this;
+		}
+		{
+			G_B6_0 = 1;
+			G_B6_1 = G_B4_1;
+			G_B6_2 = G_B4_2;
+			goto IL_0056_1;
+		}
+
+IL_004c_1:
+		{
+			NullCheck(G_B5_0);
+			AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_12;
+			L_12 = Asteroid_get_Definition_m46EC7FF414861479BD994A979FE4526B15827BE9_inline(G_B5_0, NULL);
+			NullCheck(L_12);
+			int32_t L_13;
+			L_13 = AsteroidDefinition_get_CoinsPerUnit_mB475756F13E4FB4BFA247F1F7E35BBA4A310B76F_inline(L_12, NULL);
+			G_B6_0 = L_13;
+			G_B6_1 = G_B5_1;
+			G_B6_2 = G_B5_2;
+		}
+
+IL_0056_1:
+		{
+			G_B6_2->___U3CcoinsU3E5__3 = ((int32_t)il2cpp_codegen_multiply(G_B6_1, G_B6_0));
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:121>
+			MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_14 = V_1;
+			NullCheck(L_14);
+			RuntimeObject* L_15 = L_14->____economy;
+			int32_t L_16 = __this->___U3CcoinsU3E5__3;
+			NullCheck(L_15);
+			Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* L_17;
+			L_17 = InterfaceFuncInvoker1< Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572*, int32_t >::Invoke(2, IEconomyService_tDDBF98E920FD3B0BE075F1F42E25AEDAC90DAB4F_il2cpp_TypeInfo_var, L_15, L_16);
+			NullCheck(L_17);
+			TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833 L_18;
+			L_18 = Task_GetAwaiter_m08B368EAC939DD35D0AC428180822255A442CA29(L_17, NULL);
+			V_2 = L_18;
+			bool L_19;
+			L_19 = TaskAwaiter_get_IsCompleted_mC236D276FBE3A271B56EE13FCAF2C96E48453ED8((&V_2), NULL);
+			if (L_19)
+			{
+				goto IL_00bb_1;
+			}
+		}
+		{
+			int32_t L_20 = 0;
+			V_0 = L_20;
+			__this->___U3CU3E1__state = L_20;
+			TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833 L_21 = V_2;
+			__this->___U3CU3Eu__1 = L_21;
+			Il2CppCodeGenWriteBarrier((void**)&(((&__this->___U3CU3Eu__1))->___m_task), (void*)NULL);
+			AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* L_22 = (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06*)(&__this->___U3CU3Et__builder);
+			il2cpp_codegen_runtime_class_init_inline(AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06_il2cpp_TypeInfo_var);
+			AsyncTaskMethodBuilder_AwaitUnsafeOnCompleted_TisTaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833_TisU3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3_mA003A007EA9282D6D0F1E7038F94FD69E4545899(L_22, (&V_2), __this, AsyncTaskMethodBuilder_AwaitUnsafeOnCompleted_TisTaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833_TisU3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3_mA003A007EA9282D6D0F1E7038F94FD69E4545899_RuntimeMethod_var);
+			goto IL_0122;
+		}
+
+IL_009f_1:
+		{
+			TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833 L_23 = __this->___U3CU3Eu__1;
+			V_2 = L_23;
+			TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833* L_24 = (TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833*)(&__this->___U3CU3Eu__1);
+			il2cpp_codegen_initobj(L_24, sizeof(TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833));
+			int32_t L_25 = (-1);
+			V_0 = L_25;
+			__this->___U3CU3E1__state = L_25;
+		}
+
+IL_00bb_1:
+		{
+			TaskAwaiter_GetResult_mC1D712500AE49B4A89C85D6B79D87D1BA9A6B94D((&V_2), NULL);
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:122>
+			int32_t L_26 = __this->___U3ChauledU3E5__2;
+			int32_t L_27 = L_26;
+			RuntimeObject* L_28 = Box(il2cpp_defaults.int32_class, &L_27);
+			int32_t L_29 = __this->___U3CcoinsU3E5__3;
+			int32_t L_30 = L_29;
+			RuntimeObject* L_31 = Box(il2cpp_defaults.int32_class, &L_30);
+			String_t* L_32;
+			L_32 = String_Format_mFB7DA489BD99F4670881FF50EC017BFB0A5C0987(_stringLiteral3C23D0ADBC4EDEB6DD6698DD30541559D35304E6, L_28, L_31, NULL);
+			il2cpp_codegen_runtime_class_init_inline(SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+			SULog_Info_m4F0F76BC192792291ABFF31712DB6F83FD36C8D9(L_32, ((int32_t)16), NULL);
+		}
+
+IL_00e9_1:
+		{
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:125>
+			MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_33 = V_1;
+			NullCheck(L_33);
+			MiningController_PickNextTarget_mD013AFE53D919B3BCB68B4E9C067434663F58062(L_33, NULL);
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:126>
+			MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_34 = V_1;
+			NullCheck(L_34);
+			MiningController_SetPhase_m8728387A6A802E1F094717378E76D7435E3C14DC(L_34, 1, NULL);
+			goto IL_010f;
+		}
+	}
+	catch(Il2CppExceptionWrapper& e)
+	{
+		if(il2cpp_codegen_class_is_assignable_from (((RuntimeClass*)il2cpp_codegen_initialize_runtime_metadata_inline((uintptr_t*)&Exception_t_il2cpp_TypeInfo_var)), il2cpp_codegen_object_class(e.ex)))
+		{
+			IL2CPP_PUSH_ACTIVE_EXCEPTION(e.ex);
+			goto CATCH_00f8;
+		}
+		throw e;
+	}
+
+CATCH_00f8:
+	{
+		Exception_t* L_35 = ((Exception_t*)IL2CPP_GET_ACTIVE_EXCEPTION(Exception_t*));;
+		V_3 = L_35;
+		__this->___U3CU3E1__state = ((int32_t)-2);
+		AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* L_36 = (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06*)(&__this->___U3CU3Et__builder);
+		Exception_t* L_37 = V_3;
+		il2cpp_codegen_runtime_class_init_inline(((RuntimeClass*)il2cpp_codegen_initialize_runtime_metadata_inline((uintptr_t*)&AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06_il2cpp_TypeInfo_var)));
+		AsyncTaskMethodBuilder_SetException_mBE41863F0571E0177A15731294087DE45E1FC10B(L_36, L_37, NULL);
+		IL2CPP_POP_ACTIVE_EXCEPTION(Exception_t*);
+		goto IL_0122;
+	}
+
+IL_010f:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:127>
+		__this->___U3CU3E1__state = ((int32_t)-2);
+		AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* L_38 = (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06*)(&__this->___U3CU3Et__builder);
+		il2cpp_codegen_runtime_class_init_inline(AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06_il2cpp_TypeInfo_var);
+		AsyncTaskMethodBuilder_SetResult_m76D8B84F0068257C1823B1200B00E58E0C8DDDDE(L_38, NULL);
+	}
+
+IL_0122:
+	{
+		return;
+	}
+}
+IL2CPP_EXTERN_C  void U3CCommitCargoAsyncU3Ed__37_MoveNext_m5CC762D3749F034690DA07ACE8AA8C3A298EEC66_AdjustorThunk (RuntimeObject* __this, const RuntimeMethod* method)
+{
+	U3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3* _thisAdjusted;
+	int32_t _offset = 1;
+	_thisAdjusted = reinterpret_cast<U3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3*>(__this + _offset);
+	U3CCommitCargoAsyncU3Ed__37_MoveNext_m5CC762D3749F034690DA07ACE8AA8C3A298EEC66(_thisAdjusted, method);
+}
+// Method Definition Index: 130815
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CCommitCargoAsyncU3Ed__37_SetStateMachine_m84B049106B8C6B4E1EF677B9446D947CF1C073DA (U3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3* __this, RuntimeObject* ___0_stateMachine, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* L_0 = (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06*)(&__this->___U3CU3Et__builder);
+		RuntimeObject* L_1 = ___0_stateMachine;
+		il2cpp_codegen_runtime_class_init_inline(AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06_il2cpp_TypeInfo_var);
+		AsyncTaskMethodBuilder_SetStateMachine_mE52B5B6B076025592A7AB462E3D26FA434AEB795(L_0, L_1, NULL);
+		return;
+	}
+}
+IL2CPP_EXTERN_C  void U3CCommitCargoAsyncU3Ed__37_SetStateMachine_m84B049106B8C6B4E1EF677B9446D947CF1C073DA_AdjustorThunk (RuntimeObject* __this, RuntimeObject* ___0_stateMachine, const RuntimeMethod* method)
+{
+	U3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3* _thisAdjusted;
+	int32_t _offset = 1;
+	_thisAdjusted = reinterpret_cast<U3CCommitCargoAsyncU3Ed__37_tE70BF00F8012B4A84974EC74FDDC282010A9CCF3*>(__this + _offset);
+	U3CCommitCargoAsyncU3Ed__37_SetStateMachine_m84B049106B8C6B4E1EF677B9446D947CF1C073DA(_thisAdjusted, ___0_stateMachine, method);
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 130816
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CRegisterIdleClaimTapAsyncU3Ed__36_MoveNext_m1CB78D14F16733554AB86348655AC92BD1FFC9BF (U3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&AsyncTaskMethodBuilder_AwaitUnsafeOnCompleted_TisTaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833_TisU3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191_mBB54921B8B4283478740CB35E94D90A3BE3A6466_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&IEconomyService_tDDBF98E920FD3B0BE075F1F42E25AEDAC90DAB4F_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteralE1786072F8F06B407951D8AB0A0C12FA4C6DC05A);
+		s_Il2CppMethodInitialized = true;
+	}
+	int32_t V_0 = 0;
+	MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* V_1 = NULL;
+	IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* V_2 = NULL;
+	int32_t V_3 = 0;
+	TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833 V_4;
+	memset((&V_4), 0, sizeof(V_4));
+	Exception_t* V_5 = NULL;
+	il2cpp::utils::ExceptionSupportStack<RuntimeObject*, 1> __active_exceptions;
+	Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* G_B7_0 = NULL;
+	bool G_B7_1 = false;
+	Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* G_B6_0 = NULL;
+	bool G_B6_1 = false;
+	bool G_B8_0 = false;
+	Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* G_B12_0 = NULL;
+	Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* G_B11_0 = NULL;
+	{
+		int32_t L_0 = __this->___U3CU3E1__state;
+		V_0 = L_0;
+		MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_1 = __this->___U3CU3E4__this;
+		V_1 = L_1;
+	}
+	try
+	{
+		{
+			int32_t L_2 = V_0;
+			if (!L_2)
+			{
+				goto IL_0117_1;
+			}
+		}
+		{
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:84>
+			MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_3 = V_1;
+			NullCheck(L_3);
+			IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_4;
+			L_4 = MiningController_get_CurrentIdleSession_m9DCDD0E6C3A9073CBE660CB651E14F9CC20D64EF_inline(L_3, NULL);
+			V_2 = L_4;
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:85>
+			IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_5 = V_2;
+			if (!L_5)
+			{
+				goto IL_0031_1;
+			}
+		}
+		{
+			IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_6 = V_2;
+			NullCheck(L_6);
+			Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_7;
+			L_7 = IdleMiningSession_get_Asteroid_mF059A51CA217E34F32F4009D308982A63BCFDEB9_inline(L_6, NULL);
+			Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_8 = __this->___asteroid;
+			il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+			bool L_9;
+			L_9 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_7, L_8, NULL);
+			if (!L_9)
+			{
+				goto IL_0036_1;
+			}
+		}
+
+IL_0031_1:
+		{
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:85>
+			goto IL_01c9;
+		}
+
+IL_0036_1:
+		{
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:87>
+			IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_10 = V_2;
+			NullCheck(L_10);
+			bool L_11;
+			L_11 = IdleMiningSession_RegisterClaimTap_m6605D2E842A3364DE7A3F284E41169C1EF17CC0F(L_10, NULL);
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:88>
+			MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_12 = V_1;
+			NullCheck(L_12);
+			Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_13 = L_12->___OnIdleSessionChanged;
+			Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_14 = L_13;
+			if (L_14)
+			{
+				G_B7_0 = L_14;
+				G_B7_1 = L_11;
+				goto IL_0048_1;
+			}
+			G_B6_0 = L_14;
+			G_B6_1 = L_11;
+		}
+		{
+			G_B8_0 = G_B6_1;
+			goto IL_004e_1;
+		}
+
+IL_0048_1:
+		{
+			IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_15 = V_2;
+			NullCheck(G_B7_0);
+			Action_1_Invoke_m552CD7F56F7FE2EEBA456AE40D37D295E65E8A97_inline(G_B7_0, L_15, NULL);
+			G_B8_0 = G_B7_1;
+		}
+
+IL_004e_1:
+		{
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:89>
+			if (G_B8_0)
+			{
+				goto IL_0055_1;
+			}
+		}
+		{
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:89>
+			goto IL_01c9;
+		}
+
+IL_0055_1:
+		{
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:91>
+			MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_16 = V_1;
+			NullCheck(L_16);
+			EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* L_17 = L_16->____config;
+			NullCheck(L_17);
+			float L_18;
+			L_18 = EconomyConfig_get_IdleMiningRate_mAE386036D06761D813CB566DE6B0D662BA696E7A_inline(L_17, NULL);
+			MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_19 = V_1;
+			NullCheck(L_19);
+			EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* L_20 = L_19->____config;
+			NullCheck(L_20);
+			float L_21;
+			L_21 = EconomyConfig_get_IdleSessionDuration_m7577026567440F6DFA3AC706FD4FB8FA23765ABF_inline(L_20, NULL);
+			int32_t L_22;
+			L_22 = Mathf_RoundToInt_m60F8B66CF27F1FA75AA219342BD184B75771EB4B_inline(((float)il2cpp_codegen_multiply(L_18, L_21)), NULL);
+			V_3 = L_22;
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:92>
+			Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_23 = __this->___asteroid;
+			int32_t L_24 = V_3;
+			NullCheck(L_23);
+			int32_t L_25;
+			L_25 = Asteroid_Mine_mF50CA5AEA6258890FFA94FB0B1A091A318F23792(L_23, L_24, NULL);
+			__this->___U3CminedU3E5__2 = L_25;
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:93>
+			int32_t L_26 = __this->___U3CminedU3E5__2;
+			Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_27 = __this->___asteroid;
+			NullCheck(L_27);
+			AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_28;
+			L_28 = Asteroid_get_Definition_m46EC7FF414861479BD994A979FE4526B15827BE9_inline(L_27, NULL);
+			NullCheck(L_28);
+			int32_t L_29;
+			L_29 = AsteroidDefinition_get_CoinsPerUnit_mB475756F13E4FB4BFA247F1F7E35BBA4A310B76F_inline(L_28, NULL);
+			__this->___U3CcoinsU3E5__3 = ((int32_t)il2cpp_codegen_multiply(L_26, L_29));
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:95>
+			MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_30 = V_1;
+			NullCheck(L_30);
+			MiningController_set_CurrentIdleSession_m03C3E70F8CA7DBF9209CD9194EAC707681828544_inline(L_30, (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149*)NULL, NULL);
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:96>
+			MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_31 = V_1;
+			Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_32 = __this->___asteroid;
+			NullCheck(L_31);
+			MiningController_set_ClaimingAsteroid_m9A07BEE3597629C0C3FCC42C0B42970D1D6A0222_inline(L_31, L_32, NULL);
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:97>
+			MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_33 = V_1;
+			NullCheck(L_33);
+			Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_34 = L_33->___OnIdleSessionChanged;
+			Action_1_tC34D44E8690742471C6F52378FFAA5C6369C65FA* L_35 = L_34;
+			if (L_35)
+			{
+				G_B12_0 = L_35;
+				goto IL_00c0_1;
+			}
+			G_B11_0 = L_35;
+		}
+		{
+			goto IL_00c6_1;
+		}
+
+IL_00c0_1:
+		{
+			NullCheck(G_B12_0);
+			Action_1_Invoke_m552CD7F56F7FE2EEBA456AE40D37D295E65E8A97_inline(G_B12_0, (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149*)NULL, NULL);
+		}
+
+IL_00c6_1:
+		{
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:99>
+			int32_t L_36 = __this->___U3CcoinsU3E5__3;
+			if ((((int32_t)L_36) <= ((int32_t)0)))
+			{
+				goto IL_0172_1;
+			}
+		}
+		{
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:101>
+			MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_37 = V_1;
+			NullCheck(L_37);
+			RuntimeObject* L_38 = L_37->____economy;
+			int32_t L_39 = __this->___U3CcoinsU3E5__3;
+			NullCheck(L_38);
+			Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* L_40;
+			L_40 = InterfaceFuncInvoker1< Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572*, int32_t >::Invoke(2, IEconomyService_tDDBF98E920FD3B0BE075F1F42E25AEDAC90DAB4F_il2cpp_TypeInfo_var, L_38, L_39);
+			NullCheck(L_40);
+			TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833 L_41;
+			L_41 = Task_GetAwaiter_m08B368EAC939DD35D0AC428180822255A442CA29(L_40, NULL);
+			V_4 = L_41;
+			bool L_42;
+			L_42 = TaskAwaiter_get_IsCompleted_mC236D276FBE3A271B56EE13FCAF2C96E48453ED8((&V_4), NULL);
+			if (L_42)
+			{
+				goto IL_0134_1;
+			}
+		}
+		{
+			int32_t L_43 = 0;
+			V_0 = L_43;
+			__this->___U3CU3E1__state = L_43;
+			TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833 L_44 = V_4;
+			__this->___U3CU3Eu__1 = L_44;
+			Il2CppCodeGenWriteBarrier((void**)&(((&__this->___U3CU3Eu__1))->___m_task), (void*)NULL);
+			AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* L_45 = (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06*)(&__this->___U3CU3Et__builder);
+			il2cpp_codegen_runtime_class_init_inline(AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06_il2cpp_TypeInfo_var);
+			AsyncTaskMethodBuilder_AwaitUnsafeOnCompleted_TisTaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833_TisU3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191_mBB54921B8B4283478740CB35E94D90A3BE3A6466(L_45, (&V_4), __this, AsyncTaskMethodBuilder_AwaitUnsafeOnCompleted_TisTaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833_TisU3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191_mBB54921B8B4283478740CB35E94D90A3BE3A6466_RuntimeMethod_var);
+			goto IL_01dc;
+		}
+
+IL_0117_1:
+		{
+			TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833 L_46 = __this->___U3CU3Eu__1;
+			V_4 = L_46;
+			TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833* L_47 = (TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833*)(&__this->___U3CU3Eu__1);
+			il2cpp_codegen_initobj(L_47, sizeof(TaskAwaiter_t9B661AC8C2EFA6BAB94C77BB24A5DDA82D61F833));
+			int32_t L_48 = (-1);
+			V_0 = L_48;
+			__this->___U3CU3E1__state = L_48;
+		}
+
+IL_0134_1:
+		{
+			TaskAwaiter_GetResult_mC1D712500AE49B4A89C85D6B79D87D1BA9A6B94D((&V_4), NULL);
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:102>
+			int32_t L_49 = __this->___U3CminedU3E5__2;
+			int32_t L_50 = L_49;
+			RuntimeObject* L_51 = Box(il2cpp_defaults.int32_class, &L_50);
+			Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_52 = __this->___asteroid;
+			NullCheck(L_52);
+			AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_53;
+			L_53 = Asteroid_get_Definition_m46EC7FF414861479BD994A979FE4526B15827BE9_inline(L_52, NULL);
+			NullCheck(L_53);
+			String_t* L_54;
+			L_54 = AsteroidDefinition_get_MineralType_m1F1D8CC7612117CDA1E8C6B490BD695C19E4124B_inline(L_53, NULL);
+			int32_t L_55 = __this->___U3CcoinsU3E5__3;
+			int32_t L_56 = L_55;
+			RuntimeObject* L_57 = Box(il2cpp_defaults.int32_class, &L_56);
+			String_t* L_58;
+			L_58 = String_Format_mA0534D6E2AE4D67A6BD8D45B3321323930EB930C(_stringLiteralE1786072F8F06B407951D8AB0A0C12FA4C6DC05A, L_51, L_54, L_57, NULL);
+			il2cpp_codegen_runtime_class_init_inline(SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+			SULog_Info_m4F0F76BC192792291ABFF31712DB6F83FD36C8D9(L_58, ((int32_t)16), NULL);
+		}
+
+IL_0172_1:
+		{
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:105>
+			MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_59 = V_1;
+			NullCheck(L_59);
+			MiningController_set_ClaimingAsteroid_m9A07BEE3597629C0C3FCC42C0B42970D1D6A0222_inline(L_59, (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE*)NULL, NULL);
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:106>
+			MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_60 = V_1;
+			NullCheck(L_60);
+			Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_61;
+			L_61 = MiningController_get_CurrentTarget_m575E661CF18C8C808BD1715E112DBF512CA7C320_inline(L_60, NULL);
+			Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_62 = __this->___asteroid;
+			il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+			bool L_63;
+			L_63 = Object_op_Equality_mB6120F782D83091EF56A198FCEBCF066DB4A9605(L_61, L_62, NULL);
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:107>
+			MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_64 = V_1;
+			NullCheck(L_64);
+			AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* L_65 = L_64->____spawner;
+			Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_66 = __this->___asteroid;
+			MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_67 = V_1;
+			NullCheck(L_67);
+			EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* L_68 = L_67->____config;
+			NullCheck(L_68);
+			float L_69;
+			L_69 = EconomyConfig_get_AsteroidRespawnHours_m334566DDB9DB4E65A9920F27C0978DDBDB309231_inline(L_68, NULL);
+			NullCheck(L_65);
+			AsteroidSpawner_ScheduleRespawn_m4128EAB25592CA8A632C3CC9C6BA314D600E9BC9(L_65, L_66, L_69, NULL);
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:109>
+			if (!L_63)
+			{
+				goto IL_01ae_1;
+			}
+		}
+		{
+			//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:110>
+			MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_70 = V_1;
+			NullCheck(L_70);
+			MiningController_PickNextTarget_mD013AFE53D919B3BCB68B4E9C067434663F58062(L_70, NULL);
+		}
+
+IL_01ae_1:
+		{
+			goto IL_01c9;
+		}
+	}
+	catch(Il2CppExceptionWrapper& e)
+	{
+		if(il2cpp_codegen_class_is_assignable_from (((RuntimeClass*)il2cpp_codegen_initialize_runtime_metadata_inline((uintptr_t*)&Exception_t_il2cpp_TypeInfo_var)), il2cpp_codegen_object_class(e.ex)))
+		{
+			IL2CPP_PUSH_ACTIVE_EXCEPTION(e.ex);
+			goto CATCH_01b0;
+		}
+		throw e;
+	}
+
+CATCH_01b0:
+	{
+		Exception_t* L_71 = ((Exception_t*)IL2CPP_GET_ACTIVE_EXCEPTION(Exception_t*));;
+		V_5 = L_71;
+		__this->___U3CU3E1__state = ((int32_t)-2);
+		AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* L_72 = (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06*)(&__this->___U3CU3Et__builder);
+		Exception_t* L_73 = V_5;
+		il2cpp_codegen_runtime_class_init_inline(((RuntimeClass*)il2cpp_codegen_initialize_runtime_metadata_inline((uintptr_t*)&AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06_il2cpp_TypeInfo_var)));
+		AsyncTaskMethodBuilder_SetException_mBE41863F0571E0177A15731294087DE45E1FC10B(L_72, L_73, NULL);
+		IL2CPP_POP_ACTIVE_EXCEPTION(Exception_t*);
+		goto IL_01dc;
+	}
+
+IL_01c9:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:111>
+		__this->___U3CU3E1__state = ((int32_t)-2);
+		AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* L_74 = (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06*)(&__this->___U3CU3Et__builder);
+		il2cpp_codegen_runtime_class_init_inline(AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06_il2cpp_TypeInfo_var);
+		AsyncTaskMethodBuilder_SetResult_m76D8B84F0068257C1823B1200B00E58E0C8DDDDE(L_74, NULL);
+	}
+
+IL_01dc:
+	{
+		return;
+	}
+}
+IL2CPP_EXTERN_C  void U3CRegisterIdleClaimTapAsyncU3Ed__36_MoveNext_m1CB78D14F16733554AB86348655AC92BD1FFC9BF_AdjustorThunk (RuntimeObject* __this, const RuntimeMethod* method)
+{
+	U3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191* _thisAdjusted;
+	int32_t _offset = 1;
+	_thisAdjusted = reinterpret_cast<U3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191*>(__this + _offset);
+	U3CRegisterIdleClaimTapAsyncU3Ed__36_MoveNext_m1CB78D14F16733554AB86348655AC92BD1FFC9BF(_thisAdjusted, method);
+}
+// Method Definition Index: 130817
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CRegisterIdleClaimTapAsyncU3Ed__36_SetStateMachine_m8B288616BA98E69B594128705DE0D002D19826F1 (U3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191* __this, RuntimeObject* ___0_stateMachine, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06* L_0 = (AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06*)(&__this->___U3CU3Et__builder);
+		RuntimeObject* L_1 = ___0_stateMachine;
+		il2cpp_codegen_runtime_class_init_inline(AsyncTaskMethodBuilder_t7A5128C134547B5918EB1AA24FE47ED4C1DF3F06_il2cpp_TypeInfo_var);
+		AsyncTaskMethodBuilder_SetStateMachine_mE52B5B6B076025592A7AB462E3D26FA434AEB795(L_0, L_1, NULL);
+		return;
+	}
+}
+IL2CPP_EXTERN_C  void U3CRegisterIdleClaimTapAsyncU3Ed__36_SetStateMachine_m8B288616BA98E69B594128705DE0D002D19826F1_AdjustorThunk (RuntimeObject* __this, RuntimeObject* ___0_stateMachine, const RuntimeMethod* method)
+{
+	U3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191* _thisAdjusted;
+	int32_t _offset = 1;
+	_thisAdjusted = reinterpret_cast<U3CRegisterIdleClaimTapAsyncU3Ed__36_t367545D2A800BEFD2120028531C985426E99A191*>(__this + _offset);
+	U3CRegisterIdleClaimTapAsyncU3Ed__36_SetStateMachine_m8B288616BA98E69B594128705DE0D002D19826F1(_thisAdjusted, ___0_stateMachine, method);
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// Method Definition Index: 130818
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningInputHandler__ctor_m2120CC432C0F5765DBCCBE70EBA0744EE24DA771 (MiningInputHandler_t65B94CB12CFABCF2C50299CC3C8AFDCE5F243B77* __this, MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* ___0_controller, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningInputHandler.cs:12>
+		Object__ctor_mE837C6B9FA8C6D5D109F4B2EC885D79919AC0EA2(__this, NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningInputHandler.cs:12>
+		MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_0 = ___0_controller;
+		__this->____controller = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->____controller), (void*)L_0);
+		return;
+	}
+}
+// Method Definition Index: 130819
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void MiningInputHandler_Tick_mF1DAFAAD7D0127E24FAD37C6787DB67A9E87D841 (MiningInputHandler_t65B94CB12CFABCF2C50299CC3C8AFDCE5F243B77* __this, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral23303B7A59732F849CA6579F45DAC52D3925F222);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteralDA39A3EE5E6B4B0D3255BFEF95601890AFD80709);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteralDF0FCA071541589F19A06567EF8E4FF21C023690);
+		s_Il2CppMethodInitialized = true;
+	}
+	MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* V_0 = NULL;
+	RuntimeObject* G_B8_0 = NULL;
+	String_t* G_B8_1 = NULL;
+	RuntimeObject* G_B7_0 = NULL;
+	String_t* G_B7_1 = NULL;
+	String_t* G_B9_0 = NULL;
+	RuntimeObject* G_B9_1 = NULL;
+	String_t* G_B9_2 = NULL;
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningInputHandler.cs:16>
+		MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_0 = __this->____controller;
+		NullCheck(L_0);
+		int32_t L_1;
+		L_1 = MiningController_get_Phase_m6C23A4972433CE18F4A948BF37757C59EE2D35F2_inline(L_0, NULL);
+		if ((((int32_t)L_1) == ((int32_t)1)))
+		{
+			goto IL_000f;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningInputHandler.cs:16>
+		return;
+	}
+
+IL_000f:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningInputHandler.cs:17>
+		bool L_2;
+		L_2 = Input_GetKeyDown_mB237DEA6244132670D38990BAB77D813FBB028D2(((int32_t)32), NULL);
+		if (L_2)
+		{
+			goto IL_0019;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningInputHandler.cs:17>
+		return;
+	}
+
+IL_0019:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningInputHandler.cs:19>
+		MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_3 = __this->____controller;
+		NullCheck(L_3);
+		MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* L_4;
+		L_4 = MiningController_Tap_m010763480980E057059A32E4E9138540A8340A37(L_3, NULL);
+		V_0 = L_4;
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningInputHandler.cs:20>
+		MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* L_5 = V_0;
+		if (L_5)
+		{
+			goto IL_0029;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningInputHandler.cs:20>
+		return;
+	}
+
+IL_0029:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningInputHandler.cs:22>
+		MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* L_6 = V_0;
+		NullCheck(L_6);
+		int32_t L_7 = L_6->___YieldAmount;
+		int32_t L_8 = L_7;
+		RuntimeObject* L_9 = Box(il2cpp_defaults.int32_class, &L_8);
+		MiningTapResult_tC188B9C989D532D70683DF246B593C64817458C9* L_10 = V_0;
+		NullCheck(L_10);
+		bool L_11 = L_10->___IsCrit;
+		if (L_11)
+		{
+			G_B8_0 = L_9;
+			G_B8_1 = _stringLiteral23303B7A59732F849CA6579F45DAC52D3925F222;
+			goto IL_0048;
+		}
+		G_B7_0 = L_9;
+		G_B7_1 = _stringLiteral23303B7A59732F849CA6579F45DAC52D3925F222;
+	}
+	{
+		G_B9_0 = _stringLiteralDA39A3EE5E6B4B0D3255BFEF95601890AFD80709;
+		G_B9_1 = G_B7_0;
+		G_B9_2 = G_B7_1;
+		goto IL_004d;
+	}
+
+IL_0048:
+	{
+		G_B9_0 = _stringLiteralDF0FCA071541589F19A06567EF8E4FF21C023690;
+		G_B9_1 = G_B8_0;
+		G_B9_2 = G_B8_1;
+	}
+
+IL_004d:
+	{
+		String_t* L_12;
+		L_12 = String_Format_mFB7DA489BD99F4670881FF50EC017BFB0A5C0987(G_B9_2, G_B9_1, G_B9_0, NULL);
+		il2cpp_codegen_runtime_class_init_inline(SULog_t29F53A7E90FF9A7A93B988FF99DB34E4CF5DAD2D_il2cpp_TypeInfo_var);
+		SULog_Info_m4F0F76BC192792291ABFF31712DB6F83FD36C8D9(L_12, ((int32_t)16), NULL);
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningInputHandler.cs:24>
+		MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_13 = __this->____controller;
+		NullCheck(L_13);
+		DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* L_14;
+		L_14 = MiningController_get_Drone_mCC5FEDE0CDCA9B6A307E71E7E3C8DDF5E35843F8_inline(L_13, NULL);
+		NullCheck(L_14);
+		bool L_15;
+		L_15 = DroneRuntime_get_IsCargoFull_mF6102A59BA1912BBEA50225FC33192949D34F3FE(L_14, NULL);
+		if (!L_15)
+		{
+			goto IL_0077;
+		}
+	}
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningInputHandler.cs:25>
+		MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* L_16 = __this->____controller;
+		NullCheck(L_16);
+		Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* L_17;
+		L_17 = MiningController_CommitCargoAsync_m0285DAD0EB1FF9C1C0612A752E4AEBCCFF93CD97(L_16, NULL);
+	}
+
+IL_0077:
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningInputHandler.cs:26>
+		return;
+	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+// Method Definition Index: 131972
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float EconomyConfig_get_CritChance_mB5A7BCDB0DF8BBDB0A24F668FADA0D3EA41C1586_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:73>
+		float L_0 = __this->____critChance;
+		return L_0;
+	}
+}
+// Method Definition Index: 131973
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float EconomyConfig_get_CritMultiplier_mC44A9271FCCA9646E5D4406C92B3A78E527B198D_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:74>
+		float L_0 = __this->____critMultiplier;
+		return L_0;
+	}
+}
+// Method Definition Index: 131971
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_ActiveTapYield_m382F77556233E1E7CE7F542BC741BAA2728BCC52_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:72>
+		int32_t L_0 = __this->____activeTapYield;
+		return L_0;
+	}
+}
+// Method Definition Index: 130721
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t Asteroid_get_RemainingYield_m54B12AE864776D53F386632318B5CC83C944DDAB_inline (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:14>
+		int32_t L_0 = __this->___U3CRemainingYieldU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 130720
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void Asteroid_set_Definition_m3C6064211E2CCEE9D8164E1E87D6985F21C80A19_inline (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* __this, AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:13>
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_0 = ___0_value;
+		__this->___U3CDefinitionU3Ek__BackingField = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CDefinitionU3Ek__BackingField), (void*)L_0);
+		return;
+	}
+}
+// Method Definition Index: 131923
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t AsteroidDefinition_get_BaseYield_m426E4DD3482DCE010A29156A5E99832471B653D5_inline (AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/AsteroidDefinition.cs:18>
+		int32_t L_0 = __this->____baseYield;
+		return L_0;
+	}
+}
+// Method Definition Index: 64019
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t Mathf_RoundToInt_m60F8B66CF27F1FA75AA219342BD184B75771EB4B_inline (float ___0_f, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Math_tEB65DE7CA8B083C412C969C92981C030865486CE_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	int32_t V_0 = 0;
+	{
+		float L_0 = ___0_f;
+		il2cpp_codegen_runtime_class_init_inline(Math_tEB65DE7CA8B083C412C969C92981C030865486CE_il2cpp_TypeInfo_var);
+		double L_1;
+		L_1 = bankers_round(((double)L_0));
+		V_0 = il2cpp_codegen_cast_double_to_int<int32_t>(L_1);
+		goto IL_000c;
+	}
+
+IL_000c:
+	{
+		int32_t L_2 = V_0;
+		return L_2;
+	}
+}
+// Method Definition Index: 130722
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void Asteroid_set_RemainingYield_mC72EC5D6BB442ADF7C742D604E426A1303E42C69_inline (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* __this, int32_t ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:14>
+		int32_t L_0 = ___0_value;
+		__this->___U3CRemainingYieldU3Ek__BackingField = L_0;
+		return;
+	}
+}
+// Method Definition Index: 64005
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t Mathf_Min_m888083F74FF5655778F0403BB5E9608BEFDEA8CB_inline (int32_t ___0_a, int32_t ___1_b, const RuntimeMethod* method) 
+{
+	int32_t V_0 = 0;
+	int32_t G_B3_0 = 0;
+	{
+		int32_t L_0 = ___0_a;
+		int32_t L_1 = ___1_b;
+		if ((((int32_t)L_0) < ((int32_t)L_1)))
+		{
+			goto IL_0008;
+		}
+	}
+	{
+		int32_t L_2 = ___1_b;
+		G_B3_0 = L_2;
+		goto IL_0009;
+	}
+
+IL_0008:
+	{
+		int32_t L_3 = ___0_a;
+		G_B3_0 = L_3;
+	}
+
+IL_0009:
+	{
+		V_0 = G_B3_0;
+		goto IL_000c;
+	}
+
+IL_000c:
+	{
+		int32_t L_4 = V_0;
+		return L_4;
+	}
+}
+// Method Definition Index: 64080
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 Vector2_op_Implicit_mE8EBEE9291F11BB02F062D6E000F4798968CBD96_inline (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_v, const RuntimeMethod* method) 
+{
+	Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	{
+		il2cpp_codegen_initobj((&V_0), sizeof(Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_0 = ___0_v;
+		float L_1 = L_0.___x;
+		(&V_0)->___x = L_1;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_2 = ___0_v;
+		float L_3 = L_2.___y;
+		(&V_0)->___y = L_3;
+		Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 L_4 = V_0;
+		return L_4;
+	}
+}
+// Method Definition Index: 64081
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector2_op_Implicit_m6D9CABB2C791A192867D7A4559D132BE86DD3EB7_inline (Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 ___0_v, const RuntimeMethod* method) 
+{
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	{
+		il2cpp_codegen_initobj((&V_0), sizeof(Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2));
+		Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 L_0 = ___0_v;
+		float L_1 = L_0.___x;
+		(&V_0)->___x = L_1;
+		Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 L_2 = ___0_v;
+		float L_3 = L_2.___y;
+		(&V_0)->___y = L_3;
+		(&V_0)->___z = (0.0f);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_4 = V_0;
+		return L_4;
+	}
+}
+// Method Definition Index: 131989
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR AsteroidDefinitionU5BU5D_tBFF455AEF363CCA9AD627A7BE225FF1013BBAC04* PlanetDefinition_get_AsteroidTypes_mE1C79D48B07E8EC7DF76D476D21574B9638483B0_inline (PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/PlanetDefinition.cs:22>
+		AsteroidDefinitionU5BU5D_tBFF455AEF363CCA9AD627A7BE225FF1013BBAC04* L_0 = __this->____asteroidTypes;
+		return L_0;
+	}
+}
+// Method Definition Index: 131984
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* PlanetDefinition_get_DisplayName_m9B90C34BBDD2E66775A13EBF6FA084E31173B0A4_inline (PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/PlanetDefinition.cs:17>
+		String_t* L_0 = __this->____displayName;
+		return L_0;
+	}
+}
+// Method Definition Index: 131924
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float AsteroidDefinition_get_Rarity_mF437404B743658CD88A81189FAECDEB22DE4563A_inline (AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/AsteroidDefinition.cs:19>
+		float L_0 = __this->____rarity;
+		return L_0;
+	}
+}
+// Method Definition Index: 64008
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t Mathf_Max_m7FA442918DE37E3A00106D1F2E789D65829792B8_inline (int32_t ___0_a, int32_t ___1_b, const RuntimeMethod* method) 
+{
+	int32_t V_0 = 0;
+	int32_t G_B3_0 = 0;
+	{
+		int32_t L_0 = ___0_a;
+		int32_t L_1 = ___1_b;
+		if ((((int32_t)L_0) > ((int32_t)L_1)))
+		{
+			goto IL_0008;
+		}
+	}
+	{
+		int32_t L_2 = ___1_b;
+		G_B3_0 = L_2;
+		goto IL_0009;
+	}
+
+IL_0008:
+	{
+		int32_t L_3 = ___0_a;
+		G_B3_0 = L_3;
+	}
+
+IL_0009:
+	{
+		V_0 = G_B3_0;
+		goto IL_000c;
+	}
+
+IL_000c:
+	{
+		int32_t L_4 = V_0;
+		return L_4;
+	}
+}
+// Method Definition Index: 130719
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* Asteroid_get_Definition_m46EC7FF414861479BD994A979FE4526B15827BE9_inline (Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/Asteroid.cs:13>
+		AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* L_0 = __this->___U3CDefinitionU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 131921
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* AsteroidDefinition_get_MineralType_m1F1D8CC7612117CDA1E8C6B490BD695C19E4124B_inline (AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/AsteroidDefinition.cs:16>
+		String_t* L_0 = __this->____mineralType;
+		return L_0;
+	}
+}
+// Method Definition Index: 131926
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* AsteroidDefinition_get_ModelPrefab_mE05A5C7658D3150A8D9B40A34B3D15BFF1755D06_inline (AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/AsteroidDefinition.cs:21>
+		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_0 = __this->____modelPrefab;
+		return L_0;
+	}
+}
+// Method Definition Index: 63910
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector3_get_one_mC9B289F1E15C42C597180C9FE6FB492495B51D02_inline (const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_0 = ((Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2_StaticFields*)il2cpp_codegen_static_fields_for(Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2_il2cpp_TypeInfo_var))->___oneVector;
+		return L_0;
+	}
+}
+// Method Definition Index: 63920
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector3_op_Multiply_m87BA7C578F96C8E49BB07088DAAC4649F83B0353_inline (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_a, float ___1_d, const RuntimeMethod* method) 
+{
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	{
+		il2cpp_codegen_initobj((&V_0), sizeof(Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_0 = ___0_a;
+		float L_1 = L_0.___x;
+		float L_2 = ___1_d;
+		(&V_0)->___x = ((float)il2cpp_codegen_multiply(L_1, L_2));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_3 = ___0_a;
+		float L_4 = L_3.___y;
+		float L_5 = ___1_d;
+		(&V_0)->___y = ((float)il2cpp_codegen_multiply(L_4, L_5));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_6 = ___0_a;
+		float L_7 = L_6.___z;
+		float L_8 = ___1_d;
+		(&V_0)->___z = ((float)il2cpp_codegen_multiply(L_7, L_8));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_9 = V_0;
+		return L_9;
+	}
+}
+// Method Definition Index: 63900
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Vector3_Distance_m2314DB9B8BD01157E013DF87BEA557375C7F9FF9_inline (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_a, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___1_b, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Math_tEB65DE7CA8B083C412C969C92981C030865486CE_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	float V_0 = 0.0f;
+	float V_1 = 0.0f;
+	float V_2 = 0.0f;
+	float V_3 = 0.0f;
+	{
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_0 = ___0_a;
+		float L_1 = L_0.___x;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_2 = ___1_b;
+		float L_3 = L_2.___x;
+		V_0 = ((float)il2cpp_codegen_subtract(L_1, L_3));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_4 = ___0_a;
+		float L_5 = L_4.___y;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_6 = ___1_b;
+		float L_7 = L_6.___y;
+		V_1 = ((float)il2cpp_codegen_subtract(L_5, L_7));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_8 = ___0_a;
+		float L_9 = L_8.___z;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_10 = ___1_b;
+		float L_11 = L_10.___z;
+		V_2 = ((float)il2cpp_codegen_subtract(L_9, L_11));
+		float L_12 = V_0;
+		float L_13 = V_0;
+		float L_14 = V_1;
+		float L_15 = V_1;
+		float L_16 = V_2;
+		float L_17 = V_2;
+		il2cpp_codegen_runtime_class_init_inline(Math_tEB65DE7CA8B083C412C969C92981C030865486CE_il2cpp_TypeInfo_var);
+		double L_18;
+		L_18 = sqrt(((double)((float)il2cpp_codegen_add(((float)il2cpp_codegen_add(((float)il2cpp_codegen_multiply(L_12, L_13)), ((float)il2cpp_codegen_multiply(L_14, L_15)))), ((float)il2cpp_codegen_multiply(L_16, L_17))))));
+		V_3 = ((float)L_18);
+		goto IL_0040;
+	}
+
+IL_0040:
+	{
+		float L_19 = V_3;
+		return L_19;
+	}
+}
+// Method Definition Index: 63877
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector3_MoveTowards_m0363264647799F3173AC37F8E819F98298249B08_inline (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_current, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___1_target, float ___2_maxDistanceDelta, const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Math_tEB65DE7CA8B083C412C969C92981C030865486CE_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	float V_0 = 0.0f;
+	float V_1 = 0.0f;
+	float V_2 = 0.0f;
+	float V_3 = 0.0f;
+	float V_4 = 0.0f;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 V_5;
+	memset((&V_5), 0, sizeof(V_5));
+	bool V_6 = false;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 V_7;
+	memset((&V_7), 0, sizeof(V_7));
+	int32_t G_B4_0 = 0;
+	int32_t G_B6_0 = 0;
+	{
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_0 = ___1_target;
+		float L_1 = L_0.___x;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_2 = ___0_current;
+		float L_3 = L_2.___x;
+		V_0 = ((float)il2cpp_codegen_subtract(L_1, L_3));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_4 = ___1_target;
+		float L_5 = L_4.___y;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_6 = ___0_current;
+		float L_7 = L_6.___y;
+		V_1 = ((float)il2cpp_codegen_subtract(L_5, L_7));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_8 = ___1_target;
+		float L_9 = L_8.___z;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_10 = ___0_current;
+		float L_11 = L_10.___z;
+		V_2 = ((float)il2cpp_codegen_subtract(L_9, L_11));
+		float L_12 = V_0;
+		float L_13 = V_0;
+		float L_14 = V_1;
+		float L_15 = V_1;
+		float L_16 = V_2;
+		float L_17 = V_2;
+		V_3 = ((float)il2cpp_codegen_add(((float)il2cpp_codegen_add(((float)il2cpp_codegen_multiply(L_12, L_13)), ((float)il2cpp_codegen_multiply(L_14, L_15)))), ((float)il2cpp_codegen_multiply(L_16, L_17))));
+		float L_18 = V_3;
+		if ((((float)L_18) == ((float)(0.0f))))
+		{
+			goto IL_0055;
+		}
+	}
+	{
+		float L_19 = ___2_maxDistanceDelta;
+		if ((!(((float)L_19) >= ((float)(0.0f)))))
+		{
+			goto IL_0052;
+		}
+	}
+	{
+		float L_20 = V_3;
+		float L_21 = ___2_maxDistanceDelta;
+		float L_22 = ___2_maxDistanceDelta;
+		G_B4_0 = ((((int32_t)((!(((float)L_20) <= ((float)((float)il2cpp_codegen_multiply(L_21, L_22)))))? 1 : 0)) == ((int32_t)0))? 1 : 0);
+		goto IL_0053;
+	}
+
+IL_0052:
+	{
+		G_B4_0 = 0;
+	}
+
+IL_0053:
+	{
+		G_B6_0 = G_B4_0;
+		goto IL_0056;
+	}
+
+IL_0055:
+	{
+		G_B6_0 = 1;
+	}
+
+IL_0056:
+	{
+		V_6 = (bool)G_B6_0;
+		bool L_23 = V_6;
+		if (!L_23)
+		{
+			goto IL_0061;
+		}
+	}
+	{
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_24 = ___1_target;
+		V_7 = L_24;
+		goto IL_00ad;
+	}
+
+IL_0061:
+	{
+		float L_25 = V_3;
+		il2cpp_codegen_runtime_class_init_inline(Math_tEB65DE7CA8B083C412C969C92981C030865486CE_il2cpp_TypeInfo_var);
+		double L_26;
+		L_26 = sqrt(((double)L_25));
+		V_4 = ((float)L_26);
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_27 = ___0_current;
+		float L_28 = L_27.___x;
+		float L_29 = V_0;
+		float L_30 = V_4;
+		float L_31 = ___2_maxDistanceDelta;
+		(&V_5)->___x = ((float)il2cpp_codegen_add(L_28, ((float)il2cpp_codegen_multiply(((float)(L_29/L_30)), L_31))));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_32 = ___0_current;
+		float L_33 = L_32.___y;
+		float L_34 = V_1;
+		float L_35 = V_4;
+		float L_36 = ___2_maxDistanceDelta;
+		(&V_5)->___y = ((float)il2cpp_codegen_add(L_33, ((float)il2cpp_codegen_multiply(((float)(L_34/L_35)), L_36))));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_37 = ___0_current;
+		float L_38 = L_37.___z;
+		float L_39 = V_2;
+		float L_40 = V_4;
+		float L_41 = ___2_maxDistanceDelta;
+		(&V_5)->___z = ((float)il2cpp_codegen_add(L_38, ((float)il2cpp_codegen_multiply(((float)(L_39/L_40)), L_41))));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_42 = V_5;
+		V_7 = L_42;
+		goto IL_00ad;
+	}
+
+IL_00ad:
+	{
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_43 = V_7;
+		return L_43;
+	}
+}
+// Method Definition Index: 63918
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector3_op_Subtraction_mE42023FF80067CB44A1D4A27EB7CF2B24CABB828_inline (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_a, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___1_b, const RuntimeMethod* method) 
+{
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	{
+		il2cpp_codegen_initobj((&V_0), sizeof(Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_0 = ___0_a;
+		float L_1 = L_0.___x;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_2 = ___1_b;
+		float L_3 = L_2.___x;
+		(&V_0)->___x = ((float)il2cpp_codegen_subtract(L_1, L_3));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_4 = ___0_a;
+		float L_5 = L_4.___y;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_6 = ___1_b;
+		float L_7 = L_6.___y;
+		(&V_0)->___y = ((float)il2cpp_codegen_subtract(L_5, L_7));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_8 = ___0_a;
+		float L_9 = L_8.___z;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_10 = ___1_b;
+		float L_11 = L_10.___z;
+		(&V_0)->___z = ((float)il2cpp_codegen_subtract(L_9, L_11));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_12 = V_0;
+		return L_12;
+	}
+}
+// Method Definition Index: 63904
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Vector3_get_sqrMagnitude_m43C27DEC47C4811FB30AB474FF2131A963B66FC8_inline (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2* __this, const RuntimeMethod* method) 
+{
+	{
+		float L_0 = __this->___x;
+		float L_1 = __this->___x;
+		float L_2 = __this->___y;
+		float L_3 = __this->___y;
+		float L_4 = __this->___z;
+		float L_5 = __this->___z;
+		return ((float)il2cpp_codegen_add(((float)il2cpp_codegen_add(((float)il2cpp_codegen_multiply(L_0, L_1)), ((float)il2cpp_codegen_multiply(L_2, L_3)))), ((float)il2cpp_codegen_multiply(L_4, L_5))));
+	}
+}
+// Method Definition Index: 63950
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 Quaternion_LookRotation_mDB2CCA75B8E1AB98104F2A6E1A1EA57D0D1298D7_inline (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_forward, const RuntimeMethod* method) 
+{
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	{
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_0;
+		L_0 = Vector3_get_up_m128AF3FDC820BF59D5DE86D973E7DE3F20C3AEBA_inline(NULL);
+		V_0 = L_0;
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 L_1;
+		L_1 = Quaternion_Internal_LookRotation_m489E6A5E916949FFE91C0B11A60C6016D996C1E0((&___0_forward), (&V_0), NULL);
+		return L_1;
+	}
+}
+// Method Definition Index: 63968
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 Quaternion_RotateTowards_m50EF9D609C80CD423CDA856EA3481DE2004633A3_inline (Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 ___0_from, Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 ___1_to, float ___2_maxDegreesDelta, const RuntimeMethod* method) 
+{
+	float V_0 = 0.0f;
+	bool V_1 = false;
+	Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 V_2;
+	memset((&V_2), 0, sizeof(V_2));
+	{
+		float L_0;
+		L_0 = Quaternion_Angle_m6F61044E1B167471D24A2B26A85AF2C064F46BC9_inline((&___0_from), (&___1_to), NULL);
+		V_0 = L_0;
+		float L_1 = V_0;
+		V_1 = (bool)((((float)L_1) == ((float)(0.0f)))? 1 : 0);
+		bool L_2 = V_1;
+		if (!L_2)
+		{
+			goto IL_001b;
+		}
+	}
+	{
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 L_3 = ___1_to;
+		V_2 = L_3;
+		goto IL_0034;
+	}
+
+IL_001b:
+	{
+		float L_4 = ___2_maxDegreesDelta;
+		float L_5 = V_0;
+		float L_6;
+		L_6 = Mathf_Min_m747CA71A9483CDB394B13BD0AD048EE17E48FFE4_inline((1.0f), ((float)(L_4/L_5)), NULL);
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 L_7;
+		L_7 = Quaternion_SlerpUnclamped_m6EE729E421AF8BF8672942540951427AF8AC856C_inline((&___0_from), (&___1_to), L_6, NULL);
+		V_2 = L_7;
+		goto IL_0034;
+	}
+
+IL_0034:
+	{
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 L_8 = V_2;
+		return L_8;
+	}
+}
+// Method Definition Index: 64031
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Mathf_Repeat_m6F1560A163481BB311D685294E1B463C3E4EB3BA_inline (float ___0_t, float ___1_length, const RuntimeMethod* method) 
+{
+	float V_0 = 0.0f;
+	{
+		float L_0 = ___0_t;
+		float L_1 = ___0_t;
+		float L_2 = ___1_length;
+		float L_3;
+		L_3 = floorf(((float)(L_1/L_2)));
+		float L_4 = ___1_length;
+		float L_5 = ___1_length;
+		float L_6;
+		L_6 = Mathf_Clamp_mEB9AEA827D27D20FCC787F7375156AF46BB12BBF_inline(((float)il2cpp_codegen_subtract(L_0, ((float)il2cpp_codegen_multiply(L_3, L_4)))), (0.0f), L_5, NULL);
+		V_0 = L_6;
+		goto IL_001b;
+	}
+
+IL_001b:
+	{
+		float L_7 = V_0;
+		return L_7;
+	}
+}
+// Method Definition Index: 63965
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 Quaternion_Euler_m9262AB29E3E9CE94EF71051F38A28E82AEC73F90_inline (float ___0_x, float ___1_y, float ___2_z, const RuntimeMethod* method) 
+{
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	{
+		il2cpp_codegen_initobj((&V_0), sizeof(Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2));
+		float L_0 = ___0_x;
+		(&V_0)->___x = ((float)il2cpp_codegen_multiply(L_0, (0.0174532924f)));
+		float L_1 = ___1_y;
+		(&V_0)->___y = ((float)il2cpp_codegen_multiply(L_1, (0.0174532924f)));
+		float L_2 = ___2_z;
+		(&V_0)->___z = ((float)il2cpp_codegen_multiply(L_2, (0.0174532924f)));
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 L_3;
+		L_3 = Quaternion_Internal_FromEulerRad_mD0C4C0EFE1D70EC0EA4A92B11F1A4D5B0A134E49((&V_0), NULL);
+		return L_3;
+	}
+}
+// Method Definition Index: 63911
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector3_get_forward_mAA55A7034304DF8B2152EAD49AE779FC4CA2EB4A_inline (const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_0 = ((Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2_StaticFields*)il2cpp_codegen_static_fields_for(Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2_il2cpp_TypeInfo_var))->___forwardVector;
+		return L_0;
+	}
+}
+// Method Definition Index: 63917
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector3_op_Addition_m78C0EC70CB66E8DCAC225743D82B268DAEE92067_inline (Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___0_a, Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___1_b, const RuntimeMethod* method) 
+{
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 V_0;
+	memset((&V_0), 0, sizeof(V_0));
+	{
+		il2cpp_codegen_initobj((&V_0), sizeof(Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_0 = ___0_a;
+		float L_1 = L_0.___x;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_2 = ___1_b;
+		float L_3 = L_2.___x;
+		(&V_0)->___x = ((float)il2cpp_codegen_add(L_1, L_3));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_4 = ___0_a;
+		float L_5 = L_4.___y;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_6 = ___1_b;
+		float L_7 = L_6.___y;
+		(&V_0)->___y = ((float)il2cpp_codegen_add(L_5, L_7));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_8 = ___0_a;
+		float L_9 = L_8.___z;
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_10 = ___1_b;
+		float L_11 = L_10.___z;
+		(&V_0)->___z = ((float)il2cpp_codegen_add(L_9, L_11));
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_12 = V_0;
+		return L_12;
+	}
+}
+// Method Definition Index: 130761
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t DroneRuntime_get_CargoAmount_m78D7D131E2AE0ACBE4442CD70B873A02F8EA87E6_inline (DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneRuntime.cs:9>
+		int32_t L_0 = __this->___U3CCargoAmountU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 130760
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* DroneRuntime_get_Definition_m124A7D00CDAC10CDFEF4997B6191D19A7E455EE5_inline (DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneRuntime.cs:8>
+		DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* L_0 = __this->___U3CDefinitionU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 131948
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t DroneDefinition_get_CargoCap_m1BCA7661910C280D60CAA6779EC56CD3F8B20751_inline (DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/DroneDefinition.cs:17>
+		int32_t L_0 = __this->____cargoCap;
+		return L_0;
+	}
+}
+// Method Definition Index: 130762
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void DroneRuntime_set_CargoAmount_mF99DD5E095D858C53F043E7653C6E6BF8BB01B0C_inline (DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* __this, int32_t ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/DroneRuntime.cs:9>
+		int32_t L_0 = ___0_value;
+		__this->___U3CCargoAmountU3Ek__BackingField = L_0;
+		return;
+	}
+}
+// Method Definition Index: 131967
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float EconomyConfig_get_MaxOfflineHours_m27C723AEF635D7A46084272EE14281433FB11639_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:68>
+		float L_0 = __this->____maxOfflineHours;
+		return L_0;
+	}
+}
+// Method Definition Index: 131966
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float EconomyConfig_get_IdleMiningRate_mAE386036D06761D813CB566DE6B0D662BA696E7A_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:67>
+		float L_0 = __this->____idleMiningRate;
+		return L_0;
+	}
+}
+// Method Definition Index: 64006
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Mathf_Max_mF5379E63D2BBAC76D090748695D833934F8AD051_inline (float ___0_a, float ___1_b, const RuntimeMethod* method) 
+{
+	float V_0 = 0.0f;
+	float G_B3_0 = 0.0f;
+	{
+		float L_0 = ___0_a;
+		float L_1 = ___1_b;
+		if ((((float)L_0) > ((float)L_1)))
+		{
+			goto IL_0008;
+		}
+	}
+	{
+		float L_2 = ___1_b;
+		G_B3_0 = L_2;
+		goto IL_0009;
+	}
+
+IL_0008:
+	{
+		float L_3 = ___0_a;
+		G_B3_0 = L_3;
+	}
+
+IL_0009:
+	{
+		V_0 = G_B3_0;
+		goto IL_000c;
+	}
+
+IL_000c:
+	{
+		float L_4 = V_0;
+		return L_4;
+	}
+}
+// Method Definition Index: 130774
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t IdleMiningSession_get_ClaimTapsRequired_m6307FD9F00111F4A35AA5A86513C495394C0CB87_inline (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:15>
+		int32_t L_0 = __this->___U3CClaimTapsRequiredU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 130776
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void IdleMiningSession_set_ClaimTapsRemaining_m2238335211D89ED2EC1B86E5DA48AFEB6107F7BB_inline (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, int32_t ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:16>
+		int32_t L_0 = ___0_value;
+		__this->___U3CClaimTapsRemainingU3Ek__BackingField = L_0;
+		return;
+	}
+}
+// Method Definition Index: 130771
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void IdleMiningSession_set_Stage_m3325A7C137559EFF18D67C7802400D369BD692AC_inline (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, int32_t ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:13>
+		int32_t L_0 = ___0_value;
+		__this->___U3CStageU3Ek__BackingField = L_0;
+		return;
+	}
+}
+// Method Definition Index: 130770
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t IdleMiningSession_get_Stage_m547A9299CDCBC46129B15218DE70B358A7457312_inline (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:13>
+		int32_t L_0 = __this->___U3CStageU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 64023
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Mathf_Clamp01_mA7E048DBDA832D399A581BE4D6DED9FA44CE0F14_inline (float ___0_value, const RuntimeMethod* method) 
+{
+	bool V_0 = false;
+	float V_1 = 0.0f;
+	bool V_2 = false;
+	{
+		float L_0 = ___0_value;
+		V_0 = (bool)((((float)L_0) < ((float)(0.0f)))? 1 : 0);
+		bool L_1 = V_0;
+		if (!L_1)
+		{
+			goto IL_0015;
+		}
+	}
+	{
+		V_1 = (0.0f);
+		goto IL_002d;
+	}
+
+IL_0015:
+	{
+		float L_2 = ___0_value;
+		V_2 = (bool)((((float)L_2) > ((float)(1.0f)))? 1 : 0);
+		bool L_3 = V_2;
+		if (!L_3)
+		{
+			goto IL_0029;
+		}
+	}
+	{
+		V_1 = (1.0f);
+		goto IL_002d;
+	}
+
+IL_0029:
+	{
+		float L_4 = ___0_value;
+		V_1 = L_4;
+		goto IL_002d;
+	}
+
+IL_002d:
+	{
+		float L_5 = V_1;
+		return L_5;
+	}
+}
+// Method Definition Index: 130773
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void IdleMiningSession_set_MiningProgress01_m82ABC86363B457D3D6243EBBB2F58DEB6BC73749_inline (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, float ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:14>
+		float L_0 = ___0_value;
+		__this->___U3CMiningProgress01U3Ek__BackingField = L_0;
+		return;
+	}
+}
+// Method Definition Index: 130775
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t IdleMiningSession_get_ClaimTapsRemaining_mFC2664C261EDBC4805E0DEC0D885D73858614D8A_inline (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:16>
+		int32_t L_0 = __this->___U3CClaimTapsRemainingU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 130797
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* MiningController_get_CurrentIdleSession_m9DCDD0E6C3A9073CBE660CB651E14F9CC20D64EF_inline (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:24>
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_0 = __this->___U3CCurrentIdleSessionU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 130769
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* IdleMiningSession_get_Asteroid_mF059A51CA217E34F32F4009D308982A63BCFDEB9_inline (IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/IdleMiningSession.cs:12>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_0 = __this->___U3CAsteroidU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 63909
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector3_get_zero_m0C1249C3F25B1C70EAD3CC8B31259975A457AE39_inline (const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_0 = ((Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2_StaticFields*)il2cpp_codegen_static_fields_for(Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2_il2cpp_TypeInfo_var))->___zeroVector;
+		return L_0;
+	}
+}
+// Method Definition Index: 63734
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void Color__ctor_mCD6889CDE39F18704CD6EA8E2EFBFA48BA3E13B0_inline (Color_tD001788D726C3A7F1379BEED0260B9591F440C1F* __this, float ___0_r, float ___1_g, float ___2_b, const RuntimeMethod* method) 
+{
+	{
+		float L_0 = ___0_r;
+		__this->___r = L_0;
+		float L_1 = ___1_g;
+		__this->___g = L_1;
+		float L_2 = ___2_b;
+		__this->___b = L_2;
+		__this->___a = (1.0f);
+		return;
+	}
+}
+// Method Definition Index: 130794
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void MiningController_set_Drone_m1CBB4F68183C623A35881D9DAC3EE1A799AE3058_inline (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:21>
+		DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* L_0 = ___0_value;
+		__this->___U3CDroneU3Ek__BackingField = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CDroneU3Ek__BackingField), (void*)L_0);
+		return;
+	}
+}
+// Method Definition Index: 130795
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* MiningController_get_CurrentTarget_m575E661CF18C8C808BD1715E112DBF512CA7C320_inline (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:22>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_0 = __this->___U3CCurrentTargetU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 130793
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* MiningController_get_Drone_mCC5FEDE0CDCA9B6A307E71E7E3C8DDF5E35843F8_inline (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:21>
+		DroneRuntime_t6289073D7E7333FCFE2ABC30DD2ABFD90ABD1FEC* L_0 = __this->___U3CDroneU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 131968
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float EconomyConfig_get_IdleSessionDuration_m7577026567440F6DFA3AC706FD4FB8FA23765ABF_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:69>
+		float L_0 = __this->____idleSessionDuration;
+		return L_0;
+	}
+}
+// Method Definition Index: 131969
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_IdleSessionClaimTaps_mA16EC38BEC077D5D3117A149FCD56633A7BFBACD_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:70>
+		int32_t L_0 = __this->____idleSessionClaimTaps;
+		return L_0;
+	}
+}
+// Method Definition Index: 130798
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void MiningController_set_CurrentIdleSession_m03C3E70F8CA7DBF9209CD9194EAC707681828544_inline (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:24>
+		IdleMiningSession_t59841C955FF35E01ED65B655EF2F93BB53A5D149* L_0 = ___0_value;
+		__this->___U3CCurrentIdleSessionU3Ek__BackingField = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CCurrentIdleSessionU3Ek__BackingField), (void*)L_0);
+		return;
+	}
+}
+// Method Definition Index: 130796
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void MiningController_set_CurrentTarget_m041D4A66BB466BBDDB24B2CC18270093E181ABEF_inline (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:22>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_0 = ___0_value;
+		__this->___U3CCurrentTargetU3Ek__BackingField = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CCurrentTargetU3Ek__BackingField), (void*)L_0);
+		return;
+	}
+}
+// Method Definition Index: 130733
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR RuntimeObject* AsteroidSpawner_get_ActiveAsteroids_m89B1CFD46F1FCE1BD79D2894B756CF481A7DFE4A_inline (AsteroidSpawner_t735E4ACC84F7BAB3362E93EAF7C0A7027BA7D083* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/AsteroidSpawner.cs:21>
+		List_1_t4242EE8988D7F1B12FE7C79DFC04F0D71345197E* L_0 = __this->____active;
+		return L_0;
+	}
+}
+// Method Definition Index: 130792
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void MiningController_set_Phase_mF0A188AEF665BA9F6FF76C2188E6CE22F4CFD591_inline (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, int32_t ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:20>
+		int32_t L_0 = ___0_value;
+		__this->___U3CPhaseU3Ek__BackingField = L_0;
+		return;
+	}
+}
+// Method Definition Index: 131925
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t AsteroidDefinition_get_CoinsPerUnit_mB475756F13E4FB4BFA247F1F7E35BBA4A310B76F_inline (AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/AsteroidDefinition.cs:20>
+		int32_t L_0 = __this->____coinsPerUnit;
+		return L_0;
+	}
+}
+// Method Definition Index: 130800
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void MiningController_set_ClaimingAsteroid_m9A07BEE3597629C0C3FCC42C0B42970D1D6A0222_inline (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* ___0_value, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:25>
+		Asteroid_t91540A1C739783C8BF8E0EA9BC6F2EA775A086FE* L_0 = ___0_value;
+		__this->___U3CClaimingAsteroidU3Ek__BackingField = L_0;
+		Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CClaimingAsteroidU3Ek__BackingField), (void*)L_0);
+		return;
+	}
+}
+// Method Definition Index: 131970
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float EconomyConfig_get_AsteroidRespawnHours_m334566DDB9DB4E65A9920F27C0978DDBDB309231_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:71>
+		float L_0 = __this->____asteroidRespawnHours;
+		return L_0;
+	}
+}
+// Method Definition Index: 130791
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t MiningController_get_Phase_m6C23A4972433CE18F4A948BF37757C59EE2D35F2_inline (MiningController_t3D845BB71C8CC7E9E71DC4D03F490DC74512F8E2* __this, const RuntimeMethod* method) 
+{
+	{
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Mining/MiningController.cs:20>
+		int32_t L_0 = __this->___U3CPhaseU3Ek__BackingField;
+		return L_0;
+	}
+}
+// Method Definition Index: 888
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void Action_1_Invoke_mF2422B2DD29F74CE66F791C3F68E288EC7C3DB9E_gshared_inline (Action_1_t6F9EB113EB3F16226AEF811A2744F4111C116C87* __this, RuntimeObject* ___0_obj, const RuntimeMethod* method) 
+{
+	typedef void (*FunctionPointerType) (RuntimeObject*, RuntimeObject*, const RuntimeMethod*);
+	((FunctionPointerType)__this->___invoke_impl)((Il2CppObject*)__this->___method_code, ___0_obj, reinterpret_cast<RuntimeMethod*>(__this->___method));
+}
+// Method Definition Index: 11409
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t List_1_get_Count_mA9EACD83C83F6D35C3EEC79B165244E0FBBED3CC_gshared_inline (List_1_tFE951BF9E0D595431590167E85F992760D743EEF* __this, const RuntimeMethod* method) 
+{
+	{
+		int32_t L_0 = __this->____size;
+		return L_0;
+	}
+}
+// Method Definition Index: 11409
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t List_1_get_Count_m4407E4C389F22B8CEC282C15D56516658746C383_gshared_inline (List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D* __this, const RuntimeMethod* method) 
+{
+	{
+		int32_t L_0 = __this->____size;
+		return L_0;
+	}
+}
+// Method Definition Index: 11471
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR RuntimeObject* Enumerator_get_Current_m6330F15D18EE4F547C05DF9BF83C5EB710376027_gshared_inline (Enumerator_t9473BAB568A27E2339D48C1F91319E0F6D244D7A* __this, const RuntimeMethod* method) 
+{
+	{
+		RuntimeObject* L_0 = __this->____current;
+		return L_0;
+	}
+}
+// Method Definition Index: 11428
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void List_1_Clear_m16C1F2C61FED5955F10EB36BC1CB2DF34B128994_gshared_inline (List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D* __this, const RuntimeMethod* method) 
+{
+	int32_t V_0 = 0;
+	{
+		int32_t L_0 = __this->____version;
+		__this->____version = ((int32_t)il2cpp_codegen_add(L_0, 1));
+	}
+	{
+		int32_t L_1 = __this->____size;
+		V_0 = L_1;
+		__this->____size = 0;
+		int32_t L_2 = V_0;
+		if ((((int32_t)L_2) <= ((int32_t)0)))
+		{
+			goto IL_003c;
+		}
+	}
+	{
+		ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918* L_3 = __this->____items;
+		int32_t L_4 = V_0;
+		Array_Clear_m50BAA3751899858B097D3FF2ED31F284703FE5CB((RuntimeArray*)L_3, 0, L_4, NULL);
+		return;
+	}
+
+IL_003c:
+	{
+		return;
+	}
+}
+// Method Definition Index: 11420
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void List_1_Add_m8515B507329731A3BD103CDE2FB190112B081111_gshared_inline (List_1_tFE951BF9E0D595431590167E85F992760D743EEF* __this, PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 ___0_item, const RuntimeMethod* method) 
+{
+	PendingRespawnU5BU5D_tF350AA9CF27C85125C7E7B71930A69376757559E* V_0 = NULL;
+	int32_t V_1 = 0;
+	{
+		int32_t L_0 = __this->____version;
+		__this->____version = ((int32_t)il2cpp_codegen_add(L_0, 1));
+		PendingRespawnU5BU5D_tF350AA9CF27C85125C7E7B71930A69376757559E* L_1 = __this->____items;
+		V_0 = L_1;
+		int32_t L_2 = __this->____size;
+		V_1 = L_2;
+		int32_t L_3 = V_1;
+		PendingRespawnU5BU5D_tF350AA9CF27C85125C7E7B71930A69376757559E* L_4 = V_0;
+		NullCheck(L_4);
+		if ((!(((uint32_t)L_3) < ((uint32_t)((int32_t)(((RuntimeArray*)L_4)->max_length))))))
+		{
+			goto IL_0034;
+		}
+	}
+	{
+		int32_t L_5 = V_1;
+		__this->____size = ((int32_t)il2cpp_codegen_add(L_5, 1));
+		PendingRespawnU5BU5D_tF350AA9CF27C85125C7E7B71930A69376757559E* L_6 = V_0;
+		int32_t L_7 = V_1;
+		PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 L_8 = ___0_item;
+		NullCheck(L_6);
+		(L_6)->SetAt(static_cast<il2cpp_array_size_t>(L_7), (PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390)L_8);
+		return;
+	}
+
+IL_0034:
+	{
+		PendingRespawn_t3E1343E0793781C7141FD058D653E9438996D390 L_9 = ___0_item;
+		List_1_AddWithResize_m3D6C8AA7B48945A5EA47E49BA5695473BAE9D0A5(__this, L_9, il2cpp_rgctx_method(method->klass->rgctx_data, 14));
+		return;
+	}
+}
+// Method Definition Index: 11420
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void List_1_Add_mEBCF994CC3814631017F46A387B1A192ED6C85C7_gshared_inline (List_1_tA239CB83DE5615F348BB0507E45F490F4F7C9A8D* __this, RuntimeObject* ___0_item, const RuntimeMethod* method) 
+{
+	ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918* V_0 = NULL;
+	int32_t V_1 = 0;
+	{
+		int32_t L_0 = __this->____version;
+		__this->____version = ((int32_t)il2cpp_codegen_add(L_0, 1));
+		ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918* L_1 = __this->____items;
+		V_0 = L_1;
+		int32_t L_2 = __this->____size;
+		V_1 = L_2;
+		int32_t L_3 = V_1;
+		ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918* L_4 = V_0;
+		NullCheck(L_4);
+		if ((!(((uint32_t)L_3) < ((uint32_t)((int32_t)(((RuntimeArray*)L_4)->max_length))))))
+		{
+			goto IL_0034;
+		}
+	}
+	{
+		int32_t L_5 = V_1;
+		__this->____size = ((int32_t)il2cpp_codegen_add(L_5, 1));
+		ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918* L_6 = V_0;
+		int32_t L_7 = V_1;
+		RuntimeObject* L_8 = ___0_item;
+		NullCheck(L_6);
+		(L_6)->SetAt(static_cast<il2cpp_array_size_t>(L_7), (RuntimeObject*)L_8);
+		return;
+	}
+
+IL_0034:
+	{
+		RuntimeObject* L_9 = ___0_item;
+		List_1_AddWithResize_m79A9BF770BEF9C06BE40D5401E55E375F2726CC4(__this, L_9, il2cpp_rgctx_method(method->klass->rgctx_data, 14));
+		return;
+	}
+}
+// Method Definition Index: 11428
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void List_1_Clear_m53590F637286193B0CCCA215C8FF8236D2E6B888_gshared_inline (List_1_tFE951BF9E0D595431590167E85F992760D743EEF* __this, const RuntimeMethod* method) 
+{
+	int32_t V_0 = 0;
+	{
+		int32_t L_0 = __this->____version;
+		__this->____version = ((int32_t)il2cpp_codegen_add(L_0, 1));
+	}
+	{
+		int32_t L_1 = __this->____size;
+		V_0 = L_1;
+		__this->____size = 0;
+		int32_t L_2 = V_0;
+		if ((((int32_t)L_2) <= ((int32_t)0)))
+		{
+			goto IL_003c;
+		}
+	}
+	{
+		PendingRespawnU5BU5D_tF350AA9CF27C85125C7E7B71930A69376757559E* L_3 = __this->____items;
+		int32_t L_4 = V_0;
+		Array_Clear_m50BAA3751899858B097D3FF2ED31F284703FE5CB((RuntimeArray*)L_3, 0, L_4, NULL);
+		return;
+	}
+
+IL_003c:
+	{
+		return;
+	}
+}
+// Method Definition Index: 888
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void Action_1_Invoke_mBF7DDBCD230E9D28EDF45D3E65F907DE1AE0CCBC_gshared_inline (Action_1_tC926860F20D428DA3E93D6FBA36420E904DD903B* __this, int32_t ___0_obj, const RuntimeMethod* method) 
+{
+	typedef void (*FunctionPointerType) (RuntimeObject*, int32_t, const RuntimeMethod*);
+	((FunctionPointerType)__this->___invoke_impl)((Il2CppObject*)__this->___method_code, ___0_obj, reinterpret_cast<RuntimeMethod*>(__this->___method));
+}
+// Method Definition Index: 63913
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 Vector3_get_up_m128AF3FDC820BF59D5DE86D973E7DE3F20C3AEBA_inline (const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	{
+		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_0 = ((Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2_StaticFields*)il2cpp_codegen_static_fields_for(Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2_il2cpp_TypeInfo_var))->___upVector;
+		return L_0;
+	}
+}
+// Method Definition Index: 63961
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Quaternion_Angle_m6F61044E1B167471D24A2B26A85AF2C064F46BC9_inline (Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* ___0_a, Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* ___1_b, const RuntimeMethod* method) 
+{
+	float V_0 = 0.0f;
+	float V_1 = 0.0f;
+	float G_B3_0 = 0.0f;
+	{
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* L_0 = ___0_a;
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* L_1 = ___1_b;
+		float L_2;
+		L_2 = Quaternion_Dot_m80E67A0F9F1FD9EAD0C8EEF7D5396ADF612FA105_inline(L_0, L_1, NULL);
+		float L_3;
+		L_3 = fabsf(L_2);
+		float L_4;
+		L_4 = Mathf_Min_m747CA71A9483CDB394B13BD0AD048EE17E48FFE4_inline(L_3, (1.0f), NULL);
+		V_0 = L_4;
+		float L_5 = V_0;
+		bool L_6;
+		L_6 = Quaternion_IsEqualUsingDot_m9C672201C918C2D1E739F559DBE4406F95997CBD_inline(L_5, NULL);
+		if (L_6)
+		{
+			goto IL_0034;
+		}
+	}
+	{
+		float L_7 = V_0;
+		float L_8;
+		L_8 = acosf(L_7);
+		G_B3_0 = ((float)il2cpp_codegen_multiply(((float)il2cpp_codegen_multiply(L_8, (2.0f))), (57.2957802f)));
+		goto IL_0039;
+	}
+
+IL_0034:
+	{
+		G_B3_0 = (0.0f);
+	}
+
+IL_0039:
+	{
+		V_1 = G_B3_0;
+		goto IL_003c;
+	}
+
+IL_003c:
+	{
+		float L_9 = V_1;
+		return L_9;
+	}
+}
+// Method Definition Index: 64004
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Mathf_Min_m747CA71A9483CDB394B13BD0AD048EE17E48FFE4_inline (float ___0_a, float ___1_b, const RuntimeMethod* method) 
+{
+	float V_0 = 0.0f;
+	float G_B3_0 = 0.0f;
+	{
+		float L_0 = ___0_a;
+		float L_1 = ___1_b;
+		if ((((float)L_0) < ((float)L_1)))
+		{
+			goto IL_0008;
+		}
+	}
+	{
+		float L_2 = ___1_b;
+		G_B3_0 = L_2;
+		goto IL_0009;
+	}
+
+IL_0008:
+	{
+		float L_3 = ___0_a;
+		G_B3_0 = L_3;
+	}
+
+IL_0009:
+	{
+		V_0 = G_B3_0;
+		goto IL_000c;
+	}
+
+IL_000c:
+	{
+		float L_4 = V_0;
+		return L_4;
+	}
+}
+// Method Definition Index: 63942
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 Quaternion_SlerpUnclamped_m6EE729E421AF8BF8672942540951427AF8AC856C_inline (Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* ___0_a, Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* ___1_b, float ___2_t, const RuntimeMethod* method) 
+{
+	{
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* L_0 = ___0_a;
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* L_1 = ___1_b;
+		float L_2 = ___2_t;
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974 L_3;
+		L_3 = Quaternion_Internal_SlerpUnclamped_m4EFC678DD99CE1E8E8AACF1A647558B75E2C231A(L_0, L_1, L_2, NULL);
+		return L_3;
+	}
+}
+// Method Definition Index: 64021
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Mathf_Clamp_mEB9AEA827D27D20FCC787F7375156AF46BB12BBF_inline (float ___0_value, float ___1_min, float ___2_max, const RuntimeMethod* method) 
+{
+	bool V_0 = false;
+	bool V_1 = false;
+	float V_2 = 0.0f;
+	{
+		float L_0 = ___0_value;
+		float L_1 = ___1_min;
+		V_0 = (bool)((((float)L_0) < ((float)L_1))? 1 : 0);
+		bool L_2 = V_0;
+		if (!L_2)
+		{
+			goto IL_000e;
+		}
+	}
+	{
+		float L_3 = ___1_min;
+		___0_value = L_3;
+		goto IL_0019;
+	}
+
+IL_000e:
+	{
+		float L_4 = ___0_value;
+		float L_5 = ___2_max;
+		V_1 = (bool)((((float)L_4) > ((float)L_5))? 1 : 0);
+		bool L_6 = V_1;
+		if (!L_6)
+		{
+			goto IL_0019;
+		}
+	}
+	{
+		float L_7 = ___2_max;
+		___0_value = L_7;
+	}
+
+IL_0019:
+	{
+		float L_8 = ___0_value;
+		V_2 = L_8;
+		goto IL_001d;
+	}
+
+IL_001d:
+	{
+		float L_9 = V_2;
+		return L_9;
+	}
+}
+// Method Definition Index: 63960
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float Quaternion_Dot_m80E67A0F9F1FD9EAD0C8EEF7D5396ADF612FA105_inline (Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* ___0_a, Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* ___1_b, const RuntimeMethod* method) 
+{
+	{
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* L_0 = ___0_a;
+		float L_1 = L_0->___x;
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* L_2 = ___1_b;
+		float L_3 = L_2->___x;
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* L_4 = ___0_a;
+		float L_5 = L_4->___y;
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* L_6 = ___1_b;
+		float L_7 = L_6->___y;
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* L_8 = ___0_a;
+		float L_9 = L_8->___z;
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* L_10 = ___1_b;
+		float L_11 = L_10->___z;
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* L_12 = ___0_a;
+		float L_13 = L_12->___w;
+		Quaternion_tDA59F214EF07D7700B26E40E562F267AF7306974* L_14 = ___1_b;
+		float L_15 = L_14->___w;
+		return ((float)il2cpp_codegen_add(((float)il2cpp_codegen_add(((float)il2cpp_codegen_add(((float)il2cpp_codegen_multiply(L_1, L_3)), ((float)il2cpp_codegen_multiply(L_5, L_7)))), ((float)il2cpp_codegen_multiply(L_9, L_11)))), ((float)il2cpp_codegen_multiply(L_13, L_15))));
+	}
+}
+// Method Definition Index: 63959
+IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR bool Quaternion_IsEqualUsingDot_m9C672201C918C2D1E739F559DBE4406F95997CBD_inline (float ___0_dot, const RuntimeMethod* method) 
+{
+	{
+		float L_0 = ___0_dot;
+		return (bool)((((float)L_0) > ((float)(0.999998987f)))? 1 : 0);
+	}
+}

@@ -7,6 +7,7 @@ using SocialUniverse.Core;
 using SocialUniverse.Config;
 using SocialUniverse.Net;
 using SocialUniverse.Social;
+using TMPro;
 
 namespace SocialUniverse.UI
 {
@@ -16,15 +17,16 @@ namespace SocialUniverse.UI
     // this is a developer/QA panel for the Planet scene.
     public class SocialDebugPanel : MonoBehaviour
     {
-        [SerializeField] private Text _activeChannelText;
-        [SerializeField] private Button _globalChannelButton;
-        [SerializeField] private Button _localChannelButton;
-        [SerializeField] private Text _presenceText;
+        [SerializeField] private TMP_Text _activeChannelText;
+        [SerializeField] private Toggle _globalChannelButton;
+        [SerializeField] private Toggle _localChannelButton;
+        [SerializeField] private TMP_Text _presenceText;
         [SerializeField] private RectTransform _chatLogContent;
         [SerializeField] private ChatMessageItemView _chatMessageItemPrefab;
-        [SerializeField] private InputField _messageInput;
+        [SerializeField] private TMP_InputField _messageInput;
         [SerializeField] private Button _sendButton;
-        [SerializeField] private Text _statusText;
+        [SerializeField] private Button _closeButton;
+        [SerializeField] private TMP_Text _statusText;
 
         [Inject] private ChatChannelController _chat;
         [Inject] private IPresenceService _presence;
@@ -34,12 +36,19 @@ namespace SocialUniverse.UI
 
         private void Awake()
         {
-            _globalChannelButton.onClick.AddListener(() => _ = SwitchChannelAsync(global: true));
-            _localChannelButton.onClick.AddListener(() => _ = SwitchChannelAsync(global: false));
+            _globalChannelButton.onValueChanged.AddListener(value =>
+            {
+                if (value) _ = SwitchChannelAsync(global: true);
+            });
+            _localChannelButton.onValueChanged.AddListener(value =>
+            {
+                if (value) _ = SwitchChannelAsync(global: false);
+            });
             _sendButton.onClick.AddListener(() => _ = SendMessageAsync());
+            if (_closeButton != null) _closeButton.onClick.AddListener(Close);
         }
 
-        private void Start()
+        private void OnEnable()
         {
             EventBus.Subscribe<ChatChannelController.ChatMessageReceivedEvent>(OnChatMessageReceived);
             _presence.PresenceChanged += RefreshPresence;
@@ -49,11 +58,23 @@ namespace SocialUniverse.UI
             RefreshPresence();
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             EventBus.Unsubscribe<ChatChannelController.ChatMessageReceivedEvent>(OnChatMessageReceived);
             _presence.PresenceChanged -= RefreshPresence;
         }
+
+        public async void Open()
+        {
+            gameObject.SetActive(true);
+            await _chat.SwitchToGlobalAsync();
+            _globalChannelButton.SetIsOnWithoutNotify(true);
+            _localChannelButton.SetIsOnWithoutNotify(false);
+            RefreshActiveChannel();
+            RefreshChatLog();
+        }
+
+        public void Close() => gameObject.SetActive(false);
 
         private async Task SwitchChannelAsync(bool global)
         {
@@ -109,12 +130,7 @@ namespace SocialUniverse.UI
 
         private void RefreshPresence()
         {
-            var sb = new StringBuilder();
-            sb.AppendLine($"Shard: {_presence.CurrentShardId ?? "(none)"}");
-            sb.AppendLine($"Players ({_presence.Players.Count}):");
-            foreach (var p in _presence.Players)
-                sb.AppendLine($" - {p.DisplayName} ({p.PlayerId})");
-            _presenceText.text = sb.ToString();
+            _presenceText.text = $"{_presence.CurrentShardId ?? "(none)"} - {_presence.Players.Count} online";
         }
     }
 }

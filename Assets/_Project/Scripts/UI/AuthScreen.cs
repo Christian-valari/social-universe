@@ -24,6 +24,7 @@ namespace SocialUniverse.UI
         [SerializeField] private InputField _regUsernameField;
         [SerializeField] private InputField _regPasswordField;
         [SerializeField] private InputField _regConfirmField;
+        [SerializeField] private InputField _regDisplayNameField;
         [SerializeField] private Text       _regStatusText;
         [SerializeField] private Button     _registerButton;
         [SerializeField] private Button     _goToLoginButton;
@@ -109,9 +110,10 @@ namespace SocialUniverse.UI
 
         private async void OnRegisterClicked()
         {
-            string username = _regUsernameField.text.Trim();
-            string password = _regPasswordField.text;
-            string confirm  = _regConfirmField .text;
+            string username    = _regUsernameField.text.Trim();
+            string password    = _regPasswordField.text;
+            string confirm     = _regConfirmField .text;
+            string displayName = _regDisplayNameField != null ? _regDisplayNameField.text.Trim() : username;
 
             if (!ValidateCredentials(username, password, out string err))
             {
@@ -123,10 +125,15 @@ namespace SocialUniverse.UI
                 _regStatusText.text = "Passwords do not match";
                 return;
             }
+            if (!ValidateDisplayName(displayName, out string nameErr))
+            {
+                _regStatusText.text = nameErr;
+                return;
+            }
 
             SetBusy(true);
             _regStatusText.text = "Creating account…";
-            try   { await _auth.RegisterAsync(username, password); }
+            try   { await _auth.RegisterAsync(username, password, displayName); }
             catch (Exception ex) { _regStatusText.text = FriendlyError(ex); SetBusy(false); }
         }
 
@@ -157,6 +164,22 @@ namespace SocialUniverse.UI
             if (password.Length < 6)
             {
                 error = "Password must be at least 6 characters";
+                return false;
+            }
+            error = null;
+            return true;
+        }
+
+        private static bool ValidateDisplayName(string displayName, out string error)
+        {
+            if (string.IsNullOrWhiteSpace(displayName) || displayName.Length < 2)
+            {
+                error = "Display name must be at least 2 characters";
+                return false;
+            }
+            if (displayName.Length > 20)
+            {
+                error = "Display name must be 20 characters or fewer";
                 return false;
             }
             error = null;

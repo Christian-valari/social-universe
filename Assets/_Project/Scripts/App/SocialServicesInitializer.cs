@@ -40,7 +40,7 @@ namespace SocialUniverse.App
         {
             try
             {
-                await _chat.ConnectAsync(_auth.PlayerId);
+                await _chat.ConnectAsync(_auth.DisplayName ?? _auth.Username ?? _auth.PlayerId);
                 await _channels.SwitchToGlobalAsync();
                 SULog.Info("SocialServicesInitializer: chat connected, global channel joined", SULog.Channel.Social);
             }
