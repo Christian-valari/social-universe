@@ -57,9 +57,9 @@ namespace SocialUniverse.Tests
         public async Task Switching_channels_leaves_the_previous_one()
         {
             await _controller.SwitchToGlobalAsync();
-            await _controller.SwitchToLocalAsync("Planet_Earth");
+            await _controller.SwitchToGuildAsync("Guild_42");
 
-            Assert.AreEqual("planet_planet_earth", _controller.ActiveChannel);
+            Assert.AreEqual("guild_guild_42", _controller.ActiveChannel);
             Assert.Contains("global", _chat.LeftChannels);
         }
 

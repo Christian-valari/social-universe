@@ -208,7 +208,7 @@ Priority tags follow the PRD: **P0** = core/MVP, **P1** = launch, **P2** = later
 | ~~`NetworkPlayer`~~ | ~~Net~~ | **Removed** — no replicated player objects; players never see each other move | — |
 | ~~`PlayerSyncController`~~ | ~~Net~~ | **Removed** — no position sync; there is no co-located movement to replicate | — |
 | `IChatService` + `ChatService` | Social | Channels, send/receive (Vivox text-only) | P0 |
-| `ChatChannelController` | Social | Global / local / guild / DM channel switching | P0 |
+| `ChatChannelController` | Social | Global / guild / DM channel switching (per-planet Local channel deferred — see PROGRESS.md) | P0 |
 | `ChatModerationFilter` | Social | Client-side profanity filter (server also enforces) | P0 |
 | `ReportService` | Social | Report / block / mute | P0 |
 | `FriendsService` | Social | Add/remove/list + presence | P1 |

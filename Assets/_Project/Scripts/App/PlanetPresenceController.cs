@@ -7,13 +7,15 @@ using VContainer.Unity;
 
 namespace SocialUniverse.App
 {
-    // Joins the planet's presence + local chat channel when the Planet scene
-    // starts, and leaves both when it unloads. In production both calls join
-    // the same Vivox channel (VivoxPresenceService delegates to
-    // ChatChannelController internally, so the second call here is a no-op);
-    // in dev mode IPresenceService is a standalone mock, so both calls are
-    // needed to bring up chat and presence independently. There is no host
-    // or session to join — presence is just "who's in this Vivox channel".
+    // Joins presence + the shared Global chat channel when the Planet scene
+    // starts, and leaves both when it unloads. For now there is one Global
+    // channel for everyone (no per-planet Local channel), so in production
+    // both calls converge on the same Vivox channel join (VivoxPresenceService
+    // delegates to ChatChannelController internally, so the explicit channel
+    // call here is a redundant-but-harmless ensure); in dev mode
+    // IPresenceService is a standalone mock, so both calls are needed to bring
+    // up chat and presence independently. There is no host or session to
+    // join — presence is just "who's in this Vivox channel".
     public class PlanetPresenceController : IStartable, IDisposable
     {
         private readonly IPresenceService      _presence;
@@ -48,11 +50,11 @@ namespace SocialUniverse.App
 
             try
             {
-                await _channels.SwitchToLocalAsync(_planet.name);
+                await _channels.SwitchToGlobalAsync();
             }
             catch (Exception ex)
             {
-                SULog.Warn($"PlanetPresenceController: local channel join failed ({ex.Message})", SULog.Channel.Social);
+                SULog.Warn($"PlanetPresenceController: global channel join failed ({ex.Message})", SULog.Channel.Social);
             }
         }
 

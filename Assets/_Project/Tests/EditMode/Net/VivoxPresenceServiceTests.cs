@@ -51,25 +51,31 @@ namespace SocialUniverse.Tests.Net
         }
 
         [Test]
-        public async Task JoinPlanetAsync_joins_the_planets_local_channel()
+        public async Task JoinPlanetAsync_joins_the_shared_global_channel()
         {
+            // For now there's one shared Global channel for everyone (no
+            // per-planet Local channel) — planetId doesn't affect which
+            // channel is joined.
             bool joined = await _presence.JoinPlanetAsync("Planet_Earth");
 
             Assert.IsTrue(joined);
             Assert.IsTrue(_presence.IsConnected);
-            Assert.AreEqual("planet_planet_earth", _presence.CurrentChannelName);
+            Assert.AreEqual(_config.GlobalChannelName, _presence.CurrentChannelName);
             Assert.AreEqual(_channels.ActiveChannel, _presence.CurrentChannelName);
-            Assert.Contains("planet_planet_earth", _chat.JoinedChannels);
+            Assert.Contains(_config.GlobalChannelName, _chat.JoinedChannels);
         }
 
         [Test]
-        public async Task LeaveAsync_switches_back_to_global_and_disconnects()
+        public async Task LeaveAsync_stays_on_the_shared_global_channel()
         {
+            // Leaving presence doesn't disconnect chat — Global is shared by
+            // everyone, so there's nothing planet-specific to leave.
             await _presence.JoinPlanetAsync("Planet_Earth");
 
             await _presence.LeaveAsync();
 
             Assert.AreEqual(_config.GlobalChannelName, _presence.CurrentChannelName);
+            Assert.IsTrue(_presence.IsConnected);
         }
 
         [Test]

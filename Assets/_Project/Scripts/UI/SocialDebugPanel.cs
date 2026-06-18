@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
 using SocialUniverse.Core;
-using SocialUniverse.Config;
 using SocialUniverse.Net;
 using SocialUniverse.Social;
 using TMPro;
@@ -19,7 +18,6 @@ namespace SocialUniverse.UI
     {
         [SerializeField] private TMP_Text _activeChannelText;
         [SerializeField] private Toggle _globalChannelButton;
-        [SerializeField] private Toggle _localChannelButton;
         [SerializeField] private TMP_Text _presenceText;
         [SerializeField] private RectTransform _chatLogContent;
         [SerializeField] private ChatMessageItemView _chatMessageItemPrefab;
@@ -30,7 +28,6 @@ namespace SocialUniverse.UI
 
         [Inject] private ChatChannelController _chat;
         [Inject] private IPresenceService _presence;
-        [Inject] private PlanetDefinition _planet;
 
         private const int MaxLogLines = 12;
 
@@ -38,11 +35,7 @@ namespace SocialUniverse.UI
         {
             _globalChannelButton.onValueChanged.AddListener(value =>
             {
-                if (value) _ = SwitchChannelAsync(global: true);
-            });
-            _localChannelButton.onValueChanged.AddListener(value =>
-            {
-                if (value) _ = SwitchChannelAsync(global: false);
+                if (value) _ = SwitchChannelAsync();
             });
             _sendButton.onClick.AddListener(() => _ = SendMessageAsync());
             if (_closeButton != null) _closeButton.onClick.AddListener(Close);
@@ -69,20 +62,17 @@ namespace SocialUniverse.UI
             gameObject.SetActive(true);
             await _chat.SwitchToGlobalAsync();
             _globalChannelButton.SetIsOnWithoutNotify(true);
-            _localChannelButton.SetIsOnWithoutNotify(false);
             RefreshActiveChannel();
             RefreshChatLog();
         }
 
         public void Close() => gameObject.SetActive(false);
 
-        private async Task SwitchChannelAsync(bool global)
+        // For now there is only the Global channel — no per-planet Local
+        // channel to switch to.
+        private async Task SwitchChannelAsync()
         {
-            if (global)
-                await _chat.SwitchToGlobalAsync();
-            else
-                await _chat.SwitchToLocalAsync(_planet.name);
-
+            await _chat.SwitchToGlobalAsync();
             RefreshActiveChannel();
             RefreshChatLog();
         }

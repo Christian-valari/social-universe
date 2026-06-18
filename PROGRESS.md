@@ -689,12 +689,19 @@ M3 and M4 alike.**
 
 ### Presence Notes
 
-- **`VivoxPresenceService`** derives presence from the roster of the planet's Vivox text
+- **Local (per-planet) channel deferred.** `ChatChannelController.SwitchToLocalAsync`/
+  `LocalChannelName` were removed (post-`refactor/vivox-only-social` follow-up) — for now there
+  is one shared **Global** channel for everyone, doubling as "the planet channel" until
+  per-planet chat is actually needed. `VivoxPresenceService.JoinPlanetAsync`/
+  `LocalMockPresenceService.JoinPlanetAsync` both ignore their `planetId` argument and join/mock
+  the Global channel; `IPresenceService.JoinPlanetAsync` keeps the `planetId` parameter so the
+  per-planet behavior can come back without another interface change.
+- **`VivoxPresenceService`** derives presence from the roster of the shared Vivox text
   channel — `VivoxService.Instance.ActiveChannels[channelName]` *is* the player list. It
-  delegates channel join/leave to `ChatChannelController` (`SwitchToLocalAsync`/
-  `SwitchToGlobalAsync`), so joining for chat and joining for presence are the same Vivox
-  channel join — there is no separate session, shard, or host. `ParticipantAddedToChannel`/
-  `ParticipantRemovedFromChannel` drive `PlayerJoined`/`PlayerLeft`.
+  delegates channel join/leave to `ChatChannelController` (`SwitchToGlobalAsync`), so joining
+  for chat and joining for presence are the same Vivox channel join — there is no separate
+  session, shard, or host. `ParticipantAddedToChannel`/`ParticipantRemovedFromChannel` drive
+  `PlayerJoined`/`PlayerLeft`.
 - **`PlanetPresenceController`** (App, `IStartable`/`IDisposable`) is the glue: on Planet scene
   start it calls `IPresenceService.JoinPlanetAsync(planetId)` and
   `ChatChannelController.SwitchToLocalAsync` (joins the planet's local chat channel), and leaves

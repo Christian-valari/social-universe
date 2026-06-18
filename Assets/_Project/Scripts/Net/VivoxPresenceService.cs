@@ -9,10 +9,12 @@ using Unity.Services.Vivox;
 namespace SocialUniverse.Net
 {
     // IPresenceService implementation backed by UGS Vivox: the roster of the
-    // planet's text channel IS presence for that planet. There is no separate
-    // session/host to join — JoinPlanetAsync delegates to ChatChannelController
-    // so joining for chat and joining for presence are the same Vivox channel
-    // join, and CurrentChannelName always mirrors the channel chat is active in.
+    // shared text channel IS presence. There is no separate session/host to
+    // join — JoinPlanetAsync delegates to ChatChannelController so joining for
+    // chat and joining for presence are the same Vivox channel join, and
+    // CurrentChannelName always mirrors the channel chat is active in. For now
+    // there is one Global channel for everyone (no per-planet Local channel),
+    // so JoinPlanetAsync's planetId is unused until per-planet chat returns.
     public class VivoxPresenceService : IPresenceService, IDisposable
     {
         public event Action PresenceChanged;
@@ -43,7 +45,7 @@ namespace SocialUniverse.Net
         {
             try
             {
-                await _channels.SwitchToLocalAsync(planetId);
+                await _channels.SwitchToGlobalAsync();
                 PresenceChanged?.Invoke();
                 return true;
             }

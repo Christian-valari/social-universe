@@ -20,9 +20,11 @@ namespace SocialUniverse.Net
 
         public IReadOnlyList<PresencePlayer> Players => _players;
 
+        // For now there is one shared Global channel for everyone (no
+        // per-planet Local channel), so planetId is unused.
         public Task<bool> JoinPlanetAsync(string planetId)
         {
-            CurrentChannelName = $"planet_{planetId.ToLowerInvariant()}";
+            CurrentChannelName = "global";
             IsConnected         = true;
             _players.Clear();
             _players.Add(new PresencePlayer { PlayerId = "mock_player", DisplayName = "MockPlayer" });
