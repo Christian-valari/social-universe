@@ -1,7 +1,10 @@
 # Social Universe — Project Progress Tracker
 
-> Last updated: 2026-06-17 — Post-M4 infrastructure: Planet loading screen added (additive `LoadingScreen` scene, animated slider, per-step progress events, 2 s minimum display). M4 and M3 otherwise unchanged. PlayMode regression (Known Issue #7) still open.
-> Engine: Unity 6 (URP 17.3.0) · Branch: `main`
+> Last updated: 2026-06-18 — `refactor/vivox-only-social`: removed Netcode for GameObjects and
+> UGS Multiplayer Sessions/Relay; presence is now `VivoxPresenceService`, derived from the Vivox
+> channel roster (see `MIGRATION.md`). EditMode suite 83/83 passing (was 79/79). PlayMode
+> regression (Known Issue #7) confirmed still open and unrelated to this migration.
+> Engine: Unity 6 (URP 17.3.0) · Branch: `refactor/vivox-only-social`
 
 ---
 
@@ -771,10 +774,11 @@ M3 and M4 alike.**
       convention and re-point `Bootstrap.unity`'s `RootLifetimeScope._socialConfig`.
 - [ ] Assign `_socialConfig` on `Planet.unity`'s `PlanetSceneScope` (the field exists in code but
       the scene hasn't been re-saved since it was added, so it's currently unassigned).
-- [ ] Re-verify Known Issue #7 (`PlanetSceneScope.Container not initialized` in
-      `PlanetSceneFlowTests`) — it was suspected to stem from `ShardManager.WithRelayNetwork()`
-      having no `NetworkManager.Singleton` to attach to, which no longer exists after
-      `refactor/vivox-only-social`; confirm the issue is actually resolved.
+- [ ] Known Issue #7 (`PlanetSceneScope.Container not initialized` in `PlanetSceneFlowTests`)
+      **confirmed still present** after `refactor/vivox-only-social` — re-ran PlayMode tests
+      post-refactor and both `PlanetSceneFlowTests` still fail at `SetUp` with the same error.
+      It was not caused by `ShardManager.WithRelayNetwork()`/`NetworkManager.Singleton`; the
+      real cause is still open and unrelated to this migration.
 
 
 ### M4 Completion Checklist
