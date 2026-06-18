@@ -7,11 +7,13 @@ using VContainer.Unity;
 
 namespace SocialUniverse.App
 {
-    // Joins the planet's shard (presence) and its local chat channel when the
-    // Planet scene starts, and leaves both when it unloads. Logs join/leave
-    // of other players — the visible marker avatars are NGO NetworkPlayer
-    // prefabs spawned by the session's NetworkManager (scene setup, see
-    // PROGRESS.md M4 setup checklist).
+    // Joins the planet's presence + local chat channel when the Planet scene
+    // starts, and leaves both when it unloads. In production both calls join
+    // the same Vivox channel (VivoxPresenceService delegates to
+    // ChatChannelController internally, so the second call here is a no-op);
+    // in dev mode IPresenceService is a standalone mock, so both calls are
+    // needed to bring up chat and presence independently. There is no host
+    // or session to join — presence is just "who's in this Vivox channel".
     public class PlanetPresenceController : IStartable, IDisposable
     {
         private readonly IPresenceService      _presence;
@@ -37,11 +39,11 @@ namespace SocialUniverse.App
             {
                 bool joined = await _presence.JoinPlanetAsync(_planet.name);
                 if (joined)
-                    SULog.Info($"PlanetPresenceController: in shard {_presence.CurrentShardId} with {_presence.Players.Count} player(s)", SULog.Channel.Net);
+                    SULog.Info($"PlanetPresenceController: in channel {_presence.CurrentChannelName} with {_presence.Players.Count} player(s)", SULog.Channel.Net);
             }
             catch (Exception ex)
             {
-                SULog.Warn($"PlanetPresenceController: shard join failed ({ex.Message})", SULog.Channel.Net);
+                SULog.Warn($"PlanetPresenceController: presence join failed ({ex.Message})", SULog.Channel.Net);
             }
 
             try
@@ -71,9 +73,9 @@ namespace SocialUniverse.App
         }
 
         private void OnPlayerJoined(PresencePlayer player) =>
-            SULog.Info($"PlanetPresenceController: {player.DisplayName} ({player.PlayerId}) joined the shard", SULog.Channel.Net);
+            SULog.Info($"PlanetPresenceController: {player.DisplayName} ({player.PlayerId}) joined the channel", SULog.Channel.Net);
 
         private void OnPlayerLeft(string playerId) =>
-            SULog.Info($"PlanetPresenceController: {playerId} left the shard", SULog.Channel.Net);
+            SULog.Info($"PlanetPresenceController: {playerId} left the channel", SULog.Channel.Net);
     }
 }

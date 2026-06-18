@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace SocialUniverse.Net
 {
-    // Offline IPresenceService — joins a fake shard instantly and contains
+    // Offline IPresenceService — joins a fake channel instantly and contains
     // only the local player. SimulatePlayerJoined/Left drive UI development
-    // and tests without a Multiplayer session.
+    // and tests without a live Vivox connection.
     public class LocalMockPresenceService : IPresenceService
     {
         public event Action PresenceChanged;
@@ -15,17 +15,15 @@ namespace SocialUniverse.Net
 
         private readonly List<PresencePlayer> _players = new();
 
-        public bool   IsConnected    { get; private set; }
-        public string CurrentShardId { get; private set; }
+        public bool   IsConnected        { get; private set; }
+        public string CurrentChannelName { get; private set; }
 
         public IReadOnlyList<PresencePlayer> Players => _players;
 
-        public Task<bool> JoinPlanetAsync(string planetId) => JoinShardAsync($"{planetId.ToLowerInvariant()}_shard0");
-
-        public Task<bool> JoinShardAsync(string shardId)
+        public Task<bool> JoinPlanetAsync(string planetId)
         {
-            CurrentShardId = shardId;
-            IsConnected    = true;
+            CurrentChannelName = $"planet_{planetId.ToLowerInvariant()}";
+            IsConnected         = true;
             _players.Clear();
             _players.Add(new PresencePlayer { PlayerId = "mock_player", DisplayName = "MockPlayer" });
             PresenceChanged?.Invoke();
@@ -34,8 +32,8 @@ namespace SocialUniverse.Net
 
         public Task LeaveAsync()
         {
-            CurrentShardId = null;
-            IsConnected    = false;
+            CurrentChannelName = null;
+            IsConnected         = false;
             _players.Clear();
             PresenceChanged?.Invoke();
             return Task.CompletedTask;

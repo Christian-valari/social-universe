@@ -11,9 +11,11 @@ namespace SocialUniverse.Net
         public string DisplayName;
     }
 
-    // Who is on this planet/shard right now. The real implementation
-    // (PresenceService) sits on top of ShardManager's Multiplayer session;
-    // LocalMockPresenceService is the offline/dev-mode stand-in.
+    // Who is on this planet right now. The real implementation
+    // (VivoxPresenceService) derives presence from the roster of the planet's
+    // Vivox text channel — joining the channel for chat IS joining presence,
+    // there is no separate session/host step. LocalMockPresenceService is the
+    // offline/dev-mode stand-in.
     public interface IPresenceService
     {
         // Raised after any change to the player list.
@@ -21,15 +23,12 @@ namespace SocialUniverse.Net
         event Action<PresencePlayer> PlayerJoined;
         event Action<string> PlayerLeft;
 
-        bool   IsConnected    { get; }
-        string CurrentShardId { get; }
+        bool   IsConnected        { get; }
+        string CurrentChannelName { get; }
         IReadOnlyList<PresencePlayer> Players { get; }
 
-        // Joins the first planet shard with room (shard 0..N-1).
+        // Joins the planet's presence channel (same channel as planet-local chat).
         Task<bool> JoinPlanetAsync(string planetId);
-
-        // Joins a specific shard — used to follow a friend.
-        Task<bool> JoinShardAsync(string shardId);
 
         Task LeaveAsync();
     }

@@ -130,7 +130,7 @@ namespace SocialUniverse.UI
 
         private void RefreshPresence()
         {
-            _presenceText.text = $"{_presence.CurrentShardId ?? "(none)"} - {_presence.Players.Count} online";
+            _presenceText.text = $"{_presence.CurrentChannelName ?? "(none)"} - {_presence.Players.Count} explorers here";
         }
     }
 }

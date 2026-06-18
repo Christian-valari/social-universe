@@ -31,7 +31,6 @@ namespace SocialUniverse.App
 
                 builder.Register<LocalMockChatService>(Lifetime.Singleton).As<IChatService>();
                 builder.Register<LocalMockFriendsService>(Lifetime.Singleton).As<IFriendsService>();
-                builder.Register<LocalMockPresenceService>(Lifetime.Singleton).As<IPresenceService>();
             }
             else
             {
@@ -42,12 +41,9 @@ namespace SocialUniverse.App
 
                 builder.Register<ChatService>(Lifetime.Singleton).As<IChatService>();
                 builder.Register<FriendsService>(Lifetime.Singleton).As<IFriendsService>();
-                builder.Register<ShardManager>(Lifetime.Singleton);
-                builder.Register<PresenceService>(Lifetime.Singleton).As<IPresenceService>();
             }
 
             builder.Register<ServerTime>(Lifetime.Singleton);
-            builder.Register<ConnectionManager>(Lifetime.Singleton);
 
             // M4 social layer (app-wide: chat, friends, DMs, profiles span scenes).
             builder.RegisterInstance(_socialConfig);
@@ -56,6 +52,12 @@ namespace SocialUniverse.App
             builder.Register<ChatChannelController>(Lifetime.Singleton);
             builder.Register<DirectMessageService>(Lifetime.Singleton);
             builder.Register<ProfileService>(Lifetime.Singleton);
+
+            if (_devMode)
+                builder.Register<LocalMockPresenceService>(Lifetime.Singleton).As<IPresenceService>();
+            else
+                builder.Register<VivoxPresenceService>(Lifetime.Singleton).As<IPresenceService>();
+
             builder.RegisterEntryPoint<SocialServicesInitializer>();
 
             // Dev-only: optional, present only if a CloudCodeTestHarness is in the scene hierarchy.

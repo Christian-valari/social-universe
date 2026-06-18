@@ -37,11 +37,6 @@ namespace SocialUniverse.Config
         [SerializeField] private int    _maxMessageLength   = 200;
         [SerializeField] private int    _chatHistoryLimit   = 100;   // messages kept per channel client-side
 
-        [Header("Presence & Shards")]
-        [SerializeField] private int    _maxPlayersPerShard = 16;
-        [SerializeField] private int    _maxShardsPerPlanet = 8;     // join attempts walk shard 0..N-1 before failing
-        [SerializeField] private float  _positionSyncIntervalSec = 0.5f; // owner-side send rate for NetworkPlayer markers
-
         [Header("Profiles")]
         [SerializeField] private int    _maxDisplayNameLength = 20;
 
@@ -51,10 +46,6 @@ namespace SocialUniverse.Config
         public string GlobalChannelName => _globalChannelName;
         public int    MaxMessageLength  => _maxMessageLength;
         public int    ChatHistoryLimit  => _chatHistoryLimit;
-
-        public int   MaxPlayersPerShard      => _maxPlayersPerShard;
-        public int   MaxShardsPerPlanet      => _maxShardsPerPlanet;
-        public float PositionSyncIntervalSec => _positionSyncIntervalSec;
 
         public int MaxDisplayNameLength => _maxDisplayNameLength;
     }

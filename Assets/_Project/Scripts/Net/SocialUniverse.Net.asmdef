@@ -10,9 +10,7 @@
         "Unity.Services.Authentication",
         "Unity.Services.CloudCode",
         "Unity.Services.CloudSave",
-        "Unity.Services.Multiplayer",
-        "Unity.Netcode.Runtime",
-        "Unity.Collections",
+        "Unity.Services.Vivox",
         "NaughtyAttributes.Core",
         "SocialUniverse.Social"
     ],
