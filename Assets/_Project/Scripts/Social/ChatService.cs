@@ -15,6 +15,7 @@ namespace SocialUniverse.Social
         public event Action<ChatMessage> DirectMessageReceived;
 
         private bool _initialized;
+        private string _lastDisplayName;
 
         // Tracks an in-flight login so a second concurrent ConnectAsync call
         // (e.g. a re-fired PlayerReadyEvent across a domain reload) awaits the
@@ -27,6 +28,7 @@ namespace SocialUniverse.Social
 
         public Task ConnectAsync(string displayName)
         {
+            _lastDisplayName = displayName;
             if (IsConnected) return Task.CompletedTask;
             if (_connectTask != null && !_connectTask.IsCompleted) return _connectTask;
 
@@ -45,6 +47,8 @@ namespace SocialUniverse.Social
                 _initialized = true;
             }
 
+            if (VivoxService.Instance.IsLoggedIn) return;
+
             var options = new LoginOptions { DisplayName = displayName };
             await VivoxService.Instance.LoginAsync(options);
             SULog.Info($"ChatService: logged in to Vivox as '{displayName}'", SULog.Channel.Social);
@@ -57,48 +61,56 @@ namespace SocialUniverse.Social
         }
 
         // Vivox's own channel/message/block calls each internally "ensure
-        // logged in" and will try to log in themselves if not yet logged in.
-        // If our own ConnectAsync login is still in flight when one of these
-        // fires (e.g. a chat-open click racing the boot-time connect), that
-        // internal auto-login collides with ours and Vivox throws "must be
-        // logged out". Waiting on the same in-flight connect task here means
-        // these calls only ever reach Vivox once a login attempt has settled.
-        private Task WaitForPendingConnectAsync() =>
-            _connectTask != null && !_connectTask.IsCompleted ? _connectTask : Task.CompletedTask;
+        // logged in" and will auto-init/login themselves if called before
+        // Vivox is ready — which queues an internal login action. If our own
+        // managed ConnectAsync also logs in around the same time (e.g. once
+        // PlayerReadyEvent fires moments later), that explicit LoginAsync
+        // collides with Vivox's own queued one and throws "must be logged
+        // out". So every Vivox-touching call below routes through this
+        // instead of ever letting Vivox auto-init/login on its own: if no
+        // connect has started yet, it starts the SAME managed ConnectAsync
+        // these calls then await, so Vivox is always already logged in by
+        // the time any of them actually reach the SDK.
+        private Task EnsureConnectedAsync()
+        {
+            if (IsConnected) return Task.CompletedTask;
+            if (_connectTask != null && !_connectTask.IsCompleted) return _connectTask;
+            return ConnectAsync(_lastDisplayName ?? "Player");
+        }
 
         public async Task JoinChannelAsync(string channelName)
         {
-            await WaitForPendingConnectAsync();
+            await EnsureConnectedAsync();
             await VivoxService.Instance.JoinGroupChannelAsync(channelName, ChatCapability.TextOnly);
         }
 
         public async Task LeaveChannelAsync(string channelName)
         {
-            await WaitForPendingConnectAsync();
+            await EnsureConnectedAsync();
             await VivoxService.Instance.LeaveChannelAsync(channelName);
         }
 
         public async Task SendMessageAsync(string channelName, string text)
         {
-            await WaitForPendingConnectAsync();
+            await EnsureConnectedAsync();
             await VivoxService.Instance.SendChannelTextMessageAsync(channelName, text);
         }
 
         public async Task SendDirectMessageAsync(string playerId, string text)
         {
-            await WaitForPendingConnectAsync();
+            await EnsureConnectedAsync();
             await VivoxService.Instance.SendDirectTextMessageAsync(text, playerId);
         }
 
         public async Task BlockPlayerAsync(string playerId)
         {
-            await WaitForPendingConnectAsync();
+            await EnsureConnectedAsync();
             await VivoxService.Instance.BlockPlayerAsync(playerId);
         }
 
         public async Task UnblockPlayerAsync(string playerId)
         {
-            await WaitForPendingConnectAsync();
+            await EnsureConnectedAsync();
             await VivoxService.Instance.UnblockPlayerAsync(playerId);
         }
 
