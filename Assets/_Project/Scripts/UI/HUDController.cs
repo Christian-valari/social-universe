@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using VContainer;
 using SocialUniverse.Economy;
 using SocialUniverse.Mining;
+using SocialUniverse.Net;
 using SocialUniverse.World;
 using SocialUniverse.Progression;
 using TMPro;
@@ -26,12 +27,14 @@ namespace SocialUniverse.UI
         [SerializeField] private Button _chatButton;
         [SerializeField] private SocialDebugPanel _socialPanel;
         [SerializeField] private Toggle _tileViewToggle;
+        [SerializeField] private TMP_Text _explorersText;
 
         [Inject] private Wallet _wallet;
         [Inject] private PlayerState _playerState;
         [Inject] private MiningController _mining;
         [Inject] private HexasphereManager _hexasphere;
         [Inject] private AsteroidSpawner _asteroidSpawner;
+        [Inject] private IPresenceService _presence;
 
         private void Start()
         {
@@ -51,6 +54,7 @@ namespace SocialUniverse.UI
             _playerState.OnFuelChanged        += SetFuel;
             _playerState.OnDisplayNameChanged += SetUsername;
             _mining.OnPhaseChanged            += _ => RefreshMiningStatus();
+            _presence.PresenceChanged         += RefreshExplorerCount;
 
             SetLevel(_playerState.Level);
             SetFuel(_playerState.Fuel);
@@ -58,6 +62,7 @@ namespace SocialUniverse.UI
             RefreshMiningStatus();
             RefreshLandStatus();
             RefreshAsteroidRefresh();
+            RefreshExplorerCount();
         }
 
         private void OnDestroy()
@@ -65,6 +70,7 @@ namespace SocialUniverse.UI
             _playerState.OnLevelChanged       -= SetLevel;
             _playerState.OnFuelChanged        -= SetFuel;
             _playerState.OnDisplayNameChanged -= SetUsername;
+            _presence.PresenceChanged         -= RefreshExplorerCount;
         }
 
         private void Update()
@@ -150,6 +156,12 @@ namespace SocialUniverse.UI
                 if (kv.Value.State == TileState.OwnedByPlayer) owned++;
 
             _landStatusText.text = $"Tiles owned: {owned}";
+        }
+
+        private void RefreshExplorerCount()
+        {
+            if (_explorersText == null) return;
+            _explorersText.text = $"{_presence.Players.Count} explorers here";
         }
     }
 }
