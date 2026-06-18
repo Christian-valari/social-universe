@@ -70,10 +70,9 @@
 | UGS Economy            | 3.5.3   | ✅      |
 | UGS Cloud Save         | 3.4.0   | ✅      |
 | UGS Cloud Code         | 2.10.2  | ✅      |
-| Unity Netcode for GameObjects | 2.12.0 | ✅ |
 | UGS Friends            | 1.1.1   | ✅      |
-| UGS Multiplayer (Sessions/Relay) | 2.2.3 | ✅ |
 | UGS Vivox              | 16.11.0 | ✅      |
+| ParrelSync             | —       | ✅ (Editor-only) — multi-instance editor cloning for local multiplayer testing (`Assets/ParrelSync/`) |
 
 
 ---
@@ -218,6 +217,7 @@ and `PlanetSceneScope` (Planet.unity) `_socialConfig` references to match projec
 | `IdleMiningSessionController` | `Mining/` | Drive the session: send drone, spawn mining VFX, tick timer, listen for claim taps          | ✅      |                                                                                                                                                        |
 | `IdleMiningCalculator`        | `Mining/` | Compute offline haul up to cargo cap                                                        | ✅      |                                                                                                                                                        |
 | `ActiveMiningMinigame`        | `Mining/` | Tap/combo/crit logic and feedback hooks                                                     | ⚠️     | Stubbed — "Active Mine" logs and closes prompt; mini-game deferred to later milestone                                                                  |
+| `MiningInputHandler`          | `Mining/` | Translates keyboard/touch input events into mining actions; registered as `ITickable` entry point | ✅ |                                                                                                                                                        |
 
 
 ### Economy
@@ -320,8 +320,9 @@ and `PlanetSceneScope` (Planet.unity) `_socialConfig` references to match projec
 | `LocalMockBackendClient` | `Net/`        | Offline stub for IBackendClient — logs and returns `default`                      | ✅      | Registered by `RootLifetimeScope` when `_devMode = true`                                                      |
 | `LocalMockCloudSave`     | `Net/`        | Offline stub for ICloudSave — in-memory dictionary store                          | ✅      | Registered by `RootLifetimeScope` when `_devMode = true`                                                      |
 | `AuthService`            | `Net/`        | Wraps UGS Authentication SDK — anon + Apple/Google sign-in                        | ✅      |                                                                                                               |
-| `IBackendClient`         | `Net/`        | Contract for Cloud Code RPC calls                                                 | ✅      |                                                                                                               |
+| `IBackendClient`         | `Core/`       | Contract for Cloud Code RPC calls                                                 | ✅      | Placed in Core (not Net) — same circular-dep reason as `IAuthService`                                        |
 | `BackendClient`          | `Net/`        | Cloud Code wrapper with exponential-backoff retry on transient errors             | ✅      | Retries on `NoInternetConnection`, `ServiceUnavailable`, `Unknown`                                            |
+| `CloudCodeTestHarness`   | `Net/`        | Dev-only harness for smoke-testing Cloud Code functions against a live UGS project | ✅     | Not wired into production DI — used manually in Editor via menu/inspector                                    |
 | `NetworkBootstrap`       | `Net/`        | Calls `UnityServices.InitializeAsync()` using `AppConfig.Environment`             | ✅      |                                                                                                               |
 | `ICloudSave`             | `Net/`        | Contract for load/save player state records                                       | ✅      |                                                                                                               |
 | `CloudSaveService`       | `Net/`        | Wraps UGS Cloud Save player data; swallows `NotFound` silently                    | ✅      |                                                                                                               |
@@ -631,20 +632,20 @@ ships a provisional teen-safe default (`ChatFilterLevel.Strict`) so M4 isn't blo
 All four areas (presence/shards, chat, friends/DMs, profiles/reporting) are code-complete, wired
 into both `RootLifetimeScope` (dev-mode mocks vs. production UGS services) and `PlanetSceneScope`
 (standalone-mode mocks), and covered by EditMode tests (79/79 passing, up from 39/39 in M3). What
-remains is UGS dashboard configuration, Cloud Code deployment, NetworkPlayer prefab/scene wiring,
-and manual/PlayMode verification — see "Setup Required" and the "M4 Completion Checklist" below.
+remains is UGS dashboard configuration, Cloud Code deployment, and manual/PlayMode verification —
+see "Setup Required" and the "M4 Completion Checklist" below. (Presence was reworked onto
+Vivox-only in `refactor/vivox-only-social` — see `MIGRATION.md`.)
 **A pre-existing PlayMode regression (Known Issue #7) currently blocks PlayMode verification for
 M3 and M4 alike.**
 
 
 | Script                                  | Path          | Responsibility                                                              | Status |
 | ---------------------------------------- | ------------- | ----------------------------------------------------------------------------- | ------ |
-| `SocialConfig` (SO)                     | `Config/`     | M4 tunables: chat filter level/words, channel/message limits, shard sizing, position-sync rate, display-name length | ✅ |
-| `IPresenceService` / `PresenceService`  | `Net/`        | Who is on this planet/shard right now                                      | ✅ (real impl wraps `ShardManager`'s session player list) |
+| `SocialConfig` (SO)                     | `Config/`     | M4 tunables: chat filter level/words, channel/message limits, display-name length | ✅ |
+| `IPresenceService` / `VivoxPresenceService` | `Net/`    | Who is on this planet right now, derived from the roster of the planet's Vivox text channel | ✅ |
 | `LocalMockPresenceService`              | `Net/`        | Offline stub — `SimulatePlayerJoined`/`SimulatePlayerLeft` test helpers     | ✅     |
-| `ShardManager`                          | `Net/`        | Owns Multiplayer Sessions lifecycle; `ShardId(planetId, n) = "{planetId}_shard{n}"`; `JoinPlanetAsync` walks shards `0..MaxShardsPerPlanet-1` via `CreateOrJoinSessionAsync` + Relay | ✅ |
-| `NetworkPlayer`                         | `Net/`        | Replicated player marker — `NetworkVariable<FixedString64Bytes>` PlayerId/DisplayName, owner-writable via `SetIdentity()` | ✅ (marker mesh only — no avatar model yet) |
-| `PlayerSyncController`                  | `Net/`        | Syncs position via `NetworkVariable<Vector3>`; projects camera focus onto the planet sphere (radius 1.05f) since no avatar exists; send rate from `SocialConfig.PositionSyncIntervalSec` | ✅ |
+| ~~`ShardManager`~~                      | ~~`Net/`~~    | **Removed** (`refactor/vivox-only-social`) — no Multiplayer Sessions/Relay; see `MIGRATION.md` | — |
+| ~~`NetworkPlayer`~~ / ~~`PlayerSyncController`~~ | ~~`Net/`~~ | **Removed** (`refactor/vivox-only-social`) — no replicated player markers or position sync; players never see each other move | — |
 | `IChatService` / `ChatService`          | `Social/`     | Contract + Vivox-backed implementation — connect, join channel, send/receive | ✅ |
 | `LocalMockChatService`                  | `Social/`     | Offline loopback — `SimulateIncoming` test helper                          | ✅     |
 | `ChatMessage` / `ChatSendStatus`        | `Social/`     | Message DTO + send-result enum (`Sent`, `Empty`, `TooLong`, `Filtered`, `NoChannel`, `NotFriend`, `Blocked`) | ✅ |
@@ -655,13 +656,18 @@ M3 and M4 alike.**
 | `DirectMessageService`                  | `Social/`     | Wraps `IChatService` DMs with friends-only/moderation/block rules, `DirectMessageReceivedEvent` | ✅ |
 | `ProfileService` / `PlayerProfile`      | `Social/`     | `GetProfileAsync`/`UpdateDisplayNameAsync`; `PlayerProfile` DTO (PlayerId, DisplayName, Level, Xp, Badges[], TilesOwned) | ✅ |
 | `ReportService`                         | `Social/`     | `ReportPlayerAsync`/`Block`/`UnblockPlayerAsync` + local-only `MutePlayer`; `ReportResult`/`BlockResult` DTOs | ✅ |
-| `PlanetPresenceController`              | `App/`        | `IStartable`/`IDisposable` — joins planet shard + local chat channel on scene start, leaves on dispose, logs join/leave | ✅ |
+| `PlanetPresenceController`              | `App/`        | `IStartable`/`IDisposable` — joins planet presence + local chat channel on scene start, leaves on dispose, logs join/leave | ✅ |
 | `SocialServicesInitializer`             | `App/`        | `IStartable`/`IDisposable` in Root scope — on `PlayerReadyEvent`, connects chat, joins global channel, initializes friends roster | ✅ |
 | `SubmitReport`                          | `ServerCode/` | Writes to Custom Data `moderation`/`reports` (capped 500); returns `{ success, reportId }` | ✅ |
 | `BlockUser`                             | `ServerCode/` | Reads/writes player's `blocked_users` Cloud Save key (capped 200); returns `{ success, blockedUsers }` | ✅ |
 | `ModerateMessage`                       | `ServerCode/` | Standalone moderation function (`BLOCKED_WORDS`/`CHAR_MAP`) | ⚠️ appears **unused/orphaned** — no caller found; `UpdateProfile.js` does its own inline moderation. Decide whether to wire it in server-side or remove it |
 | `GetPlayerProfile`                      | `ServerCode/` | Reads target player's `player_profile` Cloud Save + sums `owned_tiles_*` for `tilesOwned`; defaults to `"Pilot {id6}"` if unset | ✅ |
 | `UpdateProfile`                         | `ServerCode/` | Validates/commits `displayName` into `player_profile`, merging with existing; re-moderates server-side (`BLOCKED_WORDS`/`CHAR_MAP`/`MAX_DISPLAY_NAME_LENGTH=20` duplicated from `SocialConfig`) | ✅ |
+| `SocialDebugPanel`                      | `UI/`         | In-editor/dev overlay — opens a chat panel with channel selector and message list; opened via HUD chat button | ✅ |
+| `ChatMessageItemView`                   | `UI/`         | Reusable chat message row — binds sender name, message text, timestamp from a `ChatMessage` DTO | ✅ |
+| `ChatSendProbe`                         | `UI/`         | Input field + Send button wired to `ChatChannelController.SendAsync`; shows send-status feedback | ✅ |
+| `ChatBubbleMaxWidth`                    | `UI/`         | Layout helper — clamps chat bubble width to a fraction of screen width for readability | ✅ |
+| `DisplayNameModal`                      | `UI/`         | Modal overlay for updating the player's display name — calls `ProfileService.UpdateDisplayNameAsync`; registered in `PlanetSceneScope` | ✅ |
 
 
 ### Assembly & DI Changes
@@ -669,37 +675,31 @@ M3 and M4 alike.**
 | Change | Detail |
 | ------ | ------ |
 | New assembly | `SocialUniverse.Social` at `Assets/_Project/Scripts/Social/` — references `VContainer`, `SocialUniverse.Core`, `SocialUniverse.Config`, `Unity.Services.Vivox`, `Unity.Services.Friends` (no dependency on `SocialUniverse.Net`) |
-| `SocialUniverse.Net.asmdef` | Added `Unity.Services.Multiplayer`, `Unity.Netcode.Runtime`, `Unity.Collections`, `SocialUniverse.Social` |
+| `SocialUniverse.Net.asmdef` | References `Unity.Services.Vivox`, `SocialUniverse.Social`. (`Unity.Services.Multiplayer`/`Unity.Netcode.Runtime`/`Unity.Collections` removed in `refactor/vivox-only-social` — see `MIGRATION.md`) |
 | `SocialUniverse.App.asmdef` | Added `SocialUniverse.Social` reference |
 | `SocialUniverse.Tests.asmdef` | Added `SocialUniverse.Net`, `SocialUniverse.Social`, `SocialUniverse.World` references |
-| `RootLifetimeScope` | New `[SerializeField] SocialConfig _socialConfig`. Dev mode (`_devMode = true`) registers `LocalMockChatService`/`LocalMockFriendsService`/`LocalMockPresenceService`; production registers `ChatService`/`FriendsService`/`ShardManager`/`PresenceService` (all `As<I*Service>`). Both modes register `ChatModerationFilter`, `ReportService`, `ChatChannelController`, `DirectMessageService`, `ProfileService`, `RegisterInstance(_socialConfig)`, `RegisterEntryPoint<SocialServicesInitializer>()` |
+| `RootLifetimeScope` | New `[SerializeField] SocialConfig _socialConfig`. Dev mode (`_devMode = true`) registers `LocalMockChatService`/`LocalMockFriendsService`/`LocalMockPresenceService`; production registers `ChatService`/`FriendsService`/`VivoxPresenceService` (all `As<I*Service>`). Both modes register `ChatModerationFilter`, `ReportService`, `ChatChannelController`, `DirectMessageService`, `ProfileService`, `RegisterInstance(_socialConfig)`, `RegisterEntryPoint<SocialServicesInitializer>()` |
 | `PlanetSceneScope` | New `[SerializeField] SocialConfig _socialConfig` (standalone mode only — production gets it from `RootLifetimeScope`). Standalone (`parentReference.Type == null`) registers the same M4 mock set as `RootLifetimeScope`'s dev mode, plus `RegisterInstance(_socialConfig ?? ScriptableObject.CreateInstance<SocialConfig>())`. New `RegisterEntryPoint<PlanetPresenceController>()` (both modes) |
 | `Bootstrap.unity` | `RootLifetimeScope._devMode = 0` (production); `_socialConfig` assigned → `Assets/SocialConfig.asset` (misplaced — see Assets section above) |
-| `Packages/manifest.json` | Added `com.unity.netcode.gameobjects@2.12.0`, `com.unity.services.friends@1.1.1`, `com.unity.services.multiplayer@2.2.3`, `com.unity.services.vivox@16.11.0` |
-| `Assets/DefaultNetworkPrefabs.asset` (new) | NGO `NetworkPrefabsList`, `IsDefault: 1`, `List: []` — empty; `NetworkPlayer`/`PlayerSyncController` prefab not yet registered (see Setup Required) |
+| `Packages/manifest.json` | Added `com.unity.services.friends@1.1.1`, `com.unity.services.vivox@16.11.0`. (`com.unity.netcode.gameobjects`, `com.unity.services.multiplayer` removed in `refactor/vivox-only-social` — see `MIGRATION.md`) |
 
 
-### Presence & Shards Notes
+### Presence Notes
 
-- **`ShardManager`** owns the Multiplayer Sessions lifecycle. A shard is a session named
-  `"{planetId}_shard{n}"`; `JoinPlanetAsync` walks `n = 0..MaxShardsPerPlanet-1`
-  (`SocialConfig.MaxShardsPerPlanet`, default 8) calling `CreateOrJoinSessionAsync` with
-  `SessionOptions.WithRelayNetwork()` and `MaxPlayers = SocialConfig.MaxPlayersPerShard` (default
-  16) until one succeeds. The session's `displayName` player property is set from
-  `IAuthService.PlayerId`.
-- **`PresenceService`** is a thin projection of `ShardManager.CurrentSession.Players` — it
-  re-subscribes to `ISession.PlayerJoined`/`PlayerLeaving` whenever `ShardManager.SessionChanged`
-  fires, and exposes `Players`/`PlayerJoined`/`PlayerLeft`/`PresenceChanged` per `IPresenceService`.
-- **`NetworkPlayer`**/**`PlayerSyncController`** replicate identity and position via NGO
-  `NetworkVariable`s, owner-writable only. Since no avatar model exists yet (per architecture
-  doc, "models to acquire"), the marker's "position" is the local player's **camera focus point
-  projected onto the planet sphere** (radius 1.05f, configurable per-instance) — this is the
-  same kind of stand-in called out for visitor tracking in M3 Phase 3, and both will need
-  revisiting once a real avatar/controllable character lands.
+- **`VivoxPresenceService`** derives presence from the roster of the planet's Vivox text
+  channel — `VivoxService.Instance.ActiveChannels[channelName]` *is* the player list. It
+  delegates channel join/leave to `ChatChannelController` (`SwitchToLocalAsync`/
+  `SwitchToGlobalAsync`), so joining for chat and joining for presence are the same Vivox
+  channel join — there is no separate session, shard, or host. `ParticipantAddedToChannel`/
+  `ParticipantRemovedFromChannel` drive `PlayerJoined`/`PlayerLeft`.
 - **`PlanetPresenceController`** (App, `IStartable`/`IDisposable`) is the glue: on Planet scene
   start it calls `IPresenceService.JoinPlanetAsync(planetId)` and
   `ChatChannelController.SwitchToLocalAsync` (joins the planet's local chat channel), and leaves
-  both on dispose.
+  both on dispose. In production the two calls converge on the same channel join; in dev mode
+  `IPresenceService` is a standalone mock so both calls are needed independently.
+- There are no replicated player markers or position sync (removed `NetworkPlayer`/
+  `PlayerSyncController` — see `MIGRATION.md`): players never see each other move, so presence
+  is purely "who's in this channel," not where they are.
 
 ### Chat & Moderation Notes
 
@@ -761,22 +761,20 @@ M3 and M4 alike.**
 - [ ] Deploy `SubmitReport`, `BlockUser`, `GetPlayerProfile`, `UpdateProfile` to Cloud Code;
       decide on `ModerateMessage` (wire it in server-side or remove it as dead code) before
       deploying it.
-- [ ] UGS Dashboard: enable/configure **Vivox** (text chat channels), **Friends**, and
-      **Multiplayer Sessions + Relay** for this project.
-- [x] Create a `NetworkPlayer` + `PlayerSyncController` + `NetworkObject` prefab, register it in
-      `Assets/DefaultNetworkPrefabs.asset`, and add a `NetworkManager` to `Planet.unity` so shard
-      sessions can actually spawn player markers. `Assets/Prefabs/Net/NetworkPlayer.prefab`
-      (Capsule marker, scale 0.05, `NetworkObject` + `NetworkPlayer` + `PlayerSyncController`) is
-      registered as the default network prefab and assigned as `NetworkManager.NetworkConfig.PlayerPrefab`;
-      `NetworkManager` (+ `UnityTransport`) added to `Planet.unity`. Fixes the
-      `"Cannot start when Singleton is not set"` / `"all shards full"` warnings from
-      `ShardManager.WithRelayNetwork()` having no `NetworkManager.Singleton` to attach to.
+- [ ] UGS Dashboard: enable/configure **Vivox** (text chat channels) and **Friends** for this
+      project. (Multiplayer Sessions/Relay no longer needed — removed in `refactor/vivox-only-social`,
+      see `MIGRATION.md`.)
+- [x] ~~Create a `NetworkPlayer` + `PlayerSyncController` + `NetworkObject` prefab...~~ —
+      superseded: the NGO player-marker/session model was removed in `refactor/vivox-only-social`.
+      Presence no longer needs a spawned prefab; it reads the Vivox channel roster directly.
 - [ ] Move `Assets/SocialConfig.asset` into `Assets/_Project/ScriptableObjects/` per project
       convention and re-point `Bootstrap.unity`'s `RootLifetimeScope._socialConfig`.
 - [ ] Assign `_socialConfig` on `Planet.unity`'s `PlanetSceneScope` (the field exists in code but
       the scene hasn't been re-saved since it was added, so it's currently unassigned).
-- [ ] Resolve Known Issue #7 (`PlanetSceneScope.Container not initialized` in
-      `PlanetSceneFlowTests`) — it blocks PlayMode verification for both M3 and M4.
+- [ ] Re-verify Known Issue #7 (`PlanetSceneScope.Container not initialized` in
+      `PlanetSceneFlowTests`) — it was suspected to stem from `ShardManager.WithRelayNetwork()`
+      having no `NetworkManager.Singleton` to attach to, which no longer exists after
+      `refactor/vivox-only-social`; confirm the issue is actually resolved.
 
 
 ### M4 Completion Checklist
@@ -789,7 +787,7 @@ M3 and M4 alike.**
 - [x] EditMode: `DirectMessageServiceTests` — friends-only/moderation/block rules, `DirectMessageReceivedEvent`
 - [x] EditMode: `ProfileServiceTests` — `GetProfileAsync`/`UpdateDisplayNameAsync` against `FakeBackendClient`
 - [x] EditMode: `ReportServiceTests` — `ReportPlayerAsync`/`Block`/`UnblockPlayerAsync` payloads and `MutePlayer` local suppression
-- [ ] PlayMode: Two clients on same planet — both `PresenceService` instances show each other (blocked on Known Issue #7 + UGS Multiplayer setup)
+- [ ] PlayMode: Two clients on same planet — both `VivoxPresenceService` instances show each other via the channel roster (blocked on Known Issue #7 + Vivox setup)
 - [ ] PlayMode: Chat message sent from Client A appears in Client B's channel (blocked on Known Issue #7 + Vivox setup; no `ChatScreen` UI yet either)
 
 **Manual Play Mode Verification**

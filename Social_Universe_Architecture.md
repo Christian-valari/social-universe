@@ -12,9 +12,9 @@
 - **Models on hand:** planets + moon, drone, asteroid, rocket. *Missing and to acquire:* player avatar, space-station, building/decoration set, UI kit.
 - **Input:** Unity Input System (also exposes the gyroscope/attitude sensor).
 
-**Backend — recommendation.** A persistent social MMO with an economy needs three things the engine doesn't give you: a real-time layer (presence + chat + co-located players), persistence (profiles, land, currency), and a **server-authoritative economy**. Two clean ways to get all three:
+**Backend — recommendation.** A persistent social MMO with an economy needs three things the engine doesn't give you: presence + chat (players never share a live simulation or move in real time — there's no co-located movement to sync), persistence (profiles, land, currency), and a **server-authoritative economy**. Two clean ways to get all three:
 
-- **Primary recommendation — Unity Gaming Services (UGS):** Authentication, Cloud Save, **Economy** (currencies, inventory, virtual purchases — server-authoritative out of the box, a perfect fit for Coins/Stardust/land), Cloud Code (custom server logic), Lobby + Relay + Netcode for GameObjects (presence/movement), **Vivox** (chat), Remote Config, Analytics. Easiest Unity integration; minimal backend code.
+- **Primary recommendation — Unity Gaming Services (UGS):** Authentication, Cloud Save, **Economy** (currencies, inventory, virtual purchases — server-authoritative out of the box, a perfect fit for Coins/Stardust/land), Cloud Code (custom server logic), **Vivox** (text chat *and* presence — the roster of a planet's Vivox channel *is* the presence list; no Lobby/Relay/Netcode layer), Remote Config, Analytics. Easiest Unity integration; minimal backend code.
 - **Strong alternative — Nakama (Heroic Labs):** one cohesive game server for realtime + chat + storage + RPC + wallet/economy + leaderboards, self-hosted or cloud.
 
 **Architectural rule:** the backend sits **behind interfaces** (`IEconomyService`, `IAuthService`, `IChatService`, …). M1 ships against a `LocalMock*` implementation so the core loop is fun offline; M2 swaps in the real backend with no gameplay rewrites. Don't pick the backend on day one — pick the interfaces.
@@ -44,22 +44,18 @@ flowchart TB
       UI["UI / HUD Layer (screens, juice)"]
       GP["Gameplay Layer (planet, hex land, mining, drones, travel)"]
       SVC["Service Layer (interfaces: economy, auth, chat, social, presence)"]
-      NET["Net Layer (Netcode/Relay client, presence, shard join)"]
       UI --> GP --> SVC
-      SVC --> NET
     end
     subgraph Backend["BACKEND (UGS or Nakama)"]
       AUTH["Auth"]
       ECON["Economy (currencies, inventory, purchases)"]
       CODE["Server Functions (Cloud Code / RPC) — validate & commit"]
       SAVE["Persistence (profiles, land registry)"]
-      RT["Realtime (presence, rooms/shards)"]
-      CHAT["Chat / Voice (Vivox)"]
+      CHAT["Chat & Presence (Vivox channel — roster IS presence)"]
     end
     SVC -->|requests| CODE
     CODE --> ECON
     CODE --> SAVE
-    NET --> RT
     SVC --> AUTH
     SVC --> CHAT
 ```
@@ -75,7 +71,7 @@ flowchart TB
 | Land purchase / sale / upkeep | request | ✅ validate & commit |
 | Drone upgrades, level-ups, quest rewards | request | ✅ grant |
 | IAP / season pass | initiate | ✅ receipt-validate & grant |
-| Presence, player positions on a planet | replicate | ✅ relay/host |
+| Presence (who's in a planet's Vivox channel) | display roster | — (no host/relay; Vivox channel roster is the presence list) |
 | Chat messages, reports, blocks | send/display | ✅ store, filter, moderate |
 
 ---
@@ -207,11 +203,11 @@ Priority tags follow the PRD: **P0** = core/MVP, **P1** = launch, **P2** = later
 
 | Script | Folder | Responsibility | Pri |
 |---|---|---|---|
-| `PresenceService` | Net | Who is on this planet/shard right now | P0 |
-| `ShardManager` | Net | Pick/join a planet shard; follow a friend | P1 |
-| `NetworkPlayer` | Net | Replicated player object on a planet | P1 |
-| `PlayerSyncController` | Net | Sync position/avatar/state | P1 |
-| `IChatService` + `ChatService` | Social | Channels, send/receive (Vivox/Nakama) | P0 |
+| `IPresenceService` + `VivoxPresenceService` | Net | Who is on this planet right now, derived from the roster of the planet's Vivox text channel (no separate session/host) | P0 |
+| ~~`ShardManager`~~ | ~~Net~~ | **Removed** — no Lobby/Relay sessions or shard-walking; one Vivox channel per planet is the only "room" concept | — |
+| ~~`NetworkPlayer`~~ | ~~Net~~ | **Removed** — no replicated player objects; players never see each other move | — |
+| ~~`PlayerSyncController`~~ | ~~Net~~ | **Removed** — no position sync; there is no co-located movement to replicate | — |
+| `IChatService` + `ChatService` | Social | Channels, send/receive (Vivox text-only) | P0 |
 | `ChatChannelController` | Social | Global / local / guild / DM channel switching | P0 |
 | `ChatModerationFilter` | Social | Client-side profanity filter (server also enforces) | P0 |
 | `ReportService` | Social | Report / block / mute | P0 |
