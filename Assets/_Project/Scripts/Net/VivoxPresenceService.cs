@@ -24,6 +24,7 @@ namespace SocialUniverse.Net
         public VivoxPresenceService(ChatChannelController channels)
         {
             _channels = channels;
+            if (VivoxService.Instance == null) return;
             VivoxService.Instance.ParticipantAddedToChannel    += OnParticipantAdded;
             VivoxService.Instance.ParticipantRemovedFromChannel += OnParticipantRemoved;
         }
@@ -33,6 +34,7 @@ namespace SocialUniverse.Net
 
         public IReadOnlyList<PresencePlayer> Players =>
             CurrentChannelName != null
+            && VivoxService.Instance != null
             && VivoxService.Instance.ActiveChannels.TryGetValue(CurrentChannelName, out var participants)
                 ? participants.Select(ToPresencePlayer).ToList()
                 : (IReadOnlyList<PresencePlayer>)Array.Empty<PresencePlayer>();
