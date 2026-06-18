@@ -16,12 +16,26 @@ namespace SocialUniverse.Social
 
         private bool _initialized;
 
+        // Tracks an in-flight login so a second concurrent ConnectAsync call
+        // (e.g. a re-fired PlayerReadyEvent across a domain reload) awaits the
+        // same task instead of issuing a second VivoxService.LoginAsync —
+        // Vivox's LoginSession throws "must be logged out" if Login is called
+        // while a previous login for this session hasn't finished yet.
+        private Task _connectTask;
+
         public bool IsConnected => _initialized && VivoxService.Instance != null && VivoxService.Instance.IsLoggedIn;
 
-        public async Task ConnectAsync(string displayName)
+        public Task ConnectAsync(string displayName)
         {
-            if (IsConnected) return;
+            if (IsConnected) return Task.CompletedTask;
+            if (_connectTask != null && !_connectTask.IsCompleted) return _connectTask;
 
+            _connectTask = DoConnectAsync(displayName);
+            return _connectTask;
+        }
+
+        private async Task DoConnectAsync(string displayName)
+        {
             await VivoxService.Instance.InitializeAsync();
 
             if (!_initialized)
