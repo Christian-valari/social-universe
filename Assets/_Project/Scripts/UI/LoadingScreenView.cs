@@ -7,7 +7,8 @@ using SocialUniverse.Core;
 
 namespace SocialUniverse.UI
 {
-    // Lives in the LoadingScreen scene, loaded additively before the Planet scene.
+    // Lives in the LoadingScreen scene, loaded additively before any gameplay scene
+    // (Planet, SolarSystem).
     // Animates a slider to each progress milestone and shows the live percentage.
     // Enforces a minimum visible duration before unloading itself.
     public class LoadingScreenView : MonoBehaviour
@@ -36,13 +37,13 @@ namespace SocialUniverse.UI
             UpdateDisplay(0f);
 
             EventBus.Subscribe<LoadingStatusEvent>(OnProgressUpdate);
-            EventBus.Subscribe<PlanetSceneReadyEvent>(OnSceneReady);
+            EventBus.Subscribe<SceneReadyEvent>(OnSceneReady);
         }
 
         private void OnDestroy()
         {
             EventBus.Unsubscribe<LoadingStatusEvent>(OnProgressUpdate);
-            EventBus.Unsubscribe<PlanetSceneReadyEvent>(OnSceneReady);
+            EventBus.Unsubscribe<SceneReadyEvent>(OnSceneReady);
         }
 
         private void Update()
@@ -58,7 +59,7 @@ namespace SocialUniverse.UI
         private void OnProgressUpdate(LoadingStatusEvent e) =>
             _targetProgress = Mathf.Clamp01(e.Progress);
 
-        private void OnSceneReady(PlanetSceneReadyEvent _)
+        private void OnSceneReady(SceneReadyEvent _)
         {
             _targetProgress = 1f;
             StartCoroutine(UnloadAfterCompletion());

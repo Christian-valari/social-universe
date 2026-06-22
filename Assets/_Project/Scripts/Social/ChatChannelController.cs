@@ -44,7 +44,6 @@ namespace SocialUniverse.Social
 
         public void Dispose() => _chat.MessageReceived -= OnMessageReceived;
 
-        public static string LocalChannelName(string planetId) => $"planet_{planetId}".ToLowerInvariant();
         public static string GuildChannelName(string guildId)  => $"guild_{guildId}".ToLowerInvariant();
 
         // Tracks the most recently requested channel switch so SendAsync can wait
@@ -52,8 +51,10 @@ namespace SocialUniverse.Social
         private Task   _pendingSwitch      = Task.CompletedTask;
         private string _pendingChannelName;
 
+        // For now there is one shared text channel (Global) for everyone — no
+        // per-planet Local channel. Presence still joins this same channel, so
+        // it doubles as "the planet channel" until per-planet chat is needed.
         public Task SwitchToGlobalAsync()                => SwitchToAsync(_config.GlobalChannelName);
-        public Task SwitchToLocalAsync(string planetId)  => SwitchToAsync(LocalChannelName(planetId));
         public Task SwitchToGuildAsync(string guildId)   => SwitchToAsync(GuildChannelName(guildId)); // guilds land in M7
 
         public IReadOnlyList<ChatMessage> GetHistory(string channelName) =>

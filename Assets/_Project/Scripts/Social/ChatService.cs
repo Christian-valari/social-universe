@@ -15,13 +15,29 @@ namespace SocialUniverse.Social
         public event Action<ChatMessage> DirectMessageReceived;
 
         private bool _initialized;
+        private string _lastDisplayName;
+
+        // Tracks an in-flight login so a second concurrent ConnectAsync call
+        // (e.g. a re-fired PlayerReadyEvent across a domain reload) awaits the
+        // same task instead of issuing a second VivoxService.LoginAsync —
+        // Vivox's LoginSession throws "must be logged out" if Login is called
+        // while a previous login for this session hasn't finished yet.
+        private Task _connectTask;
 
         public bool IsConnected => _initialized && VivoxService.Instance != null && VivoxService.Instance.IsLoggedIn;
 
-        public async Task ConnectAsync(string displayName)
+        public Task ConnectAsync(string displayName)
         {
-            if (IsConnected) return;
+            _lastDisplayName = displayName;
+            if (IsConnected) return Task.CompletedTask;
+            if (_connectTask != null && !_connectTask.IsCompleted) return _connectTask;
 
+            _connectTask = DoConnectAsync(displayName);
+            return _connectTask;
+        }
+
+        private async Task DoConnectAsync(string displayName)
+        {
             await VivoxService.Instance.InitializeAsync();
 
             if (!_initialized)
@@ -30,6 +46,8 @@ namespace SocialUniverse.Social
                 VivoxService.Instance.DirectedMessageReceived += OnDirectedMessage;
                 _initialized = true;
             }
+
+            if (VivoxService.Instance.IsLoggedIn) return;
 
             var options = new LoginOptions { DisplayName = displayName };
             await VivoxService.Instance.LoginAsync(options);
@@ -42,23 +60,59 @@ namespace SocialUniverse.Social
             await VivoxService.Instance.LogoutAsync();
         }
 
-        public Task JoinChannelAsync(string channelName) =>
-            VivoxService.Instance.JoinGroupChannelAsync(channelName, ChatCapability.TextOnly);
+        // Vivox's own channel/message/block calls each internally "ensure
+        // logged in" and will auto-init/login themselves if called before
+        // Vivox is ready — which queues an internal login action. If our own
+        // managed ConnectAsync also logs in around the same time (e.g. once
+        // PlayerReadyEvent fires moments later), that explicit LoginAsync
+        // collides with Vivox's own queued one and throws "must be logged
+        // out". So every Vivox-touching call below routes through this
+        // instead of ever letting Vivox auto-init/login on its own: if no
+        // connect has started yet, it starts the SAME managed ConnectAsync
+        // these calls then await, so Vivox is always already logged in by
+        // the time any of them actually reach the SDK.
+        private Task EnsureConnectedAsync()
+        {
+            if (IsConnected) return Task.CompletedTask;
+            if (_connectTask != null && !_connectTask.IsCompleted) return _connectTask;
+            return ConnectAsync(_lastDisplayName ?? "Player");
+        }
 
-        public Task LeaveChannelAsync(string channelName) =>
-            VivoxService.Instance.LeaveChannelAsync(channelName);
+        public async Task JoinChannelAsync(string channelName)
+        {
+            await EnsureConnectedAsync();
+            await VivoxService.Instance.JoinGroupChannelAsync(channelName, ChatCapability.TextOnly);
+        }
 
-        public Task SendMessageAsync(string channelName, string text) =>
-            VivoxService.Instance.SendChannelTextMessageAsync(channelName, text);
+        public async Task LeaveChannelAsync(string channelName)
+        {
+            await EnsureConnectedAsync();
+            await VivoxService.Instance.LeaveChannelAsync(channelName);
+        }
 
-        public Task SendDirectMessageAsync(string playerId, string text) =>
-            VivoxService.Instance.SendDirectTextMessageAsync(text, playerId);
+        public async Task SendMessageAsync(string channelName, string text)
+        {
+            await EnsureConnectedAsync();
+            await VivoxService.Instance.SendChannelTextMessageAsync(channelName, text);
+        }
 
-        public Task BlockPlayerAsync(string playerId) =>
-            VivoxService.Instance.BlockPlayerAsync(playerId);
+        public async Task SendDirectMessageAsync(string playerId, string text)
+        {
+            await EnsureConnectedAsync();
+            await VivoxService.Instance.SendDirectTextMessageAsync(text, playerId);
+        }
 
-        public Task UnblockPlayerAsync(string playerId) =>
-            VivoxService.Instance.UnblockPlayerAsync(playerId);
+        public async Task BlockPlayerAsync(string playerId)
+        {
+            await EnsureConnectedAsync();
+            await VivoxService.Instance.BlockPlayerAsync(playerId);
+        }
+
+        public async Task UnblockPlayerAsync(string playerId)
+        {
+            await EnsureConnectedAsync();
+            await VivoxService.Instance.UnblockPlayerAsync(playerId);
+        }
 
         public void Dispose()
         {

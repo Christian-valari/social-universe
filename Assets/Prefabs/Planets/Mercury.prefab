@@ -27,7 +27,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.45, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5806558047150938865}
@@ -48,7 +48,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -68,27 +68,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d30799c6ad9426b4fa3554c6e23f5256, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1
+      value: 0.46967
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d30799c6ad9426b4fa3554c6e23f5256, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 0.46967
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d30799c6ad9426b4fa3554c6e23f5256, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1
+      value: 0.46967
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d30799c6ad9426b4fa3554c6e23f5256, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0
+      value: 0.0018633
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d30799c6ad9426b4fa3554c6e23f5256, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.00097826
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d30799c6ad9426b4fa3554c6e23f5256, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.0001862
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d30799c6ad9426b4fa3554c6e23f5256, type: 3}
       propertyPath: m_LocalRotation.w

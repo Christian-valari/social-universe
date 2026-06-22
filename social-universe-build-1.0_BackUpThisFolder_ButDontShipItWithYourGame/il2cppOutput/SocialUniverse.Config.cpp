@@ -433,9 +433,6 @@ struct SocialConfig_t337336E47C47AA5D19FB4ED2710608F1ECC1B39C  : public Scriptab
 	String_t* ____globalChannelName;
 	int32_t ____maxMessageLength;
 	int32_t ____chatHistoryLimit;
-	int32_t ____maxPlayersPerShard;
-	int32_t ____maxShardsPerPlanet;
-	float ____positionSyncIntervalSec;
 	int32_t ____maxDisplayNameLength;
 };
 struct EmptyArray_1_tDF0DD7256B115243AA6BD5558417387A734240EE_StaticFields
@@ -778,7 +775,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* ItemDefinition_get_Item
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 131915
+// Method Definition Index: 122071
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR MonoScriptData_t22DCB8045BB859CEAA7F356DC918C55F26C414AA UnitySourceGeneratedAssemblyMonoScriptTypes_v1_Get_m327A7AF8416F4A3C1F002F73DCAF170065A9C50A (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -812,7 +809,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR MonoScriptData_t22DCB8045BB859CEAA7F356DC918C
 		return L_6;
 	}
 }
-// Method Definition Index: 131916
+// Method Definition Index: 122072
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void UnitySourceGeneratedAssemblyMonoScriptTypes_v1__ctor_m2DEE54FAD8091DED27533116F676823BFE1188DD (UnitySourceGeneratedAssemblyMonoScriptTypes_v1_t39ACCEE3A62CD07B6FD0E0A0079D1B4A90542182* __this, const RuntimeMethod* method) 
 {
 	{
@@ -906,7 +903,7 @@ IL2CPP_EXTERN_C void MonoScriptData_t22DCB8045BB859CEAA7F356DC918C55F26C414AA_ma
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 131917
+// Method Definition Index: 122073
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t AppConfig_get_Environment_mD9DCD9C7DCA2DCF40A759309F71056AF03B969A1 (AppConfig_t732509A56448331CFF6544E2E18FCFBF653604B2* __this, const RuntimeMethod* method) 
 {
 	{
@@ -915,7 +912,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t AppConfig_get_Environment_mD9DCD9C7DC
 		return L_0;
 	}
 }
-// Method Definition Index: 131918
+// Method Definition Index: 122074
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* AppConfig_get_GameVersion_m0E2AA3146C0779DEA63CBF9EB47BE31AC96A20DB (AppConfig_t732509A56448331CFF6544E2E18FCFBF653604B2* __this, const RuntimeMethod* method) 
 {
 	{
@@ -924,7 +921,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* AppConfig_get_GameVersion_m0E2AA314
 		return L_0;
 	}
 }
-// Method Definition Index: 131919
+// Method Definition Index: 122075
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool AppConfig_get_VerboseLogging_m2407761984F334FF0FC3E0197462B0205A861F2E (AppConfig_t732509A56448331CFF6544E2E18FCFBF653604B2* __this, const RuntimeMethod* method) 
 {
 	{
@@ -933,7 +930,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool AppConfig_get_VerboseLogging_m2407761984
 		return L_0;
 	}
 }
-// Method Definition Index: 131920
+// Method Definition Index: 122076
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AppConfig__ctor_m460F66BE5BE94C4C79DD4CD6598D807BF23AC680 (AppConfig_t732509A56448331CFF6544E2E18FCFBF653604B2* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -960,7 +957,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AppConfig__ctor_m460F66BE5BE94C4C79DD4CD
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 131921
+// Method Definition Index: 122077
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* AsteroidDefinition_get_MineralType_m1F1D8CC7612117CDA1E8C6B490BD695C19E4124B (AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* __this, const RuntimeMethod* method) 
 {
 	{
@@ -969,7 +966,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* AsteroidDefinition_get_MineralType_
 		return L_0;
 	}
 }
-// Method Definition Index: 131922
+// Method Definition Index: 122078
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t AsteroidDefinition_get_Tier_m53F3913E8ABDFD8375D625AB56D64F67B4418CD3 (AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* __this, const RuntimeMethod* method) 
 {
 	{
@@ -978,7 +975,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t AsteroidDefinition_get_Tier_m53F3913E
 		return L_0;
 	}
 }
-// Method Definition Index: 131923
+// Method Definition Index: 122079
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t AsteroidDefinition_get_BaseYield_m426E4DD3482DCE010A29156A5E99832471B653D5 (AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* __this, const RuntimeMethod* method) 
 {
 	{
@@ -987,7 +984,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t AsteroidDefinition_get_BaseYield_m426
 		return L_0;
 	}
 }
-// Method Definition Index: 131924
+// Method Definition Index: 122080
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float AsteroidDefinition_get_Rarity_mF437404B743658CD88A81189FAECDEB22DE4563A (AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* __this, const RuntimeMethod* method) 
 {
 	{
@@ -996,7 +993,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float AsteroidDefinition_get_Rarity_mF437404B
 		return L_0;
 	}
 }
-// Method Definition Index: 131925
+// Method Definition Index: 122081
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t AsteroidDefinition_get_CoinsPerUnit_mB475756F13E4FB4BFA247F1F7E35BBA4A310B76F (AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1005,7 +1002,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t AsteroidDefinition_get_CoinsPerUnit_m
 		return L_0;
 	}
 }
-// Method Definition Index: 131926
+// Method Definition Index: 122082
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* AsteroidDefinition_get_ModelPrefab_mE05A5C7658D3150A8D9B40A34B3D15BFF1755D06 (AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1014,7 +1011,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR GameObject_t76FEDD663AB33C991A9C9A23129337651
 		return L_0;
 	}
 }
-// Method Definition Index: 131927
+// Method Definition Index: 122083
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidDefinition__ctor_m63058E65691D45FB1BBEF5B8A6A72C9274D29155 (AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1038,7 +1035,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AsteroidDefinition__ctor_m63058E65691D45
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 131928
+// Method Definition Index: 122084
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* DatabaseRegistry_get_AllPlanets_m5669D58A739A0F3BC802AC71E87AFFF3DC5D1D92 (DatabaseRegistry_tBD75C5774CDFE42C5FC8B3827DE1F0E1AF8BC8D1* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -1071,7 +1068,7 @@ IL_000f:
 		return (RuntimeObject*)G_B2_0;
 	}
 }
-// Method Definition Index: 131929
+// Method Definition Index: 122085
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* DatabaseRegistry_get_AllAsteroids_mA5C8E01C7AD30BCB851DB95D60B6B2C1B5925C55 (DatabaseRegistry_tBD75C5774CDFE42C5FC8B3827DE1F0E1AF8BC8D1* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -1104,7 +1101,7 @@ IL_000f:
 		return (RuntimeObject*)G_B2_0;
 	}
 }
-// Method Definition Index: 131930
+// Method Definition Index: 122086
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* DatabaseRegistry_get_AllDrones_mD96D25C9265064034C2918CE08BBFAFA3F94167B (DatabaseRegistry_tBD75C5774CDFE42C5FC8B3827DE1F0E1AF8BC8D1* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -1137,7 +1134,7 @@ IL_000f:
 		return (RuntimeObject*)G_B2_0;
 	}
 }
-// Method Definition Index: 131931
+// Method Definition Index: 122087
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* DatabaseRegistry_get_AllItems_m659E9E7B81795FEC34D3FB0A2B2D8B5B976E7BA6 (DatabaseRegistry_tBD75C5774CDFE42C5FC8B3827DE1F0E1AF8BC8D1* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -1170,7 +1167,7 @@ IL_000f:
 		return (RuntimeObject*)G_B2_0;
 	}
 }
-// Method Definition Index: 131932
+// Method Definition Index: 122088
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* DatabaseRegistry_GetPlanet_m7E0896055AB22637F45F01DE895D36D124767D31 (DatabaseRegistry_tBD75C5774CDFE42C5FC8B3827DE1F0E1AF8BC8D1* __this, String_t* ___0_id, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -1202,7 +1199,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR PlanetDefinition_t03C124202491B0B8563FE747A3B
 		return L_6;
 	}
 }
-// Method Definition Index: 131933
+// Method Definition Index: 122089
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* DatabaseRegistry_GetAsteroid_m6B60D2DCF681B929B98F92D1693EC1E0F56778B5 (DatabaseRegistry_tBD75C5774CDFE42C5FC8B3827DE1F0E1AF8BC8D1* __this, String_t* ___0_mineral, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -1234,7 +1231,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR AsteroidDefinition_t277B2DE73FCA5060E26B286D5
 		return L_6;
 	}
 }
-// Method Definition Index: 131934
+// Method Definition Index: 122090
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* DatabaseRegistry_GetDrone_mEB186910C1B845933C0CC5FF052A917042002F85 (DatabaseRegistry_tBD75C5774CDFE42C5FC8B3827DE1F0E1AF8BC8D1* __this, String_t* ___0_droneId, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -1266,7 +1263,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR DroneDefinition_tB4D4392A23B3B34CBE508E85D59D
 		return L_6;
 	}
 }
-// Method Definition Index: 131935
+// Method Definition Index: 122091
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR ItemDefinition_t8BADD4DDEF367747A3719AFF59CCA57B2FC53984* DatabaseRegistry_GetItem_mB63ADF2287BFCD9B3326BB812775573E722F15A8 (DatabaseRegistry_tBD75C5774CDFE42C5FC8B3827DE1F0E1AF8BC8D1* __this, String_t* ___0_itemId, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -1298,7 +1295,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR ItemDefinition_t8BADD4DDEF367747A3719AFF59CCA
 		return L_6;
 	}
 }
-// Method Definition Index: 131936
+// Method Definition Index: 122092
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DatabaseRegistry__ctor_m3FDDEFEB47A49B9EE5B2AAFE1770481629CFCE77 (DatabaseRegistry_tBD75C5774CDFE42C5FC8B3827DE1F0E1AF8BC8D1* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1314,7 +1311,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DatabaseRegistry__ctor_m3FDDEFEB47A49B9E
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 131937
+// Method Definition Index: 122093
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CU3Ec__DisplayClass12_0__ctor_m36381B6B3B9AD92FA5F1D917BDA2876B17865FFE (U3CU3Ec__DisplayClass12_0_t588B3CBE0B977353073A511FAFCE5B3441239527* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1322,7 +1319,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CU3Ec__DisplayClass12_0__ctor_m36381B6
 		return;
 	}
 }
-// Method Definition Index: 131938
+// Method Definition Index: 122094
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool U3CU3Ec__DisplayClass12_0_U3CGetPlanetU3Eb__0_m877273A432E81D20745009A0804E9FF59A2C82E4 (U3CU3Ec__DisplayClass12_0_t588B3CBE0B977353073A511FAFCE5B3441239527* __this, PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* ___0_p, const RuntimeMethod* method) 
 {
 	{
@@ -1345,7 +1342,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool U3CU3Ec__DisplayClass12_0_U3CGetPlanetU3
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 131939
+// Method Definition Index: 122095
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CU3Ec__DisplayClass13_0__ctor_m4020C614DE5988285FEAF5F42497C502FFACA66E (U3CU3Ec__DisplayClass13_0_tFCB0D78CA09C0738B03798C9359695DB5A53BCA5* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1353,7 +1350,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CU3Ec__DisplayClass13_0__ctor_m4020C61
 		return;
 	}
 }
-// Method Definition Index: 131940
+// Method Definition Index: 122096
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool U3CU3Ec__DisplayClass13_0_U3CGetAsteroidU3Eb__0_m544B78522407237E44682E7FB0582C6DE1F6A045 (U3CU3Ec__DisplayClass13_0_tFCB0D78CA09C0738B03798C9359695DB5A53BCA5* __this, AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* ___0_a, const RuntimeMethod* method) 
 {
 	{
@@ -1376,7 +1373,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool U3CU3Ec__DisplayClass13_0_U3CGetAsteroid
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 131941
+// Method Definition Index: 122097
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CU3Ec__DisplayClass14_0__ctor_m8510F36CEFF43B76B56B50322B0DDBA71555245D (U3CU3Ec__DisplayClass14_0_tBB0106B41198E693F7A6541C43CB387A1DFE3AB4* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1384,7 +1381,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CU3Ec__DisplayClass14_0__ctor_m8510F36
 		return;
 	}
 }
-// Method Definition Index: 131942
+// Method Definition Index: 122098
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool U3CU3Ec__DisplayClass14_0_U3CGetDroneU3Eb__0_m4C21727E8FC1B347DE6EE585DE7DECBF5A5339AA (U3CU3Ec__DisplayClass14_0_tBB0106B41198E693F7A6541C43CB387A1DFE3AB4* __this, DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* ___0_d, const RuntimeMethod* method) 
 {
 	{
@@ -1407,7 +1404,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool U3CU3Ec__DisplayClass14_0_U3CGetDroneU3E
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 131943
+// Method Definition Index: 122099
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CU3Ec__DisplayClass15_0__ctor_m062E4C6528294B450880EBF20FF075D015F51A06 (U3CU3Ec__DisplayClass15_0_tC060B8A6CB08898EF5E6E67636D60EB7C277FC04* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1415,7 +1412,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CU3Ec__DisplayClass15_0__ctor_m062E4C6
 		return;
 	}
 }
-// Method Definition Index: 131944
+// Method Definition Index: 122100
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool U3CU3Ec__DisplayClass15_0_U3CGetItemU3Eb__0_m78F26E44A8D80696D4D7AA5E4CE669DE54997692 (U3CU3Ec__DisplayClass15_0_tC060B8A6CB08898EF5E6E67636D60EB7C277FC04* __this, ItemDefinition_t8BADD4DDEF367747A3719AFF59CCA57B2FC53984* ___0_i, const RuntimeMethod* method) 
 {
 	{
@@ -1438,7 +1435,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool U3CU3Ec__DisplayClass15_0_U3CGetItemU3Eb
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 131945
+// Method Definition Index: 122101
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* DroneDefinition_get_DroneId_mF453A005AD46EBA8458555F1C5ADE35709FE7F79 (DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1447,7 +1444,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* DroneDefinition_get_DroneId_mF453A0
 		return L_0;
 	}
 }
-// Method Definition Index: 131946
+// Method Definition Index: 122102
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* DroneDefinition_get_DisplayName_m6C97353095C484B1B9B8D77C9D043A075B06D9D0 (DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1456,7 +1453,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* DroneDefinition_get_DisplayName_m6C
 		return L_0;
 	}
 }
-// Method Definition Index: 131947
+// Method Definition Index: 122103
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float DroneDefinition_get_TravelSpeed_m06D734D488C0D539907AC137814FF32FDE668E30 (DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1465,7 +1462,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float DroneDefinition_get_TravelSpeed_m06D734
 		return L_0;
 	}
 }
-// Method Definition Index: 131948
+// Method Definition Index: 122104
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t DroneDefinition_get_CargoCap_m1BCA7661910C280D60CAA6779EC56CD3F8B20751 (DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1474,7 +1471,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t DroneDefinition_get_CargoCap_m1BCA766
 		return L_0;
 	}
 }
-// Method Definition Index: 131949
+// Method Definition Index: 122105
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* DroneDefinition_get_ModelPrefab_mB11F5B9789E2F3A3636085A84ED5B141BA763FFF (DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1483,7 +1480,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR GameObject_t76FEDD663AB33C991A9C9A23129337651
 		return L_0;
 	}
 }
-// Method Definition Index: 131950
+// Method Definition Index: 122106
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DroneDefinition__ctor_mCD936384A1F0A88A238395541A8239A8287B0BDB (DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1503,7 +1500,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DroneDefinition__ctor_mCD936384A1F0A88A2
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 131951
+// Method Definition Index: 122107
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* EconomyConfig_get_CoinsCurrencyId_m885C5EE1F29496977C6BEC669BA6C3728CD607D0 (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1512,7 +1509,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* EconomyConfig_get_CoinsCurrencyId_m
 		return L_0;
 	}
 }
-// Method Definition Index: 131952
+// Method Definition Index: 122108
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* EconomyConfig_get_StardustCurrencyId_mCB80949EB26043B91C0A83EA86B653F0DA34DFA8 (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1521,7 +1518,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* EconomyConfig_get_StardustCurrencyI
 		return L_0;
 	}
 }
-// Method Definition Index: 131953
+// Method Definition Index: 122109
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_StartingCoins_mE99865631D92540B54B29FF0043E71E14C07C83C (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1530,7 +1527,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_StartingCoins_mE998
 		return L_0;
 	}
 }
-// Method Definition Index: 131954
+// Method Definition Index: 122110
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_StartingStardust_mD8CE97C8EE08AC5267AFAEC3DB2FC0C867AB4C90 (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1539,7 +1536,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_StartingStardust_mD
 		return L_0;
 	}
 }
-// Method Definition Index: 131955
+// Method Definition Index: 122111
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_BaseLandPrice_m0131AA58A2D04521A4562DF6EF7E9CD77581950C (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1548,7 +1545,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_BaseLandPrice_m0131
 		return L_0;
 	}
 }
-// Method Definition Index: 131956
+// Method Definition Index: 122112
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_UpkeepPerTilePerDay_m4A139E5EB7A4195B90B1763F7AF31C39417BE7C7 (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1557,7 +1554,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_UpkeepPerTilePerDay
 		return L_0;
 	}
 }
-// Method Definition Index: 131957
+// Method Definition Index: 122113
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_LandRegistryPollIntervalSec_m4B067F07B875F0CC20AED9F2B1D3F6041640AF56 (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1566,7 +1563,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_LandRegistryPollInter
 		return L_0;
 	}
 }
-// Method Definition Index: 131958
+// Method Definition Index: 122114
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_MaxBuildLevel_m332B5ADA4C8A582EA81523FC9FA32E6D94A2C610 (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1575,7 +1572,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_MaxBuildLevel_m332B
 		return L_0;
 	}
 }
-// Method Definition Index: 131959
+// Method Definition Index: 122115
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_BaseYieldPerTilePerHour_mF5DDFFBCBCC62E02AB08F240FE63B86D31300514 (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1584,7 +1581,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_BaseYieldPerTilePerHo
 		return L_0;
 	}
 }
-// Method Definition Index: 131960
+// Method Definition Index: 122116
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_BuildLevelYieldMultiplier_m5D65919B19A8850E6B524169ACAD04C20EFA0DDB (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1593,7 +1590,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_BuildLevelYieldMultip
 		return L_0;
 	}
 }
-// Method Definition Index: 131961
+// Method Definition Index: 122117
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_VisitYieldBonus_mC95D9125FC8096AEF9D4A09C4E3215BB1CB7F676 (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1602,7 +1599,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_VisitYieldBonus_mC95D
 		return L_0;
 	}
 }
-// Method Definition Index: 131962
+// Method Definition Index: 122118
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_MaxYieldAccrualHours_mFDD0FC05914EFC3498E5635AB7BE0D1C49335C62 (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1611,7 +1608,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_MaxYieldAccrualHours_
 		return L_0;
 	}
 }
-// Method Definition Index: 131963
+// Method Definition Index: 122119
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_MaxVisitCount_mF9E866453E108802E7BBAE66B450DAA008060C5D (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1620,7 +1617,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_MaxVisitCount_mF9E8
 		return L_0;
 	}
 }
-// Method Definition Index: 131964
+// Method Definition Index: 122120
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_UpkeepPollIntervalSec_m0AB66B60B53188552811CE15EADA0F14D7730256 (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1629,7 +1626,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_UpkeepPollIntervalSec
 		return L_0;
 	}
 }
-// Method Definition Index: 131965
+// Method Definition Index: 122121
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_LandResaleRate_m1309C23FB4513A43F34BA40EEF6D74662D3B2666 (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1638,7 +1635,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_LandResaleRate_m1309C
 		return L_0;
 	}
 }
-// Method Definition Index: 131966
+// Method Definition Index: 122122
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_IdleMiningRate_mAE386036D06761D813CB566DE6B0D662BA696E7A (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1647,7 +1644,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_IdleMiningRate_mAE386
 		return L_0;
 	}
 }
-// Method Definition Index: 131967
+// Method Definition Index: 122123
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_MaxOfflineHours_m27C723AEF635D7A46084272EE14281433FB11639 (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1656,7 +1653,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_MaxOfflineHours_m27C7
 		return L_0;
 	}
 }
-// Method Definition Index: 131968
+// Method Definition Index: 122124
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_IdleSessionDuration_m7577026567440F6DFA3AC706FD4FB8FA23765ABF (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1665,7 +1662,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_IdleSessionDuration_m
 		return L_0;
 	}
 }
-// Method Definition Index: 131969
+// Method Definition Index: 122125
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_IdleSessionClaimTaps_mA16EC38BEC077D5D3117A149FCD56633A7BFBACD (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1674,7 +1671,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_IdleSessionClaimTap
 		return L_0;
 	}
 }
-// Method Definition Index: 131970
+// Method Definition Index: 122126
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_AsteroidRespawnHours_m334566DDB9DB4E65A9920F27C0978DDBDB309231 (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1683,7 +1680,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_AsteroidRespawnHours_
 		return L_0;
 	}
 }
-// Method Definition Index: 131971
+// Method Definition Index: 122127
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_ActiveTapYield_m382F77556233E1E7CE7F542BC741BAA2728BCC52 (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1692,7 +1689,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_ActiveTapYield_m382
 		return L_0;
 	}
 }
-// Method Definition Index: 131972
+// Method Definition Index: 122128
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_CritChance_mB5A7BCDB0DF8BBDB0A24F668FADA0D3EA41C1586 (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1701,7 +1698,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_CritChance_mB5A7BCDB0
 		return L_0;
 	}
 }
-// Method Definition Index: 131973
+// Method Definition Index: 122129
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_CritMultiplier_mC44A9271FCCA9646E5D4406C92B3A78E527B198D (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1710,7 +1707,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float EconomyConfig_get_CritMultiplier_mC44A9
 		return L_0;
 	}
 }
-// Method Definition Index: 131974
+// Method Definition Index: 122130
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void EconomyConfig__ctor_m7009FA2B77220008836F36759F69B00AA46C671B (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -1789,7 +1786,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void EconomyConfig__ctor_m7009FA2B77220008836
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 131975
+// Method Definition Index: 122131
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* ItemDefinition_get_ItemId_mD1433EC94504556EA339F06C528B4C3864BCCFA9 (ItemDefinition_t8BADD4DDEF367747A3719AFF59CCA57B2FC53984* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1798,7 +1795,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* ItemDefinition_get_ItemId_mD1433EC9
 		return L_0;
 	}
 }
-// Method Definition Index: 131976
+// Method Definition Index: 122132
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* ItemDefinition_get_DisplayName_m49A705FE02776F238DD7CCE2F577097E7CE61B53 (ItemDefinition_t8BADD4DDEF367747A3719AFF59CCA57B2FC53984* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1807,7 +1804,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* ItemDefinition_get_DisplayName_m49A
 		return L_0;
 	}
 }
-// Method Definition Index: 131977
+// Method Definition Index: 122133
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t ItemDefinition_get_Cost_m0E26B50C5045CDCABEA98C88FE01E54867D33C2A (ItemDefinition_t8BADD4DDEF367747A3719AFF59CCA57B2FC53984* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1816,7 +1813,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t ItemDefinition_get_Cost_m0E26B50C5045
 		return L_0;
 	}
 }
-// Method Definition Index: 131978
+// Method Definition Index: 122134
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t ItemDefinition_get_Rarity_mFB2E95D89043A3E807B113AA716A9E4F95704D2E (ItemDefinition_t8BADD4DDEF367747A3719AFF59CCA57B2FC53984* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1825,7 +1822,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t ItemDefinition_get_Rarity_mFB2E95D890
 		return L_0;
 	}
 }
-// Method Definition Index: 131979
+// Method Definition Index: 122135
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float ItemDefinition_get_YieldBonus_mE1F7837C1A83D2F3ED8E2535BC6F5AC7B519FE35 (ItemDefinition_t8BADD4DDEF367747A3719AFF59CCA57B2FC53984* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1834,7 +1831,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float ItemDefinition_get_YieldBonus_mE1F7837C
 		return L_0;
 	}
 }
-// Method Definition Index: 131980
+// Method Definition Index: 122136
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t ItemDefinition_get_BuildLevel_m49D70D8679E58AA4E823841AB0F6A04B3F7F06AD (ItemDefinition_t8BADD4DDEF367747A3719AFF59CCA57B2FC53984* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1843,7 +1840,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t ItemDefinition_get_BuildLevel_m49D70D
 		return L_0;
 	}
 }
-// Method Definition Index: 131981
+// Method Definition Index: 122137
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ItemDefinition_get_Prefab_m8F4E1017C578F1A19B4CDEE5F138D43522A0643D (ItemDefinition_t8BADD4DDEF367747A3719AFF59CCA57B2FC53984* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1852,7 +1849,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR GameObject_t76FEDD663AB33C991A9C9A23129337651
 		return L_0;
 	}
 }
-// Method Definition Index: 131982
+// Method Definition Index: 122138
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void ItemDefinition__ctor_mE48DA15F7704A7CD03476E7BA2B7751CDFAEB97D (ItemDefinition_t8BADD4DDEF367747A3719AFF59CCA57B2FC53984* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1868,7 +1865,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void ItemDefinition__ctor_mE48DA15F7704A7CD03
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 131983
+// Method Definition Index: 122139
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* PlanetDefinition_get_PlanetId_m9A55D9C22DB9CB7FD0D379629A2067CD0F18D9B9 (PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1877,7 +1874,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* PlanetDefinition_get_PlanetId_m9A55
 		return L_0;
 	}
 }
-// Method Definition Index: 131984
+// Method Definition Index: 122140
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* PlanetDefinition_get_DisplayName_m9B90C34BBDD2E66775A13EBF6FA084E31173B0A4 (PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1886,7 +1883,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* PlanetDefinition_get_DisplayName_m9
 		return L_0;
 	}
 }
-// Method Definition Index: 131985
+// Method Definition Index: 122141
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* PlanetDefinition_get_ModelPrefab_m7015314C62AB28581E0FC93C0F70054FAA51C51D (PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1895,7 +1892,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR GameObject_t76FEDD663AB33C991A9C9A23129337651
 		return L_0;
 	}
 }
-// Method Definition Index: 131986
+// Method Definition Index: 122142
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t PlanetDefinition_get_TileCount_m315D304A1924B15A44D531F67E13DA30D46D4B6E (PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1904,7 +1901,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t PlanetDefinition_get_TileCount_m315D3
 		return L_0;
 	}
 }
-// Method Definition Index: 131987
+// Method Definition Index: 122143
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float PlanetDefinition_get_LandPriceMultiplier_m12332A712C75AFB2F2B2365F956FCA041C1F7218 (PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1913,7 +1910,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float PlanetDefinition_get_LandPriceMultiplie
 		return L_0;
 	}
 }
-// Method Definition Index: 131988
+// Method Definition Index: 122144
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t PlanetDefinition_get_AsteroidTier_m2F24EF4A52EE2C16EC41B7DD22DC87FA1AE95A34 (PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1922,7 +1919,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t PlanetDefinition_get_AsteroidTier_m2F
 		return L_0;
 	}
 }
-// Method Definition Index: 131989
+// Method Definition Index: 122145
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR AsteroidDefinitionU5BU5D_tBFF455AEF363CCA9AD627A7BE225FF1013BBAC04* PlanetDefinition_get_AsteroidTypes_mE1C79D48B07E8EC7DF76D476D21574B9638483B0 (PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1931,7 +1928,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR AsteroidDefinitionU5BU5D_tBFF455AEF363CCA9AD6
 		return L_0;
 	}
 }
-// Method Definition Index: 131990
+// Method Definition Index: 122146
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void PlanetDefinition__ctor_m0D97838C299A816044DD57B2FC70856E16CFC1B0 (PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* __this, const RuntimeMethod* method) 
 {
 	{
@@ -1961,88 +1958,61 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void PlanetDefinition__ctor_m0D97838C299A8160
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 131991
+// Method Definition Index: 122147
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t SocialConfig_get_ChatFilterLevel_m1F952652246266B9464B0A557A1E54833FB28A87 (SocialConfig_t337336E47C47AA5D19FB4ED2710608F1ECC1B39C* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/SocialConfig.cs:48>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/SocialConfig.cs:43>
 		int32_t L_0 = __this->____chatFilterLevel;
 		return L_0;
 	}
 }
-// Method Definition Index: 131992
+// Method Definition Index: 122148
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248* SocialConfig_get_BlockedWords_mB39E5AC87E9BF5C09BB5ECB9DEEFD46F2170F2AB (SocialConfig_t337336E47C47AA5D19FB4ED2710608F1ECC1B39C* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/SocialConfig.cs:49>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/SocialConfig.cs:44>
 		StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248* L_0 = __this->____blockedWords;
 		return L_0;
 	}
 }
-// Method Definition Index: 131993
+// Method Definition Index: 122149
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* SocialConfig_get_GlobalChannelName_m4C92DD3BDEBBA9355FCDCD9BC93AE948B18F91B4 (SocialConfig_t337336E47C47AA5D19FB4ED2710608F1ECC1B39C* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/SocialConfig.cs:51>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/SocialConfig.cs:46>
 		String_t* L_0 = __this->____globalChannelName;
 		return L_0;
 	}
 }
-// Method Definition Index: 131994
+// Method Definition Index: 122150
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t SocialConfig_get_MaxMessageLength_m34FD6C00CE66BA385FCC27E6FB780856D3BFA943 (SocialConfig_t337336E47C47AA5D19FB4ED2710608F1ECC1B39C* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/SocialConfig.cs:52>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/SocialConfig.cs:47>
 		int32_t L_0 = __this->____maxMessageLength;
 		return L_0;
 	}
 }
-// Method Definition Index: 131995
+// Method Definition Index: 122151
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t SocialConfig_get_ChatHistoryLimit_m5B8402DD146A24ADAF7F10670F7C7025C238C1BB (SocialConfig_t337336E47C47AA5D19FB4ED2710608F1ECC1B39C* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/SocialConfig.cs:53>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/SocialConfig.cs:48>
 		int32_t L_0 = __this->____chatHistoryLimit;
 		return L_0;
 	}
 }
-// Method Definition Index: 131996
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t SocialConfig_get_MaxPlayersPerShard_m948F69E9E6728C23FC73B351BEC4297BD0705884 (SocialConfig_t337336E47C47AA5D19FB4ED2710608F1ECC1B39C* __this, const RuntimeMethod* method) 
-{
-	{
-		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/SocialConfig.cs:55>
-		int32_t L_0 = __this->____maxPlayersPerShard;
-		return L_0;
-	}
-}
-// Method Definition Index: 131997
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t SocialConfig_get_MaxShardsPerPlanet_m4468E3CA891F6E4EF96E944E0BEAD3022B1071D4 (SocialConfig_t337336E47C47AA5D19FB4ED2710608F1ECC1B39C* __this, const RuntimeMethod* method) 
-{
-	{
-		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/SocialConfig.cs:56>
-		int32_t L_0 = __this->____maxShardsPerPlanet;
-		return L_0;
-	}
-}
-// Method Definition Index: 131998
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float SocialConfig_get_PositionSyncIntervalSec_mD41CBE68D1368356972984FF4CA9E52D5FB4C38B (SocialConfig_t337336E47C47AA5D19FB4ED2710608F1ECC1B39C* __this, const RuntimeMethod* method) 
-{
-	{
-		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/SocialConfig.cs:57>
-		float L_0 = __this->____positionSyncIntervalSec;
-		return L_0;
-	}
-}
-// Method Definition Index: 131999
+// Method Definition Index: 122152
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t SocialConfig_get_MaxDisplayNameLength_mF4637EBBB171217C6003403F8052BE7CE5EB33DD (SocialConfig_t337336E47C47AA5D19FB4ED2710608F1ECC1B39C* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/SocialConfig.cs:59>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/SocialConfig.cs:50>
 		int32_t L_0 = __this->____maxDisplayNameLength;
 		return L_0;
 	}
 }
-// Method Definition Index: 132000
+// Method Definition Index: 122153
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SocialConfig__ctor_mBF2D87AA2C65DB3C94BF1614597B50969C1703A9 (SocialConfig_t337336E47C47AA5D19FB4ED2710608F1ECC1B39C* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2126,12 +2096,6 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SocialConfig__ctor_mBF2D87AA2C65DB3C94BF
 		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/SocialConfig.cs:38>
 		__this->____chatHistoryLimit = ((int32_t)100);
 		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/SocialConfig.cs:41>
-		__this->____maxPlayersPerShard = ((int32_t)16);
-		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/SocialConfig.cs:42>
-		__this->____maxShardsPerPlanet = 8;
-		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/SocialConfig.cs:43>
-		__this->____positionSyncIntervalSec = (0.5f);
-		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/SocialConfig.cs:46>
 		__this->____maxDisplayNameLength = ((int32_t)20);
 		ScriptableObject__ctor_mD037FDB0B487295EA47F79A4DB1BF1846C9087FF(__this, NULL);
 		return;
@@ -2164,7 +2128,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void SocialConfig__ctor_mBF2D87AA2C65DB3C94BF
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
-// Method Definition Index: 131983
+// Method Definition Index: 122139
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* PlanetDefinition_get_PlanetId_m9A55D9C22DB9CB7FD0D379629A2067CD0F18D9B9_inline (PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* __this, const RuntimeMethod* method) 
 {
 	{
@@ -2173,7 +2137,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* PlanetDefinition_get_Pl
 		return L_0;
 	}
 }
-// Method Definition Index: 131921
+// Method Definition Index: 122077
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* AsteroidDefinition_get_MineralType_m1F1D8CC7612117CDA1E8C6B490BD695C19E4124B_inline (AsteroidDefinition_t277B2DE73FCA5060E26B286D5C1BD76847A8F527* __this, const RuntimeMethod* method) 
 {
 	{
@@ -2182,7 +2146,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* AsteroidDefinition_get_
 		return L_0;
 	}
 }
-// Method Definition Index: 131945
+// Method Definition Index: 122101
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* DroneDefinition_get_DroneId_mF453A005AD46EBA8458555F1C5ADE35709FE7F79_inline (DroneDefinition_tB4D4392A23B3B34CBE508E85D59D1F0AA92BEF52* __this, const RuntimeMethod* method) 
 {
 	{
@@ -2191,7 +2155,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* DroneDefinition_get_Dro
 		return L_0;
 	}
 }
-// Method Definition Index: 131975
+// Method Definition Index: 122131
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* ItemDefinition_get_ItemId_mD1433EC94504556EA339F06C528B4C3864BCCFA9_inline (ItemDefinition_t8BADD4DDEF367747A3719AFF59CCA57B2FC53984* __this, const RuntimeMethod* method) 
 {
 	{
@@ -2200,7 +2164,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* ItemDefinition_get_Item
 		return L_0;
 	}
 }
-// Method Definition Index: 3323
+// Method Definition Index: 3318
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918* Array_Empty_TisRuntimeObject_mFB8A63D602BB6974D31E20300D9EB89C6FE7C278_gshared_inline (const RuntimeMethod* method) 
 {
 	il2cpp_rgctx_method_init(method);

@@ -9,6 +9,7 @@ namespace SocialUniverse.Core
         public const string DailyStreak   = "daily_streak";
         public const string Inventory     = "inventory";
         public const string LastSessionEnd = "last_session_end";
+        public const string LastPlanetId   = "last_planet_id";
         public const string AsteroidRespawns = "asteroid_respawns";
         public const string AuthSession    = "auth_session_player_id";
 

@@ -1080,18 +1080,6 @@
             "icon": null
           },
           {
-            "name": "FixedJoint",
-            "scenes": [],
-            "dependencyType": 0,
-            "icon": null
-          },
-          {
-            "name": "Joint",
-            "scenes": [],
-            "dependencyType": 1,
-            "icon": null
-          },
-          {
             "name": "PhysicsManager",
             "scenes": [],
             "dependencyType": 1,
@@ -1141,27 +1129,9 @@
         "name": "Physics2D",
         "dependencies": [
           {
-            "name": "AnchoredJoint2D",
-            "scenes": [],
-            "dependencyType": 1,
-            "icon": null
-          },
-          {
             "name": "Collider2D",
             "scenes": [],
             "dependencyType": 0,
-            "icon": null
-          },
-          {
-            "name": "FixedJoint2D",
-            "scenes": [],
-            "dependencyType": 0,
-            "icon": null
-          },
-          {
-            "name": "Joint2D",
-            "scenes": [],
-            "dependencyType": 1,
             "icon": null
           },
           {
