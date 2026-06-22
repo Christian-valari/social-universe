@@ -19,7 +19,7 @@
 
 **Architectural rule:** the backend sits **behind interfaces** (`IEconomyService`, `IAuthService`, `IChatService`, …). M1 ships against a `LocalMock*` implementation so the core loop is fun offline; M2 swaps in the real backend with no gameplay rewrites. Don't pick the backend on day one — pick the interfaces.
 
-**Open decision (resolve in M5):** Sky Discovery as **true camera AR** (AR Foundation, heavier) vs **gyroscope-controlled virtual starfield** (Input System attitude sensor — simpler, recommended).
+**Resolved in M5:** Sky Discovery uses the **gyroscope-controlled virtual starfield** (Input System `AttitudeSensor`, with a mouse/touch-drag fallback when unavailable) rather than camera AR — see `GyroInputProvider`/`SkyDiscoveryController` and `PROGRESS.md`'s M5 section.
 
 ---
 
@@ -341,7 +341,7 @@ Priority tags follow the PRD: **P0** = core/MVP, **P1** = launch, **P2** = later
 ## 10. Open Decisions to Resolve Early
 
 1. **Backend:** UGS (recommended) vs Nakama — decide before M2; interfaces in M1 make this swappable.
-2. **Sky Discovery:** camera AR vs gyro starfield — decide before M5.
+2. **Sky Discovery:** camera AR vs gyro starfield — ✅ resolved in M5 (gyro starfield).
 3. **Age policy / rating** — decide before M4 (drives chat restrictions and moderation scope).
 4. **Land resale** — coins-only, no real-money cash-out, no NFT framing (per GDD); confirm before M8.
 5. **DI framework:** VContainer vs hand-rolled Service Locator — decide in M0.

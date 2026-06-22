@@ -48,6 +48,11 @@ namespace SocialUniverse.Config
         [SerializeField] private float _critChance              = 0.1f;
         [SerializeField] private float _critMultiplier          = 2f;
 
+        [Header("Travel — Fuel")]
+        [SerializeField] private float _maxFuel                 = 100f;
+        [SerializeField] private float _fuelRechargePerHour     = 10f;  // units/hour, recharges while offline too (server-computed)
+        [SerializeField] private int   _fuelRefillCost          = 50;   // coins for an instant full refill
+
         public string CoinsCurrencyId    => _coinsCurrencyId;
         public string StardustCurrencyId => _stardustCurrencyId;
 
@@ -72,5 +77,8 @@ namespace SocialUniverse.Config
         public int   ActiveTapYield        => _activeTapYield;
         public float CritChance            => _critChance;
         public float CritMultiplier        => _critMultiplier;
+        public float MaxFuel               => _maxFuel;
+        public float FuelRechargePerHour   => _fuelRechargePerHour;
+        public int   FuelRefillCost        => _fuelRefillCost;
     }
 }

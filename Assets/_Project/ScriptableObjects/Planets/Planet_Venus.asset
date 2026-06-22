@@ -21,3 +21,7 @@ MonoBehaviour:
   _asteroidTypes:
   - {fileID: 11400000, guid: 23c16a66f215aba419c786ee1606a9ad, type: 2}
   - {fileID: 11400000, guid: 5c766c8008416ae47b82995a38832715, type: 2}
+  _travelFuelCost: 15
+  _orbitOrder: 2
+  _orbitDistanceAU: 0.72
+  _skyIcon: {fileID: 21300000, guid: 678403c9a78327d48a29a573e7eb2e1b, type: 3}

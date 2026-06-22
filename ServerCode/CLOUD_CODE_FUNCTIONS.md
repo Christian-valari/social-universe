@@ -372,8 +372,8 @@ readers/writers of this entry.
 // see GetLandRegistry, PlaceBuild, ClaimYield, RecordVisit, ApplyUpkeep, SellLand for readers/writers.
 // NOTE: the deduct -> record -> registry sequence is not transactional; see the
 // design caveat above.
-const { CurrenciesApi }            = require("@unity-services/economy-2.5");
-const { DataApi: PlayerDataApi }   = require("@unity-services/cloud-save-1.4");
+const { CurrenciesApi, ConfigurationApi } = require("@unity-services/economy-2.5");
+const { DataApi: PlayerDataApi }          = require("@unity-services/cloud-save-1.4");
 
 const CURRENCY_ID  = "COINS";
 const REGISTRY_KEY = "land_registry";
@@ -391,9 +391,15 @@ module.exports = async ({ params, context, logger }) => {
   }
 
   const { projectId, playerId, accessToken } = context;
-  const authHeader = { headers: { Authorization: `Bearer ${accessToken}` } };
-  const econApi     = new CurrenciesApi(authHeader);
-  const saveApi     = new PlayerDataApi(authHeader);
+
+  // FIX 1: constructors don't accept { headers: { Authorization: ... } }.
+  // Economy: { accessToken } authenticates as the calling player.
+  // Cloud Save: DataApi(context) uses the service token (required for both
+  // player-scoped writes and custom/game data writes).
+  const econApi       = new CurrenciesApi({ accessToken });
+  const config        = new ConfigurationApi({ accessToken });
+  const saveApi       = new PlayerDataApi(context);
+  const customDataApi = new PlayerDataApi(context); // same instance is fine; kept separate for clarity
 
   try {
     const ownedKey = `owned_tiles_${planetId.toLowerCase()}`;
@@ -401,48 +407,55 @@ module.exports = async ({ params, context, logger }) => {
     // 1. Load the player's current owned-tiles list for this planet.
     let ownedTiles = [];
     try {
-      const saveRes = await saveApi.getItems({ projectId, playerId, key: [ownedKey] });
+      // FIX 2: getItems takes positional args (projectId, playerId, keys[]),
+      // not an options object.
+      const saveRes = await saveApi.getItems(projectId, playerId, [ownedKey]);
       const item    = saveRes.data.results.find(r => r.key === ownedKey);
-      if (item && Array.isArray(item.value)) ownedTiles = item.value; // already parsed by Cloud Save
+      if (item && Array.isArray(item.value)) ownedTiles = item.value;
     } catch (_) { /* key doesn't exist yet */ }
 
     if (ownedTiles.includes(tileId)) {
       return { success: false, reason: "ALREADY_OWNED" };
     }
 
-    // 2. Validate balance and deduct coins.
-    const balanceRes = await econApi.getPlayerCurrencyBalance({ projectId, playerId, currencyId: CURRENCY_ID });
-    if (balanceRes.data.balance < price) {
+    // 2. Validate balance.
+    // FIX 3: getPlayerCurrencyBalance does not exist on CurrenciesApi.
+    // The only read method is getPlayerCurrencies (returns all balances).
+    const balancesRes = await econApi.getPlayerCurrencies({ projectId, playerId });
+    const coins       = balancesRes.data.results.find(c => c.currencyId === CURRENCY_ID);
+    const balance     = coins ? coins.balance : 0;
+
+    if (balance < price) {
       return { success: false, reason: "INSUFFICIENT_FUNDS" };
     }
+
+    // 3. Deduct coins.
+    // FIX 4: fetch configAssignmentHash before any currency write (documented requirement).
+    // FIX 5: currencyModifyBalanceRequest must include currencyId in the body.
+    const cfg = await config.getPlayerConfiguration({ projectId, playerId });
+    const configAssignmentHash = cfg.data.metadata.configAssignmentHash;
 
     const deductRes = await econApi.decrementPlayerCurrencyBalance({
       projectId,
       playerId,
       currencyId: CURRENCY_ID,
-      currencyModifyBalanceRequest: { amount: price }
+      configAssignmentHash,
+      currencyModifyBalanceRequest: { currencyId: CURRENCY_ID, amount: price }
     });
     const newBalance = deductRes.data.balance;
 
-    // 3. Record per-tile ownership (for cross-player lookup in M3+).
-    await saveApi.setItem({
-      projectId, playerId,
-      key:  `tile_${tileId}_owner`,
-      body: { value: playerId }
-    });
+    // 4. Record per-tile ownership (for cross-player lookup in M3+).
+    // FIX 6: setItem takes positional args (projectId, playerId, { key, value }),
+    // not an options object with a nested `body` field.
+    await saveApi.setItem(projectId, playerId, { key: `tile_${tileId}_owner`, value: playerId });
 
-    // 4. Append to the player's owned-tiles list so it can be restored on login.
+    // 5. Append to the player's owned-tiles list so it can be restored on login.
     ownedTiles.push(tileId);
-    await saveApi.setItem({
-      projectId, playerId,
-      key:  ownedKey,
-      body: { value: ownedTiles }
-    });
+    await saveApi.setItem(projectId, playerId, { key: ownedKey, value: ownedTiles });
 
-    // 5. Update the planet's global land registry (Custom Data, shared across all
+    // 6. Update the planet's global land registry (Custom Data, shared across all
     //    players) so other clients render this tile as "owned by other".
-    const customDataApi = new PlayerDataApi(context);
-    const customId       = planetId.toLowerCase();
+    const customId = planetId.toLowerCase();
     let registry = {};
     try {
       const regRes = await customDataApi.getCustomItems(projectId, customId, [REGISTRY_KEY]);
@@ -452,11 +465,11 @@ module.exports = async ({ params, context, logger }) => {
 
     const now = Date.now();
     registry[tileId] = {
-      ownerId: playerId,
-      buildLevel: 0,
+      ownerId:          playerId,
+      buildLevel:       0,
       lastYieldClaimTs: now,
-      lastUpkeepTs: now,
-      visitCount: 0
+      lastUpkeepTs:     now,
+      visitCount:       0
     };
     await customDataApi.setCustomItem(projectId, customId, { key: REGISTRY_KEY, value: registry });
 
@@ -996,4 +1009,627 @@ module.exports = async ({ params, context, logger }) => {
     throw err;
   }
 };
+```
+
+---
+
+## GetFuelState
+
+Returns the caller's current fuel, recharging it server-side based on elapsed time since the
+last update (player-scoped Cloud Save key `fuel_state = { fuel, maxFuel, lastUpdateTs }`).
+Initializes a fresh fuel_state record (full tank) on first call for a player.
+
+**Parameters:** none
+
+```js
+// GetFuelState — returns the caller's current fuel, recharged server-side based
+// on elapsed time since the last update.
+//
+// FIX 1: this is now a PURE READ. The old version wrote to Cloud Save on every
+// call, which turned every gauge refresh into a write (cost + rate-limit risk,
+// and a read that mutates state). Recharge is fully derived from lastUpdateTs,
+// so there is nothing to persist here. The fuel_state record is created lazily
+// on the first SpendFuel / RefillFuel call.
+// FIX 2: DataApi's constructor doesn't read a { headers: ... } field, and
+// getItems takes positional args (projectId, playerId, keys[]), not an options
+// object — same SDK-shape mismatch documented as Known Issue #6 for the old
+// PurchaseLand.js. DataApi(context) authenticates as the calling player via
+// the service token, which is correct for player-scoped reads.
+const { DataApi } = require("@unity-services/cloud-save-1.4");
+
+const SAVE_KEY               = "fuel_state";
+const MAX_FUEL               = 100; // keep in sync with EconomyConfig.MaxFuel
+const FUEL_RECHARGE_PER_HOUR = 10;  // keep in sync with EconomyConfig.FuelRechargePerHour
+const MS_PER_HOUR            = 3600000;
+
+// Returns { fuel, maxFuel } with time-based recharge applied (no mutation).
+function rechargedFuel(state, now) {
+  if (!state) return { fuel: MAX_FUEL, maxFuel: MAX_FUEL };
+  const maxFuel = state.maxFuel ?? MAX_FUEL;
+  const last    = state.lastUpdateTs ?? now;
+  const elapsedHours = Math.max(0, (now - last) / MS_PER_HOUR);
+  const fuel    = Math.min(maxFuel, (state.fuel ?? 0) + elapsedHours * FUEL_RECHARGE_PER_HOUR);
+  return { fuel, maxFuel };
+}
+
+/**
+ * No parameters.
+ */
+module.exports = async ({ context, logger }) => {
+  const { projectId, playerId } = context;
+  const saveApi = new DataApi(context);
+
+  let state = null;
+  try {
+    const res    = await saveApi.getItems(projectId, playerId, [SAVE_KEY]);
+    const record = res.data.results.find(r => r.key === SAVE_KEY);
+    if (record?.value) state = record.value;
+  } catch (_) { /* no record yet */ }
+
+  const { fuel, maxFuel } = rechargedFuel(state, Date.now());
+
+  logger.info(`GetFuelState: player ${playerId} fuel ${fuel.toFixed(2)}/${maxFuel}`);
+  return { success: true, fuel, maxFuel };
+};
+```
+
+---
+
+## SpendFuel
+
+Recharges fuel up to now (same formula as `GetFuelState`), then validates and deducts the
+requested amount. Returns the post-spend state either way so the client can resync its gauge.
+Used by `TravelService` to pay for a star-map trip (trips home are free — the client never
+calls this for the home planet).
+
+**Parameters:**
+
+| Name | Type | Required | Description |
+|---|---|---|---|
+| `amount` | `number` | Yes | Fuel units to spend. Must be a non-negative number. |
+
+```js
+// SpendFuel — recharges fuel up to now, then validates and deducts the requested
+// amount. Returns the post-spend state either way so the client can resync.
+//
+// FIX 1: DataApi's constructor doesn't read a { headers: ... } field, and
+// getItems/setItem take positional args, not an options object — same
+// SDK-shape mismatch documented as Known Issue #6 for the old PurchaseLand.js.
+// DataApi(context) authenticates as the calling player via the service token.
+// FIX 2 (important): the old version did a plain read-modify-write, so two
+// concurrent calls could each read a full tank and both succeed — letting a
+// player spend the same fuel twice (e.g. travel twice on one tank). This version
+// commits under a Cloud Save write-lock (optimistic concurrency) and retries on
+// conflict, so concurrent spends can't double-spend.
+// FIX 3: amount validation used typeof === "number", which lets NaN/Infinity
+// through (NaN < 0 is false). Now uses Number.isFinite.
+const { DataApi } = require("@unity-services/cloud-save-1.4");
+
+const SAVE_KEY               = "fuel_state";
+const MAX_FUEL               = 100; // keep in sync with EconomyConfig.MaxFuel
+const FUEL_RECHARGE_PER_HOUR = 10;  // keep in sync with EconomyConfig.FuelRechargePerHour
+const MS_PER_HOUR            = 3600000;
+const MAX_RETRIES            = 3;
+
+function recharge(state, now) {
+  if (!state) return { fuel: MAX_FUEL, maxFuel: MAX_FUEL, lastUpdateTs: now };
+  const maxFuel = state.maxFuel ?? MAX_FUEL;
+  const last    = state.lastUpdateTs ?? now;
+  const elapsedHours = Math.max(0, (now - last) / MS_PER_HOUR);
+  const fuel    = Math.min(maxFuel, (state.fuel ?? 0) + elapsedHours * FUEL_RECHARGE_PER_HOUR);
+  return { fuel, maxFuel, lastUpdateTs: now };
+}
+
+function isConflict(err) {
+  const status = err?.response?.status ?? err?.status;
+  return status === 409; // Cloud Save write-lock mismatch
+}
+
+/**
+ * @param {number} amount - Fuel units to spend. Must be a finite, non-negative number.
+ */
+module.exports = async ({ params, context, logger }) => {
+  const { amount } = params;
+  if (!Number.isFinite(amount) || amount < 0) {
+    throw new Error(`Invalid amount: ${amount}`);
+  }
+
+  const { projectId, playerId } = context;
+  const saveApi = new DataApi(context);
+
+  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+    // Read current record + its writeLock.
+    let raw = null, writeLock;
+    try {
+      const res    = await saveApi.getItems(projectId, playerId, [SAVE_KEY]);
+      const record = res.data.results.find(r => r.key === SAVE_KEY);
+      if (record?.value) { raw = record.value; writeLock = record.writeLock; }
+    } catch (_) { /* no record yet */ }
+
+    const state = recharge(raw, Date.now());
+
+    let success = false;
+    if (state.fuel >= amount) { state.fuel -= amount; success = true; }
+
+    // Conditional write: include writeLock when we had a record. If your Cloud
+    // Save SDK version doesn't accept writeLock here, drop it (you lose the
+    // double-spend guard but keep the rest of the logic).
+    const body = writeLock ? { key: SAVE_KEY, value: state, writeLock } : { key: SAVE_KEY, value: state };
+    try {
+      await saveApi.setItem(projectId, playerId, body);
+    } catch (err) {
+      if (isConflict(err) && attempt < MAX_RETRIES - 1) continue; // someone else wrote; retry
+      throw err;
+    }
+
+    if (success) logger.info(`SpendFuel: player ${playerId} -${amount} → ${state.fuel.toFixed(2)}/${state.maxFuel}`);
+    else         logger.warn(`SpendFuel: insufficient fuel for ${playerId} (have ${state.fuel.toFixed(2)}, need ${amount})`);
+    return { success, fuel: state.fuel, maxFuel: state.maxFuel };
+  }
+
+  logger.error(`SpendFuel: write-lock retries exhausted for ${playerId}`);
+  throw new Error("SpendFuel: concurrent update conflict, please retry.");
+};
+```
+
+---
+
+## RefillFuel
+
+Instantly tops the caller's fuel up to `maxFuel` in exchange for coins. Validates affordability
+server-side before deducting — the manual-refill path for `FuelSystem.RefillAsync`.
+
+**Parameters:** none
+
+```js
+// RefillFuel — instantly tops the caller's fuel up to maxFuel in exchange for
+// coins.
+//
+// FIX 1: DataApi's constructor doesn't read a { headers: ... } field, and
+// getItems/setItem take positional args, not an options object — same
+// SDK-shape mismatch documented as Known Issue #6 for the old PurchaseLand.js.
+// DataApi(context) authenticates as the calling player via the service token;
+// Economy's CurrenciesApi still authenticates via { accessToken }.
+// FIX 2: rejects with no charge if the tank is already full (old version
+//        happily took 50 coins for 0 fuel).
+// FIX 3: treats a failed coin decrement as "insufficient funds" instead of
+//        relying on a racy pre-read + letting the decrement throw uncaught.
+// FIX 4: closes the "charged but not granted" window — if the fuel write can't
+//        commit after coins were deducted, it refunds the coins (compensating
+//        action).
+// FIX 5: writes fuel under a Cloud Save write-lock (optimistic concurrency).
+// FIX 6: consistent return shape on every path.
+const { CurrenciesApi } = require("@unity-services/economy-2.5");
+const { DataApi }       = require("@unity-services/cloud-save-1.4");
+
+const SAVE_KEY               = "fuel_state";
+const CURRENCY_ID            = "COINS";
+const MAX_FUEL               = 100; // keep in sync with EconomyConfig.MaxFuel
+const FUEL_RECHARGE_PER_HOUR = 10;  // keep in sync with EconomyConfig.FuelRechargePerHour
+const MS_PER_HOUR            = 3600000;
+const REFILL_COST            = 50;  // keep in sync with EconomyConfig.FuelRefillCost
+const MAX_RETRIES            = 3;
+
+function recharge(state, now) {
+  if (!state) return { fuel: MAX_FUEL, maxFuel: MAX_FUEL };
+  const maxFuel = state.maxFuel ?? MAX_FUEL;
+  const last    = state.lastUpdateTs ?? now;
+  const elapsedHours = Math.max(0, (now - last) / MS_PER_HOUR);
+  const fuel    = Math.min(maxFuel, (state.fuel ?? 0) + elapsedHours * FUEL_RECHARGE_PER_HOUR);
+  return { fuel, maxFuel };
+}
+
+function isConflict(err) {
+  const status = err?.response?.status ?? err?.status;
+  return status === 409;
+}
+
+async function readBalance(econApi, projectId, playerId) {
+  try {
+    const res = await econApi.getPlayerCurrencyBalance({ projectId, playerId, currencyId: CURRENCY_ID });
+    return res.data.balance;
+  } catch (_) { return undefined; }
+}
+
+/**
+ * No parameters.
+ */
+module.exports = async ({ context, logger }) => {
+  const { projectId, playerId, accessToken } = context;
+  const econApi = new CurrenciesApi({ accessToken });
+  const saveApi = new DataApi(context);
+
+  // 1. Read current fuel (recharged) + writeLock.
+  let raw = null, writeLock;
+  try {
+    const res    = await saveApi.getItems(projectId, playerId, [SAVE_KEY]);
+    const record = res.data.results.find(r => r.key === SAVE_KEY);
+    if (record?.value) { raw = record.value; writeLock = record.writeLock; }
+  } catch (_) { /* no record yet */ }
+
+  const now     = Date.now();
+  const current = recharge(raw, now);
+
+  // 2. Already full → don't charge.
+  if (current.fuel >= current.maxFuel) {
+    return {
+      success: false, reason: "already_full",
+      fuel: current.fuel, maxFuel: current.maxFuel,
+      newBalance: await readBalance(econApi, projectId, playerId)
+    };
+  }
+
+  // 3. Charge coins. Economy is atomic & authoritative; a throw = can't afford.
+  let newBalance;
+  try {
+    const deduct = await econApi.decrementPlayerCurrencyBalance({
+      projectId, playerId, currencyId: CURRENCY_ID,
+      currencyModifyBalanceRequest: { amount: REFILL_COST }
+    });
+    newBalance = deduct.data.balance;
+  } catch (err) {
+    logger.warn(`RefillFuel: charge failed for ${playerId} (insufficient or error): ${err?.message}`);
+    return {
+      success: false, reason: "insufficient_funds",
+      fuel: current.fuel, maxFuel: current.maxFuel,
+      newBalance: await readBalance(econApi, projectId, playerId)
+    };
+  }
+
+  // 4. Grant fuel (full tank) under write-lock, with retry; refund on failure.
+  const full = { fuel: current.maxFuel, maxFuel: current.maxFuel, lastUpdateTs: now };
+  let lock = writeLock;
+  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+    const body = lock ? { key: SAVE_KEY, value: full, writeLock: lock } : { key: SAVE_KEY, value: full };
+    try {
+      await saveApi.setItem(projectId, playerId, body);
+      logger.info(`RefillFuel: player ${playerId} refilled to ${full.fuel}/${full.maxFuel} for ${REFILL_COST} → ${newBalance}`);
+      return { success: true, fuel: full.fuel, maxFuel: full.maxFuel, newBalance };
+    } catch (err) {
+      if (isConflict(err) && attempt < MAX_RETRIES - 1) {
+        // Re-read the latest writeLock and retry (value is always a full tank).
+        try {
+          const res    = await saveApi.getItems(projectId, playerId, [SAVE_KEY]);
+          const record = res.data.results.find(r => r.key === SAVE_KEY);
+          lock = record?.writeLock;
+        } catch (_) { lock = undefined; }
+        continue;
+      }
+      // Couldn't grant fuel after charging → refund the coins.
+      logger.error(`RefillFuel: fuel write failed after charge for ${playerId}; refunding ${REFILL_COST}. ${err?.message}`);
+      try {
+        const refund = await econApi.incrementPlayerCurrencyBalance({
+          projectId, playerId, currencyId: CURRENCY_ID,
+          currencyModifyBalanceRequest: { amount: REFILL_COST }
+        });
+        newBalance = refund.data.balance;
+      } catch (refundErr) {
+        logger.error(`RefillFuel: REFUND FAILED for ${playerId} — manual reconciliation needed: ${refundErr?.message}`);
+      }
+      return { success: false, reason: "write_failed", fuel: current.fuel, maxFuel: current.maxFuel, newBalance };
+    }
+  }
+};
+```
+
+### UpdateProfile
+```js
+// UpdateProfile — validates and commits the caller's display name into their
+// "player_profile" Cloud Save record (merging with any existing profile
+// fields such as level/xp/badges). The name is re-moderated server-side: the
+// client's ChatModerationFilter check is only fast feedback.
+// BLOCKED_WORDS / CHAR_MAP / MAX_DISPLAY_NAME_LENGTH must match
+// SocialConfig.BlockedWords / ChatModerationFilter / MaxDisplayNameLength —
+// same "must match" pattern as ModerateMessage.js (Cloud Code modules deploy
+// as standalone files, so the filter is duplicated rather than required).
+const { DataApi } = require("@unity-services/cloud-save-1.4");
+
+const PROFILE_KEY             = "player_profile";
+const MAX_DISPLAY_NAME_LENGTH = 20; // must match SocialConfig.MaxDisplayNameLength
+
+const BLOCKED_WORDS = [
+  "fuck", "shit", "bitch", "asshole", "cunt", "dick", "faggot",
+  "nigger", "nigga", "whore", "slut", "retard", "kys"
+];
+const CHAR_MAP = { "@": "a", "4": "a", "1": "i", "!": "i", "0": "o", "3": "e", "$": "s", "5": "s", "7": "t" };
+
+function isClean(text) {
+  let normalized = "";
+  for (const ch of text.toLowerCase()) normalized += CHAR_MAP[ch] ?? ch;
+  return !BLOCKED_WORDS.some(word => normalized.includes(word));
+}
+
+/**
+ * @param {string} displayName - The new display name. 1–20 characters, must pass moderation.
+ */
+module.exports = async ({ params, context, logger }) => {
+  const displayName = (params.displayName ?? "").trim();
+
+  if (displayName.length === 0) {
+    return { success: false, reason: "NAME_EMPTY", displayName: null };
+  }
+  if (displayName.length > MAX_DISPLAY_NAME_LENGTH) {
+    return { success: false, reason: "NAME_TOO_LONG", displayName: null };
+  }
+  if (!isClean(displayName)) {
+    logger.info(`UpdateProfile: rejected display name from ${context.playerId}`);
+    return { success: false, reason: "NAME_REJECTED", displayName: null };
+  }
+
+  const { projectId, playerId } = context;
+  // FIX: was new DataApi({ headers: { Authorization: ... } }) — that field is not
+  // read by the constructor. For player-scoped data, DataApi(context) is correct
+  // and authenticates as the calling player via the service token.
+  const saveApi = new DataApi(context);
+
+  let profile = {};
+  try {
+    // FIX: getItems takes positional args (projectId, playerId, keys[]), not an options object.
+    const res  = await saveApi.getItems(projectId, playerId, [PROFILE_KEY]);
+    const item = res.data.results.find(r => r.key === PROFILE_KEY);
+    // FIX: Cloud Save returns values already deserialized — JSON.parse throws on an object.
+    if (item?.value && typeof item.value === "object") profile = item.value;
+  } catch (_) { /* no profile yet */ }
+
+  profile.displayName = displayName;
+  profile.updatedMs   = Date.now();
+
+  // FIX: setItem takes positional args (projectId, playerId, { key, value }),
+  // not an options object with a nested `body` field.
+  await saveApi.setItem(projectId, playerId, { key: PROFILE_KEY, value: profile });
+
+  logger.info(`UpdateProfile: ${playerId} → "${displayName}"`);
+  return { success: true, reason: null, displayName };
+};
+```
+
+### GetPlayerProfile
+
+```js
+// GetPlayerProfile — returns any player's public profile. Reads the target
+// player's "player_profile" Cloud Save record (the same one GetBootstrapState
+// returns for the caller) plus a tile count derived from their owned-tiles
+// lists. Returns defaults for players who haven't saved a profile yet.
+const { DataApi } = require("@unity-services/cloud-save-1.4");
+
+const PROFILE_KEY = "player_profile";
+
+/**
+ * @param {string} playerId - Player ID whose public profile to fetch.
+ */
+module.exports = async ({ params, context, logger }) => {
+  const targetId = params.playerId;
+
+  if (!targetId) {
+    throw new Error("Invalid params: playerId is required");
+  }
+
+  const { projectId } = context;
+  // FIX: was new DataApi({ headers: { Authorization: ... } }) — constructor does
+  // not accept that field. Reading another player's data requires the service
+  // token, which DataApi(context) provides automatically.
+  const saveApi = new DataApi(context);
+
+  let profile    = null;
+  let tilesOwned = 0;
+  try {
+    // FIX: getItems takes positional args (projectId, playerId, keys[]|undefined).
+    // Passing no keys array returns all keys for this player (page of 20),
+    // which is the intended behaviour here for summing owned_tiles_* entries.
+    const res = await saveApi.getItems(projectId, targetId);
+    for (const item of res.data.results) {
+      if (item.key === PROFILE_KEY) {
+        // FIX: Cloud Save returns values already deserialized — JSON.parse throws on an object.
+        profile = typeof item.value === "object" ? item.value : JSON.parse(item.value);
+      } else if (item.key.startsWith("owned_tiles_") && Array.isArray(item.value)) {
+        tilesOwned += item.value.length;
+      }
+    }
+  } catch (err) {
+    logger.warn(`GetPlayerProfile: read failed for ${targetId} (${err.message})`);
+  }
+
+  return {
+    playerId:    targetId,
+    displayName: profile?.displayName ?? `Pilot ${targetId.slice(0, 6)}`,
+    level:       profile?.level ?? 1,
+    xp:          profile?.xp ?? 0,
+    badges:      profile?.badges ?? [],
+    tilesOwned
+  };
+};
+
+```
+
+### BlockUser
+
+```js
+// BlockUser — adds/removes a player on the caller's server-side block list
+// (Cloud Save player data, key "blocked_users"). The server is the source of
+// truth: other functions (e.g. future messaging paths) consult this list, and
+// the full list is returned so the client cache converges every call.
+// Chat-provider-level blocking (Vivox) is applied separately by the client's
+// ReportService; this record is what moderation/audit relies on.
+const { DataApi } = require("@unity-services/cloud-save-1.4");
+
+const BLOCKED_KEY       = "blocked_users";
+const MAX_BLOCKED_USERS = 200;
+
+/**
+ * @param {string} targetId - Player ID to block or unblock.
+ * @param {boolean} blocked - True to block, false to unblock.
+ */
+module.exports = async ({ params, context, logger }) => {
+  const { targetId, blocked } = params;
+
+  if (!targetId || typeof blocked !== "boolean") {
+    throw new Error("Invalid params: targetId and blocked are required");
+  }
+
+  const { projectId, playerId } = context;
+
+  if (targetId === playerId) {
+    return { success: false, blockedUsers: [] };
+  }
+
+  // FIX: was new DataApi({ headers: { Authorization: ... } }) — constructor does
+  // not accept that field. DataApi(context) authenticates as the calling player
+  // via the service token, which is correct for player-scoped data.
+  const saveApi = new DataApi(context);
+
+  let blockedUsers = [];
+  try {
+    // FIX: getItems takes positional args (projectId, playerId, keys[]),
+    // not an options object.
+    const res  = await saveApi.getItems(projectId, playerId, [BLOCKED_KEY]);
+    const item = res.data.results.find(r => r.key === BLOCKED_KEY);
+    if (item && Array.isArray(item.value)) blockedUsers = item.value;
+  } catch (_) { /* key doesn't exist yet */ }
+
+  if (blocked) {
+    if (!blockedUsers.includes(targetId)) blockedUsers.push(targetId);
+    if (blockedUsers.length > MAX_BLOCKED_USERS) {
+      return { success: false, blockedUsers };
+    }
+  } else {
+    blockedUsers = blockedUsers.filter(id => id !== targetId);
+  }
+
+  // FIX: setItem takes positional args (projectId, playerId, { key, value }),
+  // not an options object with a nested `body` field.
+  await saveApi.setItem(projectId, playerId, { key: BLOCKED_KEY, value: blockedUsers });
+
+  logger.info(`BlockUser: ${playerId} ${blocked ? "blocked" : "unblocked"} ${targetId} (${blockedUsers.length} total)`);
+  return { success: true, blockedUsers };
+};
+```
+
+
+### SubmitReport
+
+```js
+// SubmitReport — logs a player report and queues it for moderation review.
+// Reports are appended to a shared Custom Data list (customId "moderation",
+// key "reports", capped) that a future moderation dashboard/pipeline consumes.
+// The client cannot self-moderate — it only files the report.
+const { DataApi } = require("@unity-services/cloud-save-1.4");
+
+const MODERATION_CUSTOM_ID = "moderation";
+const REPORTS_KEY          = "reports";
+const MAX_QUEUED_REPORTS   = 500; // oldest entries are dropped beyond this
+const MAX_REASON_LENGTH    = 64;
+const MAX_CONTEXT_LENGTH   = 500; // e.g. the offending chat line
+
+/**
+ * @param {string} targetId - Player ID being reported.
+ * @param {string} reason - Short reason code/category (e.g. "harassment", "spam").
+ * @param {string} [context] - Optional free-text context such as the offending message. Truncated server-side.
+ */
+module.exports = async ({ params, context, logger }) => {
+  const { targetId, reason } = params;
+  const reportContext = params.context ?? "";
+
+  if (!targetId || !reason) {
+    throw new Error("Invalid params: targetId and reason are required");
+  }
+
+  const { projectId, playerId } = context;
+
+  if (targetId === playerId) {
+    return { success: false, reportId: null };
+  }
+
+  const customDataApi = new DataApi(context);
+
+  let reports = [];
+  try {
+    const res  = await customDataApi.getCustomItems(projectId, MODERATION_CUSTOM_ID, [REPORTS_KEY]);
+    const item = res.data.results.find(r => r.key === REPORTS_KEY);
+    if (item && Array.isArray(item.value)) reports = item.value;
+  } catch (_) { /* no reports queued yet */ }
+
+  const reportId = `${Date.now()}_${playerId.slice(0, 8)}`;
+  reports.push({
+    reportId,
+    reporterId: playerId,
+    targetId,
+    reason:  String(reason).slice(0, MAX_REASON_LENGTH),
+    context: String(reportContext).slice(0, MAX_CONTEXT_LENGTH),
+    createdMs: Date.now(),
+    status: "open"
+  });
+
+  if (reports.length > MAX_QUEUED_REPORTS) {
+    reports = reports.slice(reports.length - MAX_QUEUED_REPORTS);
+  }
+
+  await customDataApi.setCustomItem(projectId, MODERATION_CUSTOM_ID, { key: REPORTS_KEY, value: reports });
+
+  logger.info(`SubmitReport: ${playerId} reported ${targetId} (${reason}) → ${reportId}`);
+  return { success: true, reportId };
+};
+```
+
+
+### ModerateMessage
+
+```js
+// ModerateMessage — server-side text moderation. Returns whether the text is
+// allowed and a masked version. Used by UpdateProfile for display names, and
+// available to any future server-mediated message path. (Vivox channel chat is
+// filtered client-side by ChatModerationFilter and by Vivox's own moderation
+// tooling — this function is the in-house enforcement point.)
+// BLOCKED_WORDS and the normalization map must match SocialConfig.BlockedWords
+// / ChatModerationFilter.NormalizeChar — same "must match" pattern as
+// ClaimYield.js's yield constants.
+
+const BLOCKED_WORDS = [
+  "fuck", "shit", "bitch", "asshole", "cunt", "dick", "faggot",
+  "nigger", "nigga", "whore", "slut", "retard", "kys"
+];
+
+const MAX_MESSAGE_LENGTH = 200; // must match SocialConfig.MaxMessageLength
+
+const CHAR_MAP = { "@": "a", "4": "a", "1": "i", "!": "i", "0": "o", "3": "e", "$": "s", "5": "s", "7": "t" };
+
+function normalize(text) {
+  let out = "";
+  for (const ch of text.toLowerCase()) out += CHAR_MAP[ch] ?? ch;
+  return out;
+}
+
+function moderate(text) {
+  const normalized = normalize(text);
+  let masked = text;
+  let clean  = true;
+
+  for (const word of BLOCKED_WORDS) {
+    let index = 0;
+    while ((index = normalized.indexOf(word, index)) >= 0) {
+      clean  = false;
+      masked = masked.slice(0, index) + "*".repeat(word.length) + masked.slice(index + word.length);
+      index += word.length;
+    }
+  }
+  return { clean, masked };
+}
+
+/**
+ * @param {string} text - The text to moderate. Must be non-empty and at most 200 characters.
+ */
+module.exports = async ({ params, context, logger }) => {
+  const { text } = params;
+
+  if (typeof text !== "string" || text.length === 0 || text.length > MAX_MESSAGE_LENGTH) {
+    throw new Error("Invalid params: text is required and must be at most 200 characters");
+  }
+
+  const { clean, masked } = moderate(text);
+
+  if (!clean) {
+    logger.info(`ModerateMessage: blocked content from ${context.playerId}`);
+  }
+  return { allowed: clean, filteredText: masked };
+};
+
 ```

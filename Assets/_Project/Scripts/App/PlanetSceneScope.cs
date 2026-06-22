@@ -14,6 +14,7 @@ using SocialUniverse.Progression;
 using SocialUniverse.Core;
 using SocialUniverse.Net;
 using SocialUniverse.Social;
+using SocialUniverse.Travel;
 
 namespace SocialUniverse.App
 {
@@ -33,10 +34,27 @@ namespace SocialUniverse.App
             builder.RegisterInstance(_economyConfig);
             builder.RegisterInstance(_databaseRegistry);
 
-            var planet = _startPlanet != null
-                ? _startPlanet
-                : _databaseRegistry.AllPlanets.First();
+            // Production: the planet to load is whatever HubState.TravelToPlanet last set
+            // on the (already-built, DontDestroyOnLoad) parent's PlanetState.TargetPlanetId —
+            // this is how the M5 star map actually switches which planet loads, instead of
+            // every trip landing back on the Inspector-fixed _startPlanet.
+            // Standalone (no parent, e.g. opening Planet.unity directly): fall back to
+            // _startPlanet / the registry's first planet, as before.
+            PlanetState parentPlanetState = Parent != null ? Parent.Container.Resolve<PlanetState>() : null;
+            string targetPlanetId = parentPlanetState?.TargetPlanetId;
+            var planet = (!string.IsNullOrEmpty(targetPlanetId) ? _databaseRegistry.GetPlanet(targetPlanetId) : null)
+                ?? _startPlanet
+                ?? _databaseRegistry.AllPlanets.First();
             builder.RegisterInstance(planet);
+
+            // LaunchButton → Hub: only wired when running under the full app flow (Bootstrap
+            // already built RootLifetimeScope/PlanetState before this scene loaded). Standalone
+            // mode has no FSM to return to, so the button has nothing to call.
+            if (parentPlanetState != null)
+            {
+                builder.RegisterInstance(parentPlanetState);
+                builder.RegisterEntryPoint<LaunchButtonHandler>();
+            }
 
             // Net layer — only register here when running standalone (no parent scope).
             // In the full app flow (Bootstrap → Planet), RootLifetimeScope provides these.
@@ -74,6 +92,10 @@ namespace SocialUniverse.App
 
             // Progression
             builder.Register<PlayerState>(Lifetime.Singleton);
+
+            // Travel — fuel is spent in the SolarSystem scene; rehydrated here so the
+            // Planet scene's HUD/PlayerState reflects the server's authoritative balance.
+            builder.Register<FuelSystem>(Lifetime.Singleton);
 
             // World
             builder.Register<LandmarkService>(Lifetime.Singleton);
@@ -132,6 +154,7 @@ namespace SocialUniverse.App
         private readonly DatabaseRegistry  _registry;
         private readonly PlanetDefinition  _startPlanet;
         private readonly IEconomyService   _economy;
+        private readonly FuelSystem        _fuel;
         private readonly ICloudSave        _cloudSave;
         private readonly LandRegistry      _landRegistry;
         private readonly HexasphereManager _hexasphere;
@@ -148,6 +171,7 @@ namespace SocialUniverse.App
             DatabaseRegistry  registry,
             PlanetDefinition  startPlanet,
             IEconomyService   economy,
+            FuelSystem        fuel,
             ICloudSave        cloudSave,
             LandRegistry      landRegistry,
             HexasphereManager hexasphere,
@@ -163,6 +187,7 @@ namespace SocialUniverse.App
             _registry         = registry;
             _startPlanet      = startPlanet;
             _economy          = economy;
+            _fuel             = fuel;
             _cloudSave        = cloudSave;
             _landRegistry     = landRegistry;
             _hexasphere       = hexasphere;
@@ -191,7 +216,7 @@ namespace SocialUniverse.App
             if (droneDef == null)
             {
                 SULog.Error("PlanetSceneBootstrapper: no DroneDefinition in DatabaseRegistry");
-                EventBus.Publish(new PlanetSceneReadyEvent());
+                EventBus.Publish(new SceneReadyEvent());
                 return;
             }
 
@@ -201,7 +226,7 @@ namespace SocialUniverse.App
             var drone       = new DroneRuntime(droneDef);
             _miningController.StartSession(drone, lastSession);
 
-            EventBus.Publish(new PlanetSceneReadyEvent());
+            EventBus.Publish(new SceneReadyEvent());
         }
 
         private async Task HydrateServerStateAsync()
@@ -216,6 +241,19 @@ namespace SocialUniverse.App
             catch (Exception ex)
             {
                 SULog.Warn($"PlanetSceneBootstrapper: wallet hydration failed ({ex.Message}), using local state", SULog.Channel.Economy);
+            }
+
+            // Hydrate fuel — non-fatal; falls back to PlayerState's default if the server is
+            // unreachable. Fuel is spent only in the SolarSystem scene (TravelService), so this
+            // is how the Planet scene picks up the post-travel balance.
+            try
+            {
+                await _fuel.RefreshAsync();
+                SULog.Info("PlanetSceneBootstrapper: fuel hydrated from server", SULog.Channel.Economy);
+            }
+            catch (Exception ex)
+            {
+                SULog.Warn($"PlanetSceneBootstrapper: fuel hydration failed ({ex.Message}), using local state", SULog.Channel.Economy);
             }
 
             // Hydrate display name — prefer DisplayName (set during registration), fall back to Username, then "Player".

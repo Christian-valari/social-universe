@@ -4,6 +4,17 @@
 > UGS Multiplayer Sessions/Relay; presence is now `VivoxPresenceService`, derived from the Vivox
 > channel roster (see `MIGRATION.md`). EditMode suite 83/83 passing (was 79/79). PlayMode
 > regression (Known Issue #7) confirmed still open and unrelated to this migration.
+> HUD now shows a live "N explorers here" count from `IPresenceService`. `ChatService` hardened
+> against Vivox login races: concurrent `ConnectAsync` calls share one in-flight login, and every
+> Vivox-touching method (`JoinChannelAsync`, `SendMessageAsync`, DMs, block/unblock, etc.) now
+> calls `EnsureConnectedAsync()` first so Vivox's own internal auto-login never collides with
+> ours — see "Chat & Moderation Notes" below.
+> **M5 (Travel & Solar System) is now code-complete** — star map travel, server-backed fuel
+> (recharge/spend/refill), rocket departure overlay, and gyroscope Sky Discovery (with
+> mouse/touch-drag fallback — the AR-vs-gyro Open Decision is resolved in favor of gyro).
+> `SolarSystem.unity` was built out with a working StarMap/SkyDiscovery UI via Unity MCP.
+> EditMode suite 97/97 passing (was 83/83). Awaiting Cloud Code deploy + PlayMode verification
+> (blocked on the same Known Issue #7 as M3/M4) — see the M5 section below.
 > Engine: Unity 6 (URP 17.3.0) · Branch: `refactor/vivox-only-social`
 
 ---
@@ -31,7 +42,7 @@
 | DOTween / DOTweenPro        | ✅ **Installed**  | `Assets/Plugins/Demigiant/`                                                                    |
 | Lean Touch                  | ✅ **Installed**  | `Assets/Plugins/CW/LeanTouch/` — replaces legacy `Input` for camera orbit/zoom (touch + mouse) |
 | Backend (UGS vs Nakama)     | ✅ **UGS**        | Unity Gaming Services — Auth, Economy, Cloud Save, Cloud Code. Packages added to manifest.json |
-| Sky Discovery (AR vs gyro)  | 🔲 **Open**      | Decide before M5                                                                               |
+| Sky Discovery (AR vs gyro)  | ✅ **Gyroscope** | Input System `AttitudeSensor` + mouse/touch-drag fallback; no AR Foundation dependency. See M5 "Sky Discovery Notes" |
 | Age policy / content rating | 🔲 **Open**      | `SocialConfig` ships a provisional teen-safe default (`ChatFilterLevel.Strict` for all players) so M4 isn't blocked; revisit once decided — see "M4 — Chat & Moderation Notes" |
 | Land resale model           | 🔲 **Open**      | Coins-only confirmed; confirm no real-money cash-out before M8                                 |
 
@@ -50,6 +61,7 @@
 | 5   | ⚠️ Open  | Unity MCP `execute_code` tool fails on every invocation in this environment — even `return 1;` — with `Error running ...mono.exe: The filename or extension is too long`                | Environment/tooling issue (not project code). Blocks live in-editor smoke-testing via injected C#; use manual Play Mode tap-throughs or PlayMode tests instead until resolved |
 | 6   | ✅ Fixed  | `ServerCode/PurchaseLand.js` used incorrect UGS SDK call signatures (Economy/Cloud Save client construction, `getItems`/`setItem` shapes, unnecessary `ConfigurationApi`/`configAssignmentHash`) and returned extra `tileId`/`ownerId` fields, causing Cloud Code's strict deserializer to throw `Could not find member 'ownerId' on object of type 'PurchaseLandResponse'` | Rewrote to match `SpendCoins.js`/`CLOUD_CODE_FUNCTIONS.md` conventions; trimmed success response to `{ success, newBalance }` matching `PurchaseLandResponse` |
 | 7   | ⚠️ Open  | `PlanetSceneFlowTests` (PlayMode) now fails both tests at `SetUp` with `PlanetSceneScope.Container not initialized`. Root cause: `Planet.unity`'s `PlanetSceneScope` has `parentReference.TypeName = SocialUniverse.App.RootLifetimeScope` set (production config). VContainer's `LifetimeScope.Awake()` sees `parentReference.Type != null` and calls `EnqueueParent`, queuing the scope to wait for a `RootLifetimeScope` instance before `Configure`/`Build` run. The test loads `Planet.unity` standalone via `LoadSceneMode.Single` (no `Bootstrap.unity`, no `RootLifetimeScope` ever created), so the wait never resolves, `Container` stays `null`, and downstream `[Inject]` fields (`CurrencyView._wallet`, `HUDController._wallet`/`_playerState`/`_mining`) throw NREs | Not yet fixed. Needs either: (a) a test-only bootstrap that instantiates `RootLifetimeScope` before loading `Planet.unity`, or (b) clearing `parentReference` on the scene's `PlanetSceneScope` and relying on the `parentReference.Type == null` standalone-mock path (would need re-adding `_socialConfig` + Net mocks to that scene instance) |
+| 8   | ✅ Fixed  | `ServerCode/GetFuelState.js`/`SpendFuel.js`/`RefillFuel.js` (M5 fuel functions) had the same SDK-shape bug as the original Known Issue #6 `PurchaseLand.js`: `new DataApi({ headers: { Authorization: ... } })` (constructor doesn't read that field) and options-object `getItems`/`setItem` calls (the SDK wants positional `(projectId, playerId, keys[])`/`(projectId, playerId, { key, value })`). Surfaced live as a 422 `ScriptError` on `SpendFuel` when `TravelService` tried to spend fuel | Rewrote all three to `new DataApi(context)` + positional `getItems`/`setItem` args, matching the convention already used in `PurchaseLand`/`UpdateProfile`/`BlockUser`/etc.; `CLOUD_CODE_FUNCTIONS.md` had the same bug baked into its "fixed" fuel-function listings and was corrected to match |
 
 
 ---
@@ -667,6 +679,7 @@ M3 and M4 alike.**
 | `GetPlayerProfile`                      | `ServerCode/` | Reads target player's `player_profile` Cloud Save + sums `owned_tiles_*` for `tilesOwned`; defaults to `"Pilot {id6}"` if unset | ✅ |
 | `UpdateProfile`                         | `ServerCode/` | Validates/commits `displayName` into `player_profile`, merging with existing; re-moderates server-side (`BLOCKED_WORDS`/`CHAR_MAP`/`MAX_DISPLAY_NAME_LENGTH=20` duplicated from `SocialConfig`) | ✅ |
 | `SocialDebugPanel`                      | `UI/`         | In-editor/dev overlay — opens a chat panel with channel selector and message list; opened via HUD chat button | ✅ |
+| `HUDController` (M4 addition)           | `UI/`         | Injects `IPresenceService`; `_explorersText` shows "{Players.Count} explorers here", refreshed on `PresenceChanged` | ✅ |
 | `ChatMessageItemView`                   | `UI/`         | Reusable chat message row — binds sender name, message text, timestamp from a `ChatMessage` DTO | ✅ |
 | `ChatSendProbe`                         | `UI/`         | Input field + Send button wired to `ChatChannelController.SendAsync`; shows send-status feedback | ✅ |
 | `ChatBubbleMaxWidth`                    | `UI/`         | Layout helper — clamps chat bubble width to a fraction of screen width for readability | ✅ |
@@ -735,6 +748,25 @@ M3 and M4 alike.**
 - **`ModerateMessage.js` looks orphaned** — `ChatChannelController`/`ChatService` don't call it,
   and `UpdateProfile.js` re-implements its own inline moderation rather than calling it. Either
   wire it in as the server-side enforcement path for chat messages, or remove it as dead code.
+- **Vivox login-race hardening (post-presence follow-up).** Production smoke-testing surfaced
+  `LoginSession: must be logged out` crashes from three overlapping races between our managed
+  login and Vivox's own internal auto-login/auto-init:
+  1. A second concurrent `ConnectAsync()` (e.g. `PlayerReadyEvent` re-firing across a domain
+     reload) issued a second `VivoxService.LoginAsync` while the first was still in flight.
+     Fixed by caching the in-flight connect `Task` so concurrent callers await the same login
+     instead of starting a new one; a failed attempt still allows a fresh retry next call.
+  2. Channel/message calls (`JoinChannelAsync`, `SendMessageAsync`, DMs, block/unblock) could run
+     while a login was in flight and Vivox's own auto-login collided with ours. Fixed by having
+     each of these wait on any in-flight `ConnectAsync` before touching Vivox.
+  3. Callers that can run **before `SocialServicesInitializer` ever calls `ConnectAsync`**
+     (e.g. `SocialDebugPanel.Open()`) hit Vivox directly on an uninitialized client, which
+     auto-inits/logs in internally — colliding with our explicit login moments later. Fixed by
+     having every Vivox-touching `ChatService` method call a new `EnsureConnectedAsync()` first,
+     which starts the same managed `ConnectAsync` (falling back to the last known display name)
+     if nothing has connected yet. Also skips the explicit `LoginAsync` when
+     `VivoxService.IsLoggedIn` is already `true`, covering a stale native session that survives a
+     domain reload across Play Mode sessions even though our own `_initialized`/`_connectTask`
+     reset.
 
 ### Friends & Direct Messages Notes
 
@@ -803,7 +835,9 @@ M3 and M4 alike.**
 
 **Manual Play Mode Verification**
 
-- [ ] Two devices/editors on same planet — other player marker is visible and moves
+- [ ] Two devices/editors on same planet — HUD "N explorers here" count updates for both
+      clients as each joins/leaves (no player marker/movement — removed in
+      `refactor/vivox-only-social`, see Presence Notes)
 - [ ] Send a chat message — appears in global channel for both clients within 1 s
 - [ ] Type a filtered word — message is blocked before send (Strict) or masked (Moderate)
 - [ ] Report a player — server acknowledges; reported user's messages can be hidden via `MutePlayer`
@@ -874,49 +908,179 @@ LoadingScreenView
 
 ---
 
-## M5 — Travel & Solar System 🔲 NOT STARTED
+## M5 — Travel & Solar System 🚧 CODE COMPLETE — AWAITING DEPLOY/SETUP
 
 **Exit criteria:** Star map travel, fuel as a recharging gauge, gyro Sky Discovery with star map fallback.
 
-**Pre-requisite:** Sky Discovery decision (AR Foundation vs gyroscope starfield).
+**Sky Discovery decision: resolved — gyroscope starfield** (Input System `AttitudeSensor`, with
+mouse/touch-drag fallback when no gyro is present), per the architecture doc's own
+recommendation. No AR Foundation dependency added. See "Sky Discovery Notes" below.
+
+All Travel scripts are code-complete, wired into a new `SolarSystemScope` (parented to
+`RootLifetimeScope`, same standalone/production split as `PlanetSceneScope`), and the
+`SolarSystem.unity` scene has been built out with a working StarMap UI, SkyDiscovery UI, and
+rocket departure overlay via Unity MCP. Covered by EditMode tests (97/97 passing, up from
+83/83 in M4). What remains is Cloud Code deployment and manual/PlayMode verification — see
+"Setup Required" and the "M5 Completion Checklist" below.
 
 
 | Script                   | Path      | Responsibility                                                        | Status |
 | ------------------------ | --------- | --------------------------------------------------------------------- | ------ |
-| `SolarSystemController`  | `Travel/` | Owns the star-map scene/hub; manages planet orbit visuals             | 🔲     |
-| `StarMapController`      | `Travel/` | Render planets/orbits, selection, travel info panel                   | 🔲     |
-| `TravelService`          | `Travel/` | Validate fuel, run scene transition, switch to correct planet + shard | 🔲     |
-| `FuelSystem`             | `Travel/` | Fuel state, time-based recharge, free trip home, manual refill        | 🔲     |
-| `RocketController`       | `Travel/` | Travel animation + optional dodge minigame                            | 🔲     |
-| `SkyDiscoveryController` | `Travel/` | Gyroscope sky view, lock-on to celestial bodies                       | 🔲     |
-| `GyroInputProvider`      | `Travel/` | Read attitude sensor; graceful fallback to drag input                 | 🔲     |
+| `SolarSystemController`  | `Travel/` | Owns the SolarSystem (Hub) scene shell; toggles StarMap ↔ SkyDiscovery panels, idle orbit-pivot rotation | ✅ |
+| `StarMapController`      | `Travel/` | Lists planets from `DatabaseRegistry` (ordered by `PlanetDefinition.OrbitOrder`); travel-cost/affordability info panel, fuel refill button; publishes `TravelRequestedEvent` | ✅ |
+| `TravelService`          | `Travel/` | Computes fuel cost (`PlanetDefinition.TravelFuelCost`, free for the home planet), validates+spends fuel via `FuelSystem` | ✅ |
+| `FuelSystem`              | `Travel/` | Server-backed fuel: `RefreshAsync`/`TrySpendAsync`/`RefillAsync` against `GetFuelState`/`SpendFuel`/`RefillFuel`; keeps `PlayerState.Fuel`/`MaxFuel` in sync | ✅ |
+| `RocketController`       | `Travel/` | Plays a brief departure overlay (status text + icon slide) before the FSM scene transition | ✅ (dodge minigame deferred — see Notes) |
+| `SkyDiscoveryController` | `Travel/` | Gyro/drag-driven "look at a body" lock-on (`SkyLockOnMath`), same travel-cost/confirm flow as StarMap | ✅ |
+| `GyroInputProvider`      | `Travel/` | Wraps Input System `AttitudeSensor`; falls back to mouse/touch drag when unavailable | ✅ |
+| `SkyLockOnMath`          | `Travel/` | Pure math (Fibonacci-sphere body layout, closest-direction lookup) — extracted for unit testing | ✅ |
+| `SolarSystemScope`       | `App/`    | Scene scope for `SolarSystem.unity` — fresh `Wallet`/`PlayerState`/`FuelSystem`/`TravelService` per scene, same pattern as `PlanetSceneScope` | ✅ |
+| `TravelController`       | `App/`    | Subscribes to `TravelRequestedEvent` → `TravelService.TravelToPlanetAsync` → `RocketController.PlayDepartureAsync` → `HubState.TravelToPlanet` | ✅ |
+| `GetFuelState`/`SpendFuel`/`RefillFuel` | `ServerCode/` | Player-scoped Cloud Save `fuel_state` record; server-side recharge-since-last-update math | ✅ |
+
+
+### Travel Fuel Notes
+
+- **`EconomyConfig`** gained a `[Header("Travel — Fuel")]` block: `MaxFuel` (100),
+  `FuelRechargePerHour` (10), `FuelRefillCost` (50 coins) — same "must match the ServerCode
+  constants" duplication pattern as the M3 yield/upkeep formulas.
+- **`PlanetDefinition`** gained `TravelFuelCost` (per-planet fuel cost) and `OrbitOrder`
+  (star-map display order). All 10 planet assets were given differentiated values — Earth is
+  free (home), Mercury/Venus/Moon are cheap, Pluto costs nearly a full tank (100) — so the fuel
+  gauge is actually meaningful rather than a flat per-trip cost.
+- **Free trip home** is `TravelService.GetFuelCost` returning `0` when
+  `target.PlanetId == Constants.PlanetIds.Earth`, regardless of configured cost — `TravelToPlanetAsync`
+  never calls the backend at all for a home trip (no `SpendFuel` round-trip needed).
+- **Server is authoritative for fuel**, same trust model as coins: `fuel_state` is a
+  player-scoped Cloud Save record (`{ fuel, maxFuel, lastUpdateTs }`); `GetFuelState`/`SpendFuel`
+  both recompute the recharge-since-`lastUpdateTs` amount server-side before reading/spending, so
+  a client can never claim more fuel than has actually elapsed. `RefillFuel` validates the coin
+  balance server-side before topping the tank.
+- **Manual refill** is wired end-to-end: `StarMapController` shows a "Refill Fuel" button
+  (disabled when already full or unaffordable) that calls `FuelSystem.RefillAsync()`.
+- **`SolarSystemScope`** registers its own `Wallet`/`PlayerState`/`IEconomyService`/`FuelSystem`
+  — a fresh instance per Hub-scene visit, rehydrated from the server by `SolarSystemBootstrapper`
+  on scene start, exactly mirroring how `PlanetSceneScope` rehydrates its own `Wallet`/`PlayerState`
+  rather than sharing one persistent instance across scenes.
+
+### Star Map / Scene Transition Notes
+
+- **Fixed a pre-existing gap**: `Core.PlanetState.TargetPlanetId` was already set by
+  `HubState.TravelToPlanet`/`BootState`/`AuthState`, but `PlanetSceneScope` ignored it and always
+  loaded the Inspector-fixed `_startPlanet` (Earth) — so traveling to e.g. Mars would still load
+  Earth. `PlanetSceneScope.Configure` now resolves
+  `Parent.Container.Resolve<PlanetState>().TargetPlanetId` (production) and looks it up via
+  `DatabaseRegistry.GetPlanet`, falling back to `_startPlanet`/the registry's first planet only in
+  standalone mode (no parent) or if the ID doesn't resolve. This is the actual fix that makes the
+  star map "switch scene + shard" requirement do something — without it, M5 travel would always
+  cosmetically "succeed" but every trip would land back on Earth.
+- **No `EventBus`-free direct calls from UI to fuel/scenes.** `StarMapController`/
+  `SkyDiscoveryController` only ever publish `TravelRequestedEvent` — `TravelController` (App
+  layer) owns the entire spend → animate → transition sequence, same "UI publishes intent, App
+  layer owns side effects" pattern as M3's `TilePurchaseHandler`/`BuildModeController`.
+- **`RocketController`'s dodge minigame is deferred/stubbed** — same treatment as
+  `ActiveMiningMinigame` in M1. `PlayDepartureAsync` plays a ~1.5s overlay (status text + a
+  sliding icon) and that's the entire "travel game" for now; a future minigame would slot in
+  between `TravelService` success and the FSM transition without changing either.
+
+### Sky Discovery Notes
+
+- **Decision resolved: gyroscope starfield**, not camera AR. Reasons: no AR Foundation
+  dependency, works the same in-editor (mouse drag) and on-device (tilt), and the architecture
+  doc itself flagged gyro as "simpler, recommended."
+- **`GyroInputProvider`** checks `AttitudeSensor.current` each frame; if present, reads device
+  attitude directly. If absent (desktop, simulator, or a device without one), it degrades to a
+  mouse-drag yaw/pitch accumulator clamped to ±80° pitch — same `Quaternion CurrentAttitude`
+  output either way, so `SkyDiscoveryController` doesn't know or care which source is active.
+- **`SkyLockOnMath.GetSkyDirection`** lays bodies out on a unit sphere via a Fibonacci/golden-angle
+  spiral indexed by `OrbitOrder` — deterministic (same planet always at the same sky position),
+  no new per-planet "sky direction" SO field needed. `FindClosest` is a simple linear
+  angle-distance search (10 planets — no spatial index needed). Both are pure functions in their
+  own file specifically so they're unit-testable without a scene (`SkyLockOnMathTests`).
+- **Lock-on UX**: holding the look direction within `_lockOnAngleThresholdDeg` (15°) of a body for
+  `_lockOnDwellSeconds` (1.5s) locks onto it and shows the same fuel-cost/confirm panel as the
+  StarMap list — pressing "Travel" publishes the same `TravelRequestedEvent`, so `TravelController`
+  doesn't need to know which screen requested the trip.
+
+### Planet Spacing & Travel Range Notes (post-M5 follow-up)
+
+- **`PlanetDefinition.OrbitDistanceAU`** (new field, set on all 10 planet assets to
+  real-ish AU values — Mercury 0.39 … Pluto 39.5, Moon ≈ Earth's 1.0) drives Sky Discovery's
+  placement: each sky body's distance along its `SkyLockOnMath` bearing is
+  `sqrt(|body.OrbitDistanceAU - currentPlanet.OrbitDistanceAU|)`, normalized across just the
+  bodies visible this session and lerped into `[_minOrbitRadius, _maxOrbitRadius]` (also scales
+  the model down toward `_farScaleFactor` at the far end). The sqrt compresses the huge outer-system
+  gaps so the inner planets don't collapse into an indistinguishable cluster. The camera no longer
+  relocates to the current planet's old fixed-radius bearing (removed — didn't make sense once
+  radius varies per body); it now stays at the dome center and distance alone conveys "near vs far."
+  This is a relative simulation of spacing, not literal AU-to-unit conversion.
+- **`TravelRangeMath.IsInRange`** (new pure class, `Travel/TravelRangeMath.cs`) gates travel to
+  only planets whose `OrbitOrder` is at most one step from the current planet's (ties — Earth and
+  Moon share `OrbitOrder = 3` — count as in range of each other). `TravelService.IsInRange` wraps
+  it with the injected current planet and exempts the home planet entirely, same unconditional
+  exemption `GetFuelCost` already gives it. `TravelToPlanetAsync` now checks range before spending
+  fuel, returning `FailureReason = "OutOfRange"` if it fails.
+- **`SkyDiscoveryController`** still lets the player lock onto *any* body (so the wider solar
+  system is visible), but `UpdateConfirmPanel` disables the Travel button and shows
+  "{name} — out of range, too far to reach directly" for out-of-range locks. A new persistent
+  `_rangeInfoText` ("Only neighboring planets are within travel range — hop from world to world to
+  reach distant ones.") explains the rule up front, wired in the scene under `SkyDiscoveryPanel`.
+- New `TravelService` constructor parameter `PlanetDefinition currentPlanet` — already available
+  via the same `RegisterInstance(currentPlanet)` `SolarSystemScope` uses for
+  `SkyDiscoveryController`'s injected current planet, no scope changes needed.
+
+**Setup Required:**
+
+- [ ] Deploy `GetFuelState`, `SpendFuel`, `RefillFuel` to Cloud Code.
+- [ ] Verify the `@unity-services/cloud-save-1.4` player-scoped `getItems`/`setItem` calls in the
+      new fuel functions against the dashboard's bundled SDK types — written from the same
+      pattern as `GrantOfflineIncome.js`/`SpendCoins.js`, not yet confirmed against an actual
+      deploy. If the shape differs, fix and add a "Known Issue" entry (same as #6).
+- [ ] `SolarSystemScope` Inspector (`SolarSystem.unity`): confirm `parentReference` resolves to
+      `RootLifetimeScope` in a full Bootstrap → Auth → Hub run (set via MCP scene editing, not yet
+      verified by an actual Play Mode session — blocked on Known Issue #7 same as M3/M4).
+- [ ] Known Issue #7 (`PlanetSceneScope.Container not initialized` in `PlanetSceneFlowTests`)
+      still blocks PlayMode verification for M5 same as M3/M4 — unrelated to this milestone.
 
 
 ### M5 Completion Checklist
 
 **Automated Tests**
 
-- [ ] EditMode: `FuelSystem` — fuel decrements on travel; recharges at correct rate from `EconomyConfig`
-- [ ] EditMode: `TravelService` — travel rejected when insufficient fuel; succeeds otherwise
-- [ ] EditMode: `GyroInputProvider` — returns fallback input when gyroscope is unavailable
-- [ ] PlayMode: Travel from SolarSystem to Planet — `Planet.unity` loads additively, correct `PlanetDefinition` bound
+- [x] EditMode: `FuelSystem` — `RefreshAsync` applies fuel/maxFuel; `TrySpendAsync` deducts on
+      success and resyncs on failure; zero/negative spends short-circuit without calling the
+      backend; `RefillAsync` updates fuel + wallet on success, leaves wallet unchanged on failure
+      (`FuelSystemTests`)
+- [x] EditMode: `TravelService` — home planet is always free regardless of configured cost; other
+      planets return their configured cost; travel succeeds/fails based on `FuelSystem.TrySpendAsync`;
+      home travel never calls the backend (`TravelServiceTests`)
+- [x] EditMode: `SkyLockOnMath` — sky directions are unit-length; `FindClosest` returns the
+      nearest direction and angle, `-1` for an empty set (`SkyLockOnMathTests`)
+- [ ] PlayMode: Travel from SolarSystem to Planet — `Planet.unity` loads additively, correct
+      `PlanetDefinition` bound (blocked on Known Issue #7)
 
 **Manual Play Mode Verification**
 
-- [ ] `SolarSystem.unity` shows all planets in orbit with labels
-- [ ] Tap a planet on star map — travel info panel shows fuel cost
-- [ ] Confirm travel with sufficient fuel — rocket animation plays, Planet scene loads
-- [ ] Fuel gauge in HUD decrements after travel; recharges over time
-- [ ] Free trip home works regardless of fuel level
-- [ ] Sky Discovery: tilt device (or rotate mouse) — starfield responds to gyro/attitude input
-- [ ] Sky Discovery: lock-on to a planet body triggers travel info panel
+- [ ] `SolarSystem.unity` StarMap lists all planets in `OrbitOrder`
+- [ ] Tap a planet on star map — travel info panel shows fuel cost (or "Free trip home" for Earth)
+- [ ] Confirm travel with sufficient fuel — rocket departure overlay plays, correct Planet loads
+- [ ] Attempting to travel without enough fuel disables the Travel button
+- [ ] Fuel gauge updates after travel; recharges over time; "Refill Fuel" tops the tank for coins
+- [ ] Sky Discovery: tilt device (or drag with mouse) — reticle text updates as look direction
+      changes; holding on a body locks on and shows the same travel panel as the list
 
 **Architecture Rules**
 
-- [ ] `SocialUniverse.Travel.asmdef` created with correct namespace
-- [ ] Fuel state is server-backed via `FuelState` record — client cannot grant free fuel
-- [ ] `GyroInputProvider` gracefully falls back on desktop/simulator builds
-- [ ] `SkyDiscoveryController` uses `GyroInputProvider` abstraction — no direct `Input.gyro` calls
+- [x] `SocialUniverse.Travel.asmdef` created with correct namespace
+- [x] Fuel state is server-backed (`fuel_state` Cloud Save record via `GetFuelState`/`SpendFuel`/
+      `RefillFuel`) — client cannot grant free fuel; `PlayerState.Fuel`/`MaxFuel` are a view cache
+      only, same relationship as `Wallet` to `IEconomyService`
+- [x] `GyroInputProvider` gracefully falls back to mouse/touch drag on desktop/simulator builds
+- [x] `SkyDiscoveryController` only depends on `GyroInputProvider.CurrentAttitude` — no direct
+      `AttitudeSensor`/`Input.gyro` calls outside `GyroInputProvider`
+- [x] UI (`StarMapController`/`SkyDiscoveryController`) never spends fuel or transitions scenes
+      directly — both only publish `TravelRequestedEvent`; `TravelController` (App layer) owns
+      the spend/animate/transition sequence
 
 ---
 
@@ -1254,10 +1418,14 @@ LoadingScreenView
 | `ProfileServiceTests.cs`       | EditMode | `ProfileService.GetProfileAsync`/`UpdateDisplayNameAsync` against a `FakeBackendClient` returning `PlayerProfile`/`ProfileUpdateResult` |
 | `ReportServiceTests.cs`        | EditMode | `ReportService.ReportPlayerAsync`/`Block`/`UnblockPlayerAsync` payloads (`ReportResult`/`BlockResult`) and local-only `MutePlayer` suppression |
 | `FakeSocialDoubles.cs`         | EditMode | Shared `FakeBackendClient`/test doubles for the `Social/` EditMode test suite |
+| `FuelSystemTests.cs`           | EditMode | `FuelSystem.RefreshAsync` applies fuel/maxFuel; `TrySpendAsync` deducts on success and resyncs on failure, short-circuits zero/negative spends without calling the backend; `RefillAsync` updates fuel + wallet on success |
+| `TravelServiceTests.cs`       | EditMode | `TravelService.GetFuelCost` (home always free); `TravelToPlanetAsync` succeeds/fails on fuel spend, always succeeds for the home planet regardless of distance, and fails with `FailureReason = "OutOfRange"` for a target outside `TravelRangeMath.IsInRange` |
+| `TravelRangeMathTests.cs`     | EditMode | `TravelRangeMath.IsInRange` — true for adjacent or tied `OrbitOrder`, false for distant orbits or the same planet |
+| `SkyLockOnMathTests.cs`       | EditMode | `SkyLockOnMath.GetSkyDirection` returns unit-length vectors; `FindClosest` returns the nearest direction/angle, `-1` for an empty set |
 | `PlanetSceneFlowTests.cs`      | PlayMode | ⚠️ Both tests now **fail at `SetUp`** with `PlanetSceneScope.Container not initialized` — see Known Issue #7. Previously (M3) verified: (1) mining taps fill cargo and `CommitCargoAsync` grants `hauled × CoinsPerUnit` coins; (2) selecting an available tile fires `TileSelectedEvent` → `TilePurchaseHandler` → `LandPurchaseService`, debits the wallet, and transfers the tile to `OwnedByPlayer` |
 
 
-**EditMode total: 79/79 passing** (up from 39/39 in M3 — 40 new tests added across the 7 `Social/` test files above).
+**EditMode total: 102/102 passing** (up from 79/79 in M4 — 23 new tests: 18 from M5's Travel layer, plus 4 new `TravelRangeMathTests` and 1 new `TravelServiceTests` case for the post-M5 travel-range follow-up).
 
 **Missing tests (high priority):**
 

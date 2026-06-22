@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using UnityEngine;
 using VContainer;
 
 namespace SocialUniverse.Core
@@ -45,7 +46,7 @@ namespace SocialUniverse.Core
             EventBus.Unsubscribe<PlayerReadyEvent>(OnPlayerReady);
             await _sceneLoader.UnloadAsync(Constants.SceneNames.Auth);
             var planet = _resolver.Resolve<PlanetState>();
-            planet.TargetPlanetId = Constants.PlanetIds.Earth;
+            planet.TargetPlanetId = PlayerPrefs.GetString(SaveKeys.LastPlanetId, Constants.PlanetIds.Earth);
             _fsm.TransitionTo(planet);
         }
     }

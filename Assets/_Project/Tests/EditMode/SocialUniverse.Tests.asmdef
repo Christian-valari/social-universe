@@ -11,7 +11,8 @@
         "SocialUniverse.Progression",
         "SocialUniverse.Net",
         "SocialUniverse.Social",
-        "SocialUniverse.World"
+        "SocialUniverse.World",
+        "SocialUniverse.Travel"
     ],
     "includePlatforms": [
         "Editor"

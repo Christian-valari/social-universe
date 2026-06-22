@@ -15,6 +15,7 @@ namespace SocialUniverse.Core
             Mining     = 1 << 4,
             Social     = 1 << 5,
             UI         = 1 << 6,
+            Travel     = 1 << 7,
             All        = ~0
         }
 
