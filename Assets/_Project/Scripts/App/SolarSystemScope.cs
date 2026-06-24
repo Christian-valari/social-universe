@@ -23,11 +23,13 @@ namespace SocialUniverse.App
     {
         [SerializeField] private EconomyConfig    _economyConfig;
         [SerializeField] private DatabaseRegistry _databaseRegistry;
+        [SerializeField] private TravelTimeTable  _travelTimeTable;
 
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterInstance(_economyConfig);
             builder.RegisterInstance(_databaseRegistry);
+            builder.RegisterInstance(_travelTimeTable);
 
             // The planet the player currently resides on — whatever HubState/PlanetState's
             // TargetPlanetId last pointed at (set on first login, updated by every trip).
@@ -46,6 +48,7 @@ namespace SocialUniverse.App
             {
                 builder.Register<SceneLoader>(Lifetime.Singleton);
                 builder.Register<LocalMockBackendClient>(Lifetime.Singleton).As<IBackendClient>();
+                builder.Register<ServerTime>(Lifetime.Singleton);
             }
 
             builder.Register<Wallet>(Lifetime.Singleton);
@@ -53,12 +56,14 @@ namespace SocialUniverse.App
             builder.Register<IEconomyService, EconomyService>(Lifetime.Singleton);
             builder.Register<FuelSystem>(Lifetime.Singleton);
             builder.Register<TravelService>(Lifetime.Singleton);
+            builder.Register<TravelTripSystem>(Lifetime.Singleton);
 
             builder.RegisterComponentInHierarchy<SolarSystemController>();
             builder.RegisterComponentInHierarchy<SkyDiscoveryController>();
             builder.RegisterComponentInHierarchy<GyroInputProvider>();
-            builder.RegisterComponentInHierarchy<RocketController>();
             builder.RegisterComponentInHierarchy<ReturnHomeButtonController>();
+            builder.RegisterComponentInHierarchy<SocialUniverse.UI.PlanetPreviewPanel>();
+            builder.RegisterComponentInHierarchy<SkyZoomController>();
 
             builder.RegisterEntryPoint<SolarSystemBootstrapper>();
             builder.RegisterEntryPoint<TravelController>();

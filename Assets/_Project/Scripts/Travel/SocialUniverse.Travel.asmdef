@@ -8,7 +8,8 @@
         "SocialUniverse.Economy",
         "SocialUniverse.Progression",
         "Unity.InputSystem",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "Unity.Cinemachine"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

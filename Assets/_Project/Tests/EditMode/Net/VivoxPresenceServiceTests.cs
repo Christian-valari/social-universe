@@ -51,31 +51,43 @@ namespace SocialUniverse.Tests.Net
         }
 
         [Test]
-        public async Task JoinPlanetAsync_joins_the_shared_global_channel()
+        public async Task JoinPlanetAsync_joins_that_planets_own_channel()
         {
-            // For now there's one shared Global channel for everyone (no
-            // per-planet Local channel) — planetId doesn't affect which
-            // channel is joined.
+            // Each planet is its own Vivox channel, so presence (and chat) for
+            // Planet_Earth is isolated from every other planet's channel.
             bool joined = await _presence.JoinPlanetAsync("Planet_Earth");
 
+            string expectedChannel = ChatChannelController.PlanetChannelName("Planet_Earth");
             Assert.IsTrue(joined);
             Assert.IsTrue(_presence.IsConnected);
-            Assert.AreEqual(_config.GlobalChannelName, _presence.CurrentChannelName);
+            Assert.AreEqual(expectedChannel, _presence.CurrentChannelName);
             Assert.AreEqual(_channels.ActiveChannel, _presence.CurrentChannelName);
-            Assert.Contains(_config.GlobalChannelName, _chat.JoinedChannels);
+            Assert.Contains(expectedChannel, _chat.JoinedChannels);
         }
 
         [Test]
-        public async Task LeaveAsync_stays_on_the_shared_global_channel()
+        public async Task JoinPlanetAsync_for_different_planets_uses_different_channels()
         {
-            // Leaving presence doesn't disconnect chat — Global is shared by
-            // everyone, so there's nothing planet-specific to leave.
+            await _presence.JoinPlanetAsync("Planet_Earth");
+            string earthChannel = _presence.CurrentChannelName;
+
+            await _presence.JoinPlanetAsync("Planet_Mars");
+
+            Assert.AreNotEqual(earthChannel, _presence.CurrentChannelName);
+            Assert.AreEqual(ChatChannelController.PlanetChannelName("Planet_Mars"), _presence.CurrentChannelName);
+        }
+
+        [Test]
+        public async Task LeaveAsync_leaves_the_planet_channel_entirely()
+        {
+            // Leaving presence disconnects chat too — each planet's channel is
+            // exclusive to that planet, so there's no shared fallback channel.
             await _presence.JoinPlanetAsync("Planet_Earth");
 
             await _presence.LeaveAsync();
 
-            Assert.AreEqual(_config.GlobalChannelName, _presence.CurrentChannelName);
-            Assert.IsTrue(_presence.IsConnected);
+            Assert.IsNull(_presence.CurrentChannelName);
+            Assert.IsFalse(_presence.IsConnected);
         }
 
         [Test]

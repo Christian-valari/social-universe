@@ -1,0 +1,231 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5edbd61e90924b741bb91cdb97d54619, type: 3}
+  m_Name: TravelTimeTable
+  m_EditorClassIdentifier: SocialUniverse.Config::SocialUniverse.Config.TravelTimeTable
+  _entries:
+  - OriginPlanetId: mercury
+    DestinationPlanetId: venus
+    TravelSeconds: 175
+  - OriginPlanetId: mercury
+    DestinationPlanetId: earth
+    TravelSeconds: 220
+  - OriginPlanetId: mercury
+    DestinationPlanetId: moon
+    TravelSeconds: 220
+  - OriginPlanetId: mercury
+    DestinationPlanetId: mars
+    TravelSeconds: 310
+  - OriginPlanetId: mercury
+    DestinationPlanetId: jupiter
+    TravelSeconds: 930
+  - OriginPlanetId: mercury
+    DestinationPlanetId: saturn
+    TravelSeconds: 1665
+  - OriginPlanetId: mercury
+    DestinationPlanetId: uranus
+    TravelSeconds: 3280
+  - OriginPlanetId: mercury
+    DestinationPlanetId: neptune
+    TravelSeconds: 5105
+  - OriginPlanetId: venus
+    DestinationPlanetId: mercury
+    TravelSeconds: 175
+  - OriginPlanetId: venus
+    DestinationPlanetId: earth
+    TravelSeconds: 165
+  - OriginPlanetId: venus
+    DestinationPlanetId: moon
+    TravelSeconds: 165
+  - OriginPlanetId: venus
+    DestinationPlanetId: mars
+    TravelSeconds: 255
+  - OriginPlanetId: venus
+    DestinationPlanetId: jupiter
+    TravelSeconds: 875
+  - OriginPlanetId: venus
+    DestinationPlanetId: saturn
+    TravelSeconds: 1610
+  - OriginPlanetId: venus
+    DestinationPlanetId: uranus
+    TravelSeconds: 3225
+  - OriginPlanetId: venus
+    DestinationPlanetId: neptune
+    TravelSeconds: 5045
+  - OriginPlanetId: earth
+    DestinationPlanetId: mercury
+    TravelSeconds: 220
+  - OriginPlanetId: earth
+    DestinationPlanetId: venus
+    TravelSeconds: 165
+  - OriginPlanetId: earth
+    DestinationPlanetId: moon
+    TravelSeconds: 60
+  - OriginPlanetId: earth
+    DestinationPlanetId: mars
+    TravelSeconds: 205
+  - OriginPlanetId: earth
+    DestinationPlanetId: jupiter
+    TravelSeconds: 825
+  - OriginPlanetId: earth
+    DestinationPlanetId: saturn
+    TravelSeconds: 1560
+  - OriginPlanetId: earth
+    DestinationPlanetId: uranus
+    TravelSeconds: 3180
+  - OriginPlanetId: earth
+    DestinationPlanetId: neptune
+    TravelSeconds: 5000
+  - OriginPlanetId: moon
+    DestinationPlanetId: mercury
+    TravelSeconds: 220
+  - OriginPlanetId: moon
+    DestinationPlanetId: venus
+    TravelSeconds: 165
+  - OriginPlanetId: moon
+    DestinationPlanetId: earth
+    TravelSeconds: 60
+  - OriginPlanetId: moon
+    DestinationPlanetId: mars
+    TravelSeconds: 205
+  - OriginPlanetId: moon
+    DestinationPlanetId: jupiter
+    TravelSeconds: 825
+  - OriginPlanetId: moon
+    DestinationPlanetId: saturn
+    TravelSeconds: 1560
+  - OriginPlanetId: moon
+    DestinationPlanetId: uranus
+    TravelSeconds: 3180
+  - OriginPlanetId: moon
+    DestinationPlanetId: neptune
+    TravelSeconds: 5000
+  - OriginPlanetId: mars
+    DestinationPlanetId: mercury
+    TravelSeconds: 310
+  - OriginPlanetId: mars
+    DestinationPlanetId: venus
+    TravelSeconds: 255
+  - OriginPlanetId: mars
+    DestinationPlanetId: earth
+    TravelSeconds: 205
+  - OriginPlanetId: mars
+    DestinationPlanetId: moon
+    TravelSeconds: 205
+  - OriginPlanetId: mars
+    DestinationPlanetId: jupiter
+    TravelSeconds: 740
+  - OriginPlanetId: mars
+    DestinationPlanetId: saturn
+    TravelSeconds: 1475
+  - OriginPlanetId: mars
+    DestinationPlanetId: uranus
+    TravelSeconds: 3090
+  - OriginPlanetId: mars
+    DestinationPlanetId: neptune
+    TravelSeconds: 4915
+  - OriginPlanetId: jupiter
+    DestinationPlanetId: mercury
+    TravelSeconds: 930
+  - OriginPlanetId: jupiter
+    DestinationPlanetId: venus
+    TravelSeconds: 875
+  - OriginPlanetId: jupiter
+    DestinationPlanetId: earth
+    TravelSeconds: 825
+  - OriginPlanetId: jupiter
+    DestinationPlanetId: moon
+    TravelSeconds: 825
+  - OriginPlanetId: jupiter
+    DestinationPlanetId: mars
+    TravelSeconds: 740
+  - OriginPlanetId: jupiter
+    DestinationPlanetId: saturn
+    TravelSeconds: 855
+  - OriginPlanetId: jupiter
+    DestinationPlanetId: uranus
+    TravelSeconds: 2470
+  - OriginPlanetId: jupiter
+    DestinationPlanetId: neptune
+    TravelSeconds: 4295
+  - OriginPlanetId: saturn
+    DestinationPlanetId: mercury
+    TravelSeconds: 1665
+  - OriginPlanetId: saturn
+    DestinationPlanetId: venus
+    TravelSeconds: 1610
+  - OriginPlanetId: saturn
+    DestinationPlanetId: earth
+    TravelSeconds: 1560
+  - OriginPlanetId: saturn
+    DestinationPlanetId: moon
+    TravelSeconds: 1560
+  - OriginPlanetId: saturn
+    DestinationPlanetId: mars
+    TravelSeconds: 1475
+  - OriginPlanetId: saturn
+    DestinationPlanetId: jupiter
+    TravelSeconds: 855
+  - OriginPlanetId: saturn
+    DestinationPlanetId: uranus
+    TravelSeconds: 1735
+  - OriginPlanetId: saturn
+    DestinationPlanetId: neptune
+    TravelSeconds: 3560
+  - OriginPlanetId: uranus
+    DestinationPlanetId: mercury
+    TravelSeconds: 3280
+  - OriginPlanetId: uranus
+    DestinationPlanetId: venus
+    TravelSeconds: 3225
+  - OriginPlanetId: uranus
+    DestinationPlanetId: earth
+    TravelSeconds: 3180
+  - OriginPlanetId: uranus
+    DestinationPlanetId: moon
+    TravelSeconds: 3180
+  - OriginPlanetId: uranus
+    DestinationPlanetId: mars
+    TravelSeconds: 3090
+  - OriginPlanetId: uranus
+    DestinationPlanetId: jupiter
+    TravelSeconds: 2470
+  - OriginPlanetId: uranus
+    DestinationPlanetId: saturn
+    TravelSeconds: 1735
+  - OriginPlanetId: uranus
+    DestinationPlanetId: neptune
+    TravelSeconds: 1945
+  - OriginPlanetId: neptune
+    DestinationPlanetId: mercury
+    TravelSeconds: 5105
+  - OriginPlanetId: neptune
+    DestinationPlanetId: venus
+    TravelSeconds: 5045
+  - OriginPlanetId: neptune
+    DestinationPlanetId: earth
+    TravelSeconds: 5000
+  - OriginPlanetId: neptune
+    DestinationPlanetId: moon
+    TravelSeconds: 5000
+  - OriginPlanetId: neptune
+    DestinationPlanetId: mars
+    TravelSeconds: 4915
+  - OriginPlanetId: neptune
+    DestinationPlanetId: jupiter
+    TravelSeconds: 4295
+  - OriginPlanetId: neptune
+    DestinationPlanetId: saturn
+    TravelSeconds: 3560
+  - OriginPlanetId: neptune
+    DestinationPlanetId: uranus
+    TravelSeconds: 1945

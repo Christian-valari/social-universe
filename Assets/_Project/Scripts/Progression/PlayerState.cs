@@ -10,11 +10,15 @@ namespace SocialUniverse.Progression
         public int    XP          { get; private set; }
         public float  Fuel        { get; private set; } = 100f;
         public float  MaxFuel     { get; private set; } = 100f;
+        public bool   IsTraveling       { get; private set; }
+        public string TravelTargetId    { get; private set; }
+        public long   TravelArrivalTsMs { get; private set; }
 
         public event Action<string> OnDisplayNameChanged;
         public event Action<int>    OnLevelChanged;
         public event Action<float>  OnFuelChanged;
         public event Action<float>  OnMaxFuelChanged;
+        public event Action<bool, string, long> OnTravelStateChanged;
 
         public void SetDisplayName(string name)
         {
@@ -41,6 +45,14 @@ namespace SocialUniverse.Progression
             MaxFuel = value;
             OnMaxFuelChanged?.Invoke(MaxFuel);
             SetFuel(Fuel); // re-clamp against the new max
+        }
+
+        public void SetTravelState(bool traveling, string targetPlanetId, long arrivalTsMs)
+        {
+            IsTraveling       = traveling;
+            TravelTargetId    = traveling ? targetPlanetId : null;
+            TravelArrivalTsMs = traveling ? arrivalTsMs : 0L;
+            OnTravelStateChanged?.Invoke(IsTraveling, TravelTargetId, TravelArrivalTsMs);
         }
     }
 }

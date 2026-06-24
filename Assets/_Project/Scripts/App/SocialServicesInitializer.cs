@@ -1,20 +1,28 @@
 using System;
 using SocialUniverse.Core;
+using SocialUniverse.Net;
 using SocialUniverse.Social;
 using VContainer.Unity;
 
 namespace SocialUniverse.App
 {
     // Brings the social layer online once sign-in completes: connects chat
-    // (Vivox login in production, instant in dev mode), initializes the
-    // friends roster, and joins the global channel so chat works from the Hub
-    // onward. Lives in the Root scope — social services span scenes.
+    // (Vivox login in production, instant in dev mode) and initializes the
+    // friends roster. Channel join happens later, per planet
+    // (PlanetPresenceController) — each planet is its own Vivox channel, so
+    // there's no shared lobby channel to join here. Also syncs ServerTime here — it's registered as a singleton but
+    // nothing previously called SyncAsync(), so every server-issued timestamp
+    // (e.g. a trip's arrivalTs) was being compared against the unsynced local
+    // device clock; any clock drift directly corrupted the Travel scene's
+    // countdown (reported: a 2-minute trip showing ~15s left almost
+    // immediately). Lives in the Root scope — social services and ServerTime
+    // both span scenes.
     public class SocialServicesInitializer : IStartable, IDisposable
     {
-        private readonly IChatService          _chat;
-        private readonly IFriendsService       _friends;
-        private readonly ChatChannelController _channels;
-        private readonly IAuthService          _auth;
+        private readonly IChatService    _chat;
+        private readonly IFriendsService _friends;
+        private readonly IAuthService    _auth;
+        private readonly ServerTime      _serverTime;
 
         // DirectMessageService subscribes to inbound DMs in its constructor;
         // depending on it here forces eager construction so DMs are captured
@@ -22,14 +30,14 @@ namespace SocialUniverse.App
         public SocialServicesInitializer(
             IChatService          chat,
             IFriendsService       friends,
-            ChatChannelController channels,
             IAuthService          auth,
+            ServerTime            serverTime,
             DirectMessageService  _)
         {
-            _chat     = chat;
-            _friends  = friends;
-            _channels = channels;
-            _auth     = auth;
+            _chat       = chat;
+            _friends    = friends;
+            _auth       = auth;
+            _serverTime = serverTime;
         }
 
         public void Start() => EventBus.Subscribe<PlayerReadyEvent>(OnPlayerReady);
@@ -38,11 +46,14 @@ namespace SocialUniverse.App
 
         private async void OnPlayerReady(PlayerReadyEvent _)
         {
+            // SyncAsync never throws (it logs and falls back to the local clock on
+            // failure), so this needs no try/catch of its own.
+            await _serverTime.SyncAsync();
+
             try
             {
                 await _chat.ConnectAsync(_auth.DisplayName ?? _auth.Username ?? _auth.PlayerId);
-                await _channels.SwitchToGlobalAsync();
-                SULog.Info("SocialServicesInitializer: chat connected, global channel joined", SULog.Channel.Social);
+                SULog.Info("SocialServicesInitializer: chat connected", SULog.Channel.Social);
             }
             catch (Exception ex)
             {

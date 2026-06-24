@@ -17,6 +17,10 @@ namespace SocialUniverse.Travel
         public bool       IsGyroAvailable { get; private set; }
         public Quaternion CurrentAttitude { get; private set; } = Quaternion.identity;
 
+        // Set true while a Cinemachine zoom owns the camera so accumulated drag
+        // during the zoom doesn't cause a snap when manual control resumes.
+        public bool SuspendDragInput { get; set; }
+
         private Vector2 _dragEuler; // fallback accumulator (yaw/pitch in degrees)
         private Vector2 _lastPointerPos;
         private bool    _dragging;
@@ -41,7 +45,7 @@ namespace SocialUniverse.Travel
                 IsGyroAvailable = false; // sensor disappeared mid-session — degrade gracefully
             }
 
-            UpdateDragFallback();
+            if (!SuspendDragInput) UpdateDragFallback();
             CurrentAttitude = Quaternion.Euler(_dragEuler.y, _dragEuler.x, 0f);
         }
 

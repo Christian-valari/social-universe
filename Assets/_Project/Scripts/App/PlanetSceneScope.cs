@@ -58,7 +58,9 @@ namespace SocialUniverse.App
 
             // Net layer — only register here when running standalone (no parent scope).
             // In the full app flow (Bootstrap → Planet), RootLifetimeScope provides these.
-            if (parentReference.Type == null)
+            bool standalone = parentReference.Type == null;
+            builder.RegisterInstance(standalone);
+            if (standalone)
             {
                 builder.Register<SceneLoader>(Lifetime.Singleton);
                 builder.Register<NetworkBootstrap>(Lifetime.Singleton).AsImplementedInterfaces();
@@ -163,6 +165,7 @@ namespace SocialUniverse.App
         private readonly PlayerState       _playerState;
         private readonly ProfileService    _profileService;
         private readonly SceneLoader       _sceneLoader;
+        private readonly bool              _standalone;
 
         public PlanetSceneBootstrapper(
             PlanetController  planetController,
@@ -179,7 +182,8 @@ namespace SocialUniverse.App
             IAuthService      auth,
             PlayerState       playerState,
             ProfileService    profileService,
-            SceneLoader       sceneLoader)
+            SceneLoader       sceneLoader,
+            bool              standalone)
         {
             _planetController = planetController;
             _asteroidSpawner  = asteroidSpawner;
@@ -196,15 +200,22 @@ namespace SocialUniverse.App
             _playerState      = playerState;
             _profileService   = profileService;
             _sceneLoader      = sceneLoader;
+            _standalone       = standalone;
         }
 
         public async void Start()
         {
             // In standalone mode (Planet scene opened directly without Bootstrap/PlanetState),
             // PlanetState has not run so the loading scene must be loaded here instead.
-            var ls = SceneManager.GetSceneByName(Constants.SceneNames.LoadingScreen);
-            if (!ls.IsValid() || !ls.isLoaded)
-                await _sceneLoader.LoadAsync(Constants.SceneNames.LoadingScreen);
+            // In production mode this is intentionally skipped even if LoadingScreen isn't
+            // loaded — TravelLoadingState may have deliberately not loaded it (see
+            // PlanetState.SkipLoadingScreen) for the land animation leg.
+            if (_standalone)
+            {
+                var ls = SceneManager.GetSceneByName(Constants.SceneNames.LoadingScreen);
+                if (!ls.IsValid() || !ls.isLoaded)
+                    await _sceneLoader.LoadAsync(Constants.SceneNames.LoadingScreen);
+            }
 
             EventBus.Publish(new LoadingStatusEvent(0.15f));
             _planetController.Load(_startPlanet);

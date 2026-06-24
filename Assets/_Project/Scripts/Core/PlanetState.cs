@@ -12,6 +12,12 @@ namespace SocialUniverse.Core
 
         public string TargetPlanetId { get; set; }
 
+        // Set by TravelLoadingState right before transitioning in, for the
+        // Travel -> TravelLoading -> Planet leg — see TravelState.SkipLoadingScreen
+        // for the same reasoning. Direct entries (initial boot resume, Return Home)
+        // leave this false.
+        public bool SkipLoadingScreen { get; set; }
+
         public PlanetState(SceneLoader sceneLoader, GameStateMachine fsm, IObjectResolver resolver)
         {
             _sceneLoader = sceneLoader;
@@ -26,7 +32,10 @@ namespace SocialUniverse.Core
         private async Task LoadAsync()
         {
             SULog.Info($"Planet: entering {TargetPlanetId}");
-            await _sceneLoader.LoadAsync(Constants.SceneNames.LoadingScreen);
+            bool skip = SkipLoadingScreen;
+            SkipLoadingScreen = false; // consumed — next entry defaults back to showing it
+            if (!skip)
+                await _sceneLoader.LoadAsync(Constants.SceneNames.LoadingScreen);
             await _sceneLoader.LoadAsync(Constants.SceneNames.Planet);
         }
 

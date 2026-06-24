@@ -16,32 +16,33 @@ namespace SocialUniverse.Travel
     // world bearings (SkyLockOnMath.GetSkyDirection) around the sky dome's center
     // (the camera stays put there — _currentPlanet itself is excluded from the sky
     // bodies, since you don't see the planet you're standing on floating in your
-    // own sky). Distance along each bearing is scaled by how far the body's
-    // PlanetDefinition.OrbitDistanceAU is from _currentPlanet's, so nearby planets
-    // sit close/large and distant ones sit far/small — a relative simulation of
-    // real solar-system spacing, not literal AU-to-unit conversion. _camera's
+    // own sky). Distance along each bearing is a direct AU-to-unit conversion
+    // of how far the body's PlanetDefinition.OrbitDistanceAU is from
+    // _currentPlanet's (_auToWorldUnits), so spacing mirrors the real solar
+    // system instead of being normalized to fit a fixed visual range. Model
+    // scale is constant (_planetScaleMultiplier) — perspective alone, not a
+    // scale fake, is what makes distant planets look smaller. _camera's
     // rotation is driven directly by GyroInputProvider.CurrentAttitude (gyro, or
     // mouse/touch-drag fallback) so the player looks around by rotating the
     // camera. Holding the look direction within _lockOnAngleThresholdDeg of a body
     // for _lockOnDwellSeconds locks onto it, surfacing the travel-cost/confirm
-    // flow — only TravelService.IsInRange targets (neighboring OrbitOrder) can
-    // actually be confirmed; farther bodies lock on (so the player can see what's
-    // out there) but the Travel button stays disabled with an explanatory reason.
+    // flow — any body in the sky can be confirmed, regardless of distance, so
+    // Travel Time (TravelService.GetTravelDuration) is what actually matters.
     public class SkyDiscoveryController : MonoBehaviour
     {
+        [SerializeField] private Transform _panel;
         [SerializeField] private GyroInputProvider _gyro;
         [SerializeField] private Camera   _camera;
+        [SerializeField] private Transform _domeVcamTransform; // Cinemachine "Dome Vcam" transform — receives the manual rotation instead of _camera once a CinemachineBrain owns the Main Camera
         [SerializeField] private Transform _planetsRoot;
         [SerializeField] private TMP_Text _reticleText;
         [SerializeField] private TMP_Text _infoCostText;
-        [SerializeField] private TMP_Text _rangeInfoText;
         [SerializeField] private Button   _travelButton;
         [SerializeField] private float    _lockOnAngleThresholdDeg = 15f;
         [SerializeField] private float    _lockOnDwellSeconds      = 1.5f;
-        [SerializeField] private float    _minOrbitRadius          = 8f;
-        [SerializeField] private float    _maxOrbitRadius          = 24f;
+        [SerializeField] private float    _minOrbitRadius          = 8f;  // floor distance for the current planet's own near-zero AU offset (e.g. Earth/Moon)
+        [SerializeField] private float    _auToWorldUnits          = 2f;  // world units per AU of OrbitDistanceAU difference from _currentPlanet
         [SerializeField] private float    _planetScaleMultiplier   = 14f;
-        [SerializeField] private float    _farScaleFactor          = 0.35f; // multiplies _planetScaleMultiplier at the farthest distance
         [SerializeField] private float    _highlightScaleMultiplier = 1.3f;
 
         [Inject] private DatabaseRegistry  _registry;
@@ -58,6 +59,18 @@ namespace SocialUniverse.Travel
         private float  _dwellTimer;
         private PlanetDefinition _locked;
 
+        // True while a Cinemachine zoom (SkyZoomController) owns the camera —
+        // suspends the manual rotation write and the dwell/lock-on raycast so
+        // they don't fight the blend or re-lock onto a different planet.
+        public bool IsCameraSuspended { get; set; }
+
+        // World transform of the currently-locked planet's spawned model, or
+        // null if nothing is locked. Frozen in place while IsCameraSuspended.
+        public Transform LockedPlanetTransform =>
+            _locked != null && _dwellIndex >= 0 && _planetInstances != null && _dwellIndex < _planetInstances.Length
+                ? _planetInstances[_dwellIndex]
+                : null;
+
         private void Awake()
         {
             _travelButton.onClick.AddListener(OnTravelClicked);
@@ -66,6 +79,7 @@ namespace SocialUniverse.Travel
 
         private void OnEnable()
         {
+            EventBus.Subscribe<TravelPreviewClosedEvent>(OnPreviewClosed);
             var allPlanets = _registry.AllPlanets.OrderBy(p => p.OrbitOrder).ToArray();
             var allDirections = new Vector3[allPlanets.Length];
             for (int i = 0; i < allPlanets.Length; i++)
@@ -97,9 +111,6 @@ namespace SocialUniverse.Travel
             }
             SpawnPlanets();
 
-            if (_rangeInfoText != null)
-                _rangeInfoText.text = "Only neighboring planets are within travel range — hop from world to world to reach distant ones.";
-
             _dwellIndex = -1;
             _dwellTimer = 0f;
             _locked     = null;
@@ -108,6 +119,7 @@ namespace SocialUniverse.Travel
 
         private void OnDisable()
         {
+            EventBus.Subscribe<TravelPreviewClosedEvent>(OnPreviewClosed);
             if (_planetsRoot != null) _planetsRoot.gameObject.SetActive(false);
             if (_camera != null)
             {
@@ -123,19 +135,6 @@ namespace SocialUniverse.Travel
             for (int i = _planetsRoot.childCount - 1; i >= 0; i--)
                 Destroy(_planetsRoot.GetChild(i).gameObject);
 
-            // Distance from the current planet's real orbital distance (AU),
-            // compressed with sqrt so the huge outer-system gaps (e.g. Earth to
-            // Pluto) don't crush the inner-system ones (e.g. Mercury to Venus)
-            // into an indistinguishable cluster, then normalized across just the
-            // bodies visible this session so the spread always fills the
-            // configured radius range regardless of which planet is "home" here.
-            var rawDistances = new float[_planets.Length];
-            for (int i = 0; i < _planets.Length; i++)
-                rawDistances[i] = Mathf.Sqrt(Mathf.Abs(_planets[i].OrbitDistanceAU - _currentPlanet.OrbitDistanceAU));
-
-            float minRaw = rawDistances.Length > 0 ? Mathf.Min(rawDistances) : 0f;
-            float maxRaw = rawDistances.Length > 0 ? Mathf.Max(rawDistances) : 0f;
-
             _planetInstances = new Transform[_planets.Length];
             _baseScales      = new Vector3[_planets.Length];
             for (int i = 0; i < _planets.Length; i++)
@@ -143,13 +142,15 @@ namespace SocialUniverse.Travel
                 var prefab = _planets[i].ModelPrefab;
                 if (prefab == null) continue;
 
-                float t      = maxRaw > minRaw ? Mathf.InverseLerp(minRaw, maxRaw, rawDistances[i]) : 0f;
-                float radius = Mathf.Lerp(_minOrbitRadius, _maxOrbitRadius, t);
-                float scale  = _planetScaleMultiplier * Mathf.Lerp(1f, _farScaleFactor, t);
+                // Real AU distance from the current planet, directly converted to
+                // world units — no per-session normalization, so spacing reflects
+                // the actual solar system rather than always filling a fixed range.
+                float distanceAU = Mathf.Abs(_planets[i].OrbitDistanceAU - _currentPlanet.OrbitDistanceAU);
+                float radius     = _minOrbitRadius + distanceAU * _auToWorldUnits;
 
                 var instance = Instantiate(prefab, _planetsRoot);
                 instance.transform.localPosition  = _directions[i] * radius;
-                instance.transform.localScale    *= scale;
+                instance.transform.localScale    *= _planetScaleMultiplier;
 
                 _planetInstances[i] = instance.transform;
                 _baseScales[i]      = instance.transform.localScale;
@@ -159,8 +160,10 @@ namespace SocialUniverse.Travel
         private void Update()
         {
             if (_planets == null || _planets.Length == 0 || _gyro == null) return;
+            if (IsCameraSuspended) return;
 
-            if (_camera != null) _camera.transform.rotation = _gyro.CurrentAttitude;
+            var rotationTarget = _domeVcamTransform != null ? _domeVcamTransform : _camera != null ? _camera.transform : null;
+            if (rotationTarget != null) rotationTarget.rotation = _gyro.CurrentAttitude;
 
             Vector3 lookDir = _gyro.CurrentAttitude * Vector3.forward;
             int closest = SkyLockOnMath.FindClosest(lookDir, _directions, out float angle);
@@ -219,25 +222,23 @@ namespace SocialUniverse.Travel
                 return;
             }
 
-            if (!_travelService.IsInRange(_locked))
-            {
-                if (_infoCostText != null)
-                    _infoCostText.text = $"{_locked.DisplayName} — out of range, too far to reach directly";
-                _travelButton.interactable = false;
-                return;
-            }
-
-            int cost = _travelService.GetFuelCost(_locked);
-            if (_infoCostText != null)
-                _infoCostText.text = cost <= 0 ? $"{_locked.DisplayName} — free trip home" : $"{_locked.DisplayName} — fuel cost: {cost}";
-
-            _travelButton.interactable = cost <= 0 || _playerState.Fuel >= cost;
+            // int cost = _travelService.GetFuelCost(_locked);
+            // if (_infoCostText != null)
+            //     _infoCostText.text = cost <= 0 ? $"{_locked.DisplayName} — free trip home" : $"{_locked.DisplayName} — fuel cost: {cost}";
+            //
+            _travelButton.interactable = true;
         }
 
         private void OnTravelClicked()
         {
             if (_locked == null) return;
-            EventBus.Publish(new TravelRequestedEvent { Planet = _locked });
+            _panel.gameObject.SetActive(false);
+            EventBus.Publish(new TravelPreviewRequestedEvent { Planet = _locked });
+        }
+        
+        private void OnPreviewClosed(TravelPreviewClosedEvent e)
+        {
+            _panel.gameObject.SetActive(true);
         }
     }
 }

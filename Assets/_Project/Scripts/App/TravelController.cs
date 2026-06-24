@@ -1,43 +1,46 @@
 using System;
 using VContainer.Unity;
+using SocialUniverse.Config;
 using SocialUniverse.Core;
 using SocialUniverse.Travel;
 
 namespace SocialUniverse.App
 {
-    // Reacts to TravelRequestedEvent (published by StarMapController/
-    // SkyDiscoveryController): validates+spends fuel via TravelService, plays
-    // the rocket departure overlay, then hands off to the existing FSM scene
-    // transition (HubState.TravelToPlanet -> PlanetState, which shows the
-    // LoadingScreen). Owns the full sequencing so the UI layer never touches
-    // fuel or scenes directly.
+    // Reacts to TravelConfirmedEvent (published by PlanetPreviewPanel's own
+    // Launch button, after the player has reviewed fuel cost/ETA): starts the
+    // trip via TravelTripSystem (server-authoritative fuel spend + arrival
+    // timestamp), then hands off to the FSM — HubState.EnterTravelState()
+    // transitions to TravelLoadingState (takeoff leg, shows the rocket departing
+    // from _currentPlanet — the planet the player is leaving, not the
+    // destination), which then unloads SolarSystem and loads the Travel scene,
+    // where TravelingPanel lives and Land eventually transitions through
+    // TravelLoadingState's land leg (showing the destination planet) to PlanetState.
     public class TravelController : IStartable, IDisposable
     {
-        private readonly TravelService       _travelService;
-        private readonly RocketController    _rocket;
-        private readonly HubState            _hub;
+        private readonly TravelTripSystem _trips;
+        private readonly HubState         _hub;
+        private readonly PlanetDefinition _currentPlanet;
 
-        public TravelController(TravelService travelService, RocketController rocket, HubState hub)
+        public TravelController(TravelTripSystem trips, HubState hub, PlanetDefinition currentPlanet)
         {
-            _travelService = travelService;
-            _rocket        = rocket;
+            _trips         = trips;
             _hub           = hub;
+            _currentPlanet = currentPlanet;
         }
 
-        public void Start()   => EventBus.Subscribe<TravelRequestedEvent>(OnTravelRequested);
-        public void Dispose() => EventBus.Unsubscribe<TravelRequestedEvent>(OnTravelRequested);
+        public void Start()   => EventBus.Subscribe<TravelConfirmedEvent>(OnTravelConfirmed);
+        public void Dispose() => EventBus.Unsubscribe<TravelConfirmedEvent>(OnTravelConfirmed);
 
-        private async void OnTravelRequested(TravelRequestedEvent e)
+        private async void OnTravelConfirmed(TravelConfirmedEvent e)
         {
-            var result = await _travelService.TravelToPlanetAsync(e.Planet);
-            if (!result.Success)
+            var result = await _trips.StartTravelAsync(e.Planet);
+            if (result == null || !result.Success)
             {
-                SULog.Warn($"TravelController: travel to {e.Planet.DisplayName} denied ({result.FailureReason})", SULog.Channel.Travel);
+                SULog.Warn($"TravelController: travel to {e.Planet.DisplayName} denied ({result?.Reason})", SULog.Channel.Travel);
                 return;
             }
 
-            await _rocket.PlayDepartureAsync(e.Planet.DisplayName);
-            _hub.TravelToPlanet(e.Planet.PlanetId);
+            _hub.EnterTravelState(_currentPlanet);
         }
     }
 }

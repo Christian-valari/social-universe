@@ -7,6 +7,8 @@ namespace SocialUniverse.Core
             public const string Bootstrap     = "Bootstrap";
             public const string Auth          = "Auth";
             public const string SolarSystem   = "SolarSystem";
+            public const string Travel        = "Travel";
+            public const string TravelLoading = "TravelLoading";
             public const string Planet        = "Planet";
             public const string Station       = "Station";
             public const string LoadingScreen = "LoadingScreen";

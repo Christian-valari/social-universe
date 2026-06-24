@@ -64,6 +64,28 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
+        public async Task Different_planets_join_different_channels()
+        {
+            await _controller.SwitchToPlanetAsync("Planet_Earth");
+            Assert.AreEqual("planet_planet_earth", _controller.ActiveChannel);
+
+            await _controller.SwitchToPlanetAsync("Planet_Mars");
+            Assert.AreEqual("planet_planet_mars", _controller.ActiveChannel);
+            Assert.Contains("planet_planet_earth", _chat.LeftChannels);
+        }
+
+        [Test]
+        public async Task LeaveCurrentAsync_leaves_without_joining_a_replacement()
+        {
+            await _controller.SwitchToPlanetAsync("Planet_Earth");
+
+            await _controller.LeaveCurrentAsync();
+
+            Assert.IsNull(_controller.ActiveChannel);
+            Assert.Contains("planet_planet_earth", _chat.LeftChannels);
+        }
+
+        [Test]
         public async Task Strict_filter_rejects_dirty_outbound_message()
         {
             await _controller.SwitchToGlobalAsync();

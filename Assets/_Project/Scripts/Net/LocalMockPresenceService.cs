@@ -20,11 +20,11 @@ namespace SocialUniverse.Net
 
         public IReadOnlyList<PresencePlayer> Players => _players;
 
-        // For now there is one shared Global channel for everyone (no
-        // per-planet Local channel), so planetId is unused.
+        // Mirrors ChatChannelController.PlanetChannelName so dev-mode presence
+        // is scoped per planet, same as the live Vivox-backed service.
         public Task<bool> JoinPlanetAsync(string planetId)
         {
-            CurrentChannelName = "global";
+            CurrentChannelName = $"planet_{planetId}".ToLowerInvariant();
             IsConnected         = true;
             _players.Clear();
             _players.Add(new PresencePlayer { PlayerId = "mock_player", DisplayName = "MockPlayer" });

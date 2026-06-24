@@ -1172,6 +1172,9 @@ struct EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8  : public Scripta
 	int32_t ____activeTapYield;
 	float ____critChance;
 	float ____critMultiplier;
+	float ____maxFuel;
+	float ____fuelRechargePerHour;
+	int32_t ____fuelRefillCost;
 };
 struct ItemDefinition_t8BADD4DDEF367747A3719AFF59CCA57B2FC53984  : public ScriptableObject_tB3BFDB921A1B1795B38A5417D3B97A89A140436A
 {
@@ -1192,6 +1195,10 @@ struct PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933  : public Scri
 	float ____landPriceMultiplier;
 	int32_t ____asteroidTier;
 	AsteroidDefinitionU5BU5D_tBFF455AEF363CCA9AD627A7BE225FF1013BBAC04* ____asteroidTypes;
+	int32_t ____travelFuelCost;
+	float ____travelDurationSeconds;
+	int32_t ____orbitOrder;
+	float ____orbitDistanceAU;
 };
 struct U3CGrantCoinsAsyncU3Ed__6_t5DF67C93F95607DE0CAEE6B4F24620152EF89F29 
 {
@@ -1996,7 +2003,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CClaimYieldAsyncU3Ed__4_SetStateMachin
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121396
+// Method Definition Index: 127599
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR MonoScriptData_tA20A07E83954E71D5D86146BABF79DD0F83079F8 UnitySourceGeneratedAssemblyMonoScriptTypes_v1_Get_m5BA44CA6901C3141F7FFBBFCF8693C0A76A3C1E5 (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2030,7 +2037,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR MonoScriptData_tA20A07E83954E71D5D86146BABF79
 		return L_6;
 	}
 }
-// Method Definition Index: 121397
+// Method Definition Index: 127600
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void UnitySourceGeneratedAssemblyMonoScriptTypes_v1__ctor_m9A85829FC1E90967BA08732DF88546BBDCBD72B4 (UnitySourceGeneratedAssemblyMonoScriptTypes_v1_tF7B2C1071E9FF0AB8712A6081D908839A168126E* __this, const RuntimeMethod* method) 
 {
 	{
@@ -2116,7 +2123,7 @@ IL2CPP_EXTERN_C void MonoScriptData_tA20A07E83954E71D5D86146BABF79DD0F83079F8_ma
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121398
+// Method Definition Index: 127601
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void BuildPaletteService__ctor_m0FB0C33BF6A3E91D7EEF72F65B7C592E5A1B1067 (BuildPaletteService_tA0CC402B7CA0F3F5E11B2EA41ECF195D8E24D210* __this, DatabaseRegistry_tBD75C5774CDFE42C5FC8B3827DE1F0E1AF8BC8D1* ___0_registry, EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* ___1_config, const RuntimeMethod* method) 
 {
 	{
@@ -2134,7 +2141,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void BuildPaletteService__ctor_m0FB0C33BF6A3E
 		return;
 	}
 }
-// Method Definition Index: 121399
+// Method Definition Index: 127602
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* BuildPaletteService_GetAvailableItems_m405FFAE5B3B8E885AD759CC2BC1782CED62FC07B (BuildPaletteService_tA0CC402B7CA0F3F5E11B2EA41ECF195D8E24D210* __this, TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* ___0_tile, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2223,7 +2230,7 @@ IL_002e:
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121400
+// Method Definition Index: 127603
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CU3Ec__DisplayClass3_0__ctor_m556F381A6DC27553EBC6A5E858951714B2A3F094 (U3CU3Ec__DisplayClass3_0_tEC64A082B9BDFE571839B8C17562703630720480* __this, const RuntimeMethod* method) 
 {
 	{
@@ -2231,7 +2238,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CU3Ec__DisplayClass3_0__ctor_m556F381A
 		return;
 	}
 }
-// Method Definition Index: 121401
+// Method Definition Index: 127604
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool U3CU3Ec__DisplayClass3_0_U3CGetAvailableItemsU3Eb__0_mCA91A17407F4B5BC43CBDA96EB6BE01FA21A5692 (U3CU3Ec__DisplayClass3_0_tEC64A082B9BDFE571839B8C17562703630720480* __this, ItemDefinition_t8BADD4DDEF367747A3719AFF59CCA57B2FC53984* ___0_i, const RuntimeMethod* method) 
 {
 	{
@@ -2252,7 +2259,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool U3CU3Ec__DisplayClass3_0_U3CGetAvailable
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121402
+// Method Definition Index: 127605
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void EconomyService__ctor_mABB24F74EB33F51D474F91E5A2EE126DF8FE1B00 (EconomyService_t88D41AD0BA4BA4195F94C1CA3133F7FDABF85DBA* __this, Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* ___0_wallet, EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* ___1_config, RuntimeObject* ___2_backend, const RuntimeMethod* method) 
 {
 	{
@@ -2274,7 +2281,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void EconomyService__ctor_mABB24F74EB33F51D47
 		return;
 	}
 }
-// Method Definition Index: 121403
+// Method Definition Index: 127606
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_1_t27D660C3E7B9F720F2AFD64BA2E28DF6CF748949* EconomyService_GetWalletAsync_m276A446D6273CF4368A0A5AF01BA37DDA8BD6B03 (EconomyService_t88D41AD0BA4BA4195F94C1CA3133F7FDABF85DBA* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2311,7 +2318,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_1_t27D660C3E7B9F720F2AFD64BA2E28DF6CF748
 		return L_3;
 	}
 }
-// Method Definition Index: 121404
+// Method Definition Index: 127607
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_1_t824317F4B958F7512E8F7300511752937A6C6043* EconomyService_SpendCoinsAsync_mCCDF379715C6A68A825F90ACB3202733B66CA622 (EconomyService_t88D41AD0BA4BA4195F94C1CA3133F7FDABF85DBA* __this, int32_t ___0_amount, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2350,7 +2357,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_1_t824317F4B958F7512E8F7300511752937A6C6
 		return L_4;
 	}
 }
-// Method Definition Index: 121405
+// Method Definition Index: 127608
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* EconomyService_GrantCoinsAsync_m9995720138EB17931593FDB84BB0FCF90CD42E2B (EconomyService_t88D41AD0BA4BA4195F94C1CA3133F7FDABF85DBA* __this, int32_t ___0_amount, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2387,7 +2394,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA857
 		return L_4;
 	}
 }
-// Method Definition Index: 121406
+// Method Definition Index: 127609
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* EconomyService_GrantStardustAsync_m302E940C2BFDB25D5B7FEBD4419CF3FB1524D6BD (EconomyService_t88D41AD0BA4BA4195F94C1CA3133F7FDABF85DBA* __this, int32_t ___0_amount, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2482,7 +2489,7 @@ IL2CPP_EXTERN_C void SpendResult_tF39FC6BA94D0B8FB83D57521168DD38E6DDD0A0F_marsh
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121407
+// Method Definition Index: 127610
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CGetWalletAsyncU3Ed__4_MoveNext_m29A03042E57F888971FF058185C0B53D2B370706 (U3CGetWalletAsyncU3Ed__4_t276BE66F86CF48C8BF44D74D9B239F4B30D7E1CF* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2757,7 +2764,7 @@ IL2CPP_EXTERN_C  void U3CGetWalletAsyncU3Ed__4_MoveNext_m29A03042E57F888971FF058
 	_thisAdjusted = reinterpret_cast<U3CGetWalletAsyncU3Ed__4_t276BE66F86CF48C8BF44D74D9B239F4B30D7E1CF*>(__this + _offset);
 	U3CGetWalletAsyncU3Ed__4_MoveNext_m29A03042E57F888971FF058185C0B53D2B370706(_thisAdjusted, method);
 }
-// Method Definition Index: 121408
+// Method Definition Index: 127611
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CGetWalletAsyncU3Ed__4_SetStateMachine_mEAD39E16FBEB9CAFF7E7D3E622B1DD37C763DAB7 (U3CGetWalletAsyncU3Ed__4_t276BE66F86CF48C8BF44D74D9B239F4B30D7E1CF* __this, RuntimeObject* ___0_stateMachine, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2790,7 +2797,7 @@ IL2CPP_EXTERN_C  void U3CGetWalletAsyncU3Ed__4_SetStateMachine_mEAD39E16FBEB9CAF
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121409
+// Method Definition Index: 127612
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CGrantCoinsAsyncU3Ed__6_MoveNext_mBF62EF0ED17413BA36FA1A9CB9097DC07EA98E4C (U3CGrantCoinsAsyncU3Ed__6_t5DF67C93F95607DE0CAEE6B4F24620152EF89F29* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2945,7 +2952,7 @@ IL2CPP_EXTERN_C  void U3CGrantCoinsAsyncU3Ed__6_MoveNext_mBF62EF0ED17413BA36FA1A
 	_thisAdjusted = reinterpret_cast<U3CGrantCoinsAsyncU3Ed__6_t5DF67C93F95607DE0CAEE6B4F24620152EF89F29*>(__this + _offset);
 	U3CGrantCoinsAsyncU3Ed__6_MoveNext_mBF62EF0ED17413BA36FA1A9CB9097DC07EA98E4C(_thisAdjusted, method);
 }
-// Method Definition Index: 121410
+// Method Definition Index: 127613
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CGrantCoinsAsyncU3Ed__6_SetStateMachine_m3DC180B72D192831AAA138B64CEB1FCD58B184AB (U3CGrantCoinsAsyncU3Ed__6_t5DF67C93F95607DE0CAEE6B4F24620152EF89F29* __this, RuntimeObject* ___0_stateMachine, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -2977,7 +2984,7 @@ IL2CPP_EXTERN_C  void U3CGrantCoinsAsyncU3Ed__6_SetStateMachine_m3DC180B72D19283
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121411
+// Method Definition Index: 127614
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CGrantStardustAsyncU3Ed__7_MoveNext_m7042CAD72CECAEC5493E05A64216D01EFE0B0971 (U3CGrantStardustAsyncU3Ed__7_t36EFB7F1499CAE57EDADC6501850BA260871034E* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -3132,7 +3139,7 @@ IL2CPP_EXTERN_C  void U3CGrantStardustAsyncU3Ed__7_MoveNext_m7042CAD72CECAEC5493
 	_thisAdjusted = reinterpret_cast<U3CGrantStardustAsyncU3Ed__7_t36EFB7F1499CAE57EDADC6501850BA260871034E*>(__this + _offset);
 	U3CGrantStardustAsyncU3Ed__7_MoveNext_m7042CAD72CECAEC5493E05A64216D01EFE0B0971(_thisAdjusted, method);
 }
-// Method Definition Index: 121412
+// Method Definition Index: 127615
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CGrantStardustAsyncU3Ed__7_SetStateMachine_mFAA4E8020F32D5AEB074772ED2F143209A7AF196 (U3CGrantStardustAsyncU3Ed__7_t36EFB7F1499CAE57EDADC6501850BA260871034E* __this, RuntimeObject* ___0_stateMachine, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -3164,7 +3171,7 @@ IL2CPP_EXTERN_C  void U3CGrantStardustAsyncU3Ed__7_SetStateMachine_mFAA4E8020F32
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121413
+// Method Definition Index: 127616
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CSpendCoinsAsyncU3Ed__5_MoveNext_m6044FC56A5DB51BBA0A53E25247AB2F680F530CC (U3CSpendCoinsAsyncU3Ed__5_tE85181242EE8B6277CC6AF820B03C7197156C82E* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -3360,7 +3367,7 @@ IL2CPP_EXTERN_C  void U3CSpendCoinsAsyncU3Ed__5_MoveNext_m6044FC56A5DB51BBA0A53E
 	_thisAdjusted = reinterpret_cast<U3CSpendCoinsAsyncU3Ed__5_tE85181242EE8B6277CC6AF820B03C7197156C82E*>(__this + _offset);
 	U3CSpendCoinsAsyncU3Ed__5_MoveNext_m6044FC56A5DB51BBA0A53E25247AB2F680F530CC(_thisAdjusted, method);
 }
-// Method Definition Index: 121414
+// Method Definition Index: 127617
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CSpendCoinsAsyncU3Ed__5_SetStateMachine_mD48C54D6786389C4BDC38B2F216CBF38F17036F0 (U3CSpendCoinsAsyncU3Ed__5_tE85181242EE8B6277CC6AF820B03C7197156C82E* __this, RuntimeObject* ___0_stateMachine, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -3393,7 +3400,7 @@ IL2CPP_EXTERN_C  void U3CSpendCoinsAsyncU3Ed__5_SetStateMachine_mD48C54D6786389C
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121419
+// Method Definition Index: 127622
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandPurchaseRequest__ctor_m4F77CAB231DB758196F8DAC5AF42470495EDAC02 (LandPurchaseRequest_tF1CBA86B2178A689A87730062165F4BA64D79225* __this, const RuntimeMethod* method) 
 {
 	{
@@ -3409,7 +3416,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandPurchaseRequest__ctor_m4F77CAB231DB7
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121420
+// Method Definition Index: 127623
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandPurchaseResult__ctor_m5190D1889A094CDC333BF35DBE1A6FBE6A6F19BA (LandPurchaseResult_t2C671EF0E77D1337914CE1F5E55498532E3E2C9C* __this, const RuntimeMethod* method) 
 {
 	{
@@ -3425,7 +3432,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandPurchaseResult__ctor_m5190D1889A094C
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121421
+// Method Definition Index: 127624
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandPurchaseService__ctor_mF0A892479CD414658FF66D454FC7B0EB1F62EBFF (LandPurchaseService_t94258944FA9C3B5DC049DA86F48AED0FC3812D1F* __this, RuntimeObject* ___0_backend, EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* ___1_config, LandRegistry_tD0D5AF70EE687CF8625FEDAB28B1E68DF7853B7D* ___2_registry, Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* ___3_wallet, const RuntimeMethod* method) 
 {
 	{
@@ -3452,7 +3459,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandPurchaseService__ctor_mF0A892479CD41
 		return;
 	}
 }
-// Method Definition Index: 121422
+// Method Definition Index: 127625
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_1_tD3E794E26DC111655860C6E67DFD307983F9EBCC* LandPurchaseService_PurchaseAsync_m11CCBA1B7A3B62772DD9658379BC5CBF300903B1 (LandPurchaseService_t94258944FA9C3B5DC049DA86F48AED0FC3812D1F* __this, LandPurchaseRequest_tF1CBA86B2178A689A87730062165F4BA64D79225* ___0_request, PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* ___1_planet, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -3503,7 +3510,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_1_tD3E794E26DC111655860C6E67DFD307983F9E
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121423
+// Method Definition Index: 127626
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void PurchaseLandResponse__ctor_mBA9B2C6C8EE1BEED6AFB2F76130A3A8C2080DE41 (PurchaseLandResponse_tA630B73078242798CCCDF44D9FC0563B56CC1B63* __this, const RuntimeMethod* method) 
 {
 	{
@@ -3521,7 +3528,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void PurchaseLandResponse__ctor_mBA9B2C6C8EE1
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121424
+// Method Definition Index: 127627
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CPurchaseAsyncU3Ed__5_MoveNext_mD2AD20734013AE608B719669EFF82D88B3916A11 (U3CPurchaseAsyncU3Ed__5_tEE933E5785A347786C2A4957D4E1D5969597BBFB* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -3933,7 +3940,7 @@ IL2CPP_EXTERN_C  void U3CPurchaseAsyncU3Ed__5_MoveNext_mD2AD20734013AE608B719669
 	_thisAdjusted = reinterpret_cast<U3CPurchaseAsyncU3Ed__5_tEE933E5785A347786C2A4957D4E1D5969597BBFB*>(__this + _offset);
 	U3CPurchaseAsyncU3Ed__5_MoveNext_mD2AD20734013AE608B719669EFF82D88B3916A11(_thisAdjusted, method);
 }
-// Method Definition Index: 121425
+// Method Definition Index: 127628
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CPurchaseAsyncU3Ed__5_SetStateMachine_m8C83A89C01A983B59CCE25B11402C35FA601E15E (U3CPurchaseAsyncU3Ed__5_tEE933E5785A347786C2A4957D4E1D5969597BBFB* __this, RuntimeObject* ___0_stateMachine, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -3966,7 +3973,7 @@ IL2CPP_EXTERN_C  void U3CPurchaseAsyncU3Ed__5_SetStateMachine_m8C83A89C01A983B59
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121426
+// Method Definition Index: 127629
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandRegistry_Hydrate_mDE1F18528ECCAE7ED4138DD1B7740AFA40E68E1D (LandRegistry_tD0D5AF70EE687CF8625FEDAB28B1E68DF7853B7D* __this, RuntimeObject* ___0_tileIds, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -4069,7 +4076,7 @@ IL_003c:
 		return;
 	}
 }
-// Method Definition Index: 121427
+// Method Definition Index: 127630
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandRegistry_MarkOwned_m5A6D3E3CBA1E7859558394C4014C22399A8E63FF (LandRegistry_tD0D5AF70EE687CF8625FEDAB28B1E68DF7853B7D* __this, String_t* ___0_tileId, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -4088,7 +4095,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandRegistry_MarkOwned_m5A6D3E3CBA1E7859
 		return;
 	}
 }
-// Method Definition Index: 121428
+// Method Definition Index: 127631
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandRegistry_RemoveOwned_m6D33B6FF0754162377E67564354A9F2AD63CE38C (LandRegistry_tD0D5AF70EE687CF8625FEDAB28B1E68DF7853B7D* __this, String_t* ___0_tileId, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -4107,7 +4114,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandRegistry_RemoveOwned_m6D33B6FF075416
 		return;
 	}
 }
-// Method Definition Index: 121429
+// Method Definition Index: 127632
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool LandRegistry_IsOwned_m2E2BD3F54C127408BDC87CA959ECC828222BEC63 (LandRegistry_tD0D5AF70EE687CF8625FEDAB28B1E68DF7853B7D* __this, String_t* ___0_tileId, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -4126,7 +4133,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool LandRegistry_IsOwned_m2E2BD3F54C127408BD
 		return L_2;
 	}
 }
-// Method Definition Index: 121430
+// Method Definition Index: 127633
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* LandRegistry_get_OwnedTileIds_mA0721D50FD003CEC7EEC94E08087A6646124E580 (LandRegistry_tD0D5AF70EE687CF8625FEDAB28B1E68DF7853B7D* __this, const RuntimeMethod* method) 
 {
 	{
@@ -4135,7 +4142,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* LandRegistry_get_OwnedTileIds_
 		return L_0;
 	}
 }
-// Method Definition Index: 121431
+// Method Definition Index: 127634
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandRegistry__ctor_m636E51F076B21C3A23DFE9B410F43D5B03A17407 (LandRegistry_tD0D5AF70EE687CF8625FEDAB28B1E68DF7853B7D* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -4163,7 +4170,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandRegistry__ctor_m636E51F076B21C3A23DF
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121432
+// Method Definition Index: 127635
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandTileEntry__ctor_m8D927DC96FAE924E56FBCD0C94CAB54018BFDD0A (LandTileEntry_tC507165163F6B38C3BC2791B8CE639C354A69E85* __this, const RuntimeMethod* method) 
 {
 	{
@@ -4179,7 +4186,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandTileEntry__ctor_m8D927DC96FAE924E56F
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121433
+// Method Definition Index: 127636
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandRegistryData__ctor_m7CB9EDA68216ED8BDE0F896D147B444D6DF33039 (LandRegistryData_t1DA01AFCDB69886D4D86428044F176DAEEA75B08* __this, const RuntimeMethod* method) 
 {
 	{
@@ -4195,7 +4202,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandRegistryData__ctor_m7CB9EDA68216ED8B
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121434
+// Method Definition Index: 127637
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandRegistryService__ctor_mFD95646CBC2EBB8EEC0974265A82D72CBCA42BCA (LandRegistryService_tA3F78565A0D80F14FD0E77339D07A79E54BC823B* __this, RuntimeObject* ___0_backend, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -4220,7 +4227,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandRegistryService__ctor_mFD95646CBC2EB
 		return;
 	}
 }
-// Method Definition Index: 121435
+// Method Definition Index: 127638
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* LandRegistryService_get_TileOwners_m1C25568E4FF414EF9CDB6A8755C79DEF0EBE76B4 (LandRegistryService_tA3F78565A0D80F14FD0E77339D07A79E54BC823B* __this, const RuntimeMethod* method) 
 {
 	{
@@ -4229,7 +4236,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* LandRegistryService_get_TileOw
 		return L_0;
 	}
 }
-// Method Definition Index: 121436
+// Method Definition Index: 127639
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* LandRegistryService_RefreshAsync_m101335CEC8242872B9863A9CC23B452FDD2077D9 (LandRegistryService_tA3F78565A0D80F14FD0E77339D07A79E54BC823B* __this, String_t* ___0_planetId, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -4267,7 +4274,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA857
 		return L_4;
 	}
 }
-// Method Definition Index: 121437
+// Method Definition Index: 127640
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* LandRegistryService_GetOwner_mFE0DF1D2977E4BD9423759CC1C1DD37AA00CE0CE (LandRegistryService_tA3F78565A0D80F14FD0E77339D07A79E54BC823B* __this, String_t* ___0_tileId, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -4301,7 +4308,7 @@ IL_0012:
 		return L_4;
 	}
 }
-// Method Definition Index: 121438
+// Method Definition Index: 127641
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR LandTileEntry_tC507165163F6B38C3BC2791B8CE639C354A69E85* LandRegistryService_GetEntry_mB806228919FF9A867826F6F29BF846F1D675FFE8 (LandRegistryService_tA3F78565A0D80F14FD0E77339D07A79E54BC823B* __this, String_t* ___0_tileId, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -4333,7 +4340,7 @@ IL_0012:
 		return L_3;
 	}
 }
-// Method Definition Index: 121439
+// Method Definition Index: 127642
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandRegistryService_SetOwner_mE508E573773CC11E046B2FA171EF0C2A5D860645 (LandRegistryService_tA3F78565A0D80F14FD0E77339D07A79E54BC823B* __this, String_t* ___0_tileId, String_t* ___1_ownerId, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -4393,7 +4400,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandRegistryService_SetOwner_mE508E57377
 		return;
 	}
 }
-// Method Definition Index: 121440
+// Method Definition Index: 127643
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandRegistryService_SetBuildLevel_mFB2473253DE5A3C8C3D3ADBCA23AFCD3EF81EB58 (LandRegistryService_tA3F78565A0D80F14FD0E77339D07A79E54BC823B* __this, String_t* ___0_tileId, int32_t ___1_buildLevel, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -4429,7 +4436,7 @@ IL_0017:
 		return;
 	}
 }
-// Method Definition Index: 121441
+// Method Definition Index: 127644
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandRegistryService_ResetYieldState_m1E786B04F0CDF17DB4C12CBF705B919909666648 (LandRegistryService_tA3F78565A0D80F14FD0E77339D07A79E54BC823B* __this, String_t* ___0_tileId, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -4479,7 +4486,7 @@ IL_0011:
 		return;
 	}
 }
-// Method Definition Index: 121442
+// Method Definition Index: 127645
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandRegistryService_RemoveTile_mBB67DEFD5A8A1B08C02660B6C41AEEE1E89381A3 (LandRegistryService_tA3F78565A0D80F14FD0E77339D07A79E54BC823B* __this, String_t* ___0_tileId, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -4506,7 +4513,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandRegistryService_RemoveTile_mBB67DEFD
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121443
+// Method Definition Index: 127646
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CRefreshAsyncU3Ed__5_MoveNext_mB24D49BAE1E93265C6A5FA57E020746DE3B17B6E (U3CRefreshAsyncU3Ed__5_tF693D612DEA3D7B4EBE6748964047E56567F15CC* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -4780,7 +4787,7 @@ IL2CPP_EXTERN_C  void U3CRefreshAsyncU3Ed__5_MoveNext_mB24D49BAE1E93265C6A5FA57E
 	_thisAdjusted = reinterpret_cast<U3CRefreshAsyncU3Ed__5_tF693D612DEA3D7B4EBE6748964047E56567F15CC*>(__this + _offset);
 	U3CRefreshAsyncU3Ed__5_MoveNext_mB24D49BAE1E93265C6A5FA57E020746DE3B17B6E(_thisAdjusted, method);
 }
-// Method Definition Index: 121444
+// Method Definition Index: 127647
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CRefreshAsyncU3Ed__5_SetStateMachine_mD2D270DD17ECBEC59C5095C68414BEB21ED80F50 (U3CRefreshAsyncU3Ed__5_tF693D612DEA3D7B4EBE6748964047E56567F15CC* __this, RuntimeObject* ___0_stateMachine, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -4812,7 +4819,7 @@ IL2CPP_EXTERN_C  void U3CRefreshAsyncU3Ed__5_SetStateMachine_mD2D270DD17ECBEC59C
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121445
+// Method Definition Index: 127648
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandSaleResult__ctor_m4FB5B8C1B87C8CD9896FC26794D7B9A5BB7A0843 (LandSaleResult_t44A8C31D49B937E281DAF51B213E815E7DCC5716* __this, const RuntimeMethod* method) 
 {
 	{
@@ -4830,7 +4837,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandSaleResult__ctor_m4FB5B8C1B87C8CD989
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121446
+// Method Definition Index: 127649
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandSaleService__ctor_mDBDE837622C72A651C22E5A100D6C83184E74789 (LandSaleService_tDA200D6BC8089BBC70068111E725DEA329CD96F4* __this, RuntimeObject* ___0_backend, EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* ___1_config, LandRegistry_tD0D5AF70EE687CF8625FEDAB28B1E68DF7853B7D* ___2_registry, Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* ___3_wallet, LandRegistryService_tA3F78565A0D80F14FD0E77339D07A79E54BC823B* ___4_landRegistryService, const RuntimeMethod* method) 
 {
 	{
@@ -4861,7 +4868,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LandSaleService__ctor_mDBDE837622C72A651
 		return;
 	}
 }
-// Method Definition Index: 121447
+// Method Definition Index: 127650
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_1_t03A4E655231D09222431F07191E77F43E4B5EF93* LandSaleService_SellAsync_mFE84127D04CA7277DA4277986DA5BA8AA17D1982 (LandSaleService_tDA200D6BC8089BBC70068111E725DEA329CD96F4* __this, String_t* ___0_tileId, PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* ___1_planet, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -4912,7 +4919,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_1_t03A4E655231D09222431F07191E77F43E4B5E
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121448
+// Method Definition Index: 127651
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CSellAsyncU3Ed__6_MoveNext_mD1C1FFBE7DDF3DD7D3260A94B48AA269A03AFEF9 (U3CSellAsyncU3Ed__6_tE164865E0BDFB432BEE98B2F5E39C9D1701C3191* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -5158,7 +5165,7 @@ IL2CPP_EXTERN_C  void U3CSellAsyncU3Ed__6_MoveNext_mD1C1FFBE7DDF3DD7D3260A94B48A
 	_thisAdjusted = reinterpret_cast<U3CSellAsyncU3Ed__6_tE164865E0BDFB432BEE98B2F5E39C9D1701C3191*>(__this + _offset);
 	U3CSellAsyncU3Ed__6_MoveNext_mD1C1FFBE7DDF3DD7D3260A94B48AA269A03AFEF9(_thisAdjusted, method);
 }
-// Method Definition Index: 121449
+// Method Definition Index: 127652
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CSellAsyncU3Ed__6_SetStateMachine_mB8A6CC2C185732093E98CB147C5E2BDABD9A3950 (U3CSellAsyncU3Ed__6_tE164865E0BDFB432BEE98B2F5E39C9D1701C3191* __this, RuntimeObject* ___0_stateMachine, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -5191,7 +5198,7 @@ IL2CPP_EXTERN_C  void U3CSellAsyncU3Ed__6_SetStateMachine_mB8A6CC2C185732093E98C
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121450
+// Method Definition Index: 127653
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LocalMockEconomy__ctor_m6F46E28A448965C338B224B4ADB7F44D48D25840 (LocalMockEconomy_tAF785BE13D4D0381F3C818845EAD89D98D29F706* __this, Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* ___0_wallet, EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* ___1_config, const RuntimeMethod* method) 
 {
 	{
@@ -5225,7 +5232,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LocalMockEconomy__ctor_m6F46E28A448965C3
 		return;
 	}
 }
-// Method Definition Index: 121451
+// Method Definition Index: 127654
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_1_t27D660C3E7B9F720F2AFD64BA2E28DF6CF748949* LocalMockEconomy_GetWalletAsync_mEF27712A6116597AE23DDDBF4B4874EFBC8A0EDE (LocalMockEconomy_tAF785BE13D4D0381F3C818845EAD89D98D29F706* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -5244,7 +5251,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_1_t27D660C3E7B9F720F2AFD64BA2E28DF6CF748
 		return L_1;
 	}
 }
-// Method Definition Index: 121452
+// Method Definition Index: 127655
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_1_t824317F4B958F7512E8F7300511752937A6C6043* LocalMockEconomy_SpendCoinsAsync_m5FB02F9487EF5D47DDE717516DC899BF3B0CE9C1 (LocalMockEconomy_tAF785BE13D4D0381F3C818845EAD89D98D29F706* __this, int32_t ___0_amount, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -5292,7 +5299,7 @@ IL_0015:
 		return L_8;
 	}
 }
-// Method Definition Index: 121453
+// Method Definition Index: 127656
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* LocalMockEconomy_GrantCoinsAsync_m83980FDC0460BD338D0A828E783795A4FA382274 (LocalMockEconomy_tAF785BE13D4D0381F3C818845EAD89D98D29F706* __this, int32_t ___0_amount, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -5318,7 +5325,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA857
 		return L_4;
 	}
 }
-// Method Definition Index: 121454
+// Method Definition Index: 127657
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* LocalMockEconomy_GrantStardustAsync_m2F30846C6E287A89F671B13BC65D270C4ACF8B72 (LocalMockEconomy_tAF785BE13D4D0381F3C818845EAD89D98D29F706* __this, int32_t ___0_amount, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -5352,7 +5359,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA857
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121455
+// Method Definition Index: 127658
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void UpkeepResult__ctor_m04C536688849A244F60A128179A71B68C5FFAFFA (UpkeepResult_tAB9340615406B17FEA922D5A69D4C0ACE4526EC2* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -5387,7 +5394,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void UpkeepResult__ctor_m04C536688849A244F60A
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121456
+// Method Definition Index: 127659
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void UpkeepService__ctor_m9CCE6F03673C94D50BAEB29754BAFE4D9FBA34D9 (UpkeepService_tAF1C6C5CF89FA17EDE4556ED9DDE00D017E5CCF1* __this, RuntimeObject* ___0_backend, Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* ___1_wallet, LandRegistryService_tA3F78565A0D80F14FD0E77339D07A79E54BC823B* ___2_landRegistryService, const RuntimeMethod* method) 
 {
 	{
@@ -5409,7 +5416,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void UpkeepService__ctor_m9CCE6F03673C94D50BA
 		return;
 	}
 }
-// Method Definition Index: 121457
+// Method Definition Index: 127660
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_1_t48C2D00008CD8821094BC8242F4A3E29023C71C9* UpkeepService_ApplyUpkeepAsync_m3B278A731C3D7147DD773BD5ADB14582A2D33828 (UpkeepService_tAF1C6C5CF89FA17EDE4556ED9DDE00D017E5CCF1* __this, String_t* ___0_planetId, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -5457,7 +5464,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_1_t48C2D00008CD8821094BC8242F4A3E29023C7
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121458
+// Method Definition Index: 127661
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CApplyUpkeepAsyncU3Ed__4_MoveNext_m1C96F9979910561917357ADD274E7255FC958BB5 (U3CApplyUpkeepAsyncU3Ed__4_t1FA625E5BE25A2E472E5383563865DC49C675B2B* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -5729,7 +5736,7 @@ IL2CPP_EXTERN_C  void U3CApplyUpkeepAsyncU3Ed__4_MoveNext_m1C96F9979910561917357
 	_thisAdjusted = reinterpret_cast<U3CApplyUpkeepAsyncU3Ed__4_t1FA625E5BE25A2E472E5383563865DC49C675B2B*>(__this + _offset);
 	U3CApplyUpkeepAsyncU3Ed__4_MoveNext_m1C96F9979910561917357ADD274E7255FC958BB5(_thisAdjusted, method);
 }
-// Method Definition Index: 121459
+// Method Definition Index: 127662
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CApplyUpkeepAsyncU3Ed__4_SetStateMachine_m422494C407983EE7AE551A87276EE497A60F7789 (U3CApplyUpkeepAsyncU3Ed__4_t1FA625E5BE25A2E472E5383563865DC49C675B2B* __this, RuntimeObject* ___0_stateMachine, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -5762,7 +5769,7 @@ IL2CPP_EXTERN_C  void U3CApplyUpkeepAsyncU3Ed__4_SetStateMachine_m422494C407983E
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121460
+// Method Definition Index: 127663
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void RecordVisitResult__ctor_mAF6A94BE50DFFD69829134F76D161380D1A8D9ED (RecordVisitResult_tED28C08917647713F17FDE37D6852FF3CE44D215* __this, const RuntimeMethod* method) 
 {
 	{
@@ -5778,7 +5785,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void RecordVisitResult__ctor_mAF6A94BE50DFFD6
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121461
+// Method Definition Index: 127664
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void VisitorTracker__ctor_mA668E907BF58213BC562F8839060C620036DEC21 (VisitorTracker_t26464B94C5570E8078AE59853D04829BE19A8C93* __this, RuntimeObject* ___0_backend, const RuntimeMethod* method) 
 {
 	{
@@ -5791,7 +5798,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void VisitorTracker__ctor_mA668E907BF58213BC5
 		return;
 	}
 }
-// Method Definition Index: 121462
+// Method Definition Index: 127665
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_1_tF8C2E2365E1B275B51CB60F55E2F8BF60E883DE4* VisitorTracker_RecordVisitAsync_mF8797B205C281E8E37AA3609C1C62AA305759679 (VisitorTracker_t26464B94C5570E8078AE59853D04829BE19A8C93* __this, String_t* ___0_tileId, String_t* ___1_planetId, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -5834,7 +5841,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_1_tF8C2E2365E1B275B51CB60F55E2F8BF60E883
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121463
+// Method Definition Index: 127666
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Wallet_get_Coins_mA67D20DA09948E745C60A0D4FF8F5F213E4874B1 (Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* __this, const RuntimeMethod* method) 
 {
 	{
@@ -5843,7 +5850,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Wallet_get_Coins_mA67D20DA09948E745C6
 		return L_0;
 	}
 }
-// Method Definition Index: 121464
+// Method Definition Index: 127667
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Wallet_set_Coins_m82AA51505403EACB140BEBEFDB32FB474262A585 (Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* __this, int32_t ___0_value, const RuntimeMethod* method) 
 {
 	{
@@ -5853,7 +5860,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Wallet_set_Coins_m82AA51505403EACB140BEB
 		return;
 	}
 }
-// Method Definition Index: 121465
+// Method Definition Index: 127668
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Wallet_get_Stardust_mEEB4B4BF38547198B2C430456D6C252B27A85E2B (Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* __this, const RuntimeMethod* method) 
 {
 	{
@@ -5862,7 +5869,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t Wallet_get_Stardust_mEEB4B4BF38547198
 		return L_0;
 	}
 }
-// Method Definition Index: 121466
+// Method Definition Index: 127669
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Wallet_set_Stardust_m8259374B58F2C429893F5DE206FF9CB8CFEA15F0 (Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* __this, int32_t ___0_value, const RuntimeMethod* method) 
 {
 	{
@@ -5872,7 +5879,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Wallet_set_Stardust_m8259374B58F2C429893
 		return;
 	}
 }
-// Method Definition Index: 121467
+// Method Definition Index: 127670
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Wallet_add_OnCoinsChanged_mC766A16AFD60282901F7AE5EA7CD7388FA2962F8 (Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* __this, Action_1_tD69A6DC9FBE94131E52F5A73B2A9D4AB51EEC404* ___0_value, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -5915,7 +5922,7 @@ IL_0007:
 		return;
 	}
 }
-// Method Definition Index: 121468
+// Method Definition Index: 127671
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Wallet_remove_OnCoinsChanged_m7A10214B050EEC87D8478F9B37A95D7EFF0F04F1 (Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* __this, Action_1_tD69A6DC9FBE94131E52F5A73B2A9D4AB51EEC404* ___0_value, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -5958,7 +5965,7 @@ IL_0007:
 		return;
 	}
 }
-// Method Definition Index: 121469
+// Method Definition Index: 127672
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Wallet_add_OnStardustChanged_m6A5E9521A80E9F78E3B869C19A6D201CE14DF1AE (Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* __this, Action_1_tD69A6DC9FBE94131E52F5A73B2A9D4AB51EEC404* ___0_value, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -6001,7 +6008,7 @@ IL_0007:
 		return;
 	}
 }
-// Method Definition Index: 121470
+// Method Definition Index: 127673
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Wallet_remove_OnStardustChanged_mEA06AB238ECA19BBD4FB08053897916BC0895251 (Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* __this, Action_1_tD69A6DC9FBE94131E52F5A73B2A9D4AB51EEC404* ___0_value, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -6044,7 +6051,7 @@ IL_0007:
 		return;
 	}
 }
-// Method Definition Index: 121471
+// Method Definition Index: 127674
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool Wallet_CanAfford_m793CC0098CDDBFF21AED67E1F82F3133296CDDCA (Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* __this, int32_t ___0_coins, const RuntimeMethod* method) 
 {
 	{
@@ -6055,7 +6062,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool Wallet_CanAfford_m793CC0098CDDBFF21AED67
 		return (bool)((((int32_t)((((int32_t)L_0) < ((int32_t)L_1))? 1 : 0)) == ((int32_t)0))? 1 : 0);
 	}
 }
-// Method Definition Index: 121472
+// Method Definition Index: 127675
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Wallet_SetCoins_m29FB19D17065559600A5178C1D087DFC979B64B7 (Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* __this, int32_t ___0_value, const RuntimeMethod* method) 
 {
 	Action_1_tD69A6DC9FBE94131E52F5A73B2A9D4AB51EEC404* G_B2_0 = NULL;
@@ -6088,7 +6095,7 @@ IL_0012:
 		return;
 	}
 }
-// Method Definition Index: 121473
+// Method Definition Index: 127676
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Wallet_SetStardust_m124F79EAD53A9C9C439E7D6751A546F3C0BD3504 (Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* __this, int32_t ___0_value, const RuntimeMethod* method) 
 {
 	Action_1_tD69A6DC9FBE94131E52F5A73B2A9D4AB51EEC404* G_B2_0 = NULL;
@@ -6121,7 +6128,7 @@ IL_0012:
 		return;
 	}
 }
-// Method Definition Index: 121474
+// Method Definition Index: 127677
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Wallet__ctor_m22877FEA958D31A64F5CDF0E611B58C9CDC1377C (Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* __this, const RuntimeMethod* method) 
 {
 	{
@@ -6137,7 +6144,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Wallet__ctor_m22877FEA958D31A64F5CDF0E61
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121475
+// Method Definition Index: 127678
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void YieldClaimResult__ctor_m7504326AF0E98BFE128AE2CC755B0D1BD232B6B3 (YieldClaimResult_t31DE10888225A88AA5E439D31A13AECE8C8D934E* __this, const RuntimeMethod* method) 
 {
 	{
@@ -6155,7 +6162,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void YieldClaimResult__ctor_m7504326AF0E98BFE
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121476
+// Method Definition Index: 127679
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void YieldService__ctor_m0720F05970D9E8C36E50DEB039F008DDBD6513DD (YieldService_t237B87C9750427F321EDA7841F9E5D3D56BA8252* __this, RuntimeObject* ___0_backend, Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* ___1_wallet, LandRegistryService_tA3F78565A0D80F14FD0E77339D07A79E54BC823B* ___2_landRegistryService, const RuntimeMethod* method) 
 {
 	{
@@ -6177,7 +6184,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void YieldService__ctor_m0720F05970D9E8C36E50
 		return;
 	}
 }
-// Method Definition Index: 121477
+// Method Definition Index: 127680
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_1_tE0208C5A1E9191BBB7BAF658B51262B742816E02* YieldService_ClaimYieldAsync_mEBC72B862CBC8EEC31191DFA93A0908E7159718A (YieldService_t237B87C9750427F321EDA7841F9E5D3D56BA8252* __this, String_t* ___0_tileId, String_t* ___1_planetId, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -6228,7 +6235,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Task_1_tE0208C5A1E9191BBB7BAF658B51262B742816
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
-// Method Definition Index: 121478
+// Method Definition Index: 127681
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CClaimYieldAsyncU3Ed__4_MoveNext_m17A5B298FC99E20FF6ED37B0B51D45C30965BDE5 (U3CClaimYieldAsyncU3Ed__4_tC5465747948B1CE0F308B21FF28BEFB93D801922* __this, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -6433,7 +6440,7 @@ IL2CPP_EXTERN_C  void U3CClaimYieldAsyncU3Ed__4_MoveNext_m17A5B298FC99E20FF6ED37
 	_thisAdjusted = reinterpret_cast<U3CClaimYieldAsyncU3Ed__4_tC5465747948B1CE0F308B21FF28BEFB93D801922*>(__this + _offset);
 	U3CClaimYieldAsyncU3Ed__4_MoveNext_m17A5B298FC99E20FF6ED37B0B51D45C30965BDE5(_thisAdjusted, method);
 }
-// Method Definition Index: 121479
+// Method Definition Index: 127682
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CClaimYieldAsyncU3Ed__4_SetStateMachine_m9DFCDE14A36378D71974E7F182E7BAAF4D07483E (U3CClaimYieldAsyncU3Ed__4_tC5465747948B1CE0F308B21FF28BEFB93D801922* __this, RuntimeObject* ___0_stateMachine, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -6485,7 +6492,7 @@ IL2CPP_EXTERN_C  void U3CClaimYieldAsyncU3Ed__4_SetStateMachine_m9DFCDE14A36378D
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
-// Method Definition Index: 122196
+// Method Definition Index: 128478
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t TileData_get_State_mA1728DEA54FD632BEAEC26F74BDE591DB737E62A_inline (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, const RuntimeMethod* method) 
 {
 	{
@@ -6494,7 +6501,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t TileData_get_State_mA1728
 		return L_0;
 	}
 }
-// Method Definition Index: 122202
+// Method Definition Index: 128484
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t TileData_get_BuildLevel_mEEBB93D2AFFDD1B9D06C2A9C8E055947B8358DDD_inline (TileData_tBF50CC3AA04419122741C19F3EF6FE0A55AE5B1A* __this, const RuntimeMethod* method) 
 {
 	{
@@ -6503,16 +6510,16 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t TileData_get_BuildLevel_m
 		return L_0;
 	}
 }
-// Method Definition Index: 122114
+// Method Definition Index: 128223
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_MaxBuildLevel_m332B5ADA4C8A582EA81523FC9FA32E6D94A2C610_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:59>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:64>
 		int32_t L_0 = __this->____maxBuildLevel;
 		return L_0;
 	}
 }
-// Method Definition Index: 122136
+// Method Definition Index: 128248
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t ItemDefinition_get_BuildLevel_m49D70D8679E58AA4E823841AB0F6A04B3F7F06AD_inline (ItemDefinition_t8BADD4DDEF367747A3719AFF59CCA57B2FC53984* __this, const RuntimeMethod* method) 
 {
 	{
@@ -6521,7 +6528,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t ItemDefinition_get_BuildL
 		return L_0;
 	}
 }
-// Method Definition Index: 104155
+// Method Definition Index: 106756
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR List_1_tDF61AE67ECE5F0D29A69A7086BE57F49084AD4C6* GetBalancesResult_get_Balances_m8403CBDC2B0070C5763AD4C0B7A70C24452EB794_inline (GetBalancesResult_t68F5C555F1F35F760117D3178F819F7DA7384A73* __this, const RuntimeMethod* method) 
 {
 	{
@@ -6530,70 +6537,70 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR List_1_tDF61AE67ECE5F0D29A69A7086
 		return L_0;
 	}
 }
-// Method Definition Index: 122107
+// Method Definition Index: 128216
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* EconomyConfig_get_CoinsCurrencyId_m885C5EE1F29496977C6BEC669BA6C3728CD607D0_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:51>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:56>
 		String_t* L_0 = __this->____coinsCurrencyId;
 		return L_0;
 	}
 }
-// Method Definition Index: 122108
+// Method Definition Index: 128217
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR String_t* EconomyConfig_get_StardustCurrencyId_mCB80949EB26043B91C0A83EA86B653F0DA34DFA8_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:52>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:57>
 		String_t* L_0 = __this->____stardustCurrencyId;
 		return L_0;
 	}
 }
-// Method Definition Index: 122111
+// Method Definition Index: 128220
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_BaseLandPrice_m0131AA58A2D04521A4562DF6EF7E9CD77581950C_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:56>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:61>
 		int32_t L_0 = __this->____baseLandPrice;
 		return L_0;
 	}
 }
-// Method Definition Index: 122143
+// Method Definition Index: 128255
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float PlanetDefinition_get_LandPriceMultiplier_m12332A712C75AFB2F2B2365F956FCA041C1F7218_inline (PlanetDefinition_t03C124202491B0B8563FE747A3B69CCF97B6F933* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/PlanetDefinition.cs:20>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/PlanetDefinition.cs:24>
 		float L_0 = __this->____landPriceMultiplier;
 		return L_0;
 	}
 }
-// Method Definition Index: 122121
+// Method Definition Index: 128230
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR float EconomyConfig_get_LandResaleRate_m1309C23FB4513A43F34BA40EEF6D74662D3B2666_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:66>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:71>
 		float L_0 = __this->____landResaleRate;
 		return L_0;
 	}
 }
-// Method Definition Index: 122109
+// Method Definition Index: 128218
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_StartingCoins_mE99865631D92540B54B29FF0043E71E14C07C83C_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:54>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:59>
 		int32_t L_0 = __this->____startingCoins;
 		return L_0;
 	}
 }
-// Method Definition Index: 122110
+// Method Definition Index: 128219
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t EconomyConfig_get_StartingStardust_mD8CE97C8EE08AC5267AFAEC3DB2FC0C867AB4C90_inline (EconomyConfig_tD9EB6EA5401614BBF480D3845A86FE67431DD0F8* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:55>
+		//<source_info:C:/Users/chris/UnityProjects/social-universe/Assets/_Project/Scripts/Config/EconomyConfig.cs:60>
 		int32_t L_0 = __this->____startingStardust;
 		return L_0;
 	}
 }
-// Method Definition Index: 121463
+// Method Definition Index: 127666
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t Wallet_get_Coins_mA67D20DA09948E745C60A0D4FF8F5F213E4874B1_inline (Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* __this, const RuntimeMethod* method) 
 {
 	{
@@ -6602,7 +6609,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t Wallet_get_Coins_mA67D20D
 		return L_0;
 	}
 }
-// Method Definition Index: 5107
+// Method Definition Index: 5111
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Task_t751C4CC3ECD055BABA8A0B6A5DFBB4283DCA8572* Task_get_CompletedTask_m1567097D0142D009DC8F9B70DA2C55DA651D55E9_inline (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -6617,7 +6624,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR Task_t751C4CC3ECD055BABA8A0B6A5DF
 		return L_0;
 	}
 }
-// Method Definition Index: 121465
+// Method Definition Index: 127668
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t Wallet_get_Stardust_mEEB4B4BF38547198B2C430456D6C252B27A85E2B_inline (Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* __this, const RuntimeMethod* method) 
 {
 	{
@@ -6626,7 +6633,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t Wallet_get_Stardust_mEEB4
 		return L_0;
 	}
 }
-// Method Definition Index: 121464
+// Method Definition Index: 127667
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void Wallet_set_Coins_m82AA51505403EACB140BEBEFDB32FB474262A585_inline (Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* __this, int32_t ___0_value, const RuntimeMethod* method) 
 {
 	{
@@ -6636,7 +6643,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void Wallet_set_Coins_m82AA515054
 		return;
 	}
 }
-// Method Definition Index: 121466
+// Method Definition Index: 127669
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void Wallet_set_Stardust_m8259374B58F2C429893F5DE206FF9CB8CFEA15F0_inline (Wallet_t5CBD7174E7D68C6129534FBA6E005D6D3D9D21B0* __this, int32_t ___0_value, const RuntimeMethod* method) 
 {
 	{
@@ -6646,7 +6653,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void Wallet_set_Stardust_m8259374
 		return;
 	}
 }
-// Method Definition Index: 92442
+// Method Definition Index: 95038
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR RuntimeObject* Enumerable_Empty_TisRuntimeObject_mA90CDE158774C34A28C07CEEA9E9EA2A61618238_gshared_inline (const RuntimeMethod* method) 
 {
 	il2cpp_rgctx_method_init(method);
@@ -6656,7 +6663,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR RuntimeObject* Enumerable_Empty_T
 		return (RuntimeObject*)L_0;
 	}
 }
-// Method Definition Index: 11448
+// Method Definition Index: 11453
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR RuntimeObject* Enumerator_get_Current_m6330F15D18EE4F547C05DF9BF83C5EB710376027_gshared_inline (Enumerator_t9473BAB568A27E2339D48C1F91319E0F6D244D7A* __this, const RuntimeMethod* method) 
 {
 	{
@@ -6664,7 +6671,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR RuntimeObject* Enumerator_get_Cur
 		return L_0;
 	}
 }
-// Method Definition Index: 11293
+// Method Definition Index: 11297
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR KeyValuePair_2_tFC32D2507216293851350D29B64D79F950B55230 Enumerator_get_Current_mE3475384B761E1C7971D3639BD09117FE8363422_gshared_inline (Enumerator_tEA93FE2B778D098F590CA168BEFC4CD85D73A6B9* __this, const RuntimeMethod* method) 
 {
 	{
@@ -6672,7 +6679,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR KeyValuePair_2_tFC32D250721629385
 		return L_0;
 	}
 }
-// Method Definition Index: 11377
+// Method Definition Index: 11381
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR RuntimeObject* KeyValuePair_2_get_Key_mBD8EA7557C27E6956F2AF29DA3F7499B2F51A282_gshared_inline (KeyValuePair_2_tFC32D2507216293851350D29B64D79F950B55230* __this, const RuntimeMethod* method) 
 {
 	{
@@ -6680,7 +6687,7 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR RuntimeObject* KeyValuePair_2_get
 		return L_0;
 	}
 }
-// Method Definition Index: 11378
+// Method Definition Index: 11382
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR RuntimeObject* KeyValuePair_2_get_Value_mC6BD8075F9C9DDEF7B4D731E5C38EC19103988E7_gshared_inline (KeyValuePair_2_tFC32D2507216293851350D29B64D79F950B55230* __this, const RuntimeMethod* method) 
 {
 	{

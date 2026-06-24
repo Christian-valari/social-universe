@@ -5,6 +5,12 @@ namespace SocialUniverse.Core
         public const string PlayerProfile = "player_profile";
         public const string Wallet        = "wallet";
         public const string FuelState     = "fuel_state";
+        public const string TravelState   = "travel_state";
+
+        // Client-cached resume hint (like LastPlanetId) — presence means "was traveling
+        // last we heard"; the Travel scene re-validates against the server on entry,
+        // since this is not itself the source of truth.
+        public const string TravelTargetId = "travel_target_planet_id";
         public const string QuestProgress = "quest_progress";
         public const string DailyStreak   = "daily_streak";
         public const string Inventory     = "inventory";

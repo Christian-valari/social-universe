@@ -16,6 +16,15 @@ namespace SocialUniverse.Travel
         public float Fuel     = -1f;
         public float MaxFuel  = -1f;
         public int   NewBalance = -1; // only set by RefillFuel
+
+        // Unity's Cloud Code SDK deserializes with MissingMemberHandling.Error (no
+        // public way to relax it), so any field the live deployed function returns
+        // that isn't declared here throws and the whole call fails — not just an
+        // unused value being dropped. The currently-deployed RefillFuel apparently
+        // returns an extra "roll" field this repo's RefillFuel.js doesn't (deploy
+        // drift between local ServerCode/ and what's actually live on UGS); this
+        // absorbs it harmlessly until the live function is redeployed from source.
+        public object Roll;
     }
 
     // Server-backed fuel: recharges over time (computed server-side from a

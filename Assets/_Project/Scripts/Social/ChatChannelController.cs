@@ -44,18 +44,30 @@ namespace SocialUniverse.Social
 
         public void Dispose() => _chat.MessageReceived -= OnMessageReceived;
 
-        public static string GuildChannelName(string guildId)  => $"guild_{guildId}".ToLowerInvariant();
+        public static string GuildChannelName(string guildId)   => $"guild_{guildId}".ToLowerInvariant();
+        public static string PlanetChannelName(string planetId) => $"planet_{planetId}".ToLowerInvariant();
 
         // Tracks the most recently requested channel switch so SendAsync can wait
         // on it instead of failing with NoChannel while a join is still in flight.
         private Task   _pendingSwitch      = Task.CompletedTask;
         private string _pendingChannelName;
 
-        // For now there is one shared text channel (Global) for everyone — no
-        // per-planet Local channel. Presence still joins this same channel, so
-        // it doubles as "the planet channel" until per-planet chat is needed.
+        // Each planet is its own Vivox channel, so chat (and presence, which
+        // shares the same join) only reaches explorers on the same planet.
+        public Task SwitchToPlanetAsync(string planetId) => SwitchToAsync(PlanetChannelName(planetId));
         public Task SwitchToGlobalAsync()                => SwitchToAsync(_config.GlobalChannelName);
         public Task SwitchToGuildAsync(string guildId)   => SwitchToAsync(GuildChannelName(guildId)); // guilds land in M7
+
+        // Leaves the active channel without joining a replacement — used when
+        // a player is dropping off a planet's presence/chat entirely (e.g.
+        // departing for the Hub) rather than switching to another channel.
+        public Task LeaveCurrentAsync()
+        {
+            if (string.IsNullOrEmpty(ActiveChannel)) return Task.CompletedTask;
+            var channel = ActiveChannel;
+            ActiveChannel = null;
+            return _chat.LeaveChannelAsync(channel);
+        }
 
         public IReadOnlyList<ChatMessage> GetHistory(string channelName) =>
             !string.IsNullOrEmpty(channelName) && _history.TryGetValue(channelName, out var list)

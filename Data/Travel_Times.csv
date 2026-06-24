@@ -1,0 +1,73 @@
+Origin,Destination,DistanceAU,TravelSeconds,TravelMinutes,TravelTime
+Mercury,Venus,0.33,175,2.9,2m 55s
+Mercury,Earth,0.61,220,3.7,3m 40s
+Mercury,Moon,0.61,220,3.7,3m 40s
+Mercury,Mars,1.13,310,5.2,5m 10s
+Mercury,Jupiter,4.81,930,15.5,15m 30s
+Mercury,Saturn,9.19,1665,27.8,27m 45s
+Mercury,Uranus,18.81,3280,54.7,54m 40s
+Mercury,Neptune,29.66,5105,85.1,1h 25m
+Venus,Mercury,0.33,175,2.9,2m 55s
+Venus,Earth,0.28,165,2.8,2m 45s
+Venus,Moon,0.28,165,2.8,2m 45s
+Venus,Mars,0.80,255,4.2,4m 15s
+Venus,Jupiter,4.48,875,14.6,14m 35s
+Venus,Saturn,8.86,1610,26.8,26m 50s
+Venus,Uranus,18.48,3225,53.8,53m 45s
+Venus,Neptune,29.33,5045,84.1,1h 24m
+Earth,Mercury,0.61,220,3.7,3m 40s
+Earth,Venus,0.28,165,2.8,2m 45s
+Earth,Moon,0.00,60,1.0,1m
+Earth,Mars,0.52,205,3.4,3m 25s
+Earth,Jupiter,4.20,825,13.8,13m 45s
+Earth,Saturn,8.58,1560,26.0,26m
+Earth,Uranus,18.20,3180,53.0,53m
+Earth,Neptune,29.05,5000,83.3,1h 23m
+Moon,Mercury,0.61,220,3.7,3m 40s
+Moon,Venus,0.28,165,2.8,2m 45s
+Moon,Earth,0.00,60,1.0,1m
+Moon,Mars,0.52,205,3.4,3m 25s
+Moon,Jupiter,4.20,825,13.8,13m 45s
+Moon,Saturn,8.58,1560,26.0,26m
+Moon,Uranus,18.20,3180,53.0,53m
+Moon,Neptune,29.05,5000,83.3,1h 23m
+Mars,Mercury,1.13,310,5.2,5m 10s
+Mars,Venus,0.80,255,4.2,4m 15s
+Mars,Earth,0.52,205,3.4,3m 25s
+Mars,Moon,0.52,205,3.4,3m 25s
+Mars,Jupiter,3.68,740,12.3,12m 20s
+Mars,Saturn,8.06,1475,24.6,24m 35s
+Mars,Uranus,17.68,3090,51.5,51m 30s
+Mars,Neptune,28.53,4915,81.9,1h 21m
+Jupiter,Mercury,4.81,930,15.5,15m 30s
+Jupiter,Venus,4.48,875,14.6,14m 35s
+Jupiter,Earth,4.20,825,13.8,13m 45s
+Jupiter,Moon,4.20,825,13.8,13m 45s
+Jupiter,Mars,3.68,740,12.3,12m 20s
+Jupiter,Saturn,4.38,855,14.2,14m 15s
+Jupiter,Uranus,14.00,2470,41.2,41m 10s
+Jupiter,Neptune,24.85,4295,71.6,1h 11m
+Saturn,Mercury,9.19,1665,27.8,27m 45s
+Saturn,Venus,8.86,1610,26.8,26m 50s
+Saturn,Earth,8.58,1560,26.0,26m
+Saturn,Moon,8.58,1560,26.0,26m
+Saturn,Mars,8.06,1475,24.6,24m 35s
+Saturn,Jupiter,4.38,855,14.2,14m 15s
+Saturn,Uranus,9.62,1735,28.9,28m 55s
+Saturn,Neptune,20.47,3560,59.3,59m 20s
+Uranus,Mercury,18.81,3280,54.7,54m 40s
+Uranus,Venus,18.48,3225,53.8,53m 45s
+Uranus,Earth,18.20,3180,53.0,53m
+Uranus,Moon,18.20,3180,53.0,53m
+Uranus,Mars,17.68,3090,51.5,51m 30s
+Uranus,Jupiter,14.00,2470,41.2,41m 10s
+Uranus,Saturn,9.62,1735,28.9,28m 55s
+Uranus,Neptune,10.85,1945,32.4,32m 25s
+Neptune,Mercury,29.66,5105,85.1,1h 25m
+Neptune,Venus,29.33,5045,84.1,1h 24m
+Neptune,Earth,29.05,5000,83.3,1h 23m
+Neptune,Moon,29.05,5000,83.3,1h 23m
+Neptune,Mars,28.53,4915,81.9,1h 21m
+Neptune,Jupiter,24.85,4295,71.6,1h 11m
+Neptune,Saturn,20.47,3560,59.3,59m 20s
+Neptune,Uranus,10.85,1945,32.4,32m 25s

@@ -30,6 +30,13 @@ namespace SocialUniverse.Net
         [SerializeField] private string _planetId = "earth";
         [SerializeField] private int    _price    = 100;
 
+        [Header("SpendFuel")]
+        [SerializeField] private float _fuelSpendAmount = 20f;
+
+        [Header("StartTravel")]
+        [SerializeField] private string _travelOriginPlanetId = "earth";
+        [SerializeField] private string _travelTargetPlanetId = "venus";
+
         private IBackendClient _backend;
         private IAuthService   _auth;
 
@@ -82,6 +89,30 @@ namespace SocialUniverse.Net
                 ["planetId"] = _planetId,
                 ["price"]    = _price
             });
+
+        [Button("Call GetFuelState")]
+        private void CallGetFuelState() => _ = RunAsync<FuelStateResult>("GetFuelState");
+
+        [Button("Call SpendFuel")]
+        private void CallSpendFuel() => _ = RunAsync<FuelStateResult>("SpendFuel",
+            new Dictionary<string, object> { ["amount"] = _fuelSpendAmount });
+
+        [Button("Call RefillFuel")]
+        private void CallRefillFuel() => _ = RunAsync<FuelStateResult>("RefillFuel");
+
+        [Button("Call StartTravel")]
+        private void CallStartTravel() => _ = RunAsync<TravelTripDebugResult>("StartTravel",
+            new Dictionary<string, object>
+            {
+                ["originPlanetId"] = _travelOriginPlanetId,
+                ["targetPlanetId"] = _travelTargetPlanetId
+            });
+
+        [Button("Call GetTravelState")]
+        private void CallGetTravelState() => _ = RunAsync<TravelTripDebugResult>("GetTravelState");
+
+        [Button("Call LandTravel")]
+        private void CallLandTravel() => _ = RunAsync<TravelTripDebugResult>("LandTravel");
 
         private async Task SignOutAsync()
         {
@@ -155,6 +186,34 @@ namespace SocialUniverse.Net
             public long granted;
             public long newBalance;
             public override string ToString() => $"granted={granted}, newBalance={newBalance}";
+        }
+
+        [Serializable]
+        private class FuelStateResult
+        {
+            public bool  success = true;
+            public string reason = "";
+            public float fuel    = -1f;
+            public float maxFuel = -1f;
+            public int   newBalance = -1; // only set by RefillFuel
+
+            public override string ToString() => $"success={success}, reason={reason}, fuel={fuel}, maxFuel={maxFuel}, newBalance={newBalance}";
+        }
+
+        [Serializable]
+        private class TravelTripDebugResult
+        {
+            public bool   success;
+            public string reason;
+            public bool   traveling;
+            public string targetPlanetId;
+            public long   arrivalTs;
+            public float  fuel    = -1f;
+            public float  maxFuel = -1f;
+            public override string ToString() =>
+                $"success={success}, reason={reason}, traveling={traveling}, targetPlanetId={targetPlanetId}, " +
+                $"arrivalTs={arrivalTs} ({(arrivalTs > 0 ? DateTimeOffset.FromUnixTimeMilliseconds(arrivalTs).ToLocalTime().ToString("T") : "n/a")}), " +
+                $"fuel={fuel}, maxFuel={maxFuel}";
         }
 
         [Serializable]

@@ -23,6 +23,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5c766c8008416ae47b82995a38832715, type: 2}
   - {fileID: 11400000, guid: bd567778965878a4bb6f98ceae2a1c3b, type: 2}
   _travelFuelCost: 0
+  _travelDurationSeconds: 0
   _orbitOrder: 3
   _orbitDistanceAU: 1.0
   _skyIcon: {fileID: 21300000, guid: 1cf5fbb4e12bf47418394e445da28da2, type: 3}

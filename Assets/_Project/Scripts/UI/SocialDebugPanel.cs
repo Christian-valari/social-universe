@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
+using SocialUniverse.Config;
 using SocialUniverse.Core;
 using SocialUniverse.Net;
 using SocialUniverse.Social;
@@ -28,6 +29,7 @@ namespace SocialUniverse.UI
 
         [Inject] private ChatChannelController _chat;
         [Inject] private IPresenceService _presence;
+        [Inject] private PlanetDefinition _planet;
 
         private const int MaxLogLines = 12;
 
@@ -60,7 +62,7 @@ namespace SocialUniverse.UI
         public async void Open()
         {
             gameObject.SetActive(true);
-            await _chat.SwitchToGlobalAsync();
+            await _chat.SwitchToPlanetAsync(_planet.name);
             _globalChannelButton.SetIsOnWithoutNotify(true);
             RefreshActiveChannel();
             RefreshChatLog();
@@ -68,11 +70,11 @@ namespace SocialUniverse.UI
 
         public void Close() => gameObject.SetActive(false);
 
-        // For now there is only the Global channel — no per-planet Local
-        // channel to switch to.
+        // Exercises the same per-planet channel PlanetPresenceController joins
+        // on scene start, so this debug toggle mirrors real presence/chat scope.
         private async Task SwitchChannelAsync()
         {
-            await _chat.SwitchToGlobalAsync();
+            await _chat.SwitchToPlanetAsync(_planet.name);
             RefreshActiveChannel();
             RefreshChatLog();
         }

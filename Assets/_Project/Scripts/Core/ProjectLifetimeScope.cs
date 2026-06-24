@@ -22,6 +22,8 @@ namespace SocialUniverse.Core
             builder.Register<BootState>(Lifetime.Singleton);
             builder.Register<AuthState>(Lifetime.Singleton);
             builder.Register<HubState>(Lifetime.Singleton);
+            builder.Register<TravelState>(Lifetime.Singleton);
+            builder.Register<TravelLoadingState>(Lifetime.Singleton);
             builder.Register<PlanetState>(Lifetime.Singleton);
 
             builder.RegisterEntryPoint<Bootstrapper>();

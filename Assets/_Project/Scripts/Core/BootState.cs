@@ -47,6 +47,18 @@ namespace SocialUniverse.Core
                 // online (see SocialServicesInitializer). Returning players skip that
                 // screen entirely, so fire it here or chat never connects.
                 EventBus.Publish(new PlayerReadyEvent());
+
+                // A trip was already in progress last we heard (cached resume hint,
+                // see SaveKeys.TravelTargetId) — resume into Travel instead of landing
+                // back on the last planet; the Travel scene re-validates against the
+                // server on entry.
+                if (PlayerPrefs.HasKey(SaveKeys.TravelTargetId))
+                {
+                    SULog.Info("Boot: trip already in progress, resuming into Travel");
+                    _fsm.TransitionTo(_resolver.Resolve<TravelState>());
+                    return;
+                }
+
                 var planet = _resolver.Resolve<PlanetState>();
                 planet.TargetPlanetId = PlayerPrefs.GetString(SaveKeys.LastPlanetId, Constants.PlanetIds.Earth);
                 _fsm.TransitionTo(planet);

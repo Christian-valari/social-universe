@@ -15,6 +15,12 @@ EditorBuildSettings:
     path: Assets/Scenes/SolarSystem.unity
     guid: 74912c78b3840aa419a16f447e03665f
   - enabled: 1
+    path: Assets/Scenes/Travel.unity
+    guid: 2f60a8965b6aaea4886fe6237c671b6e
+  - enabled: 1
+    path: Assets/Scenes/TravelLoading.unity
+    guid: 319fa3934cc46d849a22e44116ad6264
+  - enabled: 1
     path: Assets/Scenes/Planet.unity
     guid: 28ba281e61025f14083aa05fd99f6b03
   - enabled: 1
