@@ -8,8 +8,9 @@ namespace SocialUniverse.Core
         bool   IsSignedIn        { get; }
         bool   SessionTokenExists { get; }
         string PlayerId          { get; }
-        string Username          { get; }     // null for anonymous/SSO accounts (login credential)
+        string Username          { get; }     // cosmetic handle, not used for sign-in; null for anonymous/SSO accounts
         string DisplayName       { get; }     // in-game display name shown to other players
+        string Email             { get; }     // null for anonymous/SSO-only accounts; the sign-in identity for credential accounts
 
         event Action            OnSignedIn;
         event Action<Exception> OnSignInFailed;
@@ -21,8 +22,8 @@ namespace SocialUniverse.Core
         Task<bool> TryAutoSignInAsync();
 
         Task SignInAnonymouslyAsync();
-        Task SignInWithCredentialsAsync(string username, string password);
-        Task RegisterAsync(string username, string password, string displayName);
+        Task SignInWithEmailAsync(string email, string password);
+        Task RegisterAsync(string username, string password, string email);
         Task SignInWithAppleAsync(string idToken);
         Task SignInWithGoogleAsync(string idToken);
         Task SignOutAsync();
@@ -30,5 +31,9 @@ namespace SocialUniverse.Core
         // Updates the display name stored in the auth layer (UGS PlayerName / local prefs).
         // The ProfileService also persists this to the game profile for cross-player visibility.
         Task UpdateDisplayNameAsync(string displayName);
+
+        // Password reset: client sends email; Cloud Code handles OTP generation/delivery/validation.
+        Task RequestPasswordResetAsync(string email);
+        Task ConfirmPasswordResetAsync(string email, string resetCode, string newPassword);
     }
 }
