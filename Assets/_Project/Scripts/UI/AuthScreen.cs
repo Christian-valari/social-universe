@@ -31,8 +31,10 @@ namespace SocialUniverse.UI
         [SerializeField] private InputField _regEmailField;
         [SerializeField] private InputField _regPasswordField;
         [SerializeField] private InputField _regConfirmField;
+        [SerializeField] private InputField _regCodeField;
         [SerializeField] private Text       _regStatusText;
         [SerializeField] private Button     _registerButton;
+        [SerializeField] private Button     _sendVerificationCodeButton;
         [SerializeField] private Button     _goToLoginButton;
 
         // --- Forgot password panel ---
@@ -60,6 +62,7 @@ namespace SocialUniverse.UI
             _guestButton       .onClick.AddListener(OnGuestClicked);
             _goToRegisterButton.onClick.AddListener(() => ShowPanel(AuthPanel.Register));
             _registerButton    .onClick.AddListener(OnRegisterClicked);
+            if (_sendVerificationCodeButton != null) _sendVerificationCodeButton.onClick.AddListener(OnSendVerificationCodeClicked);
             _goToLoginButton   .onClick.AddListener(() => ShowPanel(AuthPanel.Login));
 
             if (_forgotPasswordButton   != null) _forgotPasswordButton  .onClick.AddListener(() => ShowPanel(AuthPanel.ForgotPassword));
@@ -151,12 +154,46 @@ namespace SocialUniverse.UI
             catch (Exception ex) { _loginStatusText.text = FriendlyError(ex); SetBusy(false); }
         }
 
+        private async void OnSendVerificationCodeClicked()
+        {
+            string username = _regUsernameField.text.Trim();
+            string email    = _regEmailField.text.Trim();
+            string password = _regPasswordField.text;
+            string confirm  = _regConfirmField.text;
+
+            if (!ValidateUsername(username, out string nameErr)) { _regStatusText.text = nameErr; return; }
+            if (!ValidateEmail(email, out string emailErr))       { _regStatusText.text = emailErr; return; }
+            if (!ValidatePassword(password, out string passErr))  { _regStatusText.text = passErr; return; }
+            if (password != confirm)
+            {
+                _regStatusText.text = "Passwords do not match";
+                return;
+            }
+
+            if (_sendVerificationCodeButton != null) _sendVerificationCodeButton.interactable = false;
+            _regStatusText.text = "Sending verification code…";
+            try
+            {
+                await _auth.RequestEmailVerificationCodeAsync(email);
+                _regStatusText.text = "Verification code sent — check your email (mock code: 123456)";
+            }
+            catch (Exception ex)
+            {
+                _regStatusText.text = FriendlyError(ex);
+            }
+            finally
+            {
+                if (_sendVerificationCodeButton != null) _sendVerificationCodeButton.interactable = true;
+            }
+        }
+
         private async void OnRegisterClicked()
         {
             string username = _regUsernameField.text.Trim();
             string email     = _regEmailField.text.Trim();
             string password  = _regPasswordField.text;
             string confirm   = _regConfirmField.text;
+            string code      = _regCodeField != null ? _regCodeField.text.Trim() : "";
 
             if (!ValidateUsername(username, out string nameErr))
             {
@@ -178,11 +215,25 @@ namespace SocialUniverse.UI
                 _regStatusText.text = "Passwords do not match";
                 return;
             }
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                _regStatusText.text = "Enter the verification code sent to your email";
+                return;
+            }
 
             SetBusy(true);
-            _regStatusText.text = "Creating account…";
-            try   { await _auth.RegisterAsync(username, password, email); }
-            catch (Exception ex) { _regStatusText.text = FriendlyError(ex); SetBusy(false); }
+            _regStatusText.text = "Verifying code…";
+            try
+            {
+                await _auth.ConfirmEmailVerificationCodeAsync(email, code);
+                _regStatusText.text = "Creating account…";
+                await _auth.RegisterAsync(username, password, email);
+            }
+            catch (Exception ex)
+            {
+                _regStatusText.text = FriendlyError(ex);
+                SetBusy(false);
+            }
         }
 
         private async void OnSendResetCodeClicked()
@@ -351,6 +402,12 @@ namespace SocialUniverse.UI
                 return "No reset was requested for this email — click Send Reset Code first";
             if (msg.Contains("Invalid reset code"))
                 return "Incorrect reset code — check your email and try again";
+            if (msg.Contains("No verification code"))
+                return "No verification code was sent — click Send Code first";
+            if (msg.Contains("Verification code has expired"))
+                return "Verification code expired — click Send Code to get a new one";
+            if (msg.Contains("Invalid verification code"))
+                return "Incorrect verification code — check your email and try again";
             if (msg.Contains("network") || msg.Contains("Network") || msg.Contains("unreachable"))
                 return "Network error — check your connection";
             return msg;

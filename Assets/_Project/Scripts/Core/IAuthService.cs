@@ -35,5 +35,11 @@ namespace SocialUniverse.Core
         // Password reset: client sends email; Cloud Code handles OTP generation/delivery/validation.
         Task RequestPasswordResetAsync(string email);
         Task ConfirmPasswordResetAsync(string email, string resetCode, string newPassword);
+
+        // Registration email verification: client sends email; Cloud Code handles OTP
+        // generation/delivery/validation. Call ConfirmEmailVerificationCodeAsync
+        // successfully before calling RegisterAsync — see AuthScreen.OnRegisterClicked.
+        Task RequestEmailVerificationCodeAsync(string email);
+        Task ConfirmEmailVerificationCodeAsync(string email, string code);
     }
 }

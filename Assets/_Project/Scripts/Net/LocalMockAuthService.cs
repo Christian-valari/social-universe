@@ -21,6 +21,7 @@ namespace SocialUniverse.Net
         // AuthService's UGS login-key derivation (see DeriveLoginKey there).
         private readonly Dictionary<string, UserRecord> _users          = new();
         private readonly HashSet<string>                 _pendingResets = new(); // normalized emails awaiting reset
+        private readonly HashSet<string>                 _pendingRegistrationCodes = new(); // normalized emails with an outstanding verification code (mock code: 123456)
 
         private static string NormalizeEmail(string email) => email.Trim().ToLowerInvariant();
 
@@ -144,6 +145,28 @@ namespace SocialUniverse.Net
             _users[key] = new UserRecord(newPassword, _users[key].Username);
             _pendingResets.Remove(key);
             SULog.Info($"[MOCK] Password reset confirmed for {key}", SULog.Channel.Net);
+        }
+
+        // Always "succeeds" — mirrors RequestPasswordResetAsync's mock style.
+        // Mock code is always "123456".
+        public Task RequestEmailVerificationCodeAsync(string email)
+        {
+            string key = NormalizeEmail(email);
+            _pendingRegistrationCodes.Add(key);
+            SULog.Info($"[MOCK] Email verification code sent to {email} (mock code: 123456)", SULog.Channel.Net);
+            return Task.CompletedTask;
+        }
+
+        public Task ConfirmEmailVerificationCodeAsync(string email, string code)
+        {
+            string key = NormalizeEmail(email);
+            if (!_pendingRegistrationCodes.Contains(key))
+                throw new InvalidOperationException("No verification code requested for this email");
+            if (code != "123456")
+                throw new InvalidOperationException("Invalid verification code");
+            _pendingRegistrationCodes.Remove(key);
+            SULog.Info($"[MOCK] Email verified for {email}", SULog.Channel.Net);
+            return Task.CompletedTask;
         }
 
         private void PersistSession()

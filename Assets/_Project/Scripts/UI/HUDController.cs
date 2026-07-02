@@ -146,7 +146,7 @@ namespace SocialUniverse.UI
             var drone  = _mining.Drone;
             var target = _mining.CurrentTarget;
 
-            if (drone == null)
+            if (drone == null)//
             {
                 _miningStatusText.text = "Mining: —";
                 return;

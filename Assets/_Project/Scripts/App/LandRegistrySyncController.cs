@@ -12,7 +12,7 @@ namespace SocialUniverse.App
     // Polls the global land registry for the active planet and applies ownership
     // (own + other players') to the hexasphere tiles. Polling is the phase-1
     // stand-in for "subscribe" — true realtime push needs the M4 presence layer.
-    public class LandRegistrySyncController : IStartable, IDisposable
+    public class LandRegistrySyncController : IStartable, IDisposable 
     {
         private readonly LandRegistryService _registry;
         private readonly HexasphereManager   _hexasphere;

@@ -80,9 +80,22 @@ namespace SocialUniverse.Net
             if (string.IsNullOrEmpty(PlayerId))
                 throw new InvalidOperationException(
                     "PlayerId is null after sign-up — UGS auth token not yet available; cannot call SaveEmail");
-            await _backend.CallAsync("SaveEmail",
-                new Dictionary<string, object> { { "email", email } });
+
             _email = email;
+            try
+            {
+                await _backend.CallAsync("SaveEmail",
+                    new Dictionary<string, object> { { "email", email } });
+            }
+            catch (Exception ex)
+            {
+                // The UGS account already exists at this point (sign-up above succeeded),
+                // so a SaveEmail failure must not fail the whole registration — that would
+                // strand the account (a retry hits ENTITY_EXISTS, but email/profile/reset-index
+                // never get saved). player_profile.email and the reset index are only needed
+                // for forgot-password; sign-in/sign-up remain fully functional without them.
+                SULog.Warn($"SaveEmail failed after registration (playerId: {PlayerId}): {ex.Message}", SULog.Channel.Net);
+            }
 
             SULog.Info($"Registered new account (playerId: {PlayerId})", SULog.Channel.Net);
         }
@@ -127,6 +140,20 @@ namespace SocialUniverse.Net
             await _backend.CallAsync("ConfirmPasswordReset",
                 new Dictionary<string, object> { { "email", email }, { "code", resetCode }, { "newPassword", newPassword } });
             SULog.Info("Password reset confirmed", SULog.Channel.Net);
+        }
+
+        public async Task RequestEmailVerificationCodeAsync(string email)
+        {
+            await _backend.CallAsync("RequestEmailVerificationCode",
+                new Dictionary<string, object> { { "email", email } });
+            SULog.Info($"Email verification code requested for {email}", SULog.Channel.Net);
+        }
+
+        public async Task ConfirmEmailVerificationCodeAsync(string email, string code)
+        {
+            await _backend.CallAsync("ConfirmEmailVerificationCode",
+                new Dictionary<string, object> { { "email", email }, { "code", code } });
+            SULog.Info("Email verification code confirmed", SULog.Channel.Net);
         }
     }
 }
