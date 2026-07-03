@@ -119,6 +119,7 @@ namespace SocialUniverse.App
             // UI
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.HUDController>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.MiningModePromptView>();
+            builder.RegisterComponentInHierarchy<SocialUniverse.UI.ActiveMiningMinigameView>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.SocialDebugPanel>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.DisplayNameModal>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.EmailVerificationModal>();
