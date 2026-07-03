@@ -11,6 +11,7 @@ namespace SocialUniverse.Config
         [SerializeField] private int _tileCount = 512;
         [SerializeField] private float _landPriceMultiplier = 1f;
         [SerializeField] private int _asteroidTier = 1;
+        [SerializeField] private int _asteroidFieldSize = 6; // total asteroids simultaneously present on this planet
         [SerializeField] private AsteroidDefinition[] _asteroidTypes;
         [SerializeField] private int _travelFuelCost = 20; // fuel spent to travel here from the Hub; ignored for the home planet (free trip home)
         [SerializeField] private float _travelDurationSeconds = 30f; // fallback time-in-transit when traveling here, used only if the origin/destination pair isn't in TravelTimeTable (e.g. Pluto, which Data/Travel_Times.csv doesn't cover). Must be kept in sync with ServerCode/StartTravel.js's PLUTO_FALLBACK_SEC.
@@ -23,6 +24,7 @@ namespace SocialUniverse.Config
         public int                TileCount             => _tileCount;
         public float              LandPriceMultiplier   => _landPriceMultiplier;
         public int                AsteroidTier          => _asteroidTier;
+        public int                AsteroidFieldSize     => _asteroidFieldSize;
         public AsteroidDefinition[] AsteroidTypes       => _asteroidTypes;
         public int                TravelFuelCost        => _travelFuelCost;
         public float              TravelDurationSeconds => _travelDurationSeconds;
