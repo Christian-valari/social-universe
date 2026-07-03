@@ -3,35 +3,47 @@ using SocialUniverse.Config;
 
 namespace SocialUniverse.Mining
 {
-    public class MiningTapResult
-    {
-        public int  YieldAmount;
-        public bool IsCrit;
-    }
-
+    // Owns the currently-running active-mining minigame session (if any). Standalone from
+    // the drone — active mining never travels and can run concurrently with an idle-mining
+    // session on a different asteroid.
     public class ActiveMiningMinigame
     {
-        private readonly EconomyConfig _config;
-        private readonly Random        _rng = new();
+        private readonly EconomyConfig           _config;
+        private readonly MiningRewardCalculator  _rewardCalc;
 
-        public event Action<MiningTapResult> OnTap;
+        public ActiveMiningSession CurrentSession { get; private set; }
 
-        public ActiveMiningMinigame(EconomyConfig config) => _config = config;
+        public event Action<ActiveMiningSession> OnSessionChanged;
 
-        public MiningTapResult Tap(Asteroid target, DroneRuntime drone)
+        public ActiveMiningMinigame(EconomyConfig config, MiningRewardCalculator rewardCalc)
         {
-            if (target == null || target.IsDepleted || drone.IsCargoFull)
-                return null;
-
-            bool  isCrit = _rng.NextDouble() < _config.CritChance;
-            float mult   = isCrit ? _config.CritMultiplier : 1f;
-            int   raw    = (int)(_config.ActiveTapYield * mult);
-            int   mined  = target.Mine(raw);
-            drone.AddCargo(mined);
-
-            var result = new MiningTapResult { YieldAmount = mined, IsCrit = isCrit };
-            OnTap?.Invoke(result);
-            return result;
+            _config     = config;
+            _rewardCalc = rewardCalc;
         }
+
+        public bool Begin(Asteroid asteroid)
+        {
+            if (asteroid == null || asteroid.IsDepleted || CurrentSession != null)
+                return false;
+
+            var reward = _rewardCalc.Compute(asteroid);
+            CurrentSession = new ActiveMiningSession(asteroid, reward.ActiveTapsRequired,
+                _config.ActiveMaxErrors, _config.ActiveTapWindowSeconds);
+            CurrentSession.OnStageChanged += _ => OnSessionChanged?.Invoke(CurrentSession);
+
+            OnSessionChanged?.Invoke(CurrentSession);
+            return true;
+        }
+
+        public void Tick(float deltaTime) => CurrentSession?.Tick(deltaTime);
+
+        public void RegisterTap(bool hitTarget)
+        {
+            if (CurrentSession == null) return;
+            if (hitTarget) CurrentSession.RegisterHit();
+            else           CurrentSession.RegisterMiss();
+        }
+
+        public void Clear() => CurrentSession = null;
     }
 }
