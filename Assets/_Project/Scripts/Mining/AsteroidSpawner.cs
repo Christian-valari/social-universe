@@ -27,7 +27,62 @@ namespace SocialUniverse.Mining
         private struct PendingRespawn
         {
             public AsteroidDefinition Definition;
+            public string             SlotId;
             public DateTime           RespawnAtUtc;
+        }
+
+        // Distributes `fieldSize` slots across `types`, weighted by (1 - Rarity) per type —
+        // rarer types get fewer slots. Uses largest-remainder rounding so the returned counts
+        // always sum to exactly `fieldSize` (each type gets at least 1 slot when fieldSize
+        // allows it). Pure and static so it's directly unit-testable without a scene.
+        public static int[] DistributeFieldSize(AsteroidDefinition[] types, int fieldSize)
+        {
+            int n = types?.Length ?? 0;
+            var counts = new int[n];
+            if (n == 0 || fieldSize <= 0) return counts;
+
+            var weights = new float[n];
+            float totalWeight = 0f;
+            for (int i = 0; i < n; i++)
+            {
+                weights[i]   = Mathf.Max(0.01f, 1f - types[i].Rarity);
+                totalWeight += weights[i];
+            }
+
+            var raw       = new float[n];
+            var remainder = new float[n];
+            int assigned  = 0;
+
+            for (int i = 0; i < n; i++)
+            {
+                raw[i]       = fieldSize * weights[i] / totalWeight;
+                counts[i]    = Mathf.Max(1, Mathf.FloorToInt(raw[i]));
+                remainder[i] = raw[i] - Mathf.Floor(raw[i]);
+                assigned    += counts[i];
+            }
+
+            var byRemainderDesc = Enumerable.Range(0, n).OrderByDescending(i => remainder[i]).ToArray();
+
+            int diff = fieldSize - assigned;
+            int cursor = 0;
+            while (diff > 0)
+            {
+                counts[byRemainderDesc[cursor % n]]++;
+                diff--;
+                cursor++;
+            }
+
+            cursor = 0;
+            int guard = 0;
+            while (diff < 0 && guard < n * 64)
+            {
+                int i = byRemainderDesc[n - 1 - (cursor % n)];
+                if (counts[i] > 0) { counts[i]--; diff++; }
+                cursor++;
+                guard++;
+            }
+
+            return counts;
         }
 
         public void SpawnForPlanet(PlanetDefinition planet)
@@ -41,14 +96,17 @@ namespace SocialUniverse.Mining
                 return;
             }
 
-            foreach (var def in planet.AsteroidTypes)
+            var counts = DistributeFieldSize(planet.AsteroidTypes, planet.AsteroidFieldSize);
+
+            for (int t = 0; t < planet.AsteroidTypes.Length; t++)
             {
-                int targetCount  = Mathf.Max(1, Mathf.RoundToInt(_maxPerType * (1f - def.Rarity)));
+                var def          = planet.AsteroidTypes[t];
+                int targetCount  = counts[t];
                 int pendingCount = _pending.Count(p => p.Definition == def);
                 int toSpawn      = Mathf.Max(0, targetCount - pendingCount);
 
                 for (int i = 0; i < toSpawn; i++)
-                    SpawnOne(def);
+                    SpawnOne(def, $"{def.MineralType}#{pendingCount + i}");
             }
 
             SULog.Info($"AsteroidSpawner: spawned {_active.Count} asteroids ({_pending.Count} pending respawn)", SULog.Channel.Mining);
@@ -61,23 +119,36 @@ namespace SocialUniverse.Mining
             _active.Clear();
         }
 
-        // Destroys a claimed asteroid and schedules a same-type replacement to spawn after the cooldown.
+        // Destroys a claimed asteroid and schedules a same-type, same-slot replacement to
+        // spawn after the cooldown.
         public void ScheduleRespawn(Asteroid asteroid, float respawnHours)
         {
             if (asteroid == null) return;
 
             var definition = asteroid.Definition;
+            var slotId      = asteroid.SlotId;
             _active.Remove(asteroid);
             Destroy(asteroid.gameObject);
 
             _pending.Add(new PendingRespawn
             {
                 Definition   = definition,
+                SlotId       = slotId,
                 RespawnAtUtc = DateTime.UtcNow.AddHours(respawnHours)
             });
             SavePendingRespawns();
 
             SULog.Info($"Asteroid '{definition.MineralType}' claimed — respawns in {respawnHours:0.#}h", SULog.Channel.Mining);
+        }
+
+        // Returns the currently-active asteroid occupying the given slot, or null if it's
+        // been claimed/is pending respawn. Used to reconcile a persisted idle-mining session
+        // against the freshly spawned field after an app restart.
+        public Asteroid FindBySlotId(string slotId)
+        {
+            foreach (var a in _active)
+                if (a.SlotId == slotId) return a;
+            return null;
         }
 
         private void Update()
@@ -91,7 +162,7 @@ namespace SocialUniverse.Mining
             {
                 if (now < _pending[i].RespawnAtUtc) continue;
 
-                SpawnOne(_pending[i].Definition);
+                SpawnOne(_pending[i].Definition, _pending[i].SlotId);
                 _pending.RemoveAt(i);
                 changed = true;
             }
@@ -99,7 +170,7 @@ namespace SocialUniverse.Mining
             if (changed) SavePendingRespawns();
         }
 
-        private void SpawnOne(AsteroidDefinition def)
+        private void SpawnOne(AsteroidDefinition def, string slotId)
         {
             GameObject go;
             if (def.ModelPrefab != null)
@@ -117,7 +188,7 @@ namespace SocialUniverse.Mining
 
             go.name = $"Asteroid_{def.MineralType}";
             var asteroid = go.AddComponent<Asteroid>();
-            asteroid.Initialize(def);
+            asteroid.Initialize(def, slotId);
             _active.Add(asteroid);
         }
 
@@ -133,7 +204,7 @@ namespace SocialUniverse.Mining
             foreach (var entry in raw.Split(';', StringSplitOptions.RemoveEmptyEntries))
             {
                 var parts = entry.Split('|');
-                if (parts.Length != 2 || !long.TryParse(parts[1], out var unixSeconds)) continue;
+                if (parts.Length != 3 || !long.TryParse(parts[2], out var unixSeconds)) continue;
 
                 var definition = _registry.GetAsteroid(parts[0]);
                 if (definition == null) continue;
@@ -141,6 +212,7 @@ namespace SocialUniverse.Mining
                 _pending.Add(new PendingRespawn
                 {
                     Definition   = definition,
+                    SlotId       = parts[1],
                     RespawnAtUtc = DateTimeOffset.FromUnixTimeSeconds(unixSeconds).UtcDateTime
                 });
             }
@@ -149,7 +221,7 @@ namespace SocialUniverse.Mining
         private void SavePendingRespawns()
         {
             var serialized = string.Join(";", _pending.Select(p =>
-                $"{p.Definition.MineralType}|{new DateTimeOffset(p.RespawnAtUtc).ToUnixTimeSeconds()}"));
+                $"{p.Definition.MineralType}|{p.SlotId}|{new DateTimeOffset(p.RespawnAtUtc).ToUnixTimeSeconds()}"));
 
             PlayerPrefs.SetString(SaveKeys.AsteroidRespawns, serialized);
             PlayerPrefs.Save();

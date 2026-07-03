@@ -11,15 +11,17 @@ namespace SocialUniverse.Mining
         [SerializeField] private float _maxRotationSpeed = 20f;
 
         public AsteroidDefinition Definition     { get; private set; }
+        public string             SlotId         { get; private set; }
         public int                RemainingYield { get; private set; }
-        public bool               IsDepleted     => RemainingYield <= 0;
+        public bool                IsDepleted     => RemainingYield <= 0;
 
         private Vector3 _rotationAxis;
         private float   _rotationSpeed;
 
-        public void Initialize(AsteroidDefinition definition)
+        public void Initialize(AsteroidDefinition definition, string slotId)
         {
             Definition     = definition;
+            SlotId         = slotId;
             RemainingYield = Mathf.RoundToInt(definition.BaseYield * Random.Range(0.8f, 1.2f));
 
             if (GetComponent<Collider>() == null)
