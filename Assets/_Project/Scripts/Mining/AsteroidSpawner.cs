@@ -105,8 +105,25 @@ namespace SocialUniverse.Mining
                 int pendingCount = _pending.Count(p => p.Definition == def);
                 int toSpawn      = Mathf.Max(0, targetCount - pendingCount);
 
+                // Pending (claimed, awaiting-respawn) asteroids can occupy ANY index, not just
+                // the lowest ones — a player can claim any asteroid of a type, not only the
+                // lowest-indexed one. Reserve whichever indices pending entries actually hold
+                // (parsed from their SlotId) and assign new spawns the lowest indices NOT
+                // already reserved, so a new spawn never collides with — or displaces — a
+                // pending entry's eventual respawn slot.
+                var reservedIndices = new HashSet<int>(
+                    _pending.Where(p => p.Definition == def)
+                            .Select(p => ParseSlotIndex(p.SlotId))
+                            .Where(idx => idx >= 0));
+
+                int nextIndex = 0;
                 for (int i = 0; i < toSpawn; i++)
-                    SpawnOne(def, $"{def.MineralType}#{pendingCount + i}");
+                {
+                    while (reservedIndices.Contains(nextIndex)) nextIndex++;
+                    SpawnOne(def, $"{def.MineralType}#{nextIndex}");
+                    reservedIndices.Add(nextIndex);
+                    nextIndex++;
+                }
             }
 
             SULog.Info($"AsteroidSpawner: spawned {_active.Count} asteroids ({_pending.Count} pending respawn)", SULog.Channel.Mining);
@@ -202,6 +219,16 @@ namespace SocialUniverse.Mining
         }
 
         private Vector3 RandomOrbitPoint() => UnityEngine.Random.onUnitSphere * _orbitRadius;
+
+        // Extracts the numeric index from a "{mineral}#{index}" SlotId. Returns -1 if the
+        // slot ID is null/malformed rather than throwing, so a corrupt persisted entry just
+        // fails to reserve an index instead of breaking the whole spawn pass.
+        private static int ParseSlotIndex(string slotId)
+        {
+            int hashIdx = slotId?.LastIndexOf('#') ?? -1;
+            if (hashIdx < 0) return -1;
+            return int.TryParse(slotId.Substring(hashIdx + 1), out int idx) ? idx : -1;
+        }
 
         private void LoadPendingRespawns()
         {
