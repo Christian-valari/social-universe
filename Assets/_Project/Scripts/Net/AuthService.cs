@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using SocialUniverse.Core;
@@ -7,16 +8,23 @@ namespace SocialUniverse.Net
 {
     public class AuthService : IAuthService
     {
+        private readonly IBackendClient _backend;
+        private string _email;
+
         public bool   IsSignedIn         => AuthenticationService.Instance.IsSignedIn;
         public bool   SessionTokenExists => AuthenticationService.Instance.SessionTokenExists;
         public string PlayerId           => AuthenticationService.Instance.PlayerId;
         public string Username           => AuthenticationService.Instance.PlayerName;
         public string DisplayName        => AuthenticationService.Instance.PlayerName;
+        public string Email              => _email;
 
         public event Action            OnSignedIn;
         public event Action<Exception> OnSignInFailed;
 
-        public AuthService() { }
+        public AuthService(IBackendClient backend)
+        {
+            _backend = backend;
+        }
 
         public Task InitializeAsync()
         {
@@ -54,17 +62,41 @@ namespace SocialUniverse.Net
             SULog.Info($"Signed in anonymously (playerId: {PlayerId})", SULog.Channel.Net);
         }
 
-        public async Task SignInWithCredentialsAsync(string username, string password)
+        public async Task SignInWithEmailAsync(string email, string password)
         {
-            await AuthenticationService.Instance.SignInWithUsernamePasswordAsync(username, password);
-            SULog.Info($"Signed in with credentials (playerId: {PlayerId})", SULog.Channel.Net);
+            string loginKey = EmailLoginKey.Derive(email);
+            await AuthenticationService.Instance.SignInWithUsernamePasswordAsync(loginKey, password);
+            _email = email;
+            SULog.Info($"Signed in with email (playerId: {PlayerId})", SULog.Channel.Net);
         }
 
-        public async Task RegisterAsync(string username, string password, string displayName)
+        public async Task RegisterAsync(string username, string password, string email)
         {
-            await AuthenticationService.Instance.SignUpWithUsernamePasswordAsync(username, password);
-            if (!string.IsNullOrEmpty(displayName))
-                await AuthenticationService.Instance.UpdatePlayerNameAsync(displayName);
+            string loginKey = EmailLoginKey.Derive(email);
+            await AuthenticationService.Instance.SignUpWithUsernamePasswordAsync(loginKey, password);
+            if (!string.IsNullOrEmpty(username))
+                await AuthenticationService.Instance.UpdatePlayerNameAsync(username);
+
+            if (string.IsNullOrEmpty(PlayerId))
+                throw new InvalidOperationException(
+                    "PlayerId is null after sign-up — UGS auth token not yet available; cannot call SaveEmail");
+
+            _email = email;
+            try
+            {
+                await _backend.CallAsync("SaveEmail",
+                    new Dictionary<string, object> { { "email", email } });
+            }
+            catch (Exception ex)
+            {
+                // The UGS account already exists at this point (sign-up above succeeded),
+                // so a SaveEmail failure must not fail the whole registration — that would
+                // strand the account (a retry hits ENTITY_EXISTS, but email/profile/reset-index
+                // never get saved). player_profile.email and the reset index are only needed
+                // for forgot-password; sign-in/sign-up remain fully functional without them.
+                SULog.Warn($"SaveEmail failed after registration (playerId: {PlayerId}): {ex.Message}", SULog.Channel.Net);
+            }
+
             SULog.Info($"Registered new account (playerId: {PlayerId})", SULog.Channel.Net);
         }
 
@@ -91,8 +123,36 @@ namespace SocialUniverse.Net
             // clearCredentials: true so the cached session token is discarded too —
             // otherwise TryAutoSignInAsync would silently restore this session on next launch.
             AuthenticationService.Instance.SignOut(clearCredentials: true);
+            _email = null;
             SULog.Info("Signed out", SULog.Channel.Net);
             return Task.CompletedTask;
+        }
+
+        public async Task RequestPasswordResetAsync(string email)
+        {
+            await _backend.CallAsync("RequestPasswordReset",
+                new Dictionary<string, object> { { "email", email } });
+            SULog.Info($"Password reset requested for {email}", SULog.Channel.Net);
+        }
+
+        public async Task ConfirmPasswordResetAsync(string email, string resetCode, string newPassword)
+        {
+            await _backend.CallAsync("ConfirmPasswordReset",
+                new Dictionary<string, object> { { "email", email }, { "code", resetCode }, { "newPassword", newPassword } });
+            SULog.Info("Password reset confirmed", SULog.Channel.Net);
+        }
+
+        public async Task RequestEmailVerificationCodeAsync()
+        {
+            await _backend.CallAsync("RequestEmailVerificationCode");
+            SULog.Info($"Email verification code requested (playerId: {PlayerId})", SULog.Channel.Net);
+        }
+
+        public async Task ConfirmEmailVerificationCodeAsync(string code)
+        {
+            await _backend.CallAsync("ConfirmEmailVerificationCode",
+                new Dictionary<string, object> { { "code", code } });
+            SULog.Info("Email verification code confirmed", SULog.Channel.Net);
         }
     }
 }

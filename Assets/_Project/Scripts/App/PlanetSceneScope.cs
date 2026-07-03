@@ -121,6 +121,7 @@ namespace SocialUniverse.App
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.MiningModePromptView>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.SocialDebugPanel>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.DisplayNameModal>();
+            builder.RegisterComponentInHierarchy<SocialUniverse.UI.EmailVerificationModal>();
 
             builder.RegisterEntryPoint<PlanetSceneBootstrapper>();
             builder.RegisterEntryPoint<MiningInputHandler>();
@@ -279,8 +280,24 @@ namespace SocialUniverse.App
             try
             {
                 var profile = await _profileService.GetProfileAsync(_auth.PlayerId);
-                if (profile != null && !string.IsNullOrEmpty(profile.DisplayName))
-                    _playerState.SetDisplayName(profile.DisplayName);
+                if (profile != null)
+                {
+                    if (!string.IsNullOrEmpty(profile.DisplayName))
+                        _playerState.SetDisplayName(profile.DisplayName);
+
+                    _playerState.SetEmailVerified(profile.EmailVerified);
+
+                    if (!profile.EmailVerified)
+                    {
+                        string promptedKey = SaveKeys.EmailVerificationPromptedKey(_auth.PlayerId);
+                        if (!PlayerPrefs.HasKey(promptedKey))
+                        {
+                            PlayerPrefs.SetInt(promptedKey, 1);
+                            PlayerPrefs.Save();
+                            EventBus.Publish(new ShowEmailVerificationPromptEvent());
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {

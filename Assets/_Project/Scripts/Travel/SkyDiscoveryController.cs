@@ -227,7 +227,7 @@ namespace SocialUniverse.Travel
             //     _infoCostText.text = cost <= 0 ? $"{_locked.DisplayName} — free trip home" : $"{_locked.DisplayName} — fuel cost: {cost}";
             //
             _travelButton.interactable = true;
-        }
+        } 
 
         private void OnTravelClicked()
         {

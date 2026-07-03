@@ -13,5 +13,6 @@ namespace SocialUniverse.Social
         public int      Xp;
         public string[] Badges;
         public int      TilesOwned;
+        public bool     EmailVerified;
     }
 }

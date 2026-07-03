@@ -21,5 +21,10 @@ namespace SocialUniverse.Core
 
         // Returns the Cloud Save key for a planet's owned-tile list.
         public static string OwnedTilesKey(string planetId) => $"owned_tiles_{planetId.ToLowerInvariant()}";
+
+        // Local-only (PlayerPrefs) flag: has this player already been shown the
+        // one-time email-verification prompt on this device? Deliberately not
+        // server-side — see PlanetSceneScope.HydrateServerStateAsync.
+        public static string EmailVerificationPromptedKey(string playerId) => $"email_verification_prompted_{playerId}";
     }
 }

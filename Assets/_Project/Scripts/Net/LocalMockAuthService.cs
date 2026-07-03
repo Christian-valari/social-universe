@@ -10,18 +10,33 @@ namespace SocialUniverse.Net
     // Stores registered users in-memory so login/register behave realistically.
     public class LocalMockAuthService : IAuthService
     {
-        private readonly Dictionary<string, string> _users = new();
+        private struct UserRecord
+        {
+            public string Password;
+            public string Username; // cosmetic handle only, not used for sign-in
+            public UserRecord(string password, string username) { Password = password; Username = username; }
+        }
+
+        // Keyed by normalized email — email is the sign-in identity now, mirroring
+        // AuthService's UGS login-key derivation (see DeriveLoginKey there).
+        private readonly Dictionary<string, UserRecord> _users          = new();
+        private readonly HashSet<string>                 _pendingResets = new(); // normalized emails awaiting reset
+        private bool _pendingEmailVerificationCode; // an outstanding verification code exists (mock code: 123456)
+
+        private static string NormalizeEmail(string email) => email.Trim().ToLowerInvariant();
 
         private bool   _isSignedIn;
         private string _playerId     = "";
         private string _username     = "";
         private string _displayName  = "";
+        private string _email        = "";
 
         public bool   IsSignedIn         => _isSignedIn;
         public bool   SessionTokenExists => PlayerPrefs.HasKey(SaveKeys.AuthSession);
         public string PlayerId           => _playerId;
         public string Username           => string.IsNullOrEmpty(_username) ? null : _username;
         public string DisplayName        => string.IsNullOrEmpty(_displayName) ? Username : _displayName;
+        public string Email              => string.IsNullOrEmpty(_email) ? null : _email;
 
         public event Action            OnSignedIn;
         public event Action<Exception> OnSignInFailed;
@@ -38,6 +53,7 @@ namespace SocialUniverse.Net
             _playerId    = PlayerPrefs.GetString(SaveKeys.AuthSession);
             _username    = PlayerPrefs.GetString(SaveKeys.AuthSession + "_name", "");
             _displayName = PlayerPrefs.GetString(SaveKeys.AuthSession + "_display_name", "");
+            _email       = PlayerPrefs.GetString(SaveKeys.AuthSession + "_email", "");
             _isSignedIn  = true;
             SULog.Info($"[MOCK] Restored session ({_playerId})", SULog.Channel.Net);
             OnSignedIn?.Invoke();
@@ -55,31 +71,34 @@ namespace SocialUniverse.Net
             OnSignedIn?.Invoke();
         }
 
-        public async Task SignInWithCredentialsAsync(string username, string password)
+        public async Task SignInWithEmailAsync(string email, string password)
         {
             await Task.Delay(800);
-            if (_users.TryGetValue(username, out var stored) && stored != password)
-                throw new InvalidOperationException("Incorrect username or password");
-            _playerId   = "mock_" + username;
-            _username   = username;
+            string key = NormalizeEmail(email);
+            if (!_users.TryGetValue(key, out var record) || record.Password != password)
+                throw new InvalidOperationException("Incorrect email or password");
+            _playerId   = "mock_" + key;
+            _username   = record.Username;
+            _email      = email;
             _isSignedIn = true;
             PersistSession();
-            SULog.Info($"[MOCK] Signed in as {username}", SULog.Channel.Net);
+            SULog.Info($"[MOCK] Signed in as {record.Username}", SULog.Channel.Net);
             OnSignedIn?.Invoke();
         }
 
-        public async Task RegisterAsync(string username, string password, string displayName)
+        public async Task RegisterAsync(string username, string password, string email)
         {
             await Task.Delay(1200);
-            if (_users.ContainsKey(username))
-                throw new InvalidOperationException("Username already taken");
-            _users[username] = password;
-            _playerId        = "mock_" + username;
-            _username        = username;
-            _displayName     = string.IsNullOrEmpty(displayName) ? username : displayName;
-            _isSignedIn      = true;
+            string key = NormalizeEmail(email);
+            if (_users.ContainsKey(key))
+                throw new InvalidOperationException("An account with that email already exists");
+            _users[key]  = new UserRecord(password, username);
+            _playerId    = "mock_" + key;
+            _username    = username;
+            _email       = email;
+            _isSignedIn  = true;
             PersistSession();
-            SULog.Info($"[MOCK] Registered {username} (display: {_displayName})", SULog.Channel.Net);
+            SULog.Info($"[MOCK] Registered {username} (email: {_email})", SULog.Channel.Net);
             OnSignedIn?.Invoke();
         }
 
@@ -98,8 +117,53 @@ namespace SocialUniverse.Net
         {
             _isSignedIn = false;
             _playerId   = "";
+            _email      = "";
             PlayerPrefs.DeleteKey(SaveKeys.AuthSession);
             PlayerPrefs.Save();
+            return Task.CompletedTask;
+        }
+
+        // Always "succeeds" — never confirms whether the email is registered (prevents enumeration).
+        // If the email is registered, stores a pending reset keyed by email. Mock code is always "123456".
+        public Task RequestPasswordResetAsync(string email)
+        {
+            string key = NormalizeEmail(email);
+            if (_users.ContainsKey(key))
+                _pendingResets.Add(key);
+            SULog.Info($"[MOCK] Password reset requested for {email} (mock code: 123456)", SULog.Channel.Net);
+            return Task.CompletedTask;
+        }
+
+        public async Task ConfirmPasswordResetAsync(string email, string resetCode, string newPassword)
+        {
+            await Task.Delay(500);
+            string key = NormalizeEmail(email);
+            if (!_pendingResets.Contains(key))
+                throw new InvalidOperationException("No password reset is pending for this email");
+            if (resetCode != "123456")
+                throw new InvalidOperationException("Invalid reset code");
+            _users[key] = new UserRecord(newPassword, _users[key].Username);
+            _pendingResets.Remove(key);
+            SULog.Info($"[MOCK] Password reset confirmed for {key}", SULog.Channel.Net);
+        }
+
+        // Always "succeeds" — mirrors RequestPasswordResetAsync's mock style.
+        // Mock code is always "123456".
+        public Task RequestEmailVerificationCodeAsync()
+        {
+            _pendingEmailVerificationCode = true;
+            SULog.Info("[MOCK] Email verification code sent (mock code: 123456)", SULog.Channel.Net);
+            return Task.CompletedTask;
+        }
+
+        public Task ConfirmEmailVerificationCodeAsync(string code)
+        {
+            if (!_pendingEmailVerificationCode)
+                throw new InvalidOperationException("No verification code requested");
+            if (code != "123456")
+                throw new InvalidOperationException("Invalid verification code");
+            _pendingEmailVerificationCode = false;
+            SULog.Info("[MOCK] Email verified", SULog.Channel.Net);
             return Task.CompletedTask;
         }
 
@@ -108,6 +172,7 @@ namespace SocialUniverse.Net
             PlayerPrefs.SetString(SaveKeys.AuthSession, _playerId);
             PlayerPrefs.SetString(SaveKeys.AuthSession + "_name", _username);
             PlayerPrefs.SetString(SaveKeys.AuthSession + "_display_name", _displayName);
+            PlayerPrefs.SetString(SaveKeys.AuthSession + "_email", _email);
             PlayerPrefs.Save();
         }
     }

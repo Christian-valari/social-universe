@@ -1390,6 +1390,21 @@ module.exports = async ({ params, context, logger }) => {
 // player's "player_profile" Cloud Save record (the same one GetBootstrapState
 // returns for the caller) plus a tile count derived from their owned-tiles
 // lists. Returns defaults for players who haven't saved a profile yet.
+//
+// FIX: DataApi's constructor doesn't read a { headers: ... } field, and
+// getItems takes positional args (projectId, playerId, keys[]), not an
+// options object — same SDK-shape mismatch as Known Issue #6 (see
+// SaveEmail.js). The old call silently failed every time (caught below),
+// so `profile` was always null. DataApi(context) authenticates via the
+// service token, which is required to read another player's data.
+//
+// FIX 2: displayName no longer defaults to a synthetic "Pilot {id6}"
+// placeholder — it's null when the player hasn't saved a custom display
+// name. The only current caller (PlanetSceneScope.HydrateServerStateAsync,
+// hydrating the signed-in player's own HUD name) already falls back to the
+// UGS auth username when displayName is empty; the placeholder default was
+// unconditionally overriding that correct username for every player who
+// hadn't explicitly customized their name.
 const { DataApi } = require("@unity-services/cloud-save-1.4");
 
 const PROFILE_KEY = "player_profile";
@@ -1405,22 +1420,17 @@ module.exports = async ({ params, context, logger }) => {
   }
 
   const { projectId } = context;
-  // FIX: was new DataApi({ headers: { Authorization: ... } }) — constructor does
-  // not accept that field. Reading another player's data requires the service
-  // token, which DataApi(context) provides automatically.
   const saveApi = new DataApi(context);
 
-  let profile    = null;
+  let profile = null;
   let tilesOwned = 0;
   try {
-    // FIX: getItems takes positional args (projectId, playerId, keys[]|undefined).
-    // Passing no keys array returns all keys for this player (page of 20),
-    // which is the intended behaviour here for summing owned_tiles_* entries.
+    // Cloud Code's service auth may read another player's data by passing
+    // their playerId explicitly.
     const res = await saveApi.getItems(projectId, targetId);
     for (const item of res.data.results) {
       if (item.key === PROFILE_KEY) {
-        // FIX: Cloud Save returns values already deserialized — JSON.parse throws on an object.
-        profile = typeof item.value === "object" ? item.value : JSON.parse(item.value);
+        profile = typeof item.value === "string" ? JSON.parse(item.value) : item.value;
       } else if (item.key.startsWith("owned_tiles_") && Array.isArray(item.value)) {
         tilesOwned += item.value.length;
       }
@@ -1431,7 +1441,7 @@ module.exports = async ({ params, context, logger }) => {
 
   return {
     playerId:    targetId,
-    displayName: profile?.displayName ?? `Pilot ${targetId.slice(0, 6)}`,
+    displayName: profile?.displayName ?? null,
     level:       profile?.level ?? 1,
     xp:          profile?.xp ?? 0,
     badges:      profile?.badges ?? [],
