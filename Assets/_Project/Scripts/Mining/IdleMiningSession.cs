@@ -5,60 +5,58 @@ namespace SocialUniverse.Mining
 {
     public enum IdleMiningStage { Traveling, Mining, ReadyToClaim, Complete }
 
-    // Tracks one player-directed idle-mining run against a single asteroid:
-    // drone travels there, mines for a fixed duration, then waits for claim taps.
+    // Tracks one player-directed idle-mining run against a single asteroid. Timing is driven
+    // by real wall-clock elapsed time (DateTime.UtcNow - StartUtc), not accumulated per-frame
+    // deltaTime — this is what lets a session resume correctly after the app was closed and
+    // reopened: reconstructing with the persisted StartUtc/DurationSeconds is enough to derive
+    // the correct current stage with no additional bookkeeping.
     public class IdleMiningSession
     {
-        public Asteroid        Asteroid           { get; }
-        public IdleMiningStage Stage              { get; private set; }
-        public float           MiningProgress01   { get; private set; }
-        public int             ClaimTapsRequired  { get; }
-        public int             ClaimTapsRemaining { get; private set; }
+        public Asteroid        Asteroid        { get; }
+        public DateTime        StartUtc        { get; }
+        public float           DurationSeconds { get; }
+        public IdleMiningStage Stage           { get; private set; }
+
+        public float MiningProgress01 =>
+            Mathf.Clamp01((float)(DateTime.UtcNow - StartUtc).TotalSeconds / DurationSeconds);
 
         public event Action<IdleMiningStage> OnStageChanged;
 
-        private readonly float _miningDuration;
-        private float _elapsed;
-
-        public IdleMiningSession(Asteroid asteroid, float miningDuration, int claimTapsRequired)
+        public IdleMiningSession(Asteroid asteroid, DateTime startUtc, float durationSeconds)
         {
-            Asteroid           = asteroid;
-            _miningDuration    = Mathf.Max(0.01f, miningDuration);
-            ClaimTapsRequired  = Mathf.Max(1, claimTapsRequired);
-            ClaimTapsRemaining = ClaimTapsRequired;
-            Stage              = IdleMiningStage.Traveling;
+            Asteroid        = asteroid;
+            StartUtc        = startUtc;
+            DurationSeconds = Mathf.Max(0.01f, durationSeconds);
+            Stage           = HasDurationElapsed() ? IdleMiningStage.ReadyToClaim : IdleMiningStage.Traveling;
         }
 
+        // Drone has visually arrived at the asteroid. Flavor-only transition for HUD text —
+        // does not affect the ReadyToClaim timing, which is purely wall-clock based.
         public void BeginMining()
         {
             if (Stage != IdleMiningStage.Traveling) return;
-
-            _elapsed = 0f;
             SetStage(IdleMiningStage.Mining);
         }
 
+        // Call every frame while the session is active. deltaTime is intentionally unused for
+        // the readiness check (wall-clock driven) — it exists so callers can call this
+        // uniformly alongside other per-frame Tick methods.
         public void Tick(float deltaTime)
         {
-            if (Stage != IdleMiningStage.Mining) return;
-
-            _elapsed        += deltaTime;
-            MiningProgress01 = Mathf.Clamp01(_elapsed / _miningDuration);
-
-            if (_elapsed >= _miningDuration)
+            if (Stage == IdleMiningStage.ReadyToClaim || Stage == IdleMiningStage.Complete) return;
+            if (HasDurationElapsed())
                 SetStage(IdleMiningStage.ReadyToClaim);
         }
 
-        // Returns true once the final claim tap completes the session.
-        public bool RegisterClaimTap()
+        // Completes the session. No-op unless the session is ReadyToClaim.
+        public void Claim()
         {
-            if (Stage != IdleMiningStage.ReadyToClaim) return false;
-
-            ClaimTapsRemaining = Mathf.Max(0, ClaimTapsRemaining - 1);
-            if (ClaimTapsRemaining == 0)
-                SetStage(IdleMiningStage.Complete);
-
-            return Stage == IdleMiningStage.Complete;
+            if (Stage != IdleMiningStage.ReadyToClaim) return;
+            SetStage(IdleMiningStage.Complete);
         }
+
+        private bool HasDurationElapsed() =>
+            (DateTime.UtcNow - StartUtc).TotalSeconds >= DurationSeconds;
 
         private void SetStage(IdleMiningStage stage)
         {
