@@ -34,8 +34,9 @@ namespace SocialUniverse.UI
         {
             var asteroid = e.Asteroid;
             if (asteroid == null || asteroid.IsDepleted) return;
-            if (_mining.CurrentIdleSession != null) return;  // drone already busy on a session
-            if (_mining.ClaimingAsteroid   == asteroid) return; // final claim tap just completed
+            if (_mining.CurrentIdleSession   != null && _mining.CurrentIdleSession.Asteroid   == asteroid) return; // this asteroid is already idle-mining
+            if (_mining.CurrentActiveSession != null && _mining.CurrentActiveSession.Asteroid == asteroid) return; // this asteroid already has an active-mining minigame running
+            if (_mining.ClaimingAsteroid == asteroid) return; // final claim tap just completed
 
             _pendingAsteroid = asteroid;
             if (_titleText != null)
@@ -54,8 +55,9 @@ namespace SocialUniverse.UI
 
         private void OnActiveMineClicked()
         {
-            // Active mining mini-game arrives in a later milestone — no-op for now.
-            SULog.Info("Active mining mode chosen — mini-game coming in a later milestone", SULog.Channel.Mining);
+            if (_pendingAsteroid != null)
+                _mining.BeginActiveMining(_pendingAsteroid);
+
             ClosePrompt();
         }
 
