@@ -63,7 +63,6 @@ namespace SocialUniverse.UI
             _playerState.OnLevelChanged       += SetLevel;
             _playerState.OnFuelChanged        += SetFuel;
             _playerState.OnDisplayNameChanged += SetUsername;
-            _mining.OnPhaseChanged            += _ => RefreshMiningStatus();
             _presence.PresenceChanged         += RefreshExplorerCount;
 
             if (_planetNameText != null) _planetNameText.text = _planet.DisplayName;
@@ -147,23 +146,13 @@ namespace SocialUniverse.UI
                 {
                     IdleMiningStage.Traveling    => $"Heading to {session.Asteroid.Definition.MineralType} asteroid...",
                     IdleMiningStage.Mining       => $"Mining {session.Asteroid.Definition.MineralType}: {Mathf.RoundToInt(session.MiningProgress01 * 100f)}%",
-                    IdleMiningStage.ReadyToClaim => $"Tap the asteroid to claim! ({session.ClaimTapsRemaining} left)",
+                    IdleMiningStage.ReadyToClaim => "Tap the asteroid to claim!",
                     _                            => "Mining: —"
                 };
                 return;
             }
 
-            var drone  = _mining.Drone;
-            var target = _mining.CurrentTarget;
-
-            if (drone == null)
-            {
-                _miningStatusText.text = "Mining: —";
-                return;
-            }
-
-            string mineral = target?.Definition != null ? target.Definition.MineralType : "—";
-            _miningStatusText.text = $"Mining {mineral}: {drone.CargoAmount}/{drone.Definition.CargoCap}";
+            _miningStatusText.text = "Mining: —";
         }
 
         private void RefreshLandStatus()
