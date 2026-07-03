@@ -2081,17 +2081,20 @@ git commit -m "mining: add ActiveMiningSessionController to drive active-mining 
 
 ---
 
-### Task 12: Delete `MiningInputHandler` and `IdleMiningCalculator` (+ its test), wire DI
+### Task 12: Delete `MiningInputHandler`, `IdleMiningCalculator`, and the stale `VerifyPlayMode` debug script, wire DI
 
 **Files:**
 - Delete: `Assets/_Project/Scripts/Mining/MiningInputHandler.cs`, `.meta`
 - Delete: `Assets/_Project/Scripts/Mining/IdleMiningCalculator.cs`, `.meta`
 - Delete: `Assets/_Project/Tests/EditMode/Mining/IdleMiningCalculatorTests.cs`, `.meta`
+- Delete: `Assets/Editor/VerifyPlayMode.cs`, `.meta`
 - Modify: `Assets/_Project/Scripts/App/PlanetSceneScope.cs`
 - Modify: `Assets/_Project/Scripts/Core/SaveKeys.cs`
 
 **Interfaces:**
 - Produces: DI registrations updated so `MiningRewardCalculator`, `ActiveMiningSessionController` are registered and `IdleMiningCalculator`, `MiningInputHandler` are not.
+
+**Note added after Task 10 landed:** `Assets/Editor/VerifyPlayMode.cs` is a pre-existing, undocumented dev-only Editor menu-item script (outside `Assets/_Project`, so it wasn't caught by this plan's earlier file sweeps) that calls `MiningController.Phase`/`.Tap()`/`.CommitCargoAsync()`/`.CurrentTarget` and `DroneRuntime.CargoAmount`/`.IsCargoFull` — all removed by this plan. It is `#if UNITY_EDITOR`-gated (not shipped in builds) but still compiles as part of the Editor assembly domain, which means it silently keeps blocking every EditMode test run project-wide even after Tasks 1–11 land, unless deleted. It is not referenced by `PROGRESS.md`, `CLAUDE.md`, or any test — it's superseded by the real EditMode/PlayMode test coverage this plan adds (`MiningControllerTests`, `IdleMiningSessionTests`, `PlanetSceneFlowTests`, etc.), so deletion (not a rewrite) is the right call.
 
 - [ ] **Step 1: Delete the obsolete files**
 
@@ -2099,6 +2102,7 @@ git commit -m "mining: add ActiveMiningSessionController to drive active-mining 
 git rm Assets/_Project/Scripts/Mining/MiningInputHandler.cs Assets/_Project/Scripts/Mining/MiningInputHandler.cs.meta
 git rm Assets/_Project/Scripts/Mining/IdleMiningCalculator.cs Assets/_Project/Scripts/Mining/IdleMiningCalculator.cs.meta
 git rm Assets/_Project/Tests/EditMode/Mining/IdleMiningCalculatorTests.cs Assets/_Project/Tests/EditMode/Mining/IdleMiningCalculatorTests.cs.meta
+git rm Assets/Editor/VerifyPlayMode.cs Assets/Editor/VerifyPlayMode.cs.meta
 ```
 
 - [ ] **Step 2: Update DI registrations in `PlanetSceneScope.cs`**
@@ -2198,24 +2202,26 @@ In `Assets/_Project/Scripts/Core/SaveKeys.cs`, delete the line:
 - [ ] **Step 6: Run the full EditMode suite**
 
 Run: `"C:\Program Files\Unity\Hub\Editor\<version>\Editor\Unity.exe" -runTests -projectPath . -testResults results.xml -testPlatform EditMode -assemblyNames SocialUniverse.Tests`
-Expected: PASS for all tests. No references to `IdleMiningCalculator`/`MiningInputHandler` remain anywhere (`grep -rn "IdleMiningCalculator\|MiningInputHandler" Assets/_Project` returns nothing).
+Expected: PASS for all tests. No references to `IdleMiningCalculator`/`MiningInputHandler` remain anywhere (`grep -rn "IdleMiningCalculator\|MiningInputHandler" Assets` returns nothing — note: search all of `Assets`, not just `Assets/_Project`, since `VerifyPlayMode.cs` lived outside `Assets/_Project` and this plan's earlier sweeps missed it for exactly that reason).
 
 - [ ] **Step 7: Commit**
 
 ```bash
-git add -A Assets/_Project/Scripts/Mining Assets/_Project/Scripts/App/PlanetSceneScope.cs Assets/_Project/Scripts/Core/SaveKeys.cs Assets/_Project/Tests/EditMode/Mining
-git commit -m "mining: remove IdleMiningCalculator and MiningInputHandler, rewire scene DI"
+git add -A Assets/_Project/Scripts/Mining Assets/_Project/Scripts/App/PlanetSceneScope.cs Assets/_Project/Scripts/Core/SaveKeys.cs Assets/_Project/Tests/EditMode/Mining Assets/Editor
+git commit -m "mining: remove IdleMiningCalculator, MiningInputHandler, and stale VerifyPlayMode debug script, rewire scene DI"
 ```
 
 ---
 
-### Task 13: `MiningModePromptView` — wire the Active Mine button
+### Task 13: `MiningModePromptView` — wire the Active Mine button, fix the asteroid-selection guard
 
 **Files:**
 - Modify: `Assets/_Project/Scripts/UI/MiningModePromptView.cs`
 
 **Interfaces:**
-- Consumes: `MiningController.BeginIdleMining(Asteroid)` (unchanged), `MiningController.BeginActiveMining(Asteroid)` (Task 10).
+- Consumes: `MiningController.BeginIdleMining(Asteroid)` (unchanged), `MiningController.BeginActiveMining(Asteroid)` (Task 10), `MiningController.CurrentActiveSession` (Task 10).
+
+**Note added after Task 10 landed:** `OnAsteroidSelected`'s current guard (`if (_mining.CurrentIdleSession != null) return;`) blocks the mode prompt from appearing for ANY asteroid while ANY idle session is running anywhere on the planet — not just the asteroid currently idle-mining. That contradicts this project's design intent (active mining is meant to be usable on any *other* asteroid while idle mining runs elsewhere, confirmed in Task 10's `MiningControllerTests.BeginActiveMining_does_not_require_the_drone_and_can_run_alongside_an_idle_session`). This step narrows the guard to the specific asteroid the idle session is actually bound to, and adds an equivalent guard for an in-progress active-mining session on that same asteroid (so re-tapping an asteroid already running the tap minigame doesn't reopen the idle/active choice prompt underneath it).
 
 - [ ] **Step 1: Wire `OnActiveMineClicked`**
 
@@ -2242,15 +2248,44 @@ to:
         }
 ```
 
-- [ ] **Step 2: Verify compile**
+- [ ] **Step 2: Narrow `OnAsteroidSelected`'s guard to the specific asteroid**
+
+Change:
+
+```csharp
+        private void OnAsteroidSelected(AsteroidSelectedEvent e)
+        {
+            var asteroid = e.Asteroid;
+            if (asteroid == null || asteroid.IsDepleted) return;
+            if (_mining.CurrentIdleSession != null) return;  // drone already busy on a session
+            if (_mining.ClaimingAsteroid   == asteroid) return; // final claim tap just completed
+
+            _pendingAsteroid = asteroid;
+```
+
+to:
+
+```csharp
+        private void OnAsteroidSelected(AsteroidSelectedEvent e)
+        {
+            var asteroid = e.Asteroid;
+            if (asteroid == null || asteroid.IsDepleted) return;
+            if (_mining.CurrentIdleSession   != null && _mining.CurrentIdleSession.Asteroid   == asteroid) return; // this asteroid is already idle-mining
+            if (_mining.CurrentActiveSession != null && _mining.CurrentActiveSession.Asteroid == asteroid) return; // this asteroid already has an active-mining minigame running
+            if (_mining.ClaimingAsteroid == asteroid) return; // final claim tap just completed
+
+            _pendingAsteroid = asteroid;
+```
+
+- [ ] **Step 3: Verify compile**
 
 Run `mcp__UnityMCP__read_console` (or open Unity) and confirm no compile errors reference `MiningModePromptView`.
 
-- [ ] **Step 3: Commit**
+- [ ] **Step 4: Commit**
 
 ```bash
 git add Assets/_Project/Scripts/UI/MiningModePromptView.cs
-git commit -m "ui: wire Active Mine button to MiningController.BeginActiveMining"
+git commit -m "ui: wire Active Mine button, narrow asteroid-selection guard to per-asteroid session state"
 ```
 
 ---
