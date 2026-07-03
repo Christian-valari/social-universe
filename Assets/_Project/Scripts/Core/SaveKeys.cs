@@ -14,7 +14,6 @@ namespace SocialUniverse.Core
         public const string QuestProgress = "quest_progress";
         public const string DailyStreak   = "daily_streak";
         public const string Inventory     = "inventory";
-        public const string LastSessionEnd = "last_session_end";
         public const string LastPlanetId   = "last_planet_id";
         public const string IdleMiningSession = "idle_mining_session";
         public const string AsteroidRespawns = "asteroid_respawns";

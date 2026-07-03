@@ -109,7 +109,7 @@ namespace SocialUniverse.App
             builder.RegisterComponentInHierarchy<PlanetCameraController>();
 
             // Mining
-            builder.Register<IdleMiningCalculator>(Lifetime.Singleton);
+            builder.Register<MiningRewardCalculator>(Lifetime.Singleton);
             builder.Register<ActiveMiningMinigame>(Lifetime.Singleton);
             builder.Register<MiningController>(Lifetime.Singleton);
             builder.RegisterComponentInHierarchy<AsteroidSpawner>();
@@ -124,8 +124,8 @@ namespace SocialUniverse.App
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.EmailVerificationModal>();
 
             builder.RegisterEntryPoint<PlanetSceneBootstrapper>();
-            builder.RegisterEntryPoint<MiningInputHandler>();
             builder.RegisterEntryPoint<IdleMiningSessionController>();
+            builder.RegisterEntryPoint<ActiveMiningSessionController>();
             builder.RegisterEntryPoint<TilePurchaseHandler>();
             builder.RegisterEntryPoint<LandRegistrySyncController>();
             builder.RegisterEntryPoint<BuildModeController>();
@@ -133,19 +133,6 @@ namespace SocialUniverse.App
             builder.RegisterEntryPoint<UpkeepController>();
             builder.RegisterEntryPoint<LandSaleHandler>();
             builder.RegisterEntryPoint<PlanetPresenceController>();
-        }
-
-        private void OnApplicationPause(bool pausing)
-        {
-            if (pausing) SaveSessionEnd();
-        }
-
-        private void OnApplicationQuit() => SaveSessionEnd();
-
-        private static void SaveSessionEnd()
-        {
-            PlayerPrefs.SetString(SaveKeys.LastSessionEnd, DateTime.UtcNow.ToString("O"));
-            PlayerPrefs.Save();
         }
     }
 
@@ -233,10 +220,8 @@ namespace SocialUniverse.App
             }
 
             EventBus.Publish(new LoadingStatusEvent(0.90f));
-            var saved       = PlayerPrefs.GetString(SaveKeys.LastSessionEnd, "");
-            var lastSession = DateTime.TryParse(saved, out var dt) ? dt : DateTime.UtcNow;
-            var drone       = new DroneRuntime(droneDef);
-            _miningController.StartSession(drone, lastSession);
+            var drone = new DroneRuntime(droneDef);
+            _miningController.Initialize(drone);
 
             EventBus.Publish(new SceneReadyEvent());
         }
