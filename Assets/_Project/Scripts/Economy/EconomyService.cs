@@ -72,8 +72,26 @@ namespace SocialUniverse.Economy
             _wallet.SetStardust(result.NewBalance);
         }
 
+        public async Task<int> GrantMiningRewardAsync(int claimedCoins, float sessionDurationSec, float coinsPerSec)
+        {
+            var result = await _backend.CallAsync<MiningGrantResult>(
+                "ValidateMining",
+                new Dictionary<string, object>
+                {
+                    { "claimedCoins", claimedCoins },
+                    { "sessionDurationSec", sessionDurationSec },
+                    { "coinsPerSec", coinsPerSec }
+                });
+
+            if (result.NewBalance.HasValue)
+                _wallet.SetCoins(result.NewBalance.Value);
+
+            return result.Granted;
+        }
+
         // Thin DTOs for Cloud Code responses.
         private struct SpendResult  { public bool Success; public int NewBalance; }
         private struct GrantResult  { public int NewBalance; }
+        public struct MiningGrantResult { public int Granted; public int? NewBalance; }
     }
 }
