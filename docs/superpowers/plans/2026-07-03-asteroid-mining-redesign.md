@@ -103,7 +103,7 @@ git commit -m "config: replace mining tunables for idle/active parity, add per-p
 
 **Interfaces:**
 - Consumes: `PlanetDefinition.AsteroidFieldSize` (Task 1); `AsteroidDefinition.Rarity` (existing).
-- Produces: `Asteroid.SlotId` (`string` public getter); `Asteroid.Initialize(AsteroidDefinition definition, string slotId)` (signature change from the current single-arg `Initialize`); `AsteroidSpawner.FindBySlotId(string slotId) → Asteroid` (public); `AsteroidSpawner.DistributeFieldSize(AsteroidDefinition[] types, int fieldSize) → int[]` (public static, pure). Consumed by Task 3 (test helper), Task 11 (`MiningController` persistence).
+- Produces: `Asteroid.SlotId` (`string` public getter); `Asteroid.Initialize(AsteroidDefinition definition, string slotId)` (signature change from the current single-arg `Initialize`); `AsteroidSpawner.FindBySlotId(string slotId) → Asteroid` (public); `AsteroidSpawner.DistributeFieldSize(AsteroidDefinition[] types, int fieldSize) → int[]` (public static, pure). Consumed by Task 3 (test helper), Task 10 (`MiningController` persistence).
 
 - [ ] **Step 1: Write the failing distribution test**
 
@@ -460,7 +460,7 @@ git commit -m "mining: explicit per-planet asteroid field size + stable per-aste
 
 **Interfaces:**
 - Consumes: `EconomyConfig.IdleSecondsPerYieldUnit/MinIdleSessionSeconds/MaxIdleSessionSeconds/ActiveYieldPerTap/MinActiveTaps/MaxActiveTaps` (Task 1); `Asteroid.RemainingYield` (`int`, existing), `Asteroid.Definition.CoinsPerUnit` (`int`, existing); `Asteroid.Initialize(AsteroidDefinition, string slotId)` (Task 2 — this task's test helper needs the two-argument signature).
-- Produces: `MiningReward` struct (`TotalCoins: int`, `IdleDurationSeconds: float`, `ActiveTapsRequired: int`, `CoinsPerSec: float`); `MiningRewardCalculator(EconomyConfig config)` constructor; `MiningReward Compute(Asteroid asteroid)`. Consumed by Task 7 (`ActiveMiningMinigame`), Task 11 (`MiningController`).
+- Produces: `MiningReward` struct (`TotalCoins: int`, `IdleDurationSeconds: float`, `ActiveTapsRequired: int`, `CoinsPerSec: float`); `MiningRewardCalculator(EconomyConfig config)` constructor; `MiningReward Compute(Asteroid asteroid)`. Consumed by Task 7 (`ActiveMiningMinigame`), Task 10 (`MiningController`).
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -703,7 +703,7 @@ git commit -m "mining: drop DroneRuntime cargo API, replaced by direct per-aster
 - Test: `Assets/_Project/Tests/EditMode/Mining/IdleMiningSessionTests.cs`
 
 **Interfaces:**
-- Produces: `IdleMiningSession(Asteroid asteroid, DateTime startUtc, float durationSeconds)` constructor (replaces the old `(Asteroid, float miningDuration, int claimTapsRequired)` signature); `StartUtc` (`DateTime`, public getter), `DurationSeconds` (`float`, public getter, was `_miningDuration` private field); `MiningProgress01` (now computed live from wall-clock elapsed vs `DurationSeconds`, not accumulated `Tick` deltas); `Claim()` (replaces `RegisterClaimTap()`); removes `ClaimTapsRequired`/`ClaimTapsRemaining`. `Stage`/`OnStageChanged`/`BeginMining()`/`Tick(float deltaTime)` keep their existing names and purpose. Consumed by Task 11 (`MiningController`), Task 15 (`HUDController`), Task 12 (`IdleMiningSessionController`).
+- Produces: `IdleMiningSession(Asteroid asteroid, DateTime startUtc, float durationSeconds)` constructor (replaces the old `(Asteroid, float miningDuration, int claimTapsRequired)` signature); `StartUtc` (`DateTime`, public getter), `DurationSeconds` (`float`, public getter, was `_miningDuration` private field); `MiningProgress01` (now computed live from wall-clock elapsed vs `DurationSeconds`, not accumulated `Tick` deltas); `Claim()` (replaces `RegisterClaimTap()`); removes `ClaimTapsRequired`/`ClaimTapsRemaining`. `Stage`/`OnStageChanged`/`BeginMining()`/`Tick(float deltaTime)` keep their existing names and purpose. Consumed by Task 10 (`MiningController` and its `IdleMiningSessionController` update), Task 14 (`HUDController`).
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -905,7 +905,7 @@ git commit -m "mining: IdleMiningSession is wall-clock driven with single-tap cl
 - Test: `Assets/_Project/Tests/EditMode/Mining/ActiveMiningSessionTests.cs`
 
 **Interfaces:**
-- Produces: `ActiveMiningStage` enum (`InProgress`, `Success`, `Failed`); `ActiveMiningSession(Asteroid asteroid, int tapsRequired, int maxErrors, float tapWindowSeconds)`; `Asteroid` (getter), `TapsRequired`/`SuccessfulTaps`/`ErrorCount`/`MaxErrors` (`int`, getters), `Stage` (getter), `OnStageChanged` (`event Action<ActiveMiningStage>`), `Tick(float deltaTime)`, `RegisterHit()`, `RegisterMiss()`. Consumed by Task 7 (`ActiveMiningMinigame`), Task 11 (`MiningController`), Task 16 (`ActiveMiningMinigameView`).
+- Produces: `ActiveMiningStage` enum (`InProgress`, `Success`, `Failed`); `ActiveMiningSession(Asteroid asteroid, int tapsRequired, int maxErrors, float tapWindowSeconds)`; `Asteroid` (getter), `TapsRequired`/`SuccessfulTaps`/`ErrorCount`/`MaxErrors` (`int`, getters), `Stage` (getter), `OnStageChanged` (`event Action<ActiveMiningStage>`), `Tick(float deltaTime)`, `RegisterHit()`, `RegisterMiss()`. Consumed by Task 7 (`ActiveMiningMinigame`), Task 10 (`MiningController`), Task 15 (`ActiveMiningMinigameView`).
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -1122,7 +1122,7 @@ git commit -m "mining: add ActiveMiningSession tap-timing minigame state machine
 
 **Interfaces:**
 - Consumes: `MiningRewardCalculator.Compute(Asteroid) → MiningReward` (Task 3); `EconomyConfig.ActiveMaxErrors/ActiveTapWindowSeconds` (Task 1); `ActiveMiningSession` (Task 6).
-- Produces: `ActiveMiningMinigame(EconomyConfig config, MiningRewardCalculator rewardCalc)`; `CurrentSession` (`ActiveMiningSession`, getter); `event Action<ActiveMiningSession> OnSessionChanged`; `bool Begin(Asteroid asteroid)`; `void Tick(float deltaTime)`; `void RegisterTap(bool hitTarget)`; `void Clear()`. Consumed by Task 11 (`MiningController`).
+- Produces: `ActiveMiningMinigame(EconomyConfig config, MiningRewardCalculator rewardCalc)`; `CurrentSession` (`ActiveMiningSession`, getter); `event Action<ActiveMiningSession> OnSessionChanged`; `bool Begin(Asteroid asteroid)`; `void Tick(float deltaTime)`; `void RegisterTap(bool hitTarget)`; `void Clear()`. Consumed by Task 10 (`MiningController`).
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -1308,7 +1308,7 @@ git commit -m "mining: ActiveMiningMinigame owns session lifecycle instead of th
 - Test: `Assets/_Project/Tests/EditMode/Economy/LocalMockEconomyTests.cs` (extend existing file)
 
 **Interfaces:**
-- Produces: `IEconomyService.GrantMiningRewardAsync(int claimedCoins, float sessionDurationSec, float coinsPerSec) → Task<int>` (granted amount). Consumed by Task 11 (`MiningController`).
+- Produces: `IEconomyService.GrantMiningRewardAsync(int claimedCoins, float sessionDurationSec, float coinsPerSec) → Task<int>` (granted amount). Consumed by Task 10 (`MiningController`).
 
 - [ ] **Step 1: Write the failing test (extend the existing `LocalMockEconomyTests.cs`)**
 
@@ -1526,47 +1526,7 @@ git commit -m "economy: EconomyService.GrantMiningRewardAsync wires mining payou
 
 ---
 
-### Task 10: `ActiveMiningSessionController` (new ITickable)
-
-**Files:**
-- Create: `Assets/_Project/Scripts/Mining/ActiveMiningSessionController.cs`
-
-**Interfaces:**
-- Consumes: `MiningController.TickActiveSession(float deltaTime)` (produced by Task 11 — this task's code references a method that doesn't exist until Task 11 lands; write this task's file now, but expect a compile error until Task 11 completes, then verify together at the end of Task 11).
-
-- [ ] **Step 1: Implement `ActiveMiningSessionController.cs`**
-
-Create `Assets/_Project/Scripts/Mining/ActiveMiningSessionController.cs`:
-
-```csharp
-using UnityEngine;
-using VContainer.Unity;
-
-namespace SocialUniverse.Mining
-{
-    // Advances the active-mining minigame's tap-window timer every frame, so a target point
-    // that's never tapped still counts as a miss once its window expires. Active mining has
-    // no travel/arrival phase, so unlike IdleMiningSessionController this only drives Tick.
-    public class ActiveMiningSessionController : ITickable
-    {
-        private readonly MiningController _mining;
-
-        public ActiveMiningSessionController(MiningController mining) => _mining = mining;
-
-        public void Tick() => _mining.TickActiveSession(Time.deltaTime);
-    }
-}
-```
-
-- [ ] **Step 2: Note the expected compile state**
-
-This will not compile standalone yet (`MiningController.TickActiveSession` doesn't exist until Task 11). Do not attempt to run tests for this task in isolation — proceed directly to Task 11, which both defines `TickActiveSession` and re-verifies the whole `Mining` assembly compiles.
-
-- [ ] **Step 3: Commit** (bundled with Task 11's commit — see Task 11 Step 7; do not commit this file alone)
-
----
-
-### Task 11: `MiningController` rewrite — idle persistence + active orchestration
+### Task 10: `MiningController` rewrite — idle persistence + active orchestration
 
 **Files:**
 - Modify: `Assets/_Project/Scripts/Mining/MiningController.cs`
@@ -1574,8 +1534,8 @@ This will not compile standalone yet (`MiningController.TickActiveSession` doesn
 
 **Interfaces:**
 - Consumes: `MiningRewardCalculator.Compute` (Task 3), `AsteroidSpawner.FindBySlotId`/`ScheduleRespawn` (Task 2), `IdleMiningSession` new ctor/`Claim` (Task 5), `ActiveMiningMinigame.Begin/Tick/RegisterTap/Clear/CurrentSession/OnSessionChanged` (Task 7), `IEconomyService.GrantMiningRewardAsync` (Task 8/9), `SaveKeys` (extended in this task).
-- Produces: `MiningController.Initialize(DroneRuntime drone)` (replaces `StartSession(DroneRuntime, DateTime)`); `Drone` (getter, unchanged); `CurrentIdleSession` (getter, unchanged name); `CurrentActiveSession` (new getter); `ClaimingAsteroid` (getter, unchanged); `event Action<IdleMiningSession> OnIdleSessionChanged` (unchanged); `event Action<ActiveMiningSession> OnActiveSessionChanged` (new); `bool BeginIdleMining(Asteroid)` (unchanged signature); `Task ClaimIdleSessionAsync(Asteroid)` (replaces `RegisterIdleClaimTapAsync`); `bool BeginActiveMining(Asteroid)` (new); `void TickActiveSession(float deltaTime)` (new, consumed by Task 10); `void RegisterActiveTap(bool hitTarget)` (new). Removes `MiningPhase`, `Phase`, `OnPhaseChanged`, `Tap()`, `CommitCargoAsync()`, `PickNextTarget()`, `NotifyIdleSessionStageChanged()`, `CurrentTarget`.
-- Also modifies `SaveKeys.cs`: adds `IdleMiningSession` key, removes `LastSessionEnd` (no longer read/written by anything after this task — verified in Task 13).
+- Produces: `MiningController.Initialize(DroneRuntime drone)` (replaces `StartSession(DroneRuntime, DateTime)`); `Drone` (getter, unchanged); `CurrentIdleSession` (getter, unchanged name); `CurrentActiveSession` (new getter); `ClaimingAsteroid` (getter, unchanged); `event Action<IdleMiningSession> OnIdleSessionChanged` (unchanged); `event Action<ActiveMiningSession> OnActiveSessionChanged` (new); `bool BeginIdleMining(Asteroid)` (unchanged signature); `Task ClaimIdleSessionAsync(Asteroid)` (replaces `RegisterIdleClaimTapAsync`); `bool BeginActiveMining(Asteroid)` (new); `void TickActiveSession(float deltaTime)` (new, consumed by Task 11); `void RegisterActiveTap(bool hitTarget)` (new). Removes `MiningPhase`, `Phase`, `OnPhaseChanged`, `Tap()`, `CommitCargoAsync()`, `PickNextTarget()`, `NotifyIdleSessionStageChanged()`, `CurrentTarget`.
+- Also modifies `SaveKeys.cs`: adds `IdleMiningSession` key, removes `LastSessionEnd` (no longer read/written by anything after this task — verified in Task 12).
 
 - [ ] **Step 1: Add the new `SaveKeys` entry**
 
@@ -1585,7 +1545,7 @@ In `Assets/_Project/Scripts/Core/SaveKeys.cs`, add:
         public const string IdleMiningSession = "idle_mining_session";
 ```
 
-(Leave `LastSessionEnd` in place for now — Task 13 removes it once `PlanetSceneScope`'s write side is also deleted, to keep this task focused on `MiningController`.)
+(Leave `LastSessionEnd` in place for now — Task 12 removes it once `PlanetSceneScope`'s write side is also deleted, to keep this task focused on `MiningController`.)
 
 - [ ] **Step 2: Write the failing tests**
 
@@ -1998,7 +1958,7 @@ namespace SocialUniverse.Mining
 - [ ] **Step 5: Run the `MiningControllerTests` and the whole EditMode `Mining`/`Economy` suites**
 
 Run: `"C:\Program Files\Unity\Hub\Editor\<version>\Editor\Unity.exe" -runTests -projectPath . -testResults results.xml -testPlatform EditMode -assemblyNames SocialUniverse.Tests`
-Expected: PASS for `MiningControllerTests` and all previously-passing tests from Tasks 2–9. `ActiveMiningSessionController.cs` (Task 10) now compiles cleanly since `TickActiveSession` exists. `IdleMiningSessionController.cs`, `MiningInputHandler.cs`, `MiningModePromptView.cs`, `HUDController.cs`, `PlanetSceneScope.cs`, `PlanetSceneBootstrapper` still reference removed members — expected, fixed in Tasks 12–15.
+Expected: PASS for `MiningControllerTests` and all previously-passing tests from Tasks 2–9. `IdleMiningSessionController.cs` still references the old session API at this point — fixed in Step 6 below, within this same task. `MiningInputHandler.cs`, `MiningModePromptView.cs`, `HUDController.cs`, `PlanetSceneScope.cs`, `PlanetSceneBootstrapper` also still reference removed members — expected, fixed in Tasks 12–15.
 
 - [ ] **Step 6: Update `IdleMiningSessionController.cs` to match the simplified session API**
 
@@ -2064,14 +2024,59 @@ namespace SocialUniverse.Mining
 
 (This drops the dead `_vfx`/`SpawnVfx`/`DespawnVfx` members — they were already commented out and unused in the pre-existing code, and this file's `Dispose()` no longer needs to clean up VFX that's never spawned.)
 
-- [ ] **Step 7: Re-run the full EditMode suite and commit Tasks 10 + 11 together**
+- [ ] **Step 7: Re-run the full EditMode suite and commit**
 
 Run: `"C:\Program Files\Unity\Hub\Editor\<version>\Editor\Unity.exe" -runTests -projectPath . -testResults results.xml -testPlatform EditMode -assemblyNames SocialUniverse.Tests`
 Expected: PASS for all tests written so far.
 
 ```bash
-git add Assets/_Project/Scripts/Mining/MiningController.cs Assets/_Project/Scripts/Mining/ActiveMiningSessionController.cs Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs Assets/_Project/Scripts/Core/SaveKeys.cs Assets/_Project/Tests/EditMode/Mining/MiningControllerTests.cs Assets/_Project/Tests/EditMode/Mining/MiningControllerTests.cs.meta
+git add Assets/_Project/Scripts/Mining/MiningController.cs Assets/_Project/Scripts/Mining/IdleMiningSessionController.cs Assets/_Project/Scripts/Core/SaveKeys.cs Assets/_Project/Tests/EditMode/Mining/MiningControllerTests.cs Assets/_Project/Tests/EditMode/Mining/MiningControllerTests.cs.meta
 git commit -m "mining: MiningController orchestrates idle persistence + active mining, drops cargo/free-tap"
+```
+
+---
+
+### Task 11: `ActiveMiningSessionController` (new ITickable)
+
+**Files:**
+- Create: `Assets/_Project/Scripts/Mining/ActiveMiningSessionController.cs`
+
+**Interfaces:**
+- Consumes: `MiningController.TickActiveSession(float deltaTime)` (Task 10, already exists by this point).
+
+- [ ] **Step 1: Implement `ActiveMiningSessionController.cs`**
+
+Create `Assets/_Project/Scripts/Mining/ActiveMiningSessionController.cs`:
+
+```csharp
+using UnityEngine;
+using VContainer.Unity;
+
+namespace SocialUniverse.Mining
+{
+    // Advances the active-mining minigame's tap-window timer every frame, so a target point
+    // that's never tapped still counts as a miss once its window expires. Active mining has
+    // no travel/arrival phase, so unlike IdleMiningSessionController this only drives Tick.
+    public class ActiveMiningSessionController : ITickable
+    {
+        private readonly MiningController _mining;
+
+        public ActiveMiningSessionController(MiningController mining) => _mining = mining;
+
+        public void Tick() => _mining.TickActiveSession(Time.deltaTime);
+    }
+}
+```
+
+- [ ] **Step 2: Verify the project compiles**
+
+Run `mcp__UnityMCP__read_console` (or open Unity) and confirm no compile errors reference `ActiveMiningSessionController`. It is not yet registered in DI (that happens in Task 12 alongside the other Mining DI cleanup), so it isn't ticking yet — this task only needs to compile cleanly against `MiningController.TickActiveSession`, which Task 10 already produced.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add Assets/_Project/Scripts/Mining/ActiveMiningSessionController.cs
+git commit -m "mining: add ActiveMiningSessionController to drive active-mining tap-window timeouts"
 ```
 
 ---
@@ -2210,7 +2215,7 @@ git commit -m "mining: remove IdleMiningCalculator and MiningInputHandler, rewir
 - Modify: `Assets/_Project/Scripts/UI/MiningModePromptView.cs`
 
 **Interfaces:**
-- Consumes: `MiningController.BeginIdleMining(Asteroid)` (unchanged), `MiningController.BeginActiveMining(Asteroid)` (Task 11).
+- Consumes: `MiningController.BeginIdleMining(Asteroid)` (unchanged), `MiningController.BeginActiveMining(Asteroid)` (Task 10).
 
 - [ ] **Step 1: Wire `OnActiveMineClicked`**
 
@@ -2356,7 +2361,7 @@ git commit -m "ui: HUDController drops cargo readout and OnPhaseChanged, idle st
 - Create: `Assets/_Project/Scripts/UI/ActiveMiningMinigameView.cs`
 
 **Interfaces:**
-- Consumes: `MiningController.OnActiveSessionChanged` (Task 11), `MiningController.CurrentActiveSession` (Task 11), `MiningController.RegisterActiveTap(bool)` (Task 11).
+- Consumes: `MiningController.OnActiveSessionChanged` (Task 10), `MiningController.CurrentActiveSession` (Task 10), `MiningController.RegisterActiveTap(bool)` (Task 10).
 
 - [ ] **Step 1: Implement the view**
 
@@ -2506,7 +2511,7 @@ git commit -m "scene: wire ActiveMiningMinigameView overlay panel into the Plane
 - Modify: `Assets/_Project/Tests/PlayMode/PlanetSceneFlowTests.cs`
 
 **Interfaces:**
-- Consumes: `MiningController.Initialize` (Task 11, called by `PlanetSceneBootstrapper` — already wired by Task 12), `MiningController.BeginIdleMining`/`ClaimIdleSessionAsync` (Task 11), `AsteroidSpawner.ActiveAsteroids` (existing).
+- Consumes: `MiningController.Initialize` (Task 10, called by `PlanetSceneBootstrapper` — already wired by Task 12), `MiningController.BeginIdleMining`/`ClaimIdleSessionAsync` (Task 10), `AsteroidSpawner.ActiveAsteroids` (existing).
 
 - [ ] **Step 1: Replace the `SetUp` mining-readiness wait and the cargo test**
 
