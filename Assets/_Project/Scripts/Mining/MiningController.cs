@@ -49,7 +49,8 @@ namespace SocialUniverse.Mining
 
         public bool BeginIdleMining(Asteroid asteroid)
         {
-            if (asteroid == null || asteroid.IsDepleted || CurrentIdleSession != null)
+            if (asteroid == null || asteroid.IsDepleted || CurrentIdleSession != null ||
+                (_activeMinigame.CurrentSession != null && _activeMinigame.CurrentSession.Asteroid == asteroid))
                 return false;
 
             var reward = _rewardCalc.Compute(asteroid);
@@ -92,7 +93,13 @@ namespace SocialUniverse.Mining
 
         // ---- Active mining ----
 
-        public bool BeginActiveMining(Asteroid asteroid) => _activeMinigame.Begin(asteroid);
+        public bool BeginActiveMining(Asteroid asteroid)
+        {
+            if (CurrentIdleSession != null && CurrentIdleSession.Asteroid == asteroid)
+                return false;
+
+            return _activeMinigame.Begin(asteroid);
+        }
 
         public void TickActiveSession(float deltaTime) => _activeMinigame.Tick(deltaTime);
 

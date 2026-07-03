@@ -124,6 +124,26 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
+        public void BeginIdleMining_fails_when_the_same_asteroid_already_has_an_active_mining_session()
+        {
+            var asteroid = MakeAndRegisterAsteroid("slot_0", 10);
+
+            Assert.IsTrue(_mining.BeginActiveMining(asteroid));
+            Assert.IsFalse(_mining.BeginIdleMining(asteroid));
+            Assert.IsNull(_mining.CurrentIdleSession);
+        }
+
+        [Test]
+        public void BeginActiveMining_fails_when_the_same_asteroid_already_has_an_idle_mining_session()
+        {
+            var asteroid = MakeAndRegisterAsteroid("slot_0", 10);
+
+            Assert.IsTrue(_mining.BeginIdleMining(asteroid));
+            Assert.IsFalse(_mining.BeginActiveMining(asteroid));
+            Assert.IsNull(_mining.CurrentActiveSession);
+        }
+
+        [Test]
         public async Task Active_mining_success_grants_full_yield()
         {
             var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 10);
