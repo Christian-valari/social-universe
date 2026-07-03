@@ -4,12 +4,12 @@
 // Full anti-cheat with a server-stored session token is scheduled for M3.
 const { CurrenciesApi } = require("@unity-services/economy-2.5");
 
-const ABSOLUTE_SESSION_CAP_SECONDS = 300; // 5-minute hard cap per session
+const ABSOLUTE_SESSION_CAP_SECONDS = 1800; // Must be >= EconomyConfig.MaxIdleSessionSeconds (client's clamp ceiling) or legitimate long-duration idle/active claims get under-granted here.
 const ABSOLUTE_COINS_CAP           = 10000; // hard upper bound per call
 
 /**
  * @param {number} claimedCoins - Coins the client claims to have mined this session. Must be a positive integer.
- * @param {number} [sessionDurationSec] - Session length in seconds. Optional, defaults to 30 and is capped at 300.
+ * @param {number} [sessionDurationSec] - Session length in seconds. Optional, defaults to 30 and is capped at 1800.
  * @param {number} [coinsPerSec] - Coin yield rate per second for the session. Optional, defaults to 1.
  */
 module.exports = async ({ params, context, logger }) => {
