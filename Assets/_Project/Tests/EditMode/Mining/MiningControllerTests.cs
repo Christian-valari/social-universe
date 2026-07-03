@@ -1,14 +1,30 @@
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SocialUniverse.Config;
 using SocialUniverse.Economy;
 using SocialUniverse.Mining;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace SocialUniverse.Tests
 {
+    // Minimal IEconomyService test double that always throws from GrantMiningRewardAsync, to
+    // reproduce a fire-and-forget grant call failing (e.g. network error) after the asteroid
+    // has already been mined-out and the session torn down.
+    public class ThrowingEconomyService : IEconomyService
+    {
+        public Task<Wallet> GetWalletAsync() => throw new System.NotSupportedException("not used by this test");
+        public Task<bool>   SpendCoinsAsync(int amount) => throw new System.NotSupportedException("not used by this test");
+        public Task         GrantCoinsAsync(int amount) => throw new System.NotSupportedException("not used by this test");
+        public Task         GrantStardustAsync(int amount) => throw new System.NotSupportedException("not used by this test");
+
+        public Task<int> GrantMiningRewardAsync(int claimedCoins, float sessionDurationSec, float coinsPerSec)
+            => throw new System.InvalidOperationException("simulated network failure");
+    }
+
     public class MiningControllerTests
     {
         private EconomyConfig          _config;
@@ -208,6 +224,38 @@ namespace SocialUniverse.Tests
             Assert.IsNull(_mining.CurrentIdleSession);
 
             Object.DestroyImmediate(droneDef);
+        }
+
+        // Regression test: previously, an exception thrown out of the fire-and-forget
+        // GrantMiningRewardAsync call (network error, backend hiccup) inside
+        // ClaimIdleSessionAsync was unhandled, which meant the ScheduleRespawn call that runs
+        // immediately after it never executed — the asteroid was left mined-out with no
+        // payout AND no respawn scheduled, effectively lost forever. The fix wraps the grant
+        // call in try/catch so the respawn still happens (the player does lose the coins on a
+        // genuine failure — that tradeoff is accepted).
+        [Test]
+        public async Task ClaimIdleSessionAsync_still_schedules_respawn_when_the_grant_call_throws()
+        {
+            var throwingEconomy = new ThrowingEconomyService();
+            var mining = new MiningController(throwingEconomy, _rewardCalc, _activeMinigame, _spawner, _config, _planet);
+
+            var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 20);
+            Assert.IsTrue(mining.BeginIdleMining(asteroid));
+
+            await Task.Delay(100);
+            mining.CurrentIdleSession.Tick(0f);
+            Assert.AreEqual(IdleMiningStage.ReadyToClaim, mining.CurrentIdleSession.Stage);
+
+            LogAssert.Expect(LogType.Error, new Regex("GrantMiningRewardAsync failed for idle claim.*"));
+
+            // The exception from GrantMiningRewardAsync must be caught internally — it must
+            // not propagate out of ClaimIdleSessionAsync itself (which is invoked
+            // fire-and-forget in production and would otherwise silently swallow it anyway).
+            Assert.DoesNotThrowAsync(async () => await mining.ClaimIdleSessionAsync(asteroid));
+
+            Assert.IsNull(mining.CurrentIdleSession);
+            Assert.IsNull(_spawner.FindBySlotId("slot_0"), "the claimed asteroid must no longer be active/findable by its old slot");
+            Assert.IsTrue(_spawner.NextRespawnUtc.HasValue, "asteroid must still be scheduled for respawn even though the grant call failed");
         }
     }
 }

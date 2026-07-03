@@ -83,8 +83,18 @@ namespace SocialUniverse.Mining
 
             if (coins > 0)
             {
-                int granted = await _economy.GrantMiningRewardAsync(coins, reward.IdleDurationSeconds, reward.CoinsPerSec);
-                SULog.Info($"Idle session claimed: +{mined} {asteroid.Definition.MineralType} -> {granted} coins", SULog.Channel.Mining);
+                try
+                {
+                    int granted = await _economy.GrantMiningRewardAsync(coins, reward.IdleDurationSeconds, reward.CoinsPerSec);
+                    SULog.Info($"Idle session claimed: +{mined} {asteroid.Definition.MineralType} -> {granted} coins", SULog.Channel.Mining);
+                }
+                catch (Exception ex)
+                {
+                    // Asteroid is already mined-out and the session already torn down (intentional,
+                    // for re-entrancy) — if the grant throws, the player loses the coins, but the
+                    // asteroid must still respawn below instead of being stranded forever.
+                    SULog.Error($"GrantMiningRewardAsync failed for idle claim on {asteroid.Definition.MineralType} ({coins} coins): {ex.Message}", SULog.Channel.Mining);
+                }
             }
 
             ClaimingAsteroid = null;
@@ -127,8 +137,18 @@ namespace SocialUniverse.Mining
 
             if (coins > 0)
             {
-                int granted = await _economy.GrantMiningRewardAsync(coins, reward.IdleDurationSeconds, reward.CoinsPerSec);
-                SULog.Info($"Active mining success: +{mined} {asteroid.Definition.MineralType} -> {granted} coins", SULog.Channel.Mining);
+                try
+                {
+                    int granted = await _economy.GrantMiningRewardAsync(coins, reward.IdleDurationSeconds, reward.CoinsPerSec);
+                    SULog.Info($"Active mining success: +{mined} {asteroid.Definition.MineralType} -> {granted} coins", SULog.Channel.Mining);
+                }
+                catch (Exception ex)
+                {
+                    // Same reasoning as ClaimIdleSessionAsync: the asteroid is already mined-out
+                    // (intentional, for re-entrancy) — if the grant throws, the player loses the
+                    // coins, but the asteroid must still respawn below instead of being stranded.
+                    SULog.Error($"GrantMiningRewardAsync failed for active-mining success on {asteroid.Definition.MineralType} ({coins} coins): {ex.Message}", SULog.Channel.Mining);
+                }
             }
 
             _spawner.ScheduleRespawn(asteroid, _config.AsteroidRespawnHours);
