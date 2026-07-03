@@ -44,16 +44,14 @@ Add:
 
 Keep unchanged: `AsteroidRespawnHours`.
 
-**Formulas:**
+A new `MiningRewardCalculator` (Mining/) is the single source of truth for these derived numbers, given an `Asteroid` and `EconomyConfig`:
 ```
-idleDurationSeconds = clamp(asteroid.RemainingYield * IdleSecondsPerYieldUnit,
-                             MinIdleSessionSeconds, MaxIdleSessionSeconds)
-
-activeTapsRequired = clamp(ceil(asteroid.RemainingYield / ActiveYieldPerTap),
-                            MinActiveTaps, MaxActiveTaps)
+totalCoins           = asteroid.RemainingYield * asteroid.Definition.CoinsPerUnit
+idleDurationSeconds  = clamp(asteroid.RemainingYield * IdleSecondsPerYieldUnit, MinIdleSessionSeconds, MaxIdleSessionSeconds)
+activeTapsRequired   = clamp(ceil(asteroid.RemainingYield / ActiveYieldPerTap), MinActiveTaps, MaxActiveTaps)
+coinsPerSec          = totalCoins / idleDurationSeconds
 ```
-
-Both derive from the same `RemainingYield`, so a given asteroid's idle duration and active tap count are two views of the same underlying size — this is what keeps total reward equal between modes.
+`coinsPerSec` is computed per-claim from the asteroid's actual `totalCoins` and `idleDurationSeconds` — **not** a fixed per-asteroid-type constant. This matters because `idleDurationSeconds` is clamped: for a very high-yield asteroid, `idleDurationSeconds` may sit at `MaxIdleSessionSeconds` even though `RemainingYield * IdleSecondsPerYieldUnit` would be larger. A fixed `coinsPerSec` (e.g. `CoinsPerUnit / IdleSecondsPerYieldUnit`) would then make `sessionDurationSec * coinsPerSec < totalCoins`, causing the server to under-grant a legitimate full-yield claim. Computing `coinsPerSec = totalCoins / idleDurationSeconds` per claim makes `sessionDurationSec * coinsPerSec` always equal `totalCoins` exactly, so the server cap never clips a correct claim regardless of clamping.
 
 ### `PlanetDefinition`
 
@@ -77,15 +75,21 @@ Choosing "Active Mine" in `MiningModePromptView`:
    - Hit within the window → that portion of the asteroid is mined, next point spawns.
    - Miss (tap wrong spot) or timeout (window expires) → 1 error.
 3. Three errors (`ActiveMaxErrors`) → **fail**: asteroid is consumed with zero payout and scheduled for respawn via the existing `AsteroidSpawner.ScheduleRespawn`, same cooldown as a successful claim.
-4. Reaching `activeTapsRequired` successful hits (formula in §3) → **success**: asteroid's full `RemainingYield` is mined instantly, coins granted via the same `IEconomyService.GrantCoinsAsync` path idle claiming already uses, and the asteroid is scheduled for respawn.
+4. Reaching `activeTapsRequired` successful hits (from `MiningRewardCalculator`, §3) → **success**: asteroid's full `RemainingYield` is mined instantly, coins granted via the same `IEconomyService.GrantMiningRewardAsync` path idle claiming uses (§6), and the asteroid is scheduled for respawn.
 
 New types: an `ActiveMiningSession` (state: current error count, taps remaining, current target point, elapsed-in-window) and an `ActiveMiningMinigame` rewrite (replacing today's free-tap stub) that judges hit/miss and drives point spawning. Neither references `DroneRuntime`.
 
 ## 6. Server-authoritative validation
 
-`ServerCode/ValidateMining.js` currently caps the granted payout at `sessionDurationSec × coinsPerSec`, using the session's *actual elapsed wall-clock time* as an anti-cheat bound. This assumption breaks for active mining, which is deliberately near-instant — a naive call would have the server clamp the payout down to almost nothing.
+**Correction to an assumption made earlier in this design:** `ServerCode/ValidateMining.js` already exists and computes a sensible cap (`min(claimedCoins, sessionDurationSec × coinsPerSec, ABSOLUTE_COINS_CAP)`), but it is **not currently called by any gameplay code** — it's reachable only from `CloudCodeTestHarness`, a dev-only debug component. The live payout path (`IdleMiningSession` → `MiningController.RegisterIdleClaimTapAsync` → `IEconomyService.GrantCoinsAsync(amount)`) calls a different Cloud Code function, `GrantCoins.js`, which has no session-based validation at all — it only sanity-caps at a flat 100,000 coins per call and otherwise grants whatever `amount` the client sends. This is a real gap against Architecture Rule 1 ("the client never mints currency... it requests; the server validates and commits") that predates this feature.
 
-**Fix:** for both idle claims and active-mining success, the client sends the asteroid's *equivalent idle duration* (the same `idleDurationSeconds` formula from §3, computed from the asteroid's known `RemainingYield`/tier) as `sessionDurationSec`, not the actual real-time elapsed. The server's existing cap logic (`min(claimedCoins, sessionDurationSec * coinsPerSec, ABSOLUTE_COINS_CAP)`) is unchanged — only what the client reports as the duration basis changes, and it reports the game-design-intended duration rather than literal clock time. This keeps the server as the source of truth on payout (Architecture Rule 1) while honoring "same reward regardless of mode, active is just faster."
+Since this rework already touches the entire mining payout path, it fixes this by wiring both idle-claim and active-mining-success payouts through `ValidateMining` for real:
+
+- `IEconomyService` gains `Task<int> GrantMiningRewardAsync(int claimedCoins, float sessionDurationSec, float coinsPerSec)`.
+- `EconomyService` (real/M2) implements it by calling the Cloud Code function `"ValidateMining"` with those three params (matching `ValidateMining.js`'s existing signature and the param names `CloudCodeTestHarness` already uses), then applies the returned `newBalance` to the local `Wallet` (guarding against the function's `newBalance: null` response when `granted` is `0`).
+- `LocalMockEconomy` (M1 mock) implements it by granting `claimedCoins` directly to the wallet with no validation, consistent with how it already implements `GrantCoinsAsync`.
+- Both the idle-claim path and the active-mining-success path call `GrantMiningRewardAsync` with `claimedCoins = totalCoins`, `sessionDurationSec = idleDurationSeconds`, `coinsPerSec = coinsPerSec` — all three taken from the same `MiningRewardCalculator` result (§3), so the server always receives a cap basis that exactly matches the intended full payout, regardless of which mode was used or how fast the player finished. This is what makes "same reward regardless of mode" hold under server validation, not just in client-side math.
+- The now-superfluous `GrantCoins.js` path is left as-is (still used elsewhere, e.g. land-sale flows are out of scope here) — this spec only changes what mining payouts call.
 
 ## 7. Removals
 
@@ -104,11 +108,11 @@ New types: an `ActiveMiningSession` (state: current error count, taps remaining,
 ## 9. Testing plan
 
 **EditMode:**
-- Idle duration formula (`clamp` behavior at both bounds, mid-range scaling)
-- Active tap-count formula (same)
+- `MiningRewardCalculator`: idle duration formula (`clamp` behavior at both bounds, mid-range scaling), active tap-count formula (same), `coinsPerSec` computation (verify `sessionDurationSec * coinsPerSec == totalCoins` exactly, including at both clamp bounds)
 - `ActiveMiningSession` / `ActiveMiningMinigame` state machine: hit advances progress, miss/timeout increments errors, 3rd error fails, reaching required taps succeeds
 - Asteroid field-size distribution: total spawned always equals `AsteroidFieldSize`, weighted correctly by rarity, largest-remainder rounding doesn't drop or double-count units
 - Idle-session persistence reconciliation: simulate elapsed real time across a save/load boundary and assert correct resumed stage (still mining vs. ready-to-claim vs. session discarded if slot is gone)
+- `LocalMockEconomy.GrantMiningRewardAsync`: grants `claimedCoins` directly to the wallet
 
 **Removed:** `IdleMiningCalculatorTests` (class under test no longer exists).
 
