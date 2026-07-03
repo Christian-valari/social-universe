@@ -31,6 +31,12 @@ namespace SocialUniverse.Economy
             return Task.CompletedTask;
         }
 
+        public Task<int> GrantMiningRewardAsync(int claimedCoins, float sessionDurationSec, float coinsPerSec)
+        {
+            _wallet.SetCoins(_wallet.Coins + claimedCoins);
+            return Task.FromResult(claimedCoins);
+        }
+
         public Task GrantStardustAsync(int amount)
         {
             _wallet.SetStardust(_wallet.Stardust + amount);

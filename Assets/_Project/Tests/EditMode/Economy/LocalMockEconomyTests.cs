@@ -54,6 +54,15 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
+        public async Task GrantMiningRewardAsync_grants_claimedCoins_directly_with_no_validation()
+        {
+            int granted = await _economy.GrantMiningRewardAsync(claimedCoins: 75, sessionDurationSec: 30f, coinsPerSec: 2.5f);
+
+            Assert.AreEqual(75, granted);
+            Assert.AreEqual(_config.StartingCoins + 75, _wallet.Coins);
+        }
+
+        [Test]
         public async Task GrantStardustAsync_adds_to_stardust()
         {
             await _economy.GrantStardustAsync(3);
