@@ -661,7 +661,7 @@ git commit -m "mining: add MiningRewardCalculator as shared idle/active/payout f
 - [ ] **Step 1: Verify no other consumers depend on the cargo API before removing it**
 
 Run: `grep -rn "CargoAmount\|IsCargoFull\|AddCargo\|EmptyCargo" Assets/_Project/Scripts Assets/_Project/Tests`
-Expected output at this point in the plan: only `MiningController.cs`, `MiningInputHandler.cs`, `IdleMiningCalculatorTests.cs`, and `HUDController.cs` — all of which are rewritten or deleted in Tasks 9–15 of this plan. If anything else shows up, stop and re-scope before proceeding.
+Expected output at this point in the plan: `MiningController.cs`, `MiningInputHandler.cs`, `IdleMiningCalculatorTests.cs`, `HUDController.cs` — plus three more this list originally missed: `ActiveMiningMinigame.cs` (its old `Tap()` method calls `drone.AddCargo`/`.IsCargoFull`, fixed in Task 7), `IdleMiningCalculator.cs` (its `Calculate()` reads `drone.CargoAmount`, deleted in Task 12), and `PlanetSceneFlowTests.cs` (the old cargo-based PlayMode test, rewritten in Task 17). All seven are expected and are rewritten or deleted by later tasks in this plan. If a file outside this set of seven shows up, stop and re-scope before proceeding.
 
 - [ ] **Step 2: Simplify `DroneRuntime.cs`**
 
