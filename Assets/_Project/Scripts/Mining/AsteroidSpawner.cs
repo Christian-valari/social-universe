@@ -115,7 +115,13 @@ namespace SocialUniverse.Mining
         public void ClearAll()
         {
             foreach (var a in _active)
-                if (a != null) Destroy(a.gameObject);
+            {
+                if (a == null) continue;
+                if (Application.isPlaying)
+                    Destroy(a.gameObject);
+                else
+                    DestroyImmediate(a.gameObject);
+            }
             _active.Clear();
         }
 
@@ -128,7 +134,10 @@ namespace SocialUniverse.Mining
             var definition = asteroid.Definition;
             var slotId      = asteroid.SlotId;
             _active.Remove(asteroid);
-            Destroy(asteroid.gameObject);
+            if (Application.isPlaying)
+                Destroy(asteroid.gameObject);
+            else
+                DestroyImmediate(asteroid.gameObject);
 
             _pending.Add(new PendingRespawn
             {
