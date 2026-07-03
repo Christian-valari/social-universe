@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,18 +16,19 @@ using SocialUniverse.World;
 namespace SocialUniverse.Tests
 {
     // Covers the M1 exit-criteria loop end to end against LocalMock services:
-    // mining a tap session pays out coins, and buying a tile transfers ownership.
+    // idle mining a claimed asteroid pays out coins, and buying a tile transfers ownership.
     public class PlanetSceneFlowTests
     {
         private const string PlanetScenePath = "Assets/Scenes/Planet.unity";
 
-        private PlanetSceneScope  _scope;
-        private MiningController  _mining;
-        private Wallet            _wallet;
-        private HexasphereManager _hex;
-        private LandPurchaseService _purchaseService;
-        private EconomyConfig     _economyConfig;
-        private PlanetDefinition  _planet;
+        private PlanetSceneScope     _scope;
+        private MiningController     _mining;
+        private AsteroidSpawner      _spawner;
+        private Wallet               _wallet;
+        private HexasphereManager    _hex;
+        private LandPurchaseService  _purchaseService;
+        private EconomyConfig        _economyConfig;
+        private PlanetDefinition     _planet;
 
         [UnitySetUp]
         public IEnumerator SetUp()
@@ -37,41 +40,63 @@ namespace SocialUniverse.Tests
             Assert.IsNotNull(_scope.Container, "PlanetSceneScope.Container not initialized");
 
             _mining          = (MiningController)_scope.Container.Resolve(typeof(MiningController));
+            _spawner         = (AsteroidSpawner)_scope.Container.Resolve(typeof(AsteroidSpawner));
             _wallet          = (Wallet)_scope.Container.Resolve(typeof(Wallet));
             _hex             = (HexasphereManager)_scope.Container.Resolve(typeof(HexasphereManager));
             _purchaseService = (LandPurchaseService)_scope.Container.Resolve(typeof(LandPurchaseService));
             _economyConfig   = (EconomyConfig)_scope.Container.Resolve(typeof(EconomyConfig));
             _planet          = (PlanetDefinition)_scope.Container.Resolve(typeof(PlanetDefinition));
 
-            // Mining session starts as soon as the scene boots; wait for an active target.
-            while (_mining.Phase != MiningPhase.Active || _mining.CurrentTarget == null)
+            // _economyConfig is the actual project asset (tuned for real play — durations can
+            // run into minutes for higher-yield asteroids). Force every idle session in this
+            // test run to a fixed 1-second duration by mutating the resolved in-memory instance's
+            // private fields directly, the same reflection pattern the EditMode tests in this
+            // plan already use. This only changes the runtime object held by this test session —
+            // it is not saved back to the .asset file on disk (no AssetDatabase.SaveAssets call).
+            SetField(_economyConfig, "_idleSecondsPerYieldUnit", 0f);
+            SetField(_economyConfig, "_minIdleSessionSeconds", 1f);
+            SetField(_economyConfig, "_maxIdleSessionSeconds", 1f);
+
+            // Asteroids spawn synchronously during PlanetSceneBootstrapper.Start(); wait for the field to populate.
+            float timeout = Time.realtimeSinceStartup + 5f;
+            while (_spawner.ActiveAsteroids.Count == 0 && Time.realtimeSinceStartup < timeout)
                 yield return null;
         }
 
-        [UnityTest]
-        public IEnumerator Mining_taps_fill_cargo_and_commit_grants_coins()
-        {
-            var drone        = _mining.Drone;
-            int coinsPerUnit = _mining.CurrentTarget.Definition.CoinsPerUnit;
-            int coinsBefore  = _wallet.Coins;
+        private static void SetField(object target, string field, object value) =>
+            target.GetType().GetField(field, BindingFlags.NonPublic | BindingFlags.Instance).SetValue(target, value);
 
-            while (!drone.IsCargoFull)
+        [UnityTest]
+        public IEnumerator Idle_mining_a_claimed_asteroid_grants_coins_and_schedules_respawn()
+        {
+            var asteroid = _spawner.ActiveAsteroids.FirstOrDefault(a => !a.IsDepleted);
+            Assert.IsNotNull(asteroid, "Expected at least one active asteroid after scene boot");
+
+            int expectedCoins = asteroid.RemainingYield * asteroid.Definition.CoinsPerUnit;
+            int coinsBefore   = _wallet.Coins;
+
+            Assert.IsTrue(_mining.BeginIdleMining(asteroid));
+
+            // SetUp forced a fixed 1-second duration, so this only ever waits ~1 real second
+            // regardless of the asteroid's actual yield or this scene's production EconomyConfig.
+            float timeout = Time.realtimeSinceStartup + 5f;
+            while (_mining.CurrentIdleSession != null
+                   && _mining.CurrentIdleSession.Stage != IdleMiningStage.ReadyToClaim
+                   && Time.realtimeSinceStartup < timeout)
             {
-                var result = _mining.Tap();
-                Assert.IsNotNull(result, "Tap should yield while a target is active and cargo has space");
                 yield return null;
             }
 
-            int hauled = drone.CargoAmount;
-            int expectedPayout = hauled * coinsPerUnit;
+            Assert.AreEqual(IdleMiningStage.ReadyToClaim, _mining.CurrentIdleSession?.Stage,
+                "Idle session should reach ReadyToClaim well within the 5s timeout given the 1s forced duration");
 
-            var commit = _mining.CommitCargoAsync();
-            while (!commit.IsCompleted) yield return null;
-            if (commit.Exception != null) throw commit.Exception;
+            var claimTask = _mining.ClaimIdleSessionAsync(asteroid);
+            while (!claimTask.IsCompleted) yield return null;
+            if (claimTask.Exception != null) throw claimTask.Exception;
 
-            Assert.AreEqual(0, drone.CargoAmount, "Cargo should be emptied after committing");
-            Assert.AreEqual(coinsBefore + expectedPayout, _wallet.Coins,
-                "Wallet should increase by hauled units * coins-per-unit after committing cargo");
+            Assert.IsNull(_mining.CurrentIdleSession);
+            Assert.AreEqual(coinsBefore + expectedCoins, _wallet.Coins,
+                "Wallet should increase by the asteroid's full yield * coins-per-unit after claiming");
         }
 
         [UnityTest]
