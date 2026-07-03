@@ -52,11 +52,12 @@ module.exports = async ({ params, context, logger }) => {
   }
 
   return {
-    playerId:    targetId,
-    displayName: profile?.displayName ?? null,
-    level:       profile?.level ?? 1,
-    xp:          profile?.xp ?? 0,
-    badges:      profile?.badges ?? [],
-    tilesOwned
+    playerId:     targetId,
+    displayName:  profile?.displayName ?? null,
+    level:        profile?.level ?? 1,
+    xp:           profile?.xp ?? 0,
+    badges:       profile?.badges ?? [],
+    tilesOwned,
+    emailVerified: profile?.emailVerified ?? false
   };
 };

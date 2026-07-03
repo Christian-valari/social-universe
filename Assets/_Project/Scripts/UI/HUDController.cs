@@ -25,6 +25,8 @@ namespace SocialUniverse.UI
         [SerializeField] private TMP_Text _usernameText;
         [SerializeField] private Button _usernameButton;
         [SerializeField] private DisplayNameModal _displayNameModal;
+        [SerializeField] private EmailVerificationModal _emailVerificationModal;
+        [SerializeField] private Button _verifyEmailButton;
         [SerializeField] private TMP_Text _asteroidRefreshText;
         [SerializeField] private Button _chatButton;
         [SerializeField] private SocialDebugPanel _socialPanel;
@@ -47,6 +49,8 @@ namespace SocialUniverse.UI
             _chatButton.onClick.AddListener(_socialPanel.Open);
             _usernameButton?.onClick.AddListener(OnUsernameClicked);
             _launchButton?.onClick.AddListener(() => EventBus.Publish(new LaunchRequestedEvent()));
+            if (_verifyEmailButton != null) _verifyEmailButton.onClick.AddListener(() => _emailVerificationModal?.Open());
+            EventBus.Subscribe<ShowEmailVerificationPromptEvent>(OnShowEmailVerificationPrompt);
 
             // Tiles hidden by default; toggled by the view-land-tile toggle.
             _hexasphere.SetTilesVisible(false);
@@ -79,6 +83,12 @@ namespace SocialUniverse.UI
             _playerState.OnFuelChanged        -= SetFuel;
             _playerState.OnDisplayNameChanged -= SetUsername;
             _presence.PresenceChanged         -= RefreshExplorerCount;
+            EventBus.Unsubscribe<ShowEmailVerificationPromptEvent>(OnShowEmailVerificationPrompt);
+        }
+
+        private void OnShowEmailVerificationPrompt(ShowEmailVerificationPromptEvent _)
+        {
+            _emailVerificationModal?.Open();
         }
 
         private void Update()
@@ -146,7 +156,7 @@ namespace SocialUniverse.UI
             var drone  = _mining.Drone;
             var target = _mining.CurrentTarget;
 
-            if (drone == null)//
+            if (drone == null)
             {
                 _miningStatusText.text = "Mining: —";
                 return;

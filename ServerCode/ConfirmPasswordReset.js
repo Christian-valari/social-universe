@@ -17,19 +17,25 @@
 // functions (see LandTravel.js) — this now overwrites the OTP record with a
 // null sentinel rather than assuming a delete call exists on this SDK version.
 const { DataApi } = require("@unity-services/cloud-save-1.4");
+const axios       = require("axios-1.6");
 
 const RESET_KEY   = "auth_reset_otp";
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Cloud Code's JS runtime has no global `fetch` — outbound HTTP goes through
+// the whitelisted `axios-1.6` library instead (see Unity's Cloud Code
+// "Available libraries" reference). Axios throws on non-2xx responses.
 async function findPlayerByEmail(projectId, accessToken, email) {
   const emailKey = "idx_email_" + emailToKey(email);
-  const res = await fetch(
-    `https://cloud-save.services.api.unity.com/v1/data/projects/${projectId}/items?key=${encodeURIComponent(emailKey)}`,
-    { headers: { Authorization: `Bearer ${accessToken}` } }
-  );
-  if (!res.ok) return null;
-  const data = await res.json();
-  return data.results?.[0]?.value?.playerId ?? null;
+  try {
+    const res = await axios.get(
+      `https://cloud-save.services.api.unity.com/v1/data/projects/${projectId}/items?key=${encodeURIComponent(emailKey)}`,
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+    return res.data.results?.[0]?.value?.playerId ?? null;
+  } catch (_) {
+    return null;
+  }
 }
 
 function emailToKey(email) {
@@ -39,30 +45,34 @@ function emailToKey(email) {
 }
 
 async function getAdminToken(serviceKey, serviceSecret) {
-  const res = await fetch("https://services.api.unity.com/auth/v1/genesis-token-exchange/unity", {
-    method:  "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ scopes: ["authentication.admin"], keyId: serviceKey, secretKey: serviceSecret })
-  });
-  if (!res.ok) throw new Error(`Service account token exchange failed: ${res.status}`);
-  const data = await res.json();
-  return data.accessToken;
+  try {
+    const res = await axios.post("https://services.api.unity.com/auth/v1/genesis-token-exchange/unity", {
+      scopes: ["authentication.admin"], keyId: serviceKey, secretKey: serviceSecret
+    }, {
+      headers: { "Content-Type": "application/json" }
+    });
+    return res.data.accessToken;
+  } catch (err) {
+    throw new Error(`Service account token exchange failed: ${err.response?.status ?? err.message}`);
+  }
 }
 
 async function resetPasswordViaAdminApi(projectId, playerId, newPassword, serviceKey, serviceSecret) {
   const adminToken = await getAdminToken(serviceKey, serviceSecret);
-  const res = await fetch(
-    `https://player-auth.services.api.unity.com/v1/authentication/players/${playerId}/password`,
-    {
-      method:  "PATCH",
-      headers: {
-        "Authorization": `Bearer ${adminToken}`,
-        "Content-Type":  "application/json"
-      },
-      body: JSON.stringify({ password: newPassword })
-    }
-  );
-  if (!res.ok) throw new Error(`Admin password reset failed: ${res.status}`);
+  try {
+    await axios.patch(
+      `https://player-auth.services.api.unity.com/v1/authentication/players/${playerId}/password`,
+      { password: newPassword },
+      {
+        headers: {
+          "Authorization": `Bearer ${adminToken}`,
+          "Content-Type":  "application/json"
+        }
+      }
+    );
+  } catch (err) {
+    throw new Error(`Admin password reset failed: ${err.response?.status ?? err.message}`);
+  }
 }
 
 /**
@@ -70,7 +80,7 @@ async function resetPasswordViaAdminApi(projectId, playerId, newPassword, servic
  * @param {string} code        - The 6-digit OTP from the reset email.
  * @param {string} newPassword - The desired new password (min 6 chars).
  */
-module.exports = async ({ params, context, logger, secrets }) => {
+module.exports = async ({ params, context, logger, secretManager }) => {
   const email       = (params.email       ?? "").trim().toLowerCase();
   const code        = (params.code        ?? "").trim();
   const newPassword = (params.newPassword ?? "");
@@ -98,12 +108,14 @@ module.exports = async ({ params, context, logger, secrets }) => {
   if (code !== resetRecord.otp)          throw new Error("Invalid reset code");
 
   // Reset the password via the UGS Admin API
+  const serviceKey    = await secretManager.getSecret("UGS_SERVICE_ACCOUNT_KEY");
+  const serviceSecret = await secretManager.getSecret("UGS_SERVICE_ACCOUNT_SECRET");
   await resetPasswordViaAdminApi(
     projectId,
     targetPlayerId,
     newPassword,
-    secrets.UGS_SERVICE_ACCOUNT_KEY,
-    secrets.UGS_SERVICE_ACCOUNT_SECRET
+    serviceKey,
+    serviceSecret
   );
 
   // Clear the OTP so it cannot be reused

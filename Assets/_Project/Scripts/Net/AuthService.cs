@@ -142,17 +142,16 @@ namespace SocialUniverse.Net
             SULog.Info("Password reset confirmed", SULog.Channel.Net);
         }
 
-        public async Task RequestEmailVerificationCodeAsync(string email)
+        public async Task RequestEmailVerificationCodeAsync()
         {
-            await _backend.CallAsync("RequestEmailVerificationCode",
-                new Dictionary<string, object> { { "email", email } });
-            SULog.Info($"Email verification code requested for {email}", SULog.Channel.Net);
+            await _backend.CallAsync("RequestEmailVerificationCode");
+            SULog.Info($"Email verification code requested (playerId: {PlayerId})", SULog.Channel.Net);
         }
 
-        public async Task ConfirmEmailVerificationCodeAsync(string email, string code)
+        public async Task ConfirmEmailVerificationCodeAsync(string code)
         {
             await _backend.CallAsync("ConfirmEmailVerificationCode",
-                new Dictionary<string, object> { { "email", email }, { "code", code } });
+                new Dictionary<string, object> { { "code", code } });
             SULog.Info("Email verification code confirmed", SULog.Channel.Net);
         }
     }

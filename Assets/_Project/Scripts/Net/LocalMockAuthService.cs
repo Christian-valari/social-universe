@@ -21,7 +21,7 @@ namespace SocialUniverse.Net
         // AuthService's UGS login-key derivation (see DeriveLoginKey there).
         private readonly Dictionary<string, UserRecord> _users          = new();
         private readonly HashSet<string>                 _pendingResets = new(); // normalized emails awaiting reset
-        private readonly HashSet<string>                 _pendingRegistrationCodes = new(); // normalized emails with an outstanding verification code (mock code: 123456)
+        private bool _pendingEmailVerificationCode; // an outstanding verification code exists (mock code: 123456)
 
         private static string NormalizeEmail(string email) => email.Trim().ToLowerInvariant();
 
@@ -149,23 +149,21 @@ namespace SocialUniverse.Net
 
         // Always "succeeds" — mirrors RequestPasswordResetAsync's mock style.
         // Mock code is always "123456".
-        public Task RequestEmailVerificationCodeAsync(string email)
+        public Task RequestEmailVerificationCodeAsync()
         {
-            string key = NormalizeEmail(email);
-            _pendingRegistrationCodes.Add(key);
-            SULog.Info($"[MOCK] Email verification code sent to {email} (mock code: 123456)", SULog.Channel.Net);
+            _pendingEmailVerificationCode = true;
+            SULog.Info("[MOCK] Email verification code sent (mock code: 123456)", SULog.Channel.Net);
             return Task.CompletedTask;
         }
 
-        public Task ConfirmEmailVerificationCodeAsync(string email, string code)
+        public Task ConfirmEmailVerificationCodeAsync(string code)
         {
-            string key = NormalizeEmail(email);
-            if (!_pendingRegistrationCodes.Contains(key))
-                throw new InvalidOperationException("No verification code requested for this email");
+            if (!_pendingEmailVerificationCode)
+                throw new InvalidOperationException("No verification code requested");
             if (code != "123456")
                 throw new InvalidOperationException("Invalid verification code");
-            _pendingRegistrationCodes.Remove(key);
-            SULog.Info($"[MOCK] Email verified for {email}", SULog.Channel.Net);
+            _pendingEmailVerificationCode = false;
+            SULog.Info("[MOCK] Email verified", SULog.Channel.Net);
             return Task.CompletedTask;
         }
 
