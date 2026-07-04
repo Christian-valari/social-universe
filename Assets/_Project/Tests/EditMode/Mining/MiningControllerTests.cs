@@ -53,7 +53,6 @@ namespace SocialUniverse.Tests
             SetField(_config, "_minActiveTaps", 1);
             SetField(_config, "_maxActiveTaps", 99);
             SetField(_config, "_activeMaxErrors", 3);
-            SetField(_config, "_activeTapWindowSeconds", 5f);
             SetField(_config, "_asteroidRespawnHours", 4f);
 
             _asteroidDef = ScriptableObject.CreateInstance<AsteroidDefinition>();

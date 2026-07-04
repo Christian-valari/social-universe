@@ -22,6 +22,9 @@ namespace SocialUniverse.Tests
             SetField(_config, "_activeYieldPerTap", 8f);
             SetField(_config, "_minActiveTaps", 5);
             SetField(_config, "_maxActiveTaps", 20);
+            SetField(_config, "_activeSecondsPerTap", 3f);
+            SetField(_config, "_minActiveSessionSeconds", 20f);
+            SetField(_config, "_maxActiveSessionSeconds", 45f);
 
             _def = ScriptableObject.CreateInstance<AsteroidDefinition>();
             SetField(_def, "_coinsPerUnit", 2);
@@ -100,6 +103,17 @@ namespace SocialUniverse.Tests
             Assert.AreEqual(5, _calc.Compute(MakeAsteroid(1)).ActiveTapsRequired);     // ceil(1/8)=1, clamped up to min 5
             Assert.AreEqual(13, _calc.Compute(MakeAsteroid(100)).ActiveTapsRequired);  // ceil(100/8)=13
             Assert.AreEqual(20, _calc.Compute(MakeAsteroid(10000)).ActiveTapsRequired); // clamped down to max 20
+        }
+
+        [Test]
+        public void Active_session_duration_scales_with_taps_and_clamps_at_bounds()
+        {
+            // taps=5 (clamped up from ceil(1/8)=1) -> raw 5*3=15s, clamped up to min 20s
+            Assert.AreEqual(20f, _calc.Compute(MakeAsteroid(1)).ActiveSessionDurationSeconds, 0.001f);
+            // taps=13 -> raw 13*3=39s, within [20,45]
+            Assert.AreEqual(39f, _calc.Compute(MakeAsteroid(100)).ActiveSessionDurationSeconds, 0.001f);
+            // taps=20 (clamped down from a huge yield) -> raw 20*3=60s, clamped down to max 45s
+            Assert.AreEqual(45f, _calc.Compute(MakeAsteroid(10000)).ActiveSessionDurationSeconds, 0.001f);
         }
     }
 }

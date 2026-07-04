@@ -46,8 +46,10 @@ namespace SocialUniverse.Config
         [SerializeField] private float _activeYieldPerTap       = 8f;    // how much RemainingYield one successful tap represents
         [SerializeField] private int   _minActiveTaps           = 5;     // clamp: smallest asteroids still take at least this many taps
         [SerializeField] private int   _maxActiveTaps            = 20;    // clamp: largest asteroids cap out at this many taps
-        [SerializeField] private float _activeTapWindowSeconds  = 1.2f;  // time allowed to hit each spawned target point
-        [SerializeField] private int   _activeMaxErrors         = 3;     // misses/timeouts before the asteroid is lost
+        [SerializeField] private float _activeSecondsPerTap     = 3f;    // seconds contributed per required tap toward the overall session countdown
+        [SerializeField] private float _minActiveSessionSeconds = 12f;   // clamp: smallest asteroids still get at least this long
+        [SerializeField] private float _maxActiveSessionSeconds = 60f;   // clamp: largest asteroids cap out at this long
+        [SerializeField] private int   _activeMaxErrors         = 3;     // wrong taps before the asteroid is lost
 
         [Header("Travel — Fuel")]
         [SerializeField] private float _maxFuel                 = 100f;
@@ -76,11 +78,13 @@ namespace SocialUniverse.Config
         public float MinIdleSessionSeconds   => _minIdleSessionSeconds;
         public float MaxIdleSessionSeconds   => _maxIdleSessionSeconds;
 
-        public float ActiveYieldPerTap      => _activeYieldPerTap;
-        public int   MinActiveTaps          => _minActiveTaps;
-        public int   MaxActiveTaps          => _maxActiveTaps;
-        public float ActiveTapWindowSeconds => _activeTapWindowSeconds;
-        public int   ActiveMaxErrors        => _activeMaxErrors;
+        public float ActiveYieldPerTap        => _activeYieldPerTap;
+        public int   MinActiveTaps            => _minActiveTaps;
+        public int   MaxActiveTaps            => _maxActiveTaps;
+        public float ActiveSecondsPerTap      => _activeSecondsPerTap;
+        public float MinActiveSessionSeconds  => _minActiveSessionSeconds;
+        public float MaxActiveSessionSeconds  => _maxActiveSessionSeconds;
+        public int   ActiveMaxErrors          => _activeMaxErrors;
         public float MaxFuel               => _maxFuel;
         public float FuelRechargePerHour   => _fuelRechargePerHour;
         public int   FuelRefillCost        => _fuelRefillCost;

@@ -8,20 +8,25 @@ namespace SocialUniverse.Mining
         public readonly int   TotalCoins;
         public readonly float IdleDurationSeconds;
         public readonly int   ActiveTapsRequired;
+        public readonly float ActiveSessionDurationSeconds;
         public readonly float CoinsPerSec;
 
-        public MiningReward(int totalCoins, float idleDurationSeconds, int activeTapsRequired, float coinsPerSec)
+        public MiningReward(int totalCoins, float idleDurationSeconds, int activeTapsRequired,
+            float activeSessionDurationSeconds, float coinsPerSec)
         {
-            TotalCoins          = totalCoins;
-            IdleDurationSeconds = idleDurationSeconds;
-            ActiveTapsRequired  = activeTapsRequired;
-            CoinsPerSec         = coinsPerSec;
+            TotalCoins                   = totalCoins;
+            IdleDurationSeconds          = idleDurationSeconds;
+            ActiveTapsRequired           = activeTapsRequired;
+            ActiveSessionDurationSeconds = activeSessionDurationSeconds;
+            CoinsPerSec                  = coinsPerSec;
         }
     }
 
-    // Single source of truth for idle-mining duration, active-mining tap count, and total
-    // coin payout for a given asteroid — both mining modes derive their pacing from the
-    // same RemainingYield so they pay out identical totals (see MiningRewardCalculatorTests).
+    // Single source of truth for idle-mining duration, active-mining tap count, active-mining
+    // session countdown, and total coin payout for a given asteroid — all three pacing values
+    // derive from the same RemainingYield so both mining modes pay out identical totals (see
+    // MiningRewardCalculatorTests) and the active-mining countdown scales with the asteroid's
+    // effective size without needing a separate "size" field anywhere.
     public class MiningRewardCalculator
     {
         private readonly EconomyConfig _config;
@@ -39,12 +44,15 @@ namespace SocialUniverse.Mining
             int rawTaps = Mathf.CeilToInt(remainingYield / _config.ActiveYieldPerTap);
             int taps    = Mathf.Clamp(rawTaps, _config.MinActiveTaps, _config.MaxActiveTaps);
 
+            float rawActiveSeconds = taps * _config.ActiveSecondsPerTap;
+            float activeSeconds    = Mathf.Clamp(rawActiveSeconds, _config.MinActiveSessionSeconds, _config.MaxActiveSessionSeconds);
+
             // Computed per-claim from this asteroid's actual totalCoins/duration (not a fixed
             // per-type constant) so sessionDurationSec * coinsPerSec always equals totalCoins
             // exactly, even when duration was clamped — see EconomyService.GrantMiningRewardAsync.
             float coinsPerSec = duration > 0f ? totalCoins / duration : 0f;
 
-            return new MiningReward(totalCoins, duration, taps, coinsPerSec);
+            return new MiningReward(totalCoins, duration, taps, activeSeconds, coinsPerSec);
         }
     }
 }

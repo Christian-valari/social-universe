@@ -28,7 +28,7 @@ namespace SocialUniverse.Mining
 
             var reward = _rewardCalc.Compute(asteroid);
             CurrentSession = new ActiveMiningSession(asteroid, reward.ActiveTapsRequired,
-                _config.ActiveMaxErrors, _config.ActiveTapWindowSeconds);
+                _config.ActiveMaxErrors, reward.ActiveSessionDurationSeconds);
             CurrentSession.OnStageChanged += _ => OnSessionChanged?.Invoke(CurrentSession);
 
             OnSessionChanged?.Invoke(CurrentSession);

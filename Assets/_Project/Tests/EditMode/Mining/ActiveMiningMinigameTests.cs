@@ -17,7 +17,9 @@ namespace SocialUniverse.Tests
         {
             _config = ScriptableObject.CreateInstance<EconomyConfig>();
             SetField(_config, "_activeMaxErrors", 3);
-            SetField(_config, "_activeTapWindowSeconds", 1f);
+            SetField(_config, "_activeSecondsPerTap", 2f);
+            SetField(_config, "_minActiveSessionSeconds", 0.1f);
+            SetField(_config, "_maxActiveSessionSeconds", 999f);
             SetField(_config, "_activeYieldPerTap", 8f);
             SetField(_config, "_minActiveTaps", 1);
             SetField(_config, "_maxActiveTaps", 99);
@@ -51,6 +53,7 @@ namespace SocialUniverse.Tests
             Assert.IsTrue(started);
             Assert.IsNotNull(_minigame.CurrentSession);
             Assert.AreEqual(1, _minigame.CurrentSession.TapsRequired);
+            Assert.AreEqual(2f, _minigame.CurrentSession.SessionDurationSeconds, 0.001f);
         }
 
         [Test]
