@@ -12,6 +12,7 @@ namespace SocialUniverse.Core
             public const string Planet        = "Planet";
             public const string Station       = "Station";
             public const string LoadingScreen = "LoadingScreen";
+            public const string ActiveMining  = "ActiveMining";
         }
 
         public static class Layers

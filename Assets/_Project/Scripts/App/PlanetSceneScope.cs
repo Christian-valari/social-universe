@@ -127,6 +127,7 @@ namespace SocialUniverse.App
             builder.RegisterEntryPoint<PlanetSceneBootstrapper>();
             builder.RegisterEntryPoint<IdleMiningSessionController>();
             builder.RegisterEntryPoint<ActiveMiningSessionController>();
+            builder.RegisterEntryPoint<ActiveMiningSceneController>();
             builder.RegisterEntryPoint<TilePurchaseHandler>();
             builder.RegisterEntryPoint<LandRegistrySyncController>();
             builder.RegisterEntryPoint<BuildModeController>();
