@@ -272,6 +272,22 @@ namespace SocialUniverse.App
 
                     _playerState.SetEmailVerified(profile.EmailVerified);
 
+                    var catalogIds = _registry.AllAvatars.Select(a => a.AvatarId).ToList();
+                    string resolvedAvatarId = AvatarAssignment.ResolveAvatarId(profile.AvatarId, catalogIds, n => UnityEngine.Random.Range(0, n));
+                    _playerState.SetAvatarId(resolvedAvatarId);
+
+                    if (string.IsNullOrEmpty(profile.AvatarId) && !string.IsNullOrEmpty(resolvedAvatarId))
+                    {
+                        try
+                        {
+                            await _profileService.UpdateAvatarAsync(resolvedAvatarId);
+                        }
+                        catch (Exception ex)
+                        {
+                            SULog.Warn($"PlanetSceneBootstrapper: avatar assignment failed to persist ({ex.Message}), using local pick", SULog.Channel.Net);
+                        }
+                    }
+
                     if (!profile.EmailVerified)
                     {
                         string promptedKey = SaveKeys.EmailVerificationPromptedKey(_auth.PlayerId);
