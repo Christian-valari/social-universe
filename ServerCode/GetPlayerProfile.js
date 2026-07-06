@@ -1,4 +1,4 @@
-// GetPlayerProfile — returns any player's public profile. Reads the target
+﻿// GetPlayerProfile — returns any player's public profile. Reads the target
 // player's "player_profile" Cloud Save record (the same one GetBootstrapState
 // returns for the caller) plus a tile count derived from their owned-tiles
 // lists. Returns defaults for players who haven't saved a profile yet.
@@ -54,6 +54,7 @@ module.exports = async ({ params, context, logger }) => {
   return {
     playerId:     targetId,
     displayName:  profile?.displayName ?? null,
+    avatarId:     profile?.avatarId ?? null,
     level:        profile?.level ?? 1,
     xp:           profile?.xp ?? 0,
     badges:       profile?.badges ?? [],
