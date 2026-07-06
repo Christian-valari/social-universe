@@ -5,12 +5,12 @@ using SocialUniverse.Core;
 
 namespace SocialUniverse.App
 {
-    // Scene scope for the ActiveMining minigame overlay — loaded additively on top of the
-    // Planet scene while an active-mining session is running (see ActiveMiningSceneController,
-    // which owns the load/unload). Always runs as a child of PlanetSceneScope (parentReference
-    // set in the Inspector, wired in the scene file), so MiningController and everything else in
-    // PlanetSceneScope resolve through the parent chain automatically — this scope only
-    // registers the components that live in ActiveMining.unity itself.
+    // Scene scope for the ActiveMining minigame — loaded by SocialUniverse.Core.ActiveMiningState
+    // as the sole running gameplay scene (Planet is unloaded first, see ActiveMiningState).
+    // Parents to RootLifetimeScope (parentReference.TypeName in the scene file), not to
+    // PlanetSceneScope — nothing here needs Planet-scoped services (IEconomyService,
+    // AsteroidSpawner, MiningController); everything needed comes from ActiveMiningHandoff, a
+    // Root-level singleton that survives the scene swap.
     public class ActiveMiningSceneScope : LifetimeScope
     {
         protected override void Configure(IContainerBuilder builder)
@@ -18,34 +18,29 @@ namespace SocialUniverse.App
             builder.RegisterComponentInHierarchy<ActiveMiningAsteroidStage>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.ActiveMiningMinigameView>();
 
+            // Registered as both an entry point (IStartable/ITickable) and directly injectable
+            // (AsSelf) — ActiveMiningMinigameView needs to inject the concrete type to read
+            // .Session, which RegisterEntryPoint alone doesn't guarantee.
+            builder.Register<ActiveMiningSessionRunner>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+
             builder.RegisterEntryPoint<ActiveMiningSceneBootstrapper>();
         }
     }
 
-    // Spawns the visual asteroid clone for the in-progress active-mining session as soon as this
-    // scene finishes loading. MiningController's session already exists by the time this scene
-    // loads (ActiveMiningSceneController only loads it after a session has started).
+    // Spawns the visual asteroid clone from the handoff's AsteroidDefinition as soon as this
+    // scene finishes loading — the handoff was already populated back in Planet, before the
+    // scene swap, by MiningController.BeginActiveMining.
     public class ActiveMiningSceneBootstrapper : IStartable
     {
-        private readonly MiningController          _mining;
+        private readonly ActiveMiningHandoff       _handoff;
         private readonly ActiveMiningAsteroidStage _stage;
 
-        public ActiveMiningSceneBootstrapper(MiningController mining, ActiveMiningAsteroidStage stage)
+        public ActiveMiningSceneBootstrapper(ActiveMiningHandoff handoff, ActiveMiningAsteroidStage stage)
         {
-            _mining = mining;
-            _stage  = stage;
+            _handoff = handoff;
+            _stage   = stage;
         }
 
-        public void Start()
-        {
-            var session = _mining.CurrentActiveSession;
-            if (session == null)
-            {
-                SULog.Warn("ActiveMiningSceneBootstrapper: no active-mining session in progress", SULog.Channel.Mining);
-                return;
-            }
-
-            _stage.SpawnClone(session.Asteroid.Definition);
-        }
+        public void Start() => _stage.SpawnClone(_handoff.Definition);
     }
 }
