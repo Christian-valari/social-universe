@@ -10,6 +10,13 @@
 // as standalone files, so the filter is duplicated rather than required).
 // AVATAR_IDS must match the 25 AvatarDefinition assets registered on
 // DatabaseRegistry (see docs/superpowers/plans/2026-07-06-avatar-selection.md).
+//
+// FIX: DataApi's constructor doesn't read a { headers: ... } field, and
+// getItems/setItem take positional args (projectId, playerId, ...), not an
+// options object — same SDK-shape mismatch as GetPlayerProfile.js / GetFuelState.js
+// / SpendFuel.js. The old setItem call silently dropped playerId, causing a
+// 422 RequiredError; getItems had the same bug but it was masked by the
+// surrounding try/catch.
 const { DataApi } = require("@unity-services/cloud-save-1.4");
 
 const PROFILE_KEY = "player_profile";
@@ -69,12 +76,12 @@ module.exports = async ({ params, context, logger }) => {
     }
   }
 
-  const { projectId, playerId, accessToken } = context;
-  const saveApi = new DataApi({ headers: { Authorization: `Bearer ${accessToken}` } });
+  const { projectId, playerId } = context;
+  const saveApi = new DataApi(context);
 
   let profile = {};
   try {
-    const res  = await saveApi.getItems({ projectId, playerId, key: [PROFILE_KEY] });
+    const res  = await saveApi.getItems(projectId, playerId, [PROFILE_KEY]);
     const item = res.data.results.find(r => r.key === PROFILE_KEY);
     if (item?.value) profile = typeof item.value === "string" ? JSON.parse(item.value) : item.value;
   } catch (_) { /* no profile yet */ }
@@ -83,7 +90,7 @@ module.exports = async ({ params, context, logger }) => {
   if (hasAvatarId)    profile.avatarId    = avatarId;
   profile.updatedMs = Date.now();
 
-  await saveApi.setItem({ projectId, playerId, key: PROFILE_KEY, body: { value: profile } });
+  await saveApi.setItem(projectId, playerId, { key: PROFILE_KEY, value: profile });
 
   logger.info(`UpdateProfile: ${playerId} → displayName=${profile.displayName ?? "(unchanged)"} avatarId=${profile.avatarId ?? "(unchanged)"}`);
   return {
