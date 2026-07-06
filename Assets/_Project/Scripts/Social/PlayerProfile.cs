@@ -9,6 +9,7 @@ namespace SocialUniverse.Social
     {
         public string   PlayerId;
         public string   DisplayName;
+        public string   AvatarId;
         public int      Level;
         public int      Xp;
         public string[] Badges;

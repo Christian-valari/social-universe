@@ -49,5 +49,9 @@ namespace SocialUniverse.Social
             return await _backend.CallAsync<ProfileUpdateResult>("UpdateProfile",
                 new Dictionary<string, object> { { "displayName", displayName } });
         }
+
+        public Task<ProfileUpdateResult> UpdateAvatarAsync(string avatarId) =>
+            _backend.CallAsync<ProfileUpdateResult>("UpdateProfile",
+                new Dictionary<string, object> { { "avatarId", avatarId } });
     }
 }

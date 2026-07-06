@@ -81,5 +81,31 @@ namespace SocialUniverse.Tests
             Assert.AreEqual("Stella", _backend.CalledArgs["displayName"]); // trimmed
             Assert.IsTrue(result.Success);
         }
+
+        [Test]
+        public async Task GetProfileAsync_returns_avatarId_from_backend()
+        {
+            _backend.ProfileResponse = new PlayerProfile
+            {
+                PlayerId = "p1", DisplayName = "Stella", AvatarId = "avatar_wizard"
+            };
+
+            var profile = await _profiles.GetProfileAsync("p1");
+
+            Assert.AreEqual("avatar_wizard", profile.AvatarId);
+        }
+
+        [Test]
+        public async Task UpdateAvatarAsync_commits_avatarId_via_UpdateProfile()
+        {
+            _backend.ProfileUpdateResponse = new ProfileUpdateResult { Success = true };
+
+            var result = await _profiles.UpdateAvatarAsync("avatar_wizard");
+
+            Assert.AreEqual("UpdateProfile", _backend.CalledFunction);
+            Assert.AreEqual("avatar_wizard", _backend.CalledArgs["avatarId"]);
+            Assert.IsTrue(result.Success);
+        }
+
     }
 }
