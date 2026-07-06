@@ -25,6 +25,9 @@ namespace SocialUniverse.UI
         [SerializeField] private TMP_Text _usernameText;
         [SerializeField] private Button _usernameButton;
         [SerializeField] private DisplayNameModal _displayNameModal;
+        [SerializeField] private Image _avatarImage;
+        [SerializeField] private Button _avatarButton;
+        [SerializeField] private AvatarSelectionModal _avatarSelectionModal;
         [SerializeField] private EmailVerificationModal _emailVerificationModal;
         [SerializeField] private Button _verifyEmailButton;
         [SerializeField] private TMP_Text _asteroidRefreshText;
@@ -42,12 +45,14 @@ namespace SocialUniverse.UI
         [Inject] private AsteroidSpawner _asteroidSpawner;
         [Inject] private IPresenceService _presence;
         [Inject] private PlanetDefinition _planet;
+        [Inject] private DatabaseRegistry _registry;
 
         private void Start()
         {
             _currency.Bind(_wallet);
             _chatButton.onClick.AddListener(_socialPanel.Open);
             _usernameButton?.onClick.AddListener(OnUsernameClicked);
+            _avatarButton?.onClick.AddListener(() => _avatarSelectionModal?.Open());
             _launchButton?.onClick.AddListener(() => EventBus.Publish(new LaunchRequestedEvent()));
             if (_verifyEmailButton != null) _verifyEmailButton.onClick.AddListener(() => _emailVerificationModal?.Open());
             EventBus.Subscribe<ShowEmailVerificationPromptEvent>(OnShowEmailVerificationPrompt);
@@ -63,6 +68,7 @@ namespace SocialUniverse.UI
             _playerState.OnLevelChanged       += SetLevel;
             _playerState.OnFuelChanged        += SetFuel;
             _playerState.OnDisplayNameChanged += SetUsername;
+            _playerState.OnAvatarChanged      += SetAvatar;
             _presence.PresenceChanged         += RefreshExplorerCount;
 
             if (_planetNameText != null) _planetNameText.text = _planet.DisplayName;
@@ -70,6 +76,7 @@ namespace SocialUniverse.UI
             SetLevel(_playerState.Level);
             SetFuel(_playerState.Fuel);
             SetUsername(_playerState.DisplayName);
+            SetAvatar(_playerState.AvatarId);
             RefreshMiningStatus();
             RefreshLandStatus();
             RefreshAsteroidRefresh();
@@ -81,6 +88,7 @@ namespace SocialUniverse.UI
             _playerState.OnLevelChanged       -= SetLevel;
             _playerState.OnFuelChanged        -= SetFuel;
             _playerState.OnDisplayNameChanged -= SetUsername;
+            _playerState.OnAvatarChanged      -= SetAvatar;
             _presence.PresenceChanged         -= RefreshExplorerCount;
             EventBus.Unsubscribe<ShowEmailVerificationPromptEvent>(OnShowEmailVerificationPrompt);
         }
@@ -106,6 +114,13 @@ namespace SocialUniverse.UI
         private void OnUsernameClicked()
         {
             _displayNameModal?.Open();
+        }
+
+        private void SetAvatar(string avatarId)
+        {
+            if (_avatarImage == null) return;
+            var avatar = _registry.GetAvatar(avatarId);
+            if (avatar != null) _avatarImage.sprite = avatar.Sprite;
         }
 
         private void RefreshAsteroidRefresh()
