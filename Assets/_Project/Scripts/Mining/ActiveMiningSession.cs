@@ -8,8 +8,9 @@ namespace SocialUniverse.Mining
     // Player-vs-asteroid tap minigame: the whole session runs under one overall countdown
     // (SessionDurationSeconds, scaled by the asteroid's size via MiningRewardCalculator).
     // Running out of time fails the session directly. A "miss" only happens when the player
-    // taps the wrong spot (ActiveMiningMinigameView.RegisterTap(false)) — there is no per-point
-    // timeout. MaxErrors misses fails the asteroid; TapsRequired hits succeeds it.
+    // taps the wrong spot (RegisterMiss(), called from ActiveMiningMinigameView.OnTapped) —
+    // there is no per-point timeout. MaxErrors misses fails the asteroid; TapsRequired hits
+    // succeeds it.
     public class ActiveMiningSession
     {
         public int      TapsRequired           { get; }

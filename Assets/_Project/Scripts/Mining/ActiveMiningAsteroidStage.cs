@@ -4,9 +4,9 @@ using SocialUniverse.Config;
 namespace SocialUniverse.Mining
 {
     // Spawns a visual clone of an asteroid's model prefab for the active-mining minigame scene.
-    // The clone is presentation-only — MiningController's in-progress ActiveMiningSession is the
-    // single source of truth for RemainingYield/Definition; this never touches the original
-    // field Asteroid instance back in the Planet scene.
+    // The clone is presentation-only — ActiveMiningHandoff (populated back in Planet before the
+    // scene swap) is the single source of truth for RemainingYield/Definition; this never
+    // touches the original field Asteroid instance back in the Planet scene.
     public class ActiveMiningAsteroidStage : MonoBehaviour
     {
         [SerializeField] private float _minRotationSpeed = 5f;  // degrees per second

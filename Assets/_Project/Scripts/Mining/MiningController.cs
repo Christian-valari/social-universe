@@ -121,15 +121,23 @@ namespace SocialUniverse.Mining
         // reloaded after an active-mining round trip. Resolves the asteroid back by SlotId
         // (same tolerance TryRestoreIdleSession already has: if the slot no longer resolves,
         // silently drop it rather than throwing) and finishes the grant/respawn flow.
+        // Clears the handoff unconditionally whenever one is pending, even if it never got a
+        // result — reaching Planet with a populated-but-unresolved handoff means the session
+        // was abandoned (only reachable via the standalone dev workflow, where nothing consumes
+        // ActiveMiningRequestedEvent), and leaving it set would otherwise permanently block
+        // future active/idle mining on that asteroid.
         private void TryFinalizePendingActiveMining()
         {
-            if (!_handoff.HasResult) return;
+            if (_handoff.AsteroidSlotId == null) return;
 
-            var asteroid = _spawner.FindBySlotId(_handoff.AsteroidSlotId);
-            if (asteroid != null)
+            if (_handoff.HasResult)
             {
-                if (_handoff.Succeeded) _ = CompleteActiveMiningAsync(asteroid);
-                else                     FailActiveMining(asteroid);
+                var asteroid = _spawner.FindBySlotId(_handoff.AsteroidSlotId);
+                if (asteroid != null)
+                {
+                    if (_handoff.Succeeded) _ = CompleteActiveMiningAsync(asteroid);
+                    else                     FailActiveMining(asteroid);
+                }
             }
 
             _handoff.Clear();

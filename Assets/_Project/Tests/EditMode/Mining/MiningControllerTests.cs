@@ -238,6 +238,28 @@ namespace SocialUniverse.Tests
             Object.DestroyImmediate(droneDef);
         }
 
+        // Regression test: reaching Planet with a handoff that was started but never resolved
+        // (SetResult was never called) used to leave _handoff.AsteroidSlotId set forever, which
+        // would permanently block BeginActiveMining/BeginIdleMining on that asteroid. This can
+        // only happen in practice via the standalone dev workflow (no FSM to consume
+        // ActiveMiningRequestedEvent), but Initialize must still clear it defensively.
+        [Test]
+        public void Initialize_clears_an_abandoned_handoff_that_never_got_a_result()
+        {
+            var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 10);
+            Assert.IsTrue(_mining.BeginActiveMining(asteroid));
+            int coinsBefore = _wallet.Coins;
+
+            var droneDef = ScriptableObject.CreateInstance<DroneDefinition>();
+            Assert.DoesNotThrow(() => _mining.Initialize(new DroneRuntime(droneDef)));
+
+            Assert.AreEqual(coinsBefore, _wallet.Coins, "no result was ever set, so no grant/mine should happen");
+            Assert.IsFalse(asteroid.IsDepleted);
+            Assert.IsNull(_handoff.AsteroidSlotId, "the abandoned handoff must still be cleared");
+
+            Object.DestroyImmediate(droneDef);
+        }
+
         [Test]
         public void Initialize_restores_a_persisted_idle_session_for_the_current_planet()
         {
