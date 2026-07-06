@@ -1,25 +1,14 @@
 using NUnit.Framework;
-using SocialUniverse.Config;
 using SocialUniverse.Mining;
-using UnityEngine;
 
 namespace SocialUniverse.Tests
 {
     public class ActiveMiningSessionTests
     {
-        private Asteroid MakeAsteroid()
-        {
-            var def = ScriptableObject.CreateInstance<AsteroidDefinition>();
-            var go  = new GameObject("TestAsteroid");
-            var a   = go.AddComponent<Asteroid>();
-            a.Initialize(def, "slot_0");
-            return a;
-        }
-
         [Test]
         public void Reaching_required_taps_succeeds()
         {
-            var session = new ActiveMiningSession(MakeAsteroid(), tapsRequired: 3, maxErrors: 3, sessionDurationSeconds: 10f);
+            var session = new ActiveMiningSession(tapsRequired: 3, maxErrors: 3, sessionDurationSeconds: 10f);
 
             session.RegisterHit();
             session.RegisterHit();
@@ -33,7 +22,7 @@ namespace SocialUniverse.Tests
         [Test]
         public void Reaching_max_errors_fails()
         {
-            var session = new ActiveMiningSession(MakeAsteroid(), tapsRequired: 10, maxErrors: 3, sessionDurationSeconds: 10f);
+            var session = new ActiveMiningSession(tapsRequired: 10, maxErrors: 3, sessionDurationSeconds: 10f);
 
             session.RegisterMiss();
             session.RegisterMiss();
@@ -47,7 +36,7 @@ namespace SocialUniverse.Tests
         [Test]
         public void Running_out_of_time_fails_the_session_even_with_no_misses()
         {
-            var session = new ActiveMiningSession(MakeAsteroid(), tapsRequired: 10, maxErrors: 3, sessionDurationSeconds: 1f);
+            var session = new ActiveMiningSession(tapsRequired: 10, maxErrors: 3, sessionDurationSeconds: 1f);
 
             session.Tick(0.5f);
             Assert.AreEqual(ActiveMiningStage.InProgress, session.Stage);
@@ -62,7 +51,7 @@ namespace SocialUniverse.Tests
         [Test]
         public void Hits_do_not_extend_or_reset_the_overall_timer()
         {
-            var session = new ActiveMiningSession(MakeAsteroid(), tapsRequired: 10, maxErrors: 3, sessionDurationSeconds: 1f);
+            var session = new ActiveMiningSession(tapsRequired: 10, maxErrors: 3, sessionDurationSeconds: 1f);
 
             session.Tick(0.9f);
             session.RegisterHit();
@@ -74,7 +63,7 @@ namespace SocialUniverse.Tests
         [Test]
         public void Terminal_stages_ignore_further_hits_misses_and_ticks()
         {
-            var session = new ActiveMiningSession(MakeAsteroid(), tapsRequired: 1, maxErrors: 3, sessionDurationSeconds: 10f);
+            var session = new ActiveMiningSession(tapsRequired: 1, maxErrors: 3, sessionDurationSeconds: 10f);
             session.RegisterHit(); // -> Success
 
             session.RegisterMiss();
@@ -87,7 +76,7 @@ namespace SocialUniverse.Tests
         [Test]
         public void OnStageChanged_fires_on_terminal_transition_only()
         {
-            var session = new ActiveMiningSession(MakeAsteroid(), tapsRequired: 2, maxErrors: 3, sessionDurationSeconds: 10f);
+            var session = new ActiveMiningSession(tapsRequired: 2, maxErrors: 3, sessionDurationSeconds: 10f);
             int fireCount = 0;
             session.OnStageChanged += _ => fireCount++;
 

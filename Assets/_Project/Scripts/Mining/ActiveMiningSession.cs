@@ -12,7 +12,6 @@ namespace SocialUniverse.Mining
     // timeout. MaxErrors misses fails the asteroid; TapsRequired hits succeeds it.
     public class ActiveMiningSession
     {
-        public Asteroid Asteroid               { get; }
         public int      TapsRequired           { get; }
         public int      SuccessfulTaps          { get; private set; }
         public int      MaxErrors               { get; }
@@ -24,9 +23,8 @@ namespace SocialUniverse.Mining
 
         public event Action<ActiveMiningStage> OnStageChanged;
 
-        public ActiveMiningSession(Asteroid asteroid, int tapsRequired, int maxErrors, float sessionDurationSeconds)
+        public ActiveMiningSession(int tapsRequired, int maxErrors, float sessionDurationSeconds)
         {
-            Asteroid               = asteroid;
             TapsRequired           = Mathf.Max(1, tapsRequired);
             MaxErrors              = Mathf.Max(1, maxErrors);
             SessionDurationSeconds = Mathf.Max(0.1f, sessionDurationSeconds);
