@@ -49,5 +49,10 @@ namespace SocialUniverse.Core
         }
 
         public void ReturnToHub() => _fsm.TransitionTo(_resolver.Resolve<HubState>());
+
+        // Called by ActiveMiningRequestHandler once MiningController.BeginActiveMining has
+        // populated ActiveMiningHandoff — transitions the FSM to ActiveMiningState, which loads
+        // the minigame scene as the sole running gameplay scene (Exit() below unloads Planet).
+        public void EnterActiveMining() => _fsm.TransitionTo(_resolver.Resolve<ActiveMiningState>());
     }
 }
