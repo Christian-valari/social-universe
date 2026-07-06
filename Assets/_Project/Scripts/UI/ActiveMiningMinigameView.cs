@@ -2,15 +2,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
 using SocialUniverse.Mining;
+using SocialUniverse.Core;
 
 namespace SocialUniverse.UI
 {
-    // Overlay UI for the active-mining minigame scene: renders the current target point (a real
-    // 3D anchor on the spawned asteroid clone, projected to screen space every frame so it moves
-    // as the asteroid rotates), the countdown/progress/error counters, and forwards player taps
-    // to MiningController. Unlike the old Planet-scene overlay, this view's GameObject doesn't
-    // need to hide/show itself — the whole ActiveMining scene only exists while a session is
-    // running, so scene load/unload (see ActiveMiningSceneController) is the visibility switch.
+    // Owns the ActiveMining scene's three-phase flow: a pre-game panel (asteroid info + Start
+    // button), the in-progress HUD (target point/timer/progress/miss counter, unchanged from the
+    // previous scene-based redesign), and a post-game panel (result + reward preview + Continue).
+    // Nothing spawns or ticks until the player presses Start — this also means there's no race
+    // between scene-load and the first target point (a bug the previous overlay design had).
     // _targetButton must be a UI child rendered above _missAreaButton in the hierarchy so a tap
     // on the point hits the target first and any other tap in the asteroid area falls through to
     // the miss button (standard Unity UI raycast ordering).
@@ -18,56 +18,87 @@ namespace SocialUniverse.UI
     {
         [SerializeField] private Camera                    _sceneCamera;
         [SerializeField] private ActiveMiningAsteroidStage  _stage;
-        [SerializeField] private RectTransform              _targetPoint;
-        [SerializeField] private Button                     _targetButton;
-        [SerializeField] private Button                     _missAreaButton;
-        [SerializeField] private Text                       _progressText;
-        [SerializeField] private Text                       _errorText;
-        [SerializeField] private Text                       _timeText;
-        [SerializeField] private GameObject                 _resultBanner;
-        [SerializeField] private Text                       _resultText;
 
-        [Inject] private MiningController _mining;
+        [Header("Pre-game")]
+        [SerializeField] private GameObject _preGamePanel;
+        [SerializeField] private Text       _mineralTypeText;
+        [SerializeField] private Button     _startButton;
+
+        [Header("In-progress")]
+        [SerializeField] private RectTransform _targetPoint;
+        [SerializeField] private Button        _targetButton;
+        [SerializeField] private Button        _missAreaButton;
+        [SerializeField] private Text          _progressText;
+        [SerializeField] private Text          _errorText;
+        [SerializeField] private Text          _timeText;
+
+        [Header("Post-game")]
+        [SerializeField] private GameObject _resultBanner;
+        [SerializeField] private Text       _resultText;
+        [SerializeField] private Text       _rewardText;
+        [SerializeField] private Button     _continueButton;
+
+        [Inject] private ActiveMiningSessionRunner _runner;
+        [Inject] private ActiveMiningHandoff       _handoff;
+        [Inject] private ActiveMiningState         _activeMiningState;
 
         private ActiveMiningTargetPoint _currentTargetAnchor;
+        private bool                    _started;
 
         private void Awake()
         {
-            if (_resultBanner != null) _resultBanner.SetActive(false);
             if (_targetButton   != null) _targetButton.onClick.AddListener(() => OnTapped(hitTarget: true));
             if (_missAreaButton != null) _missAreaButton.onClick.AddListener(() => OnTapped(hitTarget: false));
+            if (_startButton    != null) _startButton.onClick.AddListener(OnStartClicked);
+            if (_continueButton != null) _continueButton.onClick.AddListener(OnContinueClicked);
         }
 
-        private void Start() => _mining.OnActiveSessionChanged += OnSessionChanged;
+        private void Start()
+        {
+            SetInProgressUiActive(false);
+            if (_resultBanner != null) _resultBanner.SetActive(false);
+
+            if (_preGamePanel    != null) _preGamePanel.SetActive(true);
+            if (_mineralTypeText != null) _mineralTypeText.text = _handoff.Definition != null ? _handoff.Definition.MineralType : "";
+        }
 
         private void OnDestroy()
         {
-            _mining.OnActiveSessionChanged -= OnSessionChanged;
+            if (_started && _runner.Session != null) _runner.Session.OnStageChanged -= OnStageChanged;
             if (_currentTargetAnchor != null) Destroy(_currentTargetAnchor.gameObject);
         }
 
         private void Update()
         {
-            var session = _mining.CurrentActiveSession;
-            if (session == null) return;
+            if (!_started) return;
+
+            var session = _runner.Session;
+            if (session == null || session.Stage != ActiveMiningStage.InProgress) return;
 
             Refresh(session);
             ProjectTargetPointToScreen();
         }
 
-        private void OnSessionChanged(ActiveMiningSession session)
+        private void OnStartClicked()
         {
-            if (session == null) return;
+            if (_started || _runner.Session == null) return;
+            _started = true;
 
-            if (session.Stage != ActiveMiningStage.InProgress)
-            {
-                ShowResult(session.Stage);
-                return;
-            }
+            if (_preGamePanel != null) _preGamePanel.SetActive(false);
+            SetInProgressUiActive(true);
 
-            if (_resultBanner != null) _resultBanner.SetActive(false);
-            Refresh(session);
+            _runner.Session.OnStageChanged += OnStageChanged;
+            _runner.BeginTicking();
+            Refresh(_runner.Session);
             SpawnNextTargetPoint();
+        }
+
+        private void OnStageChanged(ActiveMiningStage stage)
+        {
+            if (stage == ActiveMiningStage.InProgress) return;
+
+            SetInProgressUiActive(false);
+            ShowResult(stage);
         }
 
         private void Refresh(ActiveMiningSession session)
@@ -79,8 +110,35 @@ namespace SocialUniverse.UI
 
         private void ShowResult(ActiveMiningStage stage)
         {
+            bool succeeded = stage == ActiveMiningStage.Success;
+
             if (_resultBanner != null) _resultBanner.SetActive(true);
-            if (_resultText   != null) _resultText.text = stage == ActiveMiningStage.Success ? "Success!" : "Failed";
+            if (_resultText   != null) _resultText.text = succeeded ? "Success!" : "Failed";
+
+            if (_rewardText != null)
+            {
+                if (succeeded && _handoff.Definition != null)
+                {
+                    int mined = _handoff.RemainingYieldAtStart;
+                    int coins = mined * _handoff.Definition.CoinsPerUnit;
+                    _rewardText.text = $"+{mined} {_handoff.Definition.MineralType} -> {coins} coins";
+                }
+                else
+                {
+                    _rewardText.text = "No reward";
+                }
+            }
+        }
+
+        private void OnContinueClicked() => _activeMiningState.Finish();
+
+        private void SetInProgressUiActive(bool active)
+        {
+            if (_targetPoint    != null) _targetPoint.gameObject.SetActive(active);
+            if (_missAreaButton != null) _missAreaButton.gameObject.SetActive(active);
+            if (_progressText   != null) _progressText.gameObject.SetActive(active);
+            if (_errorText      != null) _errorText.gameObject.SetActive(active);
+            if (_timeText       != null) _timeText.gameObject.SetActive(active);
         }
 
         private void SpawnNextTargetPoint()
@@ -108,11 +166,12 @@ namespace SocialUniverse.UI
 
         private void OnTapped(bool hitTarget)
         {
-            if (_mining.CurrentActiveSession == null) return;
+            if (!_started || _runner.Session.Stage != ActiveMiningStage.InProgress) return;
 
-            _mining.RegisterActiveTap(hitTarget);
+            if (hitTarget) _runner.Session.RegisterHit();
+            else           _runner.Session.RegisterMiss();
 
-            if (_mining.CurrentActiveSession != null && _mining.CurrentActiveSession.Stage == ActiveMiningStage.InProgress)
+            if (_runner.Session.Stage == ActiveMiningStage.InProgress)
                 SpawnNextTargetPoint();
         }
     }
