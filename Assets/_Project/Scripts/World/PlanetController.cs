@@ -30,7 +30,17 @@ namespace SocialUniverse.World
         private void SpawnModel(PlanetDefinition planet)
         {
             if (planet.ModelPrefab == null) return;
-            Instantiate(planet.ModelPrefab, transform.position, Quaternion.identity, transform);
+            var model = Instantiate(planet.ModelPrefab, transform.position, Quaternion.identity, transform);
+
+            // ModelPrefab assets carry a SphereCollider for their star-map/travel-preview uses
+            // (tap-to-select, preview rotation). Here the model is purely decorative and is
+            // parented at the same position/scale as the Hexasphere's own tile-interaction
+            // SphereCollider, so the model's collider silently wins every raycast — both Unity's
+            // OnMouseEnter/Exit and the plugin's own hit-test (which requires
+            // hit.collider.gameObject == the Hexasphere's GameObject) — and hex tiles never
+            // register hover or clicks.
+            foreach (var col in model.GetComponentsInChildren<Collider>())
+                col.enabled = false;
         }
     }
 }
