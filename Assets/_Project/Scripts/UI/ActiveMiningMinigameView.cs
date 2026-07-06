@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using VContainer;
 using SocialUniverse.Mining;
 using SocialUniverse.Core;
+using TMPro;
 
 namespace SocialUniverse.UI
 {
@@ -35,7 +36,7 @@ namespace SocialUniverse.UI
         [Header("Post-game")]
         [SerializeField] private GameObject _resultBanner;
         [SerializeField] private Text       _resultText;
-        [SerializeField] private Text       _rewardText;
+        [SerializeField] private TMP_Text       _rewardText;
         [SerializeField] private Button     _continueButton;
 
         [Inject] private ActiveMiningSessionRunner _runner;
@@ -121,7 +122,8 @@ namespace SocialUniverse.UI
                 {
                     int mined = _handoff.RemainingYieldAtStart;
                     int coins = mined * _handoff.Definition.CoinsPerUnit;
-                    _rewardText.text = $"+{mined} {_handoff.Definition.MineralType} -> {coins} coins";
+                    _rewardText.text = $"+{coins} coins";
+                    //_rewardText.text = $"+{mined} {_handoff.Definition.MineralType} -> {coins} coins";
                 }
                 else
                 {

@@ -60,7 +60,7 @@ namespace SocialUniverse.UI
             ClosePrompt();
         }
 
-        private void ClosePrompt()
+        public void ClosePrompt()
         {
             _pendingAsteroid = null;
             if (_root != null) _root.SetActive(false);
