@@ -41,6 +41,15 @@ namespace SocialUniverse.App
             _stage   = stage;
         }
 
-        public void Start() => _stage.SpawnClone(_handoff.Definition);
+        public void Start()
+        {
+            _stage.SpawnClone(_handoff.Definition);
+
+            // LoadingScreenView (see LoadingScreenView.cs) only unloads itself in response to
+            // this event — every other scene bootstrapper shown behind a loading screen
+            // (PlanetSceneBootstrapper, TravelSceneBootstrapper) already publishes it once its
+            // own setup completes; this one needs to as well or LoadingScreen never unloads.
+            EventBus.Publish(new SceneReadyEvent());
+        }
     }
 }
