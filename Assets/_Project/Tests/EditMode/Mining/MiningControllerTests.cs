@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SocialUniverse.Config;
+using SocialUniverse.Core;
 using SocialUniverse.Economy;
 using SocialUniverse.Mining;
 using UnityEngine;
@@ -33,7 +34,7 @@ namespace SocialUniverse.Tests
         private Wallet                 _wallet;
         private LocalMockEconomy       _economy;
         private MiningRewardCalculator _rewardCalc;
-        private ActiveMiningMinigame   _activeMinigame;
+        private ActiveMiningHandoff    _handoff;
         private AsteroidSpawner        _spawner;
         private MiningController       _mining;
 
@@ -64,12 +65,12 @@ namespace SocialUniverse.Tests
             _wallet     = new Wallet();
             _economy    = new LocalMockEconomy(_wallet, _config);
             _rewardCalc = new MiningRewardCalculator(_config);
+            _handoff    = new ActiveMiningHandoff();
 
             var spawnerGo = new GameObject("TestSpawner");
             _spawner = spawnerGo.AddComponent<AsteroidSpawner>();
 
-            _activeMinigame = new ActiveMiningMinigame(_config, _rewardCalc);
-            _mining = new MiningController(_economy, _rewardCalc, _activeMinigame, _spawner, _config, _planet);
+            _mining = new MiningController(_economy, _rewardCalc, _spawner, _config, _planet, _handoff);
         }
 
         [TearDown]
@@ -135,7 +136,7 @@ namespace SocialUniverse.Tests
             Assert.IsTrue(_mining.BeginActiveMining(activeAsteroid));
 
             Assert.IsNotNull(_mining.CurrentIdleSession);
-            Assert.IsNotNull(_mining.CurrentActiveSession);
+            Assert.AreEqual("slot_1", _handoff.AsteroidSlotId);
         }
 
         [Test]
@@ -155,41 +156,86 @@ namespace SocialUniverse.Tests
 
             Assert.IsTrue(_mining.BeginIdleMining(asteroid));
             Assert.IsFalse(_mining.BeginActiveMining(asteroid));
-            Assert.IsNull(_mining.CurrentActiveSession);
+            Assert.IsNull(_handoff.AsteroidSlotId);
         }
 
         [Test]
-        public async Task Active_mining_success_grants_full_yield()
+        public void BeginActiveMining_fails_while_a_previous_active_mining_result_is_still_pending_finalize()
         {
-            var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 10);
-            Assert.IsTrue(_mining.BeginActiveMining(asteroid));
-            int tapsRequired = _mining.CurrentActiveSession.TapsRequired;
-            int coinsBefore  = _wallet.Coins;
+            var a1 = MakeAndRegisterAsteroid("slot_0", 10);
+            var a2 = MakeAndRegisterAsteroid("slot_1", 10);
 
-            for (int i = 0; i < tapsRequired; i++)
-                _mining.RegisterActiveTap(true);
-
-            await Task.Yield(); // let the fire-and-forget payout Task complete
-
-            Assert.IsNull(_mining.CurrentActiveSession);
-            Assert.AreEqual(coinsBefore + 20, _wallet.Coins); // 10 yield * 2 coins/unit
-            Assert.IsTrue(asteroid.IsDepleted);
+            Assert.IsTrue(_mining.BeginActiveMining(a1));
+            Assert.IsFalse(_mining.BeginActiveMining(a2));
         }
 
         [Test]
-        public void Active_mining_failure_grants_nothing_and_clears_the_session()
+        public async Task Initialize_finalizes_a_pending_active_mining_success()
         {
             var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 10);
             Assert.IsTrue(_mining.BeginActiveMining(asteroid));
+            _handoff.SetResult(succeeded: true);
             int coinsBefore = _wallet.Coins;
 
-            _mining.RegisterActiveTap(false);
-            _mining.RegisterActiveTap(false);
-            _mining.RegisterActiveTap(false); // 3rd miss -> Failed
+            var droneDef = ScriptableObject.CreateInstance<DroneDefinition>();
+            _mining.Initialize(new DroneRuntime(droneDef));
+            await Task.Yield(); // let the fire-and-forget payout Task complete
 
-            Assert.IsNull(_mining.CurrentActiveSession);
+            Assert.AreEqual(coinsBefore + 20, _wallet.Coins); // 10 yield * 2 coins/unit
+            Assert.IsTrue(asteroid.IsDepleted);
+            Assert.IsNull(_handoff.AsteroidSlotId, "handoff must be cleared after finalizing");
+
+            Object.DestroyImmediate(droneDef);
+        }
+
+        [Test]
+        public void Initialize_finalizes_a_pending_active_mining_failure()
+        {
+            var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 10);
+            Assert.IsTrue(_mining.BeginActiveMining(asteroid));
+            _handoff.SetResult(succeeded: false);
+            int coinsBefore = _wallet.Coins;
+
+            var droneDef = ScriptableObject.CreateInstance<DroneDefinition>();
+            _mining.Initialize(new DroneRuntime(droneDef));
+
             Assert.AreEqual(coinsBefore, _wallet.Coins);
             Assert.IsTrue(asteroid.IsDepleted, "a failed asteroid is still consumed with zero payout");
+            Assert.IsNull(_handoff.AsteroidSlotId);
+
+            Object.DestroyImmediate(droneDef);
+        }
+
+        [Test]
+        public void Initialize_clears_a_pending_result_without_throwing_when_the_asteroid_no_longer_resolves()
+        {
+            var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 10);
+            Assert.IsTrue(_mining.BeginActiveMining(asteroid));
+            _handoff.SetResult(succeeded: true);
+
+            var active = (List<Asteroid>)typeof(AsteroidSpawner)
+                .GetField("_active", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(_spawner);
+            active.Remove(asteroid); // simulate the slot no longer resolving (e.g. already respawned)
+
+            var droneDef = ScriptableObject.CreateInstance<DroneDefinition>();
+            Assert.DoesNotThrow(() => _mining.Initialize(new DroneRuntime(droneDef)));
+
+            Assert.IsNull(_handoff.AsteroidSlotId);
+
+            Object.DestroyImmediate(droneDef);
+        }
+
+        [Test]
+        public void Initialize_does_nothing_when_no_active_mining_result_is_pending()
+        {
+            int coinsBefore = _wallet.Coins;
+            var droneDef = ScriptableObject.CreateInstance<DroneDefinition>();
+
+            Assert.DoesNotThrow(() => _mining.Initialize(new DroneRuntime(droneDef)));
+
+            Assert.AreEqual(coinsBefore, _wallet.Coins);
+
+            Object.DestroyImmediate(droneDef);
         }
 
         [Test]
@@ -236,7 +282,7 @@ namespace SocialUniverse.Tests
         public async Task ClaimIdleSessionAsync_still_schedules_respawn_when_the_grant_call_throws()
         {
             var throwingEconomy = new ThrowingEconomyService();
-            var mining = new MiningController(throwingEconomy, _rewardCalc, _activeMinigame, _spawner, _config, _planet);
+            var mining = new MiningController(throwingEconomy, _rewardCalc, _spawner, _config, _planet, _handoff);
 
             var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 20);
             Assert.IsTrue(mining.BeginIdleMining(asteroid));

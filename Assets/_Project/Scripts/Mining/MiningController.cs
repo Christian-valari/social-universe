@@ -12,37 +12,34 @@ namespace SocialUniverse.Mining
     {
         private readonly IEconomyService        _economy;
         private readonly MiningRewardCalculator  _rewardCalc;
-        private readonly ActiveMiningMinigame    _activeMinigame;
         private readonly AsteroidSpawner         _spawner;
         private readonly EconomyConfig           _config;
         private readonly PlanetDefinition        _planet;
+        private readonly ActiveMiningHandoff     _handoff;
 
         public DroneRuntime Drone { get; private set; }
 
-        public IdleMiningSession   CurrentIdleSession   { get; private set; }
-        public ActiveMiningSession CurrentActiveSession => _activeMinigame.CurrentSession;
-        public Asteroid            ClaimingAsteroid     { get; private set; }
+        public IdleMiningSession CurrentIdleSession { get; private set; }
+        public Asteroid          ClaimingAsteroid    { get; private set; }
 
-        public event Action<IdleMiningSession>   OnIdleSessionChanged;
-        public event Action<ActiveMiningSession> OnActiveSessionChanged;
+        public event Action<IdleMiningSession> OnIdleSessionChanged;
 
         public MiningController(IEconomyService economy, MiningRewardCalculator rewardCalc,
-            ActiveMiningMinigame activeMinigame, AsteroidSpawner spawner, EconomyConfig config, PlanetDefinition planet)
+            AsteroidSpawner spawner, EconomyConfig config, PlanetDefinition planet, ActiveMiningHandoff handoff)
         {
-            _economy        = economy;
-            _rewardCalc     = rewardCalc;
-            _activeMinigame = activeMinigame;
-            _spawner        = spawner;
-            _config         = config;
-            _planet         = planet;
-
-            _activeMinigame.OnSessionChanged += OnActiveMinigameSessionChanged;
+            _economy    = economy;
+            _rewardCalc = rewardCalc;
+            _spawner    = spawner;
+            _config     = config;
+            _planet     = planet;
+            _handoff    = handoff;
         }
 
         public void Initialize(DroneRuntime drone)
         {
             Drone = drone;
             TryRestoreIdleSession();
+            TryFinalizePendingActiveMining();
         }
 
         // ---- Idle mining ----
@@ -50,7 +47,7 @@ namespace SocialUniverse.Mining
         public bool BeginIdleMining(Asteroid asteroid)
         {
             if (asteroid == null || asteroid.IsDepleted || CurrentIdleSession != null ||
-                (_activeMinigame.CurrentSession != null && _activeMinigame.CurrentSession.Asteroid == asteroid))
+                (_handoff.AsteroidSlotId != null && _handoff.AsteroidSlotId == asteroid.SlotId))
                 return false;
 
             var reward = _rewardCalc.Compute(asteroid);
@@ -103,37 +100,47 @@ namespace SocialUniverse.Mining
 
         // ---- Active mining ----
 
+        // Validates and computes the reward, then hands off to ActiveMiningHandoff — the
+        // actual minigame (timer/taps) now runs entirely inside the ActiveMining scene, which
+        // this MiningController instance won't exist for (it's destroyed along with Planet).
+        // The caller (MiningModePromptView, via ActiveMiningRequestedEvent) is responsible for
+        // triggering the FSM transition once this returns true.
         public bool BeginActiveMining(Asteroid asteroid)
         {
-            if (CurrentIdleSession != null && CurrentIdleSession.Asteroid == asteroid)
-                return false;
+            if (asteroid == null || asteroid.IsDepleted) return false;
+            if (CurrentIdleSession != null && CurrentIdleSession.Asteroid == asteroid) return false;
+            if (_handoff.AsteroidSlotId != null) return false; // a previous result is still pending finalize
 
-            return _activeMinigame.Begin(asteroid);
+            var reward = _rewardCalc.Compute(asteroid);
+            _handoff.Begin(_planet.PlanetId, asteroid.SlotId, asteroid.Definition, asteroid.RemainingYield,
+                reward.ActiveTapsRequired, _config.ActiveMaxErrors, reward.ActiveSessionDurationSeconds);
+            return true;
         }
 
-        public void TickActiveSession(float deltaTime) => _activeMinigame.Tick(deltaTime);
-
-        public void RegisterActiveTap(bool hitTarget) => _activeMinigame.RegisterTap(hitTarget);
-
-        private void OnActiveMinigameSessionChanged(ActiveMiningSession session)
+        // Called from Initialize (same spot idle-session restore already runs) once Planet has
+        // reloaded after an active-mining round trip. Resolves the asteroid back by SlotId
+        // (same tolerance TryRestoreIdleSession already has: if the slot no longer resolves,
+        // silently drop it rather than throwing) and finishes the grant/respawn flow.
+        private void TryFinalizePendingActiveMining()
         {
-            OnActiveSessionChanged?.Invoke(session);
+            if (!_handoff.HasResult) return;
 
-            if (session == null) return;
-            if (session.Stage == ActiveMiningStage.Success) _ = CompleteActiveMiningAsync(session);
-            else if (session.Stage == ActiveMiningStage.Failed) FailActiveMining(session);
+            var asteroid = _spawner.FindBySlotId(_handoff.AsteroidSlotId);
+            if (asteroid != null)
+            {
+                if (_handoff.Succeeded) _ = CompleteActiveMiningAsync(asteroid);
+                else                     FailActiveMining(asteroid);
+            }
+
+            _handoff.Clear();
         }
 
-        private async Task CompleteActiveMiningAsync(ActiveMiningSession session)
+        private async Task CompleteActiveMiningAsync(Asteroid asteroid)
         {
-            var asteroid = session.Asteroid;
-            var reward   = _rewardCalc.Compute(asteroid);
+            var reward = _rewardCalc.Compute(asteroid);
 
             int mined = asteroid.Mine(asteroid.RemainingYield);
             int coins = mined * asteroid.Definition.CoinsPerUnit;
-
-            _activeMinigame.Clear();
-            OnActiveSessionChanged?.Invoke(null);
 
             if (coins > 0)
             {
@@ -154,13 +161,9 @@ namespace SocialUniverse.Mining
             _spawner.ScheduleRespawn(asteroid, _config.AsteroidRespawnHours);
         }
 
-        private void FailActiveMining(ActiveMiningSession session)
+        private void FailActiveMining(Asteroid asteroid)
         {
-            var asteroid = session.Asteroid;
             asteroid.Mine(asteroid.RemainingYield);
-
-            _activeMinigame.Clear();
-            OnActiveSessionChanged?.Invoke(null);
 
             SULog.Info($"Active mining failed on {asteroid.name} — asteroid lost", SULog.Channel.Mining);
             _spawner.ScheduleRespawn(asteroid, _config.AsteroidRespawnHours);
