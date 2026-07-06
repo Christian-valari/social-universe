@@ -6,6 +6,7 @@ namespace SocialUniverse.Progression
     {
         public string PlayerId    { get; set; } = "local_player";
         public string DisplayName { get; private set; } = "Player";
+        public string AvatarId    { get; private set; }
         public bool   IsEmailVerified { get; private set; }
         public int    Level       { get; private set; } = 1;
         public int    XP          { get; private set; }
@@ -16,6 +17,7 @@ namespace SocialUniverse.Progression
         public long   TravelArrivalTsMs { get; private set; }
 
         public event Action<string> OnDisplayNameChanged;
+        public event Action<string> OnAvatarChanged;
         public event Action<bool>   OnEmailVerifiedChanged;
         public event Action<int>    OnLevelChanged;
         public event Action<float>  OnFuelChanged;
@@ -26,6 +28,12 @@ namespace SocialUniverse.Progression
         {
             DisplayName = name;
             OnDisplayNameChanged?.Invoke(name);
+        }
+
+        public void SetAvatarId(string avatarId)
+        {
+            AvatarId = avatarId;
+            OnAvatarChanged?.Invoke(avatarId);
         }
 
         public void SetEmailVerified(bool verified)
