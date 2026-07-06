@@ -54,6 +54,7 @@ namespace SocialUniverse.App
             {
                 builder.RegisterInstance(parentPlanetState);
                 builder.RegisterEntryPoint<LaunchButtonHandler>();
+                builder.RegisterEntryPoint<ActiveMiningRequestHandler>();
             }
 
             // Net layer — only register here when running standalone (no parent scope).

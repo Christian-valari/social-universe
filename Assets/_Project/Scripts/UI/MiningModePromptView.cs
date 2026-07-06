@@ -34,8 +34,7 @@ namespace SocialUniverse.UI
         {
             var asteroid = e.Asteroid;
             if (asteroid == null || asteroid.IsDepleted) return;
-            if (_mining.CurrentIdleSession   != null && _mining.CurrentIdleSession.Asteroid   == asteroid) return; // this asteroid is already idle-mining
-            if (_mining.CurrentActiveSession != null && _mining.CurrentActiveSession.Asteroid == asteroid) return; // this asteroid already has an active-mining minigame running
+            if (_mining.CurrentIdleSession != null && _mining.CurrentIdleSession.Asteroid == asteroid) return; // this asteroid is already idle-mining
             if (_mining.ClaimingAsteroid == asteroid) return; // final claim tap just completed
 
             _pendingAsteroid = asteroid;
@@ -55,8 +54,8 @@ namespace SocialUniverse.UI
 
         private void OnActiveMineClicked()
         {
-            if (_pendingAsteroid != null)
-                _mining.BeginActiveMining(_pendingAsteroid);
+            if (_pendingAsteroid != null && _mining.BeginActiveMining(_pendingAsteroid))
+                EventBus.Publish(new ActiveMiningRequestedEvent());
 
             ClosePrompt();
         }
