@@ -63,6 +63,7 @@ namespace SocialUniverse.App
             if (standalone)
             {
                 builder.Register<SceneLoader>(Lifetime.Singleton);
+                builder.Register<ActiveMiningHandoff>(Lifetime.Singleton);
                 builder.Register<NetworkBootstrap>(Lifetime.Singleton).AsImplementedInterfaces();
                 builder.Register<LocalMockAuthService>(Lifetime.Singleton).As<IAuthService>();
                 builder.Register<BackendClient>(Lifetime.Singleton).As<IBackendClient>();
@@ -110,7 +111,6 @@ namespace SocialUniverse.App
 
             // Mining
             builder.Register<MiningRewardCalculator>(Lifetime.Singleton);
-            builder.Register<ActiveMiningMinigame>(Lifetime.Singleton);
             builder.Register<MiningController>(Lifetime.Singleton);
             builder.RegisterComponentInHierarchy<AsteroidSpawner>();
             builder.RegisterComponentInHierarchy<DroneController>();
@@ -119,15 +119,12 @@ namespace SocialUniverse.App
             // UI
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.HUDController>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.MiningModePromptView>();
-            builder.RegisterComponentInHierarchy<SocialUniverse.UI.ActiveMiningMinigameView>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.SocialDebugPanel>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.DisplayNameModal>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.EmailVerificationModal>();
 
             builder.RegisterEntryPoint<PlanetSceneBootstrapper>();
             builder.RegisterEntryPoint<IdleMiningSessionController>();
-            builder.RegisterEntryPoint<ActiveMiningSessionController>();
-            builder.RegisterEntryPoint<ActiveMiningSceneController>();
             builder.RegisterEntryPoint<TilePurchaseHandler>();
             builder.RegisterEntryPoint<LandRegistrySyncController>();
             builder.RegisterEntryPoint<BuildModeController>();
