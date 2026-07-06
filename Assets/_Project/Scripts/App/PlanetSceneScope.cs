@@ -67,8 +67,8 @@ namespace SocialUniverse.App
                 builder.Register<ActiveMiningHandoff>(Lifetime.Singleton);
                 builder.Register<NetworkBootstrap>(Lifetime.Singleton).AsImplementedInterfaces();
                 builder.Register<LocalMockAuthService>(Lifetime.Singleton).As<IAuthService>();
-                builder.Register<LocalMockBackendClient>(Lifetime.Singleton).As<IBackendClient>();
-                builder.Register<LocalMockCloudSave>(Lifetime.Singleton).As<ICloudSave>();
+                builder.Register<BackendClient>(Lifetime.Singleton).As<IBackendClient>();
+                builder.Register<CloudSaveService>(Lifetime.Singleton).As<ICloudSave>();
 
                 // M4 social layer — mocks, mirroring RootLifetimeScope's dev-mode set.
                 builder.RegisterInstance(_socialConfig != null ? _socialConfig : ScriptableObject.CreateInstance<SocialConfig>());
