@@ -637,6 +637,8 @@ MonoBehaviour:
   _resultText: {fileID: 2095279403}
   _rewardText: {fileID: 142999135}
   _continueButton: {fileID: 975936130}
+  _hitVfxPrefab: {fileID: 3350008543128462700, guid: 2ac269d5cb8c48246b3ce068ce9280b3, type: 3}
+  _hitVfxLifetime: 1
 --- !u!1 &100050
 GameObject:
   m_ObjectHideFlags: 0
