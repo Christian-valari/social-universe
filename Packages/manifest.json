@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#main",
-    "com.google.external-dependency-manager": "1.2.187",
     "com.unity.ai.navigation": "2.0.11",
     "com.unity.cinemachine": "3.1.7",
     "com.unity.collab-proxy": "2.11.4",
@@ -62,8 +61,7 @@
       "name": "OpenUPM",
       "url": "https://package.openupm.com",
       "scopes": [
-        "jp.hadashikick",
-        "com.google"
+        "jp.hadashikick"
       ]
     }
   ]
