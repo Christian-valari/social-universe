@@ -39,6 +39,10 @@ namespace SocialUniverse.UI
         [SerializeField] private TMP_Text       _rewardText;
         [SerializeField] private Button     _continueButton;
 
+        [Header("VFX")]
+        [SerializeField] private GameObject _hitVfxPrefab;
+        [SerializeField] private float      _hitVfxLifetime = 1f;
+
         [Inject] private ActiveMiningSessionRunner _runner;
         [Inject] private ActiveMiningHandoff       _handoff;
         [Inject] private ActiveMiningState         _activeMiningState;
@@ -170,11 +174,26 @@ namespace SocialUniverse.UI
         {
             if (!_started || _runner.Session.Stage != ActiveMiningStage.InProgress) return;
 
-            if (hitTarget) _runner.Session.RegisterHit();
-            else           _runner.Session.RegisterMiss();
+            if (hitTarget)
+            {
+                SpawnHitVfx();
+                _runner.Session.RegisterHit();
+            }
+            else
+            {
+                _runner.Session.RegisterMiss();
+            }
 
             if (_runner.Session.Stage == ActiveMiningStage.InProgress)
                 SpawnNextTargetPoint();
+        }
+
+        private void SpawnHitVfx()
+        {
+            if (_hitVfxPrefab == null || _currentTargetAnchor == null || !Application.isPlaying) return;
+
+            var vfx = Instantiate(_hitVfxPrefab, _currentTargetAnchor.transform.position, Quaternion.identity);
+            Destroy(vfx, _hitVfxLifetime);
         }
     }
 }
