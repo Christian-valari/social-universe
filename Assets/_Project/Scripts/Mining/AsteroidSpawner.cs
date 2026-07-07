@@ -13,6 +13,10 @@ namespace SocialUniverse.Mining
         [SerializeField] private float _orbitRadius   = 15f;
         [SerializeField] private int   _maxPerType    = 4;
 
+        [Header("VFX")]
+        [SerializeField] private GameObject _destroyVfxPrefab;
+        [SerializeField] private float      _destroyVfxLifetime = 2f;
+
         [Inject] private DatabaseRegistry _registry;
 
         private readonly List<Asteroid>       _active  = new();
@@ -150,11 +154,14 @@ namespace SocialUniverse.Mining
 
             var definition = asteroid.Definition;
             var slotId      = asteroid.SlotId;
+            var position    = asteroid.transform.position;
             _active.Remove(asteroid);
             if (Application.isPlaying)
                 Destroy(asteroid.gameObject);
             else
                 DestroyImmediate(asteroid.gameObject);
+
+            SpawnDestroyVfx(position);
 
             _pending.Add(new PendingRespawn
             {
@@ -219,6 +226,14 @@ namespace SocialUniverse.Mining
         }
 
         private Vector3 RandomOrbitPoint() => UnityEngine.Random.onUnitSphere * _orbitRadius;
+
+        private void SpawnDestroyVfx(Vector3 position)
+        {
+            if (_destroyVfxPrefab == null || !Application.isPlaying) return;
+
+            var vfx = Instantiate(_destroyVfxPrefab, position, Quaternion.identity);
+            Destroy(vfx, _destroyVfxLifetime);
+        }
 
         // Extracts the numeric index from a "{mineral}#{index}" SlotId. Returns -1 if the
         // slot ID is null/malformed rather than throwing, so a corrupt persisted entry just
