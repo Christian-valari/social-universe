@@ -52,7 +52,11 @@ namespace SocialUniverse.UI
             _currency.Bind(_wallet);
             _chatButton.onClick.AddListener(_socialPanel.Open);
             _usernameButton?.onClick.AddListener(OnUsernameClicked);
-            _avatarButton?.onClick.AddListener(() => _avatarSelectionModal?.Open());
+            _avatarButton?.onClick.AddListener(() =>
+            {
+                _avatarSelectionModal?.Open();
+                _displayNameModal?.Open();
+            });
             _launchButton?.onClick.AddListener(() => EventBus.Publish(new LaunchRequestedEvent()));
             if (_verifyEmailButton != null) _verifyEmailButton.onClick.AddListener(() => _emailVerificationModal?.Open());
             EventBus.Subscribe<ShowEmailVerificationPromptEvent>(OnShowEmailVerificationPrompt);

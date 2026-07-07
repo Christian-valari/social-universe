@@ -12,6 +12,7 @@ namespace SocialUniverse.Social
         public bool   Success;
         public string Reason;       // e.g. "NAME_REJECTED", "NAME_TOO_LONG"
         public string DisplayName;  // the (possibly server-normalized) committed name
+        public string AvatarId;  // the (possibly server-normalized) committed name
     }
 
     // Fetch/update player profiles. Reads go through "GetPlayerProfile" so any

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -18,20 +19,21 @@ namespace SocialUniverse.UI
     public class AvatarSelectionModal : MonoBehaviour
     {
         [SerializeField] private Transform _gridContainer;
+        [SerializeField] private Image _avatarPreview;
         [SerializeField] private Button    _avatarButtonPrefab;  // Button + Image, one avatar tile; starts inactive
-        [SerializeField] private Button    _cancelButton;
         [SerializeField] private TMP_Text  _statusText;
 
         [Inject] private PlayerState      _playerState;
         [Inject] private ProfileService   _profiles;
         [Inject] private DatabaseRegistry _registry;
 
+        private string _selectedAvatarId;
+
         private readonly List<(Button Button, string AvatarId)> _entries = new();
         private bool _built;
 
         private void Awake()
         {
-            _cancelButton.onClick.AddListener(Close);
             gameObject.SetActive(false);
         }
 
@@ -40,6 +42,9 @@ namespace SocialUniverse.UI
             if (!_built) BuildGrid();
             RefreshHighlight();
             _statusText.text = "";
+            _selectedAvatarId = _playerState.AvatarId;
+            var currentAvatar = _registry.AllAvatars.ToList().Find(x => x.AvatarId == _selectedAvatarId);
+            _avatarPreview.sprite = currentAvatar.Sprite;
             gameObject.SetActive(true);
         }
 
@@ -56,27 +61,35 @@ namespace SocialUniverse.UI
                 var image = button.GetComponent<Image>();
                 if (image != null) image.sprite = avatar.Sprite;
 
-                button.onClick.AddListener(() => OnAvatarClicked(avatarId));
+                button.onClick.AddListener(() => OnAvatarClicked(avatarId, avatar.Sprite));
                 _entries.Add((button, avatarId));
             }
             _built = true;
         }
 
-        private async void OnAvatarClicked(string avatarId)
+        private void OnAvatarClicked(string avatarId, Sprite avatarIcon)
         {
             if (avatarId == _playerState.AvatarId) return;
 
+            _selectedAvatarId = avatarId;
+            _avatarPreview.sprite = avatarIcon;
+        }
+
+        public async void UpdateAvatar()
+        {
+            if (_selectedAvatarId == _playerState.AvatarId) return;
+            
             SetBusy(true);
             _statusText.text = "Saving…";
 
             try
             {
-                var result = await _profiles.UpdateAvatarAsync(avatarId);
+                var result = await _profiles.UpdateAvatarAsync(_selectedAvatarId);
 
                 // null result means mock backend — treat as success with local id
                 if (result == null || result.Success)
                 {
-                    _playerState.SetAvatarId(avatarId);
+                    _playerState.SetAvatarId(_selectedAvatarId);
                     Close();
                 }
                 else
@@ -105,7 +118,6 @@ namespace SocialUniverse.UI
 
         private void SetBusy(bool busy)
         {
-            _cancelButton.interactable = !busy;
             if (busy)
             {
                 foreach (var entry in _entries) entry.Button.interactable = false;

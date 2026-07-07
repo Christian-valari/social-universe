@@ -16,6 +16,7 @@ namespace SocialUniverse.UI
     // the HUD and any future reconnect both reflect the new name.
     public class DisplayNameModal : MonoBehaviour
     {
+        [SerializeField] private AvatarSelectionModal _avatarSelectionModal;
         [SerializeField] private TMP_InputField _nameInput;
         [SerializeField] private Button         _confirmButton;
         [SerializeField] private Button         _cancelButton;
@@ -37,7 +38,6 @@ namespace SocialUniverse.UI
         {
             _nameInput.text  = _playerState.DisplayName;
             _statusText.text = "";
-            gameObject.SetActive(true);
         }
 
         public void Close() => gameObject.SetActive(false);
@@ -45,6 +45,13 @@ namespace SocialUniverse.UI
         private async void OnConfirmClicked()
         {
             string name = _nameInput.text.Trim();
+
+            if (name == _playerState.DisplayName)
+            {
+                _avatarSelectionModal.UpdateAvatar();
+                return;
+            }
+            
             int maxLen  = _config != null ? _config.MaxDisplayNameLength : 20;
 
             if (string.IsNullOrEmpty(name) || name.Length < 2)
@@ -71,6 +78,9 @@ namespace SocialUniverse.UI
                     string committed = result?.DisplayName ?? name;
                     _playerState.SetDisplayName(committed);
                     await _auth.UpdateDisplayNameAsync(committed);
+                
+                    _avatarSelectionModal.UpdateAvatar();
+                    
                     Close();
                 }
                 else
@@ -83,6 +93,8 @@ namespace SocialUniverse.UI
                         _               => "Could not update — please try again"
                     };
                 }
+                
+                
             }
             catch (Exception ex)
             {
