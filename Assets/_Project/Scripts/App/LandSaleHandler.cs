@@ -32,6 +32,8 @@ namespace SocialUniverse.App
             if (tile.State != TileState.OwnedByPlayer)
             {
                 SULog.Warn($"LandSaleHandler: cannot sell tile {tile.TileId} — not owned by player", SULog.Channel.Economy);
+                EventBus.Publish(new TileSaleCompletedEvent
+                    { Tile = tile, Success = false, FailureReason = "Not your tile" });
                 return;
             }
 
@@ -40,6 +42,8 @@ namespace SocialUniverse.App
             if (!result.Success)
             {
                 SULog.Warn($"Sell tile {tile.TileId} failed: {result.Reason}", SULog.Channel.Economy);
+                EventBus.Publish(new TileSaleCompletedEvent
+                    { Tile = tile, Success = false, FailureReason = result.Reason });
                 return;
             }
 
@@ -50,6 +54,7 @@ namespace SocialUniverse.App
             _extrusionView.RefreshTile(tile);
 
             SULog.Info($"Sold tile {tile.TileId} (balance {result.NewBalance})", SULog.Channel.Economy);
+            EventBus.Publish(new TileSaleCompletedEvent { Tile = tile, Success = true });
         }
     }
 }
