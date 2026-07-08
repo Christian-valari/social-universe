@@ -124,6 +124,8 @@ namespace SocialUniverse.App
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.DisplayNameModal>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.AvatarSelectionModal>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.EmailVerificationModal>();
+            builder.RegisterComponentInHierarchy<SocialUniverse.UI.LandPurchaseModal>();
+            builder.RegisterComponentInHierarchy<SocialUniverse.UI.TileInfoModal>();
 
             builder.RegisterEntryPoint<PlanetSceneBootstrapper>();
             builder.RegisterEntryPoint<IdleMiningSessionController>();

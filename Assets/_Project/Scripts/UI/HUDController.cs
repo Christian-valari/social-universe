@@ -38,6 +38,8 @@ namespace SocialUniverse.UI
         [SerializeField] private TMP_Text _explorersText;
         [SerializeField] private Button _launchButton;
         [SerializeField] private TMP_Text _planetNameText;
+        [SerializeField] private LandPurchaseModal _landPurchaseModal;
+        [SerializeField] private TileInfoModal     _tileInfoModal;
 
         [Inject] private Wallet _wallet;
         [Inject] private PlayerState _playerState;
@@ -61,6 +63,7 @@ namespace SocialUniverse.UI
             _launchButton?.onClick.AddListener(() => EventBus.Publish(new LaunchRequestedEvent()));
             if (_verifyEmailButton != null) _verifyEmailButton.onClick.AddListener(() => _emailVerificationModal?.Open());
             EventBus.Subscribe<ShowEmailVerificationPromptEvent>(OnShowEmailVerificationPrompt);
+            EventBus.Subscribe<TileSelectedEvent>(OnTileSelectedForModal);
 
             // Tiles hidden by default; toggled by the view-land-tile toggle.
             _hexasphere.SetTilesVisible(false);
@@ -96,11 +99,21 @@ namespace SocialUniverse.UI
             _playerState.OnAvatarChanged      -= SetAvatar;
             _presence.PresenceChanged         -= RefreshExplorerCount;
             EventBus.Unsubscribe<ShowEmailVerificationPromptEvent>(OnShowEmailVerificationPrompt);
+            EventBus.Unsubscribe<TileSelectedEvent>(OnTileSelectedForModal);
         }
 
         private void OnShowEmailVerificationPrompt(ShowEmailVerificationPromptEvent _)
         {
             _emailVerificationModal?.Open();
+        }
+
+        private void OnTileSelectedForModal(TileSelectedEvent e)
+        {
+            var tile = e.Tile;
+            if (tile.State == TileState.Available)
+                _landPurchaseModal?.Open(tile);
+            else
+                _tileInfoModal?.Open(tile);
         }
 
         private void Update()
