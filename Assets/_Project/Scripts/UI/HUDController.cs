@@ -34,6 +34,7 @@ namespace SocialUniverse.UI
         [SerializeField] private Button _chatButton;
         [SerializeField] private SocialDebugPanel _socialPanel;
         [SerializeField] private Toggle _tileViewToggle;
+        [SerializeField] private TileColorizer _tileColorizer;
         [SerializeField] private TMP_Text _explorersText;
         [SerializeField] private Button _launchButton;
         [SerializeField] private TMP_Text _planetNameText;
@@ -66,7 +67,7 @@ namespace SocialUniverse.UI
             if (_tileViewToggle != null)
             {
                 _tileViewToggle.SetIsOnWithoutNotify(false);
-                _tileViewToggle.onValueChanged.AddListener(_hexasphere.SetTilesVisible);
+                _tileViewToggle.onValueChanged.AddListener(OnTileViewToggled);
             }
 
             _playerState.OnLevelChanged       += SetLevel;
@@ -118,6 +119,15 @@ namespace SocialUniverse.UI
         private void OnUsernameClicked()
         {
             _displayNameModal?.Open();
+        }
+
+        private void OnTileViewToggled(bool visible)
+        {
+            _hexasphere.SetTilesVisible(visible);
+
+            // Toggling the Hexasphere style regenerates its mesh and drops custom tile
+            // materials, so owned/landmark/etc. colors must be reapplied each time tiles show.
+            if (visible) _tileColorizer?.Refresh(_hexasphere.Tiles);
         }
 
         private void SetAvatar(string avatarId)
