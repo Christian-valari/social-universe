@@ -38,13 +38,22 @@ namespace SocialUniverse.Economy
         {
             int refund = (int)Math.Round(_config.BaseLandPrice * planet.LandPriceMultiplier * _config.LandResaleRate);
 
-            var result = await _backend.CallAsync<LandSaleResult>("SellLand",
-                new Dictionary<string, object>
-                {
-                    { "tileId",   tileId      },
-                    { "planetId", planet.name },
-                    { "refund",   refund      }
-                });
+            LandSaleResult result;
+            try
+            {
+                result = await _backend.CallAsync<LandSaleResult>("SellLand",
+                    new Dictionary<string, object>
+                    {
+                        { "tileId",   tileId      },
+                        { "planetId", planet.name },
+                        { "refund",   refund      }
+                    });
+            }
+            catch (Exception ex)
+            {
+                SULog.Error($"LandSaleService: server call failed — {ex.Message}", SULog.Channel.Economy);
+                return new LandSaleResult { Success = false, Reason = "Network error" };
+            }
 
             if (result is { Success: true })
             {
