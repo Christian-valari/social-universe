@@ -38,6 +38,7 @@ namespace SocialUniverse.UI
 
         public void Open(TileData tile)
         {
+            SetBusy(false);
             _currentTile = tile;
 
             int  price     = Mathf.RoundToInt(_economyConfig.BaseLandPrice * _planet.LandPriceMultiplier);

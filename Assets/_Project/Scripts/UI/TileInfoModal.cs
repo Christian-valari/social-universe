@@ -41,6 +41,7 @@ namespace SocialUniverse.UI
 
         public async void Open(TileData tile)
         {
+            SetBusy(false);
             _currentTile = tile;
             _statusText.text    = "";
             _tileStatsText.text = $"Build level {tile.BuildLevel} · Yield {tile.YieldRate:0.0}/hr";
