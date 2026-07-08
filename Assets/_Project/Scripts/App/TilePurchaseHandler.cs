@@ -25,13 +25,18 @@ namespace SocialUniverse.App
             _landRegistryService = landRegistryService;
         }
 
-        public void Start()   => EventBus.Subscribe<TileSelectedEvent>(OnTileSelected);
-        public void Dispose() => EventBus.Unsubscribe<TileSelectedEvent>(OnTileSelected);
+        public void Start()   => EventBus.Subscribe<TilePurchaseConfirmedEvent>(OnTilePurchaseConfirmed);
+        public void Dispose() => EventBus.Unsubscribe<TilePurchaseConfirmedEvent>(OnTilePurchaseConfirmed);
 
-        private async void OnTileSelected(TileSelectedEvent e)
+        private async void OnTilePurchaseConfirmed(TilePurchaseConfirmedEvent e)
         {
             var tile = e.Tile;
-            if (tile.State != TileState.Available) return;
+            if (tile.State != TileState.Available)
+            {
+                EventBus.Publish(new TilePurchaseCompletedEvent
+                    { Tile = tile, Success = false, FailureReason = "Tile is already owned" });
+                return;
+            }
 
             string playerId = _auth.IsSignedIn ? _auth.PlayerId : "local_player";
             var request = new LandPurchaseRequest { TileId = tile.TileId, PlayerId = playerId };
@@ -40,6 +45,8 @@ namespace SocialUniverse.App
             if (!result.Success)
             {
                 SULog.Warn($"Buy tile {tile.TileId} failed: {result.FailureReason}", SULog.Channel.Economy);
+                EventBus.Publish(new TilePurchaseCompletedEvent
+                    { Tile = tile, Success = false, FailureReason = result.FailureReason });
                 return;
             }
 
@@ -47,6 +54,7 @@ namespace SocialUniverse.App
             tile.OwnerId = playerId;
             _colorizer.RefreshTile(tile);
             _landRegistryService.SetOwner(tile.TileId, playerId);
+            EventBus.Publish(new TilePurchaseCompletedEvent { Tile = tile, Success = true });
         }
     }
 }
