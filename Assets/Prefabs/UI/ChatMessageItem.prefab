@@ -313,12 +313,10 @@ MonoBehaviour:
   m_text: Player Name
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ce0cdb4a9773d48c486e31d69a0e3c48, type: 2}
-  m_sharedMaterial: {fileID: 0}
-  m_fontSharedMaterials:
-  - {fileID: 0}
+  m_sharedMaterial: {fileID: -4461743736596542180, guid: ce0cdb4a9773d48c486e31d69a0e3c48, type: 2}
+  m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
-  m_fontMaterials:
-  - {fileID: 0}
+  m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
