@@ -90,6 +90,7 @@ namespace SocialUniverse.App
             builder.Register<LandPurchaseService>(Lifetime.Singleton);
             builder.Register<BuildPaletteService>(Lifetime.Singleton);
             builder.Register<YieldService>(Lifetime.Singleton);
+            builder.Register<YieldEstimateCalculator>(Lifetime.Singleton);
             builder.Register<VisitorTracker>(Lifetime.Singleton);
             builder.Register<UpkeepService>(Lifetime.Singleton);
             builder.Register<LandSaleService>(Lifetime.Singleton);
