@@ -32,6 +32,11 @@ namespace SocialUniverse.UI
             _wallet.OnCoinsChanged    -= SetCoins;
             _wallet.OnStardustChanged -= SetStardust;
             _wallet = null;
+            if (_coinsCountUpRoutine != null)
+            {
+                StopCoroutine(_coinsCountUpRoutine);
+                _coinsCountUpRoutine = null;
+            }
         }
 
         private void OnDestroy() => Unbind();
@@ -56,6 +61,11 @@ namespace SocialUniverse.UI
 
         private void SetCoinsInstant(int amount)
         {
+            if (_coinsCountUpRoutine != null)
+            {
+                StopCoroutine(_coinsCountUpRoutine);
+                _coinsCountUpRoutine = null;
+            }
             _displayedCoins = amount;
             if (_coinsText != null) _coinsText.text = amount.ToString("N0");
         }
