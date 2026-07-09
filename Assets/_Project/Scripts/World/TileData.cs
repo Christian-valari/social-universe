@@ -7,7 +7,6 @@ namespace SocialUniverse.World
         public string    TileId     { get; }
         public string    OwnerId    { get; set; }
         public TileState State      { get; set; } = TileState.Available;
-        public float     YieldRate  { get; set; }
         public bool      IsLandmark { get; set; }
         public int       BuildLevel { get; set; }
 

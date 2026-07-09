@@ -7,12 +7,13 @@ using TMPro;
 using SocialUniverse.Core;
 using SocialUniverse.Config;
 using SocialUniverse.Social;
+using SocialUniverse.Economy;
 using SocialUniverse.World;
 
 namespace SocialUniverse.UI
 {
-    // Read-only tile info for OwnedByPlayer/OwnedByOther/Landmark tiles, with a
-    // Sell action shown only for tiles the player owns. Opened by HUDController
+    // Read-only tile info for OwnedByPlayer/OwnedByOther/Landmark tiles, with a Sell action and
+    // a yield Claim action (both shown only for tiles the player owns). Opened by HUDController
     // when a TileSelectedEvent arrives for a non-Available tile.
     public class TileInfoModal : MonoBehaviour
     {
@@ -20,36 +21,62 @@ namespace SocialUniverse.UI
         [SerializeField] private Image    _avatarImage;
         [SerializeField] private TMP_Text _ownerInfoText;
         [SerializeField] private TMP_Text _tileStatsText;
+        [SerializeField] private TMP_Text _yieldText;
         [SerializeField] private Button   _sellButton;
+        [SerializeField] private Button   _claimButton;
         [SerializeField] private Button   _closeButton;
         [SerializeField] private TMP_Text _statusText;
 
-        [Inject] private ProfileService   _profileService;
-        [Inject] private DatabaseRegistry _registry;
+        [Inject] private ProfileService          _profileService;
+        [Inject] private DatabaseRegistry        _registry;
+        [Inject] private LandRegistryService     _landRegistryService;
+        [Inject] private EconomyConfig           _economyConfig;
+        [Inject] private YieldEstimateCalculator _yieldEstimateCalculator;
 
         private TileData _currentTile;
 
         private void Awake()
         {
             _sellButton.onClick.AddListener(OnSellClicked);
+            _claimButton.onClick.AddListener(OnClaimClicked);
             _closeButton.onClick.AddListener(Close);
             gameObject.SetActive(false);
         }
 
-        private void OnEnable()  => EventBus.Subscribe<TileSaleCompletedEvent>(OnTileSaleCompleted);
-        private void OnDisable() => EventBus.Unsubscribe<TileSaleCompletedEvent>(OnTileSaleCompleted);
+        private void OnEnable()
+        {
+            EventBus.Subscribe<TileSaleCompletedEvent>(OnTileSaleCompleted);
+            EventBus.Subscribe<TileYieldClaimCompletedEvent>(OnTileYieldClaimCompleted);
+        }
+
+        private void OnDisable()
+        {
+            EventBus.Unsubscribe<TileSaleCompletedEvent>(OnTileSaleCompleted);
+            EventBus.Unsubscribe<TileYieldClaimCompletedEvent>(OnTileYieldClaimCompleted);
+        }
 
         public async void Open(TileData tile)
         {
             SetBusy(false);
+            CancelInvoke(nameof(RefreshYieldEstimate));
             _currentTile = tile;
             _statusText.text    = "";
-            _tileStatsText.text = $"Build level {tile.BuildLevel} · Yield {tile.YieldRate:0.0}/hr";
-            _sellButton.gameObject.SetActive(tile.State == TileState.OwnedByPlayer);
+            _tileStatsText.text = $"Build level {tile.BuildLevel}";
+
+            bool ownedByPlayer = tile.State == TileState.OwnedByPlayer;
+            _sellButton.gameObject.SetActive(ownedByPlayer);
+            _claimButton.gameObject.SetActive(ownedByPlayer);
+            _yieldText.gameObject.SetActive(ownedByPlayer);
             _ownerInfoText.gameObject.SetActive(false);
             _avatarImage.gameObject.SetActive(false);
 
             gameObject.SetActive(true);
+
+            if (ownedByPlayer)
+            {
+                RefreshYieldEstimate();
+                InvokeRepeating(nameof(RefreshYieldEstimate), 1f, 1f);
+            }
 
             switch (tile.State)
             {
@@ -63,6 +90,17 @@ namespace SocialUniverse.UI
                     _titleText.text = "Landmark";
                     break;
             }
+        }
+
+        private void RefreshYieldEstimate()
+        {
+            if (_currentTile == null) return;
+
+            var entry = _landRegistryService.GetEntry(_currentTile.TileId);
+            if (entry == null) return;
+
+            var estimate = _yieldEstimateCalculator.Compute(entry, _economyConfig, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+            _yieldText.text = $"{estimate.AccruedCoins} coins ready · {estimate.RatePerHour:0.0}/hr";
         }
 
         private async Task LoadOwnerProfileAsync(TileData tile)
@@ -104,6 +142,7 @@ namespace SocialUniverse.UI
         public void Close()
         {
             _currentTile = null;
+            CancelInvoke(nameof(RefreshYieldEstimate));
             gameObject.SetActive(false);
         }
 
@@ -115,6 +154,14 @@ namespace SocialUniverse.UI
             EventBus.Publish(new TileSellRequestedEvent { Tile = _currentTile });
         }
 
+        private void OnClaimClicked()
+        {
+            if (_currentTile == null) return;
+            SetBusy(true);
+            _statusText.text = "Claiming…";
+            EventBus.Publish(new TileYieldClaimRequestedEvent { Tile = _currentTile });
+        }
+
         private void OnTileSaleCompleted(TileSaleCompletedEvent e)
         {
             if (e.Tile != _currentTile) return;
@@ -124,9 +171,26 @@ namespace SocialUniverse.UI
             else _statusText.text = $"Sell failed: {e.FailureReason}";
         }
 
+        private void OnTileYieldClaimCompleted(TileYieldClaimCompletedEvent e)
+        {
+            if (e.Tile != _currentTile) return;
+
+            SetBusy(false);
+            if (e.Success)
+            {
+                _statusText.text = $"+{e.Granted} coins!";
+                RefreshYieldEstimate();
+            }
+            else
+            {
+                _statusText.text = $"Claim failed: {e.FailureReason}";
+            }
+        }
+
         private void SetBusy(bool busy)
         {
             _sellButton.interactable  = !busy;
+            _claimButton.interactable = !busy;
             _closeButton.interactable = !busy;
         }
     }
