@@ -126,6 +126,24 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
+        public async Task Inbound_message_AvatarId_survives_into_history_and_the_EventBus()
+        {
+            await _controller.SwitchToGlobalAsync();
+
+            ChatMessage received = null;
+            EventBus.Subscribe<ChatChannelController.ChatMessageReceivedEvent>(e => received = e.Message);
+
+            _chat.RaiseChannelMessage(new ChatMessage
+            {
+                SenderId = "friend_1", SenderDisplayName = "Friend", ChannelName = "global",
+                Text = "o/", AvatarId = "avatar_wizard"
+            });
+
+            Assert.AreEqual("avatar_wizard", received.AvatarId);
+            Assert.AreEqual("avatar_wizard", _controller.GetHistory("global")[0].AvatarId);
+        }
+
+        [Test]
         public async Task Inbound_message_from_blocked_player_is_dropped()
         {
             await _controller.SwitchToGlobalAsync();

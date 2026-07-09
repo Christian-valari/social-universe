@@ -98,6 +98,20 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
+        public void Inbound_dm_AvatarId_survives_onto_the_EventBus()
+        {
+            ChatMessage received = null;
+            EventBus.Subscribe<DirectMessageService.DirectMessageReceivedEvent>(e => received = e.Message);
+
+            _chat.RaiseDirectMessage(new ChatMessage
+            {
+                SenderId = "ally_1", Text = "o/", IsDirect = true, AvatarId = "avatar_girl_3"
+            });
+
+            Assert.AreEqual("avatar_girl_3", received.AvatarId);
+        }
+
+        [Test]
         public void Inbound_dm_from_muted_player_is_dropped()
         {
             _reports.MutePlayer("loud_guy", true);
