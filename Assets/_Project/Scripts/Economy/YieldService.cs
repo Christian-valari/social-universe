@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SocialUniverse.Core;
@@ -30,8 +31,17 @@ namespace SocialUniverse.Economy
 
         public async Task<YieldClaimResult> ClaimYieldAsync(string tileId, string planetId)
         {
-            var result = await _backend.CallAsync<YieldClaimResult>("ClaimYield",
-                new Dictionary<string, object> { { "tileId", tileId }, { "planetId", planetId } });
+            YieldClaimResult result;
+            try
+            {
+                result = await _backend.CallAsync<YieldClaimResult>("ClaimYield",
+                    new Dictionary<string, object> { { "tileId", tileId }, { "planetId", planetId } });
+            }
+            catch (Exception ex)
+            {
+                SULog.Error($"YieldService: server call failed — {ex.Message}", SULog.Channel.Economy);
+                return new YieldClaimResult { Success = false, Reason = "Network error" };
+            }
 
             if (result is { Success: true })
             {

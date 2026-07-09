@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SocialUniverse.Economy;
 using SocialUniverse.Core;
+using UnityEngine.TestTools;
 
 namespace SocialUniverse.Tests
 {
@@ -11,9 +13,12 @@ namespace SocialUniverse.Tests
         private class FakeBackendClient : IBackendClient
         {
             public YieldClaimResult ClaimYieldResponse;
+            public bool             ThrowOnCall;
 
             public Task<T> CallAsync<T>(string function, Dictionary<string, object> args = null)
             {
+                if (ThrowOnCall) throw new Exception("simulated network failure");
+
                 if (function == "ClaimYield" && typeof(T) == typeof(YieldClaimResult))
                 {
                     object response = ClaimYieldResponse;
@@ -63,6 +68,20 @@ namespace SocialUniverse.Tests
             var result = await _yieldService.ClaimYieldAsync("7", "Planet_Earth");
 
             Assert.IsFalse(result.Success);
+            Assert.AreEqual(0, _wallet.Coins);
+            Assert.AreEqual(5, _landRegistryService.GetEntry("7").VisitCount);
+        }
+
+        [Test]
+        public async Task ClaimYieldAsync_on_network_exception_returns_failure_without_throwing()
+        {
+            _backend.ThrowOnCall = true;
+            LogAssert.Expect(UnityEngine.LogType.Error, "[SU:Economy] YieldService: server call failed — simulated network failure");
+
+            var result = await _yieldService.ClaimYieldAsync("7", "Planet_Earth");
+
+            Assert.IsFalse(result.Success);
+            Assert.AreEqual("Network error", result.Reason);
             Assert.AreEqual(0, _wallet.Coins);
             Assert.AreEqual(5, _landRegistryService.GetEntry("7").VisitCount);
         }
