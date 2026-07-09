@@ -30,6 +30,7 @@ namespace SocialUniverse.UI
         [Inject] private ChatChannelController _chat;
         [Inject] private IPresenceService _presence;
         [Inject] private PlanetDefinition _planet;
+        [Inject] private DatabaseRegistry _registry;
 
         private const int MaxLogLines = 12;
 
@@ -116,7 +117,8 @@ namespace SocialUniverse.UI
             for (int i = start; i < history.Count; i++)
             {
                 var item = Instantiate(_chatMessageItemPrefab, _chatLogContent);
-                item.SetMessage(history[i]);
+                var avatar = _registry.GetAvatar(history[i].AvatarId);
+                item.SetMessage(history[i], avatar?.Sprite);
             }
         }
 

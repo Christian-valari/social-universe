@@ -13,8 +13,9 @@ namespace SocialUniverse.UI
         [SerializeField] private TMP_Text _timestampText;
         [SerializeField] private TMP_Text _messageText;
         [SerializeField] private RectTransform _messageBGRect;
+        [SerializeField] private Image _avatarImage;
 
-        public void SetMessage(ChatMessage message)
+        public void SetMessage(ChatMessage message, Sprite avatarSprite)
         {
             _senderText.alignment = message.FromSelf ? TextAlignmentOptions.Right : TextAlignmentOptions.Left;
             _timestampText.alignment = message.FromSelf ? TextAlignmentOptions.Right : TextAlignmentOptions.Left;
@@ -24,6 +25,10 @@ namespace SocialUniverse.UI
             _timestampText.text = message.TimestampMs > 0
                 ? DateTimeOffset.FromUnixTimeMilliseconds(message.TimestampMs).LocalDateTime.ToString("HH:mm")
                 : "--:--";
+
+            // Null means unresolved (no catalog match / no id yet) — leave the
+            // prefab's inspector-default placeholder sprite in place.
+            if (avatarSprite != null) _avatarImage.sprite = avatarSprite;
         }
     }
 }
