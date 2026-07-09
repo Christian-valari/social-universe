@@ -135,6 +135,7 @@ namespace SocialUniverse.App
             builder.RegisterEntryPoint<VisitorTrackingController>();
             builder.RegisterEntryPoint<UpkeepController>();
             builder.RegisterEntryPoint<LandSaleHandler>();
+            builder.RegisterEntryPoint<YieldClaimHandler>();
             builder.RegisterEntryPoint<PlanetPresenceController>();
         }
     }
