@@ -26,6 +26,7 @@ namespace SocialUniverse.UI
         [SerializeField] private Button   _claimButton;
         [SerializeField] private Button   _closeButton;
         [SerializeField] private TMP_Text _statusText;
+        [SerializeField] private TMP_Text _readyToClaimText;
 
         [Inject] private ProfileService          _profileService;
         [Inject] private DatabaseRegistry        _registry;
@@ -61,12 +62,12 @@ namespace SocialUniverse.UI
             CancelInvoke(nameof(RefreshYieldEstimate));
             _currentTile = tile;
             _statusText.text    = "";
-            _tileStatsText.text = $"Build level {tile.BuildLevel}";
+            _readyToClaimText.text = "";
+            _tileStatsText.text = $"{tile.BuildLevel}";
 
             bool ownedByPlayer = tile.State == TileState.OwnedByPlayer;
             _sellButton.gameObject.SetActive(ownedByPlayer);
             _claimButton.gameObject.SetActive(ownedByPlayer);
-            _yieldText.gameObject.SetActive(ownedByPlayer);
             _ownerInfoText.gameObject.SetActive(false);
             _avatarImage.gameObject.SetActive(false);
 
@@ -77,12 +78,14 @@ namespace SocialUniverse.UI
                 RefreshYieldEstimate();
                 InvokeRepeating(nameof(RefreshYieldEstimate), 1f, 1f);
             }
+            else
+            {
+                RefreshYieldEstimateOtherPlayers();
+            }
 
             switch (tile.State)
             {
                 case TileState.OwnedByPlayer:
-                    _titleText.text = "Your Tile";
-                    break;
                 case TileState.OwnedByOther:
                     await LoadOwnerProfileAsync(tile);
                     break;
@@ -100,7 +103,19 @@ namespace SocialUniverse.UI
             if (entry == null) return;
 
             var estimate = _yieldEstimateCalculator.Compute(entry, _economyConfig, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
-            _yieldText.text = $"{estimate.AccruedCoins} coins ready · {estimate.RatePerHour:0.0}/hr";
+            _yieldText.text = $"{estimate.RatePerHour:0.0}/hr";
+            _readyToClaimText.text = $"{estimate.AccruedCoins} coins ready";
+        }
+
+        private void RefreshYieldEstimateOtherPlayers()
+        {
+            if (_currentTile == null) return;
+
+            var entry = _landRegistryService.GetEntry(_currentTile.TileId);
+            if (entry == null) return;
+
+            var estimate = _yieldEstimateCalculator.Compute(entry, _economyConfig, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+            _yieldText.text = $"{estimate.RatePerHour:0.0}/hr";
         }
 
         private async Task LoadOwnerProfileAsync(TileData tile)
@@ -120,15 +135,14 @@ namespace SocialUniverse.UI
 
                 _titleText.text = $"{profile.DisplayName}'s Tile";
                 _ownerInfoText.gameObject.SetActive(true);
-                _ownerInfoText.text = $"Level {profile.Level} · {profile.TilesOwned} tiles owned"
-                    + (profile.Badges is { Length: > 0 } ? $"\n{string.Join(", ", profile.Badges)}" : "");
+                _ownerInfoText.text = $"{profile.TilesOwned}";
 
-                var avatar = _registry.GetAvatar(profile.AvatarId);
-                if (avatar != null)
-                {
-                    _avatarImage.gameObject.SetActive(true);
-                    _avatarImage.sprite = avatar.Sprite;
-                }
+                // var avatar = _registry.GetAvatar(profile.AvatarId);
+                // if (avatar != null)
+                // {
+                //     _avatarImage.gameObject.SetActive(true);
+                //     _avatarImage.sprite = avatar.Sprite;
+                // }
             }
             catch (Exception ex)
             {
