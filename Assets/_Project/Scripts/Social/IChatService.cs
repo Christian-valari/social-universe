@@ -18,7 +18,9 @@ namespace SocialUniverse.Social
 
         bool IsConnected { get; }
 
-        Task ConnectAsync(string displayName);
+        // avatarId is the caller's own resolved AvatarId (from ProfileService),
+        // stamped onto every message this service originates as FromSelf.
+        Task ConnectAsync(string displayName, string avatarId);
         Task DisconnectAsync();
 
         Task JoinChannelAsync(string channelName);

@@ -6,6 +6,7 @@ namespace SocialUniverse.Social
     {
         public string SenderId;
         public string SenderDisplayName;
+        public string AvatarId;      // catalog id (DatabaseRegistry.GetAvatar); null if unresolved
         public string ChannelName;   // null for direct messages
         public string Text;
         public long   TimestampMs;   // unix ms

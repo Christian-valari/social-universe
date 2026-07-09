@@ -15,15 +15,17 @@ namespace SocialUniverse.Social
         private readonly HashSet<string> _joinedChannels = new();
         private readonly HashSet<string> _blocked        = new();
         private string _displayName = "MockPlayer";
+        private string _avatarId;
 
         public event Action<ChatMessage> MessageReceived;
         public event Action<ChatMessage> DirectMessageReceived;
 
         public bool IsConnected { get; private set; }
 
-        public Task ConnectAsync(string displayName)
+        public Task ConnectAsync(string displayName, string avatarId)
         {
             _displayName = string.IsNullOrEmpty(displayName) ? _displayName : displayName;
+            _avatarId    = avatarId;
             IsConnected  = true;
             return Task.CompletedTask;
         }
@@ -54,6 +56,7 @@ namespace SocialUniverse.Social
                 {
                     SenderId          = MockPlayerId,
                     SenderDisplayName = _displayName,
+                    AvatarId          = _avatarId,
                     ChannelName       = channelName,
                     Text              = text,
                     TimestampMs       = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
@@ -68,6 +71,7 @@ namespace SocialUniverse.Social
             {
                 SenderId          = MockPlayerId,
                 SenderDisplayName = _displayName,
+                AvatarId          = _avatarId,
                 Text              = text,
                 TimestampMs       = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                 FromSelf          = true,

@@ -23,6 +23,7 @@ namespace SocialUniverse.App
         private readonly IFriendsService _friends;
         private readonly IAuthService    _auth;
         private readonly ServerTime      _serverTime;
+        private readonly ProfileService  _profile;
 
         // DirectMessageService subscribes to inbound DMs in its constructor;
         // depending on it here forces eager construction so DMs are captured
@@ -32,12 +33,14 @@ namespace SocialUniverse.App
             IFriendsService       friends,
             IAuthService          auth,
             ServerTime            serverTime,
+            ProfileService        profile,
             DirectMessageService  _)
         {
             _chat       = chat;
             _friends    = friends;
             _auth       = auth;
             _serverTime = serverTime;
+            _profile    = profile;
         }
 
         public void Start() => EventBus.Subscribe<PlayerReadyEvent>(OnPlayerReady);
@@ -50,9 +53,22 @@ namespace SocialUniverse.App
             // failure), so this needs no try/catch of its own.
             await _serverTime.SyncAsync();
 
+            // Non-fatal: a failed profile fetch just means own messages fall back
+            // to the placeholder avatar too, same as any other unresolved sender.
+            string avatarId = null;
             try
             {
-                await _chat.ConnectAsync(_auth.DisplayName ?? _auth.Username ?? _auth.PlayerId);
+                var profile = await _profile.GetProfileAsync(_auth.PlayerId);
+                avatarId = profile?.AvatarId;
+            }
+            catch (Exception ex)
+            {
+                SULog.Warn($"SocialServicesInitializer: profile fetch for avatar failed ({ex.Message})", SULog.Channel.Social);
+            }
+
+            try
+            {
+                await _chat.ConnectAsync(_auth.DisplayName ?? _auth.Username ?? _auth.PlayerId, avatarId);
                 SULog.Info("SocialServicesInitializer: chat connected", SULog.Channel.Social);
             }
             catch (Exception ex)

@@ -23,7 +23,7 @@ namespace SocialUniverse.Tests
 
         public bool IsConnected { get; private set; }
 
-        public Task ConnectAsync(string displayName) { IsConnected = true;  return Task.CompletedTask; }
+        public Task ConnectAsync(string displayName, string avatarId) { IsConnected = true;  return Task.CompletedTask; }
         public Task DisconnectAsync()                { IsConnected = false; return Task.CompletedTask; }
 
         public Task JoinChannelAsync(string channelName)  { JoinedChannels.Add(channelName); return Task.CompletedTask; }

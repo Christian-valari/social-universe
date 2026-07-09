@@ -16,6 +16,7 @@ namespace SocialUniverse.Social
 
         private bool _initialized;
         private string _lastDisplayName;
+        private string _selfAvatarId;
 
         // Tracks an in-flight login so a second concurrent ConnectAsync call
         // (e.g. a re-fired PlayerReadyEvent across a domain reload) awaits the
@@ -26,9 +27,10 @@ namespace SocialUniverse.Social
 
         public bool IsConnected => _initialized && VivoxService.Instance != null && VivoxService.Instance.IsLoggedIn;
 
-        public Task ConnectAsync(string displayName)
+        public Task ConnectAsync(string displayName, string avatarId)
         {
             _lastDisplayName = displayName;
+            _selfAvatarId    = avatarId;
             if (IsConnected) return Task.CompletedTask;
             if (_connectTask != null && !_connectTask.IsCompleted) return _connectTask;
 
@@ -75,7 +77,7 @@ namespace SocialUniverse.Social
         {
             if (IsConnected) return Task.CompletedTask;
             if (_connectTask != null && !_connectTask.IsCompleted) return _connectTask;
-            return ConnectAsync(_lastDisplayName ?? "Player");
+            return ConnectAsync(_lastDisplayName ?? "Player", _selfAvatarId);
         }
 
         public async Task JoinChannelAsync(string channelName)
@@ -127,10 +129,11 @@ namespace SocialUniverse.Social
         private void OnDirectedMessage(VivoxMessage message) =>
             DirectMessageReceived?.Invoke(ToChatMessage(message, isDirect: true));
 
-        private static ChatMessage ToChatMessage(VivoxMessage message, bool isDirect) => new()
+        private ChatMessage ToChatMessage(VivoxMessage message, bool isDirect) => new()
         {
             SenderId          = message.SenderPlayerId,
             SenderDisplayName = message.SenderDisplayName,
+            AvatarId          = message.FromSelf ? _selfAvatarId : null,
             ChannelName       = message.ChannelName,
             Text              = message.MessageText,
             TimestampMs       = new DateTimeOffset(message.ReceivedTime).ToUnixTimeMilliseconds(),
