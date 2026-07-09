@@ -5,8 +5,17 @@
 // see GetLandRegistry, PlaceBuild, ClaimYield, RecordVisit, ApplyUpkeep, SellLand for readers/writers.
 // NOTE: the deduct -> record -> registry sequence is not transactional; see the
 // design caveat above.
-const { CurrenciesApi }            = require("@unity-services/economy-2.5");
-const { DataApi: PlayerDataApi }   = require("@unity-services/cloud-save-1.4");
+//
+// FIX (Known Issue #6): constructors don't accept { headers: { Authorization: ... } }.
+// Economy: { accessToken } authenticates as the calling player. Cloud Save:
+// DataApi(context) uses the service token (required for both player-scoped
+// writes and custom/game data writes). getItems/setItem take positional args
+// (projectId, playerId, ...), not an options object. getPlayerCurrencyBalance
+// does not exist on CurrenciesApi — the read method is getPlayerCurrencies.
+// decrementPlayerCurrencyBalance requires a configAssignmentHash fetched via
+// ConfigurationApi before the write.
+const { CurrenciesApi, ConfigurationApi } = require("@unity-services/economy-2.5");
+const { DataApi: PlayerDataApi }          = require("@unity-services/cloud-save-1.4");
 
 const CURRENCY_ID  = "COINS";
 const REGISTRY_KEY = "land_registry";
@@ -24,9 +33,10 @@ module.exports = async ({ params, context, logger }) => {
   }
 
   const { projectId, playerId, accessToken } = context;
-  const authHeader = { headers: { Authorization: `Bearer ${accessToken}` } };
-  const econApi     = new CurrenciesApi(authHeader);
-  const saveApi     = new PlayerDataApi(authHeader);
+  const econApi       = new CurrenciesApi({ accessToken });
+  const config        = new ConfigurationApi({ accessToken });
+  const saveApi       = new PlayerDataApi(context);
+  const customDataApi = new PlayerDataApi(context); // same instance is fine; kept separate for clarity
 
   try {
     const ownedKey = `owned_tiles_${planetId.toLowerCase()}`;
@@ -34,7 +44,7 @@ module.exports = async ({ params, context, logger }) => {
     // 1. Load the player's current owned-tiles list for this planet.
     let ownedTiles = [];
     try {
-      const saveRes = await saveApi.getItems({ projectId, playerId, key: [ownedKey] });
+      const saveRes = await saveApi.getItems(projectId, playerId, [ownedKey]);
       const item    = saveRes.data.results.find(r => r.key === ownedKey);
       if (item && Array.isArray(item.value)) ownedTiles = item.value; // already parsed by Cloud Save
     } catch (_) { /* key doesn't exist yet */ }
@@ -43,39 +53,38 @@ module.exports = async ({ params, context, logger }) => {
       return { success: false, reason: "ALREADY_OWNED" };
     }
 
-    // 2. Validate balance and deduct coins.
-    const balanceRes = await econApi.getPlayerCurrencyBalance({ projectId, playerId, currencyId: CURRENCY_ID });
-    if (balanceRes.data.balance < price) {
+    // 2. Validate balance.
+    const balancesRes = await econApi.getPlayerCurrencies({ projectId, playerId });
+    const coins       = balancesRes.data.results.find(c => c.currencyId === CURRENCY_ID);
+    const balance     = coins ? coins.balance : 0;
+
+    if (balance < price) {
       return { success: false, reason: "INSUFFICIENT_FUNDS" };
     }
+
+    // 3. Deduct coins. configAssignmentHash is required by decrementPlayerCurrencyBalance.
+    const cfg = await config.getPlayerConfiguration({ projectId, playerId });
+    const configAssignmentHash = cfg.data.metadata.configAssignmentHash;
 
     const deductRes = await econApi.decrementPlayerCurrencyBalance({
       projectId,
       playerId,
       currencyId: CURRENCY_ID,
-      currencyModifyBalanceRequest: { amount: price }
+      configAssignmentHash,
+      currencyModifyBalanceRequest: { currencyId: CURRENCY_ID, amount: price }
     });
     const newBalance = deductRes.data.balance;
 
-    // 3. Record per-tile ownership (for cross-player lookup in M3+).
-    await saveApi.setItem({
-      projectId, playerId,
-      key:  `tile_${tileId}_owner`,
-      body: { value: playerId }
-    });
+    // 4. Record per-tile ownership (for cross-player lookup in M3+).
+    await saveApi.setItem(projectId, playerId, { key: `tile_${tileId}_owner`, value: playerId });
 
-    // 4. Append to the player's owned-tiles list so it can be restored on login.
+    // 5. Append to the player's owned-tiles list so it can be restored on login.
     ownedTiles.push(tileId);
-    await saveApi.setItem({
-      projectId, playerId,
-      key:  ownedKey,
-      body: { value: ownedTiles }
-    });
+    await saveApi.setItem(projectId, playerId, { key: ownedKey, value: ownedTiles });
 
-    // 5. Update the planet's global land registry (Custom Data, shared across all
+    // 6. Update the planet's global land registry (Custom Data, shared across all
     //    players) so other clients render this tile as "owned by other".
-    const customDataApi = new PlayerDataApi(context);
-    const customId       = planetId.toLowerCase();
+    const customId = planetId.toLowerCase();
     let registry = {};
     try {
       const regRes = await customDataApi.getCustomItems(projectId, customId, [REGISTRY_KEY]);

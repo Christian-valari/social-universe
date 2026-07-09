@@ -14,7 +14,7 @@ module.exports = async ({ params, context, logger }) => {
   }
 
   const { projectId, playerId, accessToken } = context;
-  const api = new CurrenciesApi({ headers: { Authorization: `Bearer ${accessToken}` } });
+  const api = new CurrenciesApi({ accessToken });
 
   const res = await api.incrementPlayerCurrencyBalance({
     projectId,

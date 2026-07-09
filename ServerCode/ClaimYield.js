@@ -34,8 +34,7 @@ module.exports = async ({ params, context, logger }) => {
   }
 
   const { projectId, playerId, accessToken } = context;
-  const authHeader    = { headers: { Authorization: `Bearer ${accessToken}` } };
-  const econApi       = new CurrenciesApi(authHeader);
+  const econApi       = new CurrenciesApi({ accessToken });
   const customDataApi = new DataApi(context);
   const customId      = planetId.toLowerCase();
 

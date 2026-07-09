@@ -8,15 +8,14 @@ const { DataApi }       = require("@unity-services/cloud-save-1.4");
  */
 module.exports = async ({ params, context, logger }) => {
   const { projectId, playerId, accessToken } = context;
-  const authHeader = { headers: { Authorization: `Bearer ${accessToken}` } };
 
-  const economyApi   = new CurrenciesApi(authHeader);
-  const cloudSaveApi = new DataApi(authHeader);
+  const economyApi   = new CurrenciesApi({ accessToken });
+  const cloudSaveApi = new DataApi(context);
 
   // Fetch balances + saved profile in parallel.
   const [balancesRes, profileRes] = await Promise.all([
     economyApi.getPlayerCurrencies({ projectId, playerId }),
-    cloudSaveApi.getItems({ projectId, playerId, key: ["player_profile"] }).catch(() => ({ data: { results: [] } }))
+    cloudSaveApi.getItems(projectId, playerId, ["player_profile"]).catch(() => ({ data: { results: [] } }))
   ]);
 
   const balances = {};

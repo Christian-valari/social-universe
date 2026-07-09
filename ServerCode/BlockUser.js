@@ -26,11 +26,11 @@ module.exports = async ({ params, context, logger }) => {
     return { success: false, blockedUsers: [] };
   }
 
-  const saveApi = new DataApi({ headers: { Authorization: `Bearer ${accessToken}` } });
+  const saveApi = new DataApi(context);
 
   let blockedUsers = [];
   try {
-    const res  = await saveApi.getItems({ projectId, playerId, key: [BLOCKED_KEY] });
+    const res  = await saveApi.getItems(projectId, playerId, [BLOCKED_KEY]);
     const item = res.data.results.find(r => r.key === BLOCKED_KEY);
     if (item && Array.isArray(item.value)) blockedUsers = item.value;
   } catch (_) { /* key doesn't exist yet */ }
@@ -44,7 +44,7 @@ module.exports = async ({ params, context, logger }) => {
     blockedUsers = blockedUsers.filter(id => id !== targetId);
   }
 
-  await saveApi.setItem({ projectId, playerId, key: BLOCKED_KEY, body: { value: blockedUsers } });
+  await saveApi.setItem(projectId, playerId, { key: BLOCKED_KEY, value: blockedUsers });
 
   logger.info(`BlockUser: ${playerId} ${blocked ? "blocked" : "unblocked"} ${targetId} (${blockedUsers.length} total)`);
   return { success: true, blockedUsers };

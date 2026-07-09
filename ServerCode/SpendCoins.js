@@ -13,7 +13,7 @@ module.exports = async ({ params, context, logger }) => {
   }
 
   const { projectId, playerId, accessToken } = context;
-  const api = new CurrenciesApi({ headers: { Authorization: `Bearer ${accessToken}` } });
+  const api = new CurrenciesApi({ accessToken });
 
   // Fetch current balance to validate afford-ability server-side.
   const balanceRes = await api.getPlayerCurrencyBalance({ projectId, playerId, currencyId: "COINS" });

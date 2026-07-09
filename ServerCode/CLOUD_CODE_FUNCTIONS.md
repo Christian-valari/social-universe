@@ -46,15 +46,14 @@ const { DataApi }       = require("@unity-services/cloud-save-1.4");
  */
 module.exports = async ({ params, context, logger }) => {
   const { projectId, playerId, accessToken } = context;
-  const authHeader = { headers: { Authorization: `Bearer ${accessToken}` } };
 
-  const economyApi   = new CurrenciesApi(authHeader);
-  const cloudSaveApi = new DataApi(authHeader);
+  const economyApi   = new CurrenciesApi({ accessToken });
+  const cloudSaveApi = new DataApi(context);
 
   // Fetch balances + saved profile in parallel.
   const [balancesRes, profileRes] = await Promise.all([
     economyApi.getPlayerCurrencies({ projectId, playerId }),
-    cloudSaveApi.getItems({ projectId, playerId, key: ["player_profile"] }).catch(() => ({ data: { results: [] } }))
+    cloudSaveApi.getItems(projectId, playerId, ["player_profile"]).catch(() => ({ data: { results: [] } }))
   ]);
 
   const balances = {};
@@ -105,7 +104,7 @@ module.exports = async ({ params, context, logger }) => {
   }
 
   const { projectId, playerId, accessToken } = context;
-  const api = new CurrenciesApi({ headers: { Authorization: `Bearer ${accessToken}` } });
+  const api = new CurrenciesApi({ accessToken });
 
   const res = await api.incrementPlayerCurrencyBalance({
     projectId,
@@ -148,7 +147,7 @@ module.exports = async ({ params, context, logger }) => {
   }
 
   const { projectId, playerId, accessToken } = context;
-  const api = new CurrenciesApi({ headers: { Authorization: `Bearer ${accessToken}` } });
+  const api = new CurrenciesApi({ accessToken });
 
   const res = await api.incrementPlayerCurrencyBalance({
     projectId,
@@ -190,7 +189,7 @@ module.exports = async ({ params, context, logger }) => {
   }
 
   const { projectId, playerId, accessToken } = context;
-  const api = new CurrenciesApi({ headers: { Authorization: `Bearer ${accessToken}` } });
+  const api = new CurrenciesApi({ accessToken });
 
   // Fetch current balance to validate afford-ability server-side.
   const balanceRes = await api.getPlayerCurrencyBalance({ projectId, playerId, currencyId: "COINS" });
@@ -260,8 +259,7 @@ module.exports = async ({ params, context, logger }) => {
   }
 
   const { projectId, playerId, accessToken } = context;
-  const authHeader = { headers: { Authorization: `Bearer ${accessToken}` } };
-  const econApi    = new CurrenciesApi(authHeader);
+  const econApi    = new CurrenciesApi({ accessToken });
 
   const res = await econApi.incrementPlayerCurrencyBalance({
     projectId,
@@ -310,14 +308,13 @@ module.exports = async ({ params, context, logger }) => {
   }
 
   const { projectId, playerId, accessToken } = context;
-  const authHeader = { headers: { Authorization: `Bearer ${accessToken}` } };
-  const econApi    = new CurrenciesApi(authHeader);
-  const saveApi    = new DataApi(authHeader);
+  const econApi    = new CurrenciesApi({ accessToken });
+  const saveApi    = new DataApi(context);
 
   // Load the server-recorded session end time.
   let sessionEndMs = Date.now(); // fallback: assume just now
   try {
-    const res    = await saveApi.getItems({ projectId, playerId, key: ["last_session_end"] });
+    const res    = await saveApi.getItems(projectId, playerId, ["last_session_end"]);
     const record = res.data.results.find(r => r.key === "last_session_end");
     if (record) sessionEndMs = parseInt(record.value, 10);
   } catch (_) {}
@@ -336,7 +333,7 @@ module.exports = async ({ params, context, logger }) => {
   });
 
   // Reset session end to now.
-  await saveApi.setItem({ projectId, playerId, key: "last_session_end", body: { value: String(Date.now()) } });
+  await saveApi.setItem(projectId, playerId, { key: "last_session_end", value: String(Date.now()) });
 
   logger.info(`GrantOfflineIncome: player ${playerId} claimed ${claimedAmount}, granted ${grantAmount} → ${res.data.balance}`);
   return { granted: grantAmount, newBalance: res.data.balance };
@@ -581,8 +578,7 @@ module.exports = async ({ params, context, logger }) => {
   }
 
   const { projectId, playerId, accessToken } = context;
-  const authHeader    = { headers: { Authorization: `Bearer ${accessToken}` } };
-  const econApi       = new CurrenciesApi(authHeader);
+  const econApi       = new CurrenciesApi({ accessToken });
   const customDataApi = new DataApi(context);
   const customId      = planetId.toLowerCase();
 
@@ -689,8 +685,7 @@ module.exports = async ({ params, context, logger }) => {
   }
 
   const { projectId, playerId, accessToken } = context;
-  const authHeader    = { headers: { Authorization: `Bearer ${accessToken}` } };
-  const econApi       = new CurrenciesApi(authHeader);
+  const econApi       = new CurrenciesApi({ accessToken });
   const customDataApi = new DataApi(context);
   const customId      = planetId.toLowerCase();
 
@@ -854,8 +849,7 @@ module.exports = async ({ params, context, logger }) => {
   }
 
   const { projectId, playerId, accessToken } = context;
-  const authHeader    = { headers: { Authorization: `Bearer ${accessToken}` } };
-  const econApi       = new CurrenciesApi(authHeader);
+  const econApi       = new CurrenciesApi({ accessToken });
   const customDataApi = new DataApi(context);
   const customId      = planetId.toLowerCase();
 
@@ -957,9 +951,8 @@ module.exports = async ({ params, context, logger }) => {
   }
 
   const { projectId, playerId, accessToken } = context;
-  const authHeader    = { headers: { Authorization: `Bearer ${accessToken}` } };
-  const econApi       = new CurrenciesApi(authHeader);
-  const saveApi       = new PlayerDataApi(authHeader);
+  const econApi       = new CurrenciesApi({ accessToken });
+  const saveApi       = new PlayerDataApi(context);
   const customDataApi = new PlayerDataApi(context);
   const customId      = planetId.toLowerCase();
 
@@ -990,11 +983,11 @@ module.exports = async ({ params, context, logger }) => {
     // 3. Remove the tile from the player's owned-tiles list.
     const ownedKey = `owned_tiles_${planetId.toLowerCase()}`;
     try {
-      const saveRes = await saveApi.getItems({ projectId, playerId, key: [ownedKey] });
+      const saveRes = await saveApi.getItems(projectId, playerId, [ownedKey]);
       const item    = saveRes.data.results.find(r => r.key === ownedKey);
       if (item && Array.isArray(item.value)) {
         const ownedTiles = item.value.filter(id => id !== tileId);
-        await saveApi.setItem({ projectId, playerId, key: ownedKey, body: { value: ownedTiles } });
+        await saveApi.setItem(projectId, playerId, { key: ownedKey, value: ownedTiles });
       }
     } catch (_) { /* key doesn't exist yet */ }
 

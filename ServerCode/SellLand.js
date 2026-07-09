@@ -26,9 +26,8 @@ module.exports = async ({ params, context, logger }) => {
   }
 
   const { projectId, playerId, accessToken } = context;
-  const authHeader    = { headers: { Authorization: `Bearer ${accessToken}` } };
-  const econApi       = new CurrenciesApi(authHeader);
-  const saveApi       = new PlayerDataApi(authHeader);
+  const econApi       = new CurrenciesApi({ accessToken });
+  const saveApi       = new PlayerDataApi(context);
   const customDataApi = new PlayerDataApi(context);
   const customId      = planetId.toLowerCase();
 
@@ -59,11 +58,11 @@ module.exports = async ({ params, context, logger }) => {
     // 3. Remove the tile from the player's owned-tiles list.
     const ownedKey = `owned_tiles_${planetId.toLowerCase()}`;
     try {
-      const saveRes = await saveApi.getItems({ projectId, playerId, key: [ownedKey] });
+      const saveRes = await saveApi.getItems(projectId, playerId, [ownedKey]);
       const item    = saveRes.data.results.find(r => r.key === ownedKey);
       if (item && Array.isArray(item.value)) {
         const ownedTiles = item.value.filter(id => id !== tileId);
-        await saveApi.setItem({ projectId, playerId, key: ownedKey, body: { value: ownedTiles } });
+        await saveApi.setItem(projectId, playerId, { key: ownedKey, value: ownedTiles });
       }
     } catch (_) { /* key doesn't exist yet */ }
 

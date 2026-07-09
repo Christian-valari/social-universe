@@ -18,14 +18,13 @@ module.exports = async ({ params, context, logger }) => {
   }
 
   const { projectId, playerId, accessToken } = context;
-  const authHeader = { headers: { Authorization: `Bearer ${accessToken}` } };
-  const econApi    = new CurrenciesApi(authHeader);
-  const saveApi    = new DataApi(authHeader);
+  const econApi    = new CurrenciesApi({ accessToken });
+  const saveApi    = new DataApi(context);
 
   // Load the server-recorded session end time.
   let sessionEndMs = Date.now(); // fallback: assume just now
   try {
-    const res    = await saveApi.getItems({ projectId, playerId, key: ["last_session_end"] });
+    const res    = await saveApi.getItems(projectId, playerId, ["last_session_end"]);
     const record = res.data.results.find(r => r.key === "last_session_end");
     if (record) sessionEndMs = parseInt(record.value, 10);
   } catch (_) {}
@@ -44,7 +43,7 @@ module.exports = async ({ params, context, logger }) => {
   });
 
   // Reset session end to now.
-  await saveApi.setItem({ projectId, playerId, key: "last_session_end", body: { value: String(Date.now()) } });
+  await saveApi.setItem(projectId, playerId, { key: "last_session_end", value: String(Date.now()) });
 
   logger.info(`GrantOfflineIncome: player ${playerId} claimed ${claimedAmount}, granted ${grantAmount} → ${res.data.balance}`);
   return { granted: grantAmount, newBalance: res.data.balance };
