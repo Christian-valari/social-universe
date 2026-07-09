@@ -19,6 +19,10 @@ namespace SocialUniverse.World
 
     public class TileSaleCompletedEvent { public TileData Tile; public bool Success; public string FailureReason; }
 
+    public class TileYieldClaimRequestedEvent { public TileData Tile; }
+
+    public class TileYieldClaimCompletedEvent { public TileData Tile; public bool Success; public int Granted; public string FailureReason; }
+
     public class HexasphereManager : MonoBehaviour
     {
         [SerializeField] private Hexasphere _hexasphere;
