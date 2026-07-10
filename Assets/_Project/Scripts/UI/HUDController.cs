@@ -40,6 +40,8 @@ namespace SocialUniverse.UI
         [SerializeField] private TMP_Text _planetNameText;
         [SerializeField] private LandPurchaseModal _landPurchaseModal;
         [SerializeField] private TileInfoModal     _tileInfoModal;
+        [SerializeField] private Button             _settingsButton;
+        [SerializeField] private SettingsPanel      _settingsPanel;
 
         [Inject] private Wallet _wallet;
         [Inject] private PlayerState _playerState;
@@ -61,6 +63,7 @@ namespace SocialUniverse.UI
                 _displayNameModal?.Open();
             });
             _launchButton?.onClick.AddListener(() => EventBus.Publish(new LaunchRequestedEvent()));
+            _settingsButton?.onClick.AddListener(() => _settingsPanel?.Open());
             if (_verifyEmailButton != null) _verifyEmailButton.onClick.AddListener(() => _emailVerificationModal?.Open());
             EventBus.Subscribe<ShowEmailVerificationPromptEvent>(OnShowEmailVerificationPrompt);
             EventBus.Subscribe<TileSelectedEvent>(OnTileSelectedForModal);

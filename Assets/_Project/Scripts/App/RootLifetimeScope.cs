@@ -1,6 +1,7 @@
 using SocialUniverse.Config;
 using SocialUniverse.Core;
 using SocialUniverse.Net;
+using SocialUniverse.Safety;
 using SocialUniverse.Social;
 using UnityEngine;
 using VContainer;
@@ -17,6 +18,7 @@ namespace SocialUniverse.App
     {
         [SerializeField] private bool _devMode = false;
         [SerializeField] private SocialConfig _socialConfig;
+        [SerializeField] private AudioConfig  _audioConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -52,6 +54,11 @@ namespace SocialUniverse.App
             builder.Register<ChatChannelController>(Lifetime.Singleton);
             builder.Register<DirectMessageService>(Lifetime.Singleton);
             builder.Register<ProfileService>(Lifetime.Singleton);
+
+            // Audio settings: local device preference, spans scenes like the
+            // other app-wide singletons above.
+            builder.RegisterInstance(_audioConfig);
+            builder.Register<AudioSettingsService>(Lifetime.Singleton).As<IAudioSettingsService>();
 
             if (_devMode)
                 builder.Register<LocalMockPresenceService>(Lifetime.Singleton).As<IPresenceService>();

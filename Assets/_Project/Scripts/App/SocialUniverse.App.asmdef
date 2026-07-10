@@ -12,7 +12,8 @@
         "SocialUniverse.Social",
         "SocialUniverse.Progression",
         "SocialUniverse.UI",
-        "SocialUniverse.Travel"
+        "SocialUniverse.Travel",
+        "SocialUniverse.Safety"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
