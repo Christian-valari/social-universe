@@ -44,9 +44,17 @@ namespace SocialUniverse.App
             _profile    = profile;
         }
 
-        public void Start() => EventBus.Subscribe<PlayerReadyEvent>(OnPlayerReady);
+        public void Start()
+        {
+            EventBus.Subscribe<PlayerReadyEvent>(OnPlayerReady);
+            EventBus.Subscribe<PlayerLoggedOutEvent>(OnPlayerLoggedOut);
+        }
 
-        public void Dispose() => EventBus.Unsubscribe<PlayerReadyEvent>(OnPlayerReady);
+        public void Dispose()
+        {
+            EventBus.Unsubscribe<PlayerReadyEvent>(OnPlayerReady);
+            EventBus.Unsubscribe<PlayerLoggedOutEvent>(OnPlayerLoggedOut);
+        }
 
         private async void OnPlayerReady(PlayerReadyEvent _)
         {
@@ -111,6 +119,19 @@ namespace SocialUniverse.App
             catch (Exception ex)
             {
                 SULog.Warn($"SocialServicesInitializer: friends init failed ({ex.Message})", SULog.Channel.Social);
+            }
+        }
+
+        private async void OnPlayerLoggedOut(PlayerLoggedOutEvent _)
+        {
+            try
+            {
+                await _chat.DisconnectAsync();
+                SULog.Info("SocialServicesInitializer: chat disconnected on logout", SULog.Channel.Social);
+            }
+            catch (Exception ex)
+            {
+                SULog.Warn($"SocialServicesInitializer: chat disconnect failed ({ex.Message})", SULog.Channel.Social);
             }
         }
     }

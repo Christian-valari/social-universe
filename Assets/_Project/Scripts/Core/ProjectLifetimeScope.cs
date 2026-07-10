@@ -26,6 +26,7 @@ namespace SocialUniverse.Core
             builder.Register<TravelLoadingState>(Lifetime.Singleton);
             builder.Register<PlanetState>(Lifetime.Singleton);
             builder.Register<ActiveMiningState>(Lifetime.Singleton);
+            builder.Register<LogoutState>(Lifetime.Singleton);
 
             builder.Register<ActiveMiningHandoff>(Lifetime.Singleton);
 
