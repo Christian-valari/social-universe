@@ -26,13 +26,17 @@ namespace SocialUniverse.UI
 
         private void Awake()
         {
-            _musicSlider.onValueChanged.AddListener(_audio.SetMusicVolume);
-            _sfxSlider.onValueChanged.AddListener(_audio.SetSfxVolume);
             _logoutButton.onClick.AddListener(() => _logoutConfirmPanel.SetActive(true));
             _logoutConfirmYes.onClick.AddListener(OnLogoutConfirmed);
             _logoutConfirmNo.onClick.AddListener(() => _logoutConfirmPanel.SetActive(false));
             _closeButton.onClick.AddListener(Close);
             gameObject.SetActive(false);
+        }
+
+        private void Start()
+        {
+            _musicSlider.onValueChanged.AddListener(_audio.SetMusicVolume);
+            _sfxSlider.onValueChanged.AddListener(_audio.SetSfxVolume);
         }
 
         public void Open()

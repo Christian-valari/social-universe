@@ -15,6 +15,7 @@ using SocialUniverse.Core;
 using SocialUniverse.Net;
 using SocialUniverse.Social;
 using SocialUniverse.Travel;
+using SocialUniverse.Safety;
 
 namespace SocialUniverse.App
 {
@@ -27,6 +28,7 @@ namespace SocialUniverse.App
         [SerializeField] private DatabaseRegistry _databaseRegistry;
         [SerializeField] private PlanetDefinition _startPlanet;
         [SerializeField] private SocialConfig     _socialConfig;   // used in standalone mode only; production gets it from RootLifetimeScope
+        [SerializeField] private AudioConfig      _audioConfig;    // used in standalone mode only; production gets it from RootLifetimeScope
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -80,6 +82,11 @@ namespace SocialUniverse.App
                 builder.Register<ChatChannelController>(Lifetime.Singleton);
                 builder.Register<DirectMessageService>(Lifetime.Singleton);
                 builder.Register<ProfileService>(Lifetime.Singleton);
+
+                // Audio settings — mirrors RootLifetimeScope's registration, needed here too
+                // since standalone mode has no parent scope to provide it.
+                builder.RegisterInstance(_audioConfig != null ? _audioConfig : ScriptableObject.CreateInstance<AudioConfig>());
+                builder.Register<AudioSettingsService>(Lifetime.Singleton).As<IAudioSettingsService>();
             }
 
             // Economy
@@ -127,6 +134,7 @@ namespace SocialUniverse.App
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.EmailVerificationModal>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.LandPurchaseModal>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.TileInfoModal>();
+            builder.RegisterComponentInHierarchy<SocialUniverse.UI.SettingsPanel>();
 
             builder.RegisterEntryPoint<PlanetSceneBootstrapper>();
             builder.RegisterEntryPoint<IdleMiningSessionController>();
