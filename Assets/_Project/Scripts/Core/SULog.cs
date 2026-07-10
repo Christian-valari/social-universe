@@ -16,6 +16,7 @@ namespace SocialUniverse.Core
             Social     = 1 << 5,
             UI         = 1 << 6,
             Travel     = 1 << 7,
+            Safety     = 1 << 8,
             All        = ~0
         }
 

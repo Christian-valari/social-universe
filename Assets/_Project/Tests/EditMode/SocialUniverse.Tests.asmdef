@@ -12,7 +12,8 @@
         "SocialUniverse.Net",
         "SocialUniverse.Social",
         "SocialUniverse.World",
-        "SocialUniverse.Travel"
+        "SocialUniverse.Travel",
+        "SocialUniverse.Safety"
     ],
     "includePlatforms": [
         "Editor"
