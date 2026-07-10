@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -31,8 +33,15 @@ namespace SocialUniverse.UI
         [Inject] private IPresenceService _presence;
         [Inject] private PlanetDefinition _planet;
         [Inject] private DatabaseRegistry _registry;
+        [Inject] private ProfileService _profile;
 
         private const int MaxLogLines = 12;
+
+        // Resolved once per sender per panel lifetime (Sprite may be null,
+        // meaning "resolved, this player has no avatar" - cached too, so a
+        // missing avatar doesn't retry the fetch every refresh).
+        private readonly Dictionary<string, Sprite> _senderAvatarCache = new();
+        private readonly HashSet<string> _pendingAvatarFetches = new();
 
         private void Awake()
         {
@@ -117,9 +126,50 @@ namespace SocialUniverse.UI
             for (int i = start; i < history.Count; i++)
             {
                 var item = Instantiate(_chatMessageItemPrefab, _chatLogContent);
-                var avatar = _registry.GetAvatar(history[i].AvatarId);
-                item.SetMessage(history[i], avatar?.Sprite);
+                item.SetMessage(history[i], ResolveAvatarSprite(history[i]));
             }
+        }
+
+        // Own/simulated messages already carry AvatarId inline. Other senders
+        // don't (Vivox carries no avatar metadata) - resolve those via
+        // ProfileService, same source used for the local player's own avatar,
+        // and cache per-sender so repeat refreshes don't refetch.
+        private Sprite ResolveAvatarSprite(ChatMessage message)
+        {
+            if (!string.IsNullOrEmpty(message.AvatarId))
+                return _registry.GetAvatar(message.AvatarId)?.Sprite;
+
+            if (message.FromSelf || string.IsNullOrEmpty(message.SenderId))
+                return null;
+
+            if (_senderAvatarCache.TryGetValue(message.SenderId, out var cached))
+                return cached;
+
+            if (_pendingAvatarFetches.Add(message.SenderId))
+                _ = FetchSenderAvatarAsync(message.SenderId);
+
+            return null;
+        }
+
+        private async Task FetchSenderAvatarAsync(string senderId)
+        {
+            Sprite sprite = null;
+            try
+            {
+                var profile = await _profile.GetProfileAsync(senderId);
+                sprite = _registry.GetAvatar(profile?.AvatarId)?.Sprite;
+            }
+            catch (Exception ex)
+            {
+                SULog.Warn($"SocialDebugPanel: avatar fetch for sender '{senderId}' failed ({ex.Message})", SULog.Channel.Social);
+                _pendingAvatarFetches.Remove(senderId);
+                return;
+            }
+
+            _senderAvatarCache[senderId] = sprite;
+            _pendingAvatarFetches.Remove(senderId);
+
+            if (this != null && isActiveAndEnabled) RefreshChatLog();
         }
 
         private void RefreshPresence()

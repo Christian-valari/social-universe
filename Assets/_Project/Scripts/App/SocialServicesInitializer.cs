@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using SocialUniverse.Core;
 using SocialUniverse.Net;
 using SocialUniverse.Social;
@@ -49,6 +50,29 @@ namespace SocialUniverse.App
 
         private async void OnPlayerReady(PlayerReadyEvent _)
         {
+            string displayName = _auth.DisplayName;
+            if (string.IsNullOrEmpty(displayName)) displayName = _auth.Username;
+            if (string.IsNullOrEmpty(displayName)) displayName = _auth.PlayerId;
+
+            // Kick off the real Vivox login immediately, synchronously, with the
+            // best display name we already have - before awaiting anything below.
+            // Otherwise a fast Auth -> Hub -> Planet transition can land
+            // PlanetPresenceController's channel join first, which falls through
+            // ChatService.EnsureConnectedAsync's own "Player" placeholder (its
+            // last-resort guard against a login race) and bakes that into the
+            // Vivox session as this player's name for good - visible to every
+            // other player, not just this client.
+            Task connectTask;
+            try
+            {
+                connectTask = _chat.ConnectAsync(displayName, null);
+            }
+            catch (Exception ex)
+            {
+                SULog.Warn($"SocialServicesInitializer: chat connect failed ({ex.Message})", SULog.Channel.Social);
+                connectTask = Task.CompletedTask;
+            }
+
             // SyncAsync never throws (it logs and falls back to the local clock on
             // failure), so this needs no try/catch of its own.
             await _serverTime.SyncAsync();
@@ -68,7 +92,11 @@ namespace SocialUniverse.App
 
             try
             {
-                await _chat.ConnectAsync(_auth.DisplayName ?? _auth.Username ?? _auth.PlayerId, avatarId);
+                await connectTask;
+                // Re-stamps the resolved avatarId onto the already-connecting/
+                // connected service; ConnectAsync is safe to call again (single-
+                // flight via _connectTask, see ChatService/LocalMockChatService).
+                await _chat.ConnectAsync(displayName, avatarId);
                 SULog.Info("SocialServicesInitializer: chat connected", SULog.Channel.Social);
             }
             catch (Exception ex)
