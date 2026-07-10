@@ -87,6 +87,12 @@ namespace SocialUniverse.App
                 // since standalone mode has no parent scope to provide it.
                 builder.RegisterInstance(_audioConfig != null ? _audioConfig : ScriptableObject.CreateInstance<AudioConfig>());
                 builder.Register<AudioSettingsService>(Lifetime.Singleton).As<IAudioSettingsService>();
+
+                // GameStateMachine — has no real use standalone (nothing transitions it), but
+                // SettingsPanel's [Inject] GameStateMachine field is force-resolved at container
+                // build time (RegisterComponentInHierarchy), so it must resolve to something here
+                // too, or the whole standalone container build throws.
+                builder.Register<GameStateMachine>(Lifetime.Singleton);
             }
 
             // Economy
