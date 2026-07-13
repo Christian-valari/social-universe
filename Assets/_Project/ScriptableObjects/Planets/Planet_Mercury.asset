@@ -26,4 +26,5 @@ MonoBehaviour:
   _travelDurationSeconds: 25
   _orbitOrder: 1
   _orbitDistanceAU: 0.39
+  _skyIcon: {fileID: 21300000, guid: 36d3ca7ab6e2c5a4dafab0830629adb2, type: 3}
   _bgmClip: {fileID: 8300000, guid: 12ffeacb2cedf1f42a8e75f46ff01926, type: 3}
