@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f58e576a5cf8b0149bf31015a05d08b2, type: 3}
+  m_Name: AudioCatalog
+  m_EditorClassIdentifier: SocialUniverse.Config::SocialUniverse.Config.AudioCatalog
+  _solarSystemBgm: {fileID: 8300000, guid: 11f0ce6a165982647bf784656a995d7e, type: 3}
+  _travelBgm: {fileID: 8300000, guid: dc9372e7249099e42bb17a62817d6eed, type: 3}
+  _fallbackPlanetBgm: {fileID: 8300000, guid: 11f0ce6a165982647bf784656a995d7e, type: 3}
+  _sfxEntries:
+  - Id: 0
+    Clip: {fileID: 8300000, guid: 24a206950ca704cceb778f93b5f59788, type: 3}
+  - Id: 1
+    Clip: {fileID: 8300000, guid: f77b39d91801cb64ba1de71db7837449, type: 3}
+  - Id: 2
+    Clip: {fileID: 8300000, guid: 37b1cc23ccd6d4382a26dd64daa12be1, type: 3}
+  - Id: 3
+    Clip: {fileID: 8300000, guid: e35505fb28ad9f04ba78a309052b1e0d, type: 3}
+  - Id: 4
+    Clip: {fileID: 8300000, guid: 103e838fb98cdf5449ab025512cb3256, type: 3}
+  - Id: 5
+    Clip: {fileID: 8300000, guid: b392684042d6cf44d8b56b8592bc2648, type: 3}
+  - Id: 6
+    Clip: {fileID: 8300000, guid: 418d2a7c5a0dedc468449cffd1d25fa9, type: 3}
+  - Id: 7
+    Clip: {fileID: 8300000, guid: f54e9cf24bfc0e0489d58eaaa6473142, type: 3}
+  - Id: 8
+    Clip: {fileID: 8300000, guid: 71ef6ede904a21442817ce06bb49b9f7, type: 3}
+  - Id: 9
+    Clip: {fileID: 8300000, guid: b52dc6aa9c4f3d64a88b1e28d8fd5e7b, type: 3}
+  - Id: 10
+    Clip: {fileID: 8300000, guid: 2b6453ea01275a3499db66bff3bb8342, type: 3}
+  - Id: 11
+    Clip: {fileID: 8300000, guid: 2aace79923a05e9438a26d813866c047, type: 3}
