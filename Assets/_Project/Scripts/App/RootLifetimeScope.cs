@@ -70,6 +70,7 @@ namespace SocialUniverse.App
                 builder.Register<VivoxPresenceService>(Lifetime.Singleton).As<IPresenceService>();
 
             builder.RegisterEntryPoint<SocialServicesInitializer>();
+            builder.RegisterEntryPoint<AudioEventBridge>();
 
             // Dev-only: optional, present only if a CloudCodeTestHarness is in the scene hierarchy.
             builder.RegisterComponentInHierarchy<CloudCodeTestHarness>();

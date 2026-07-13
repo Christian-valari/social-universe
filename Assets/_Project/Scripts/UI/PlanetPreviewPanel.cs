@@ -5,6 +5,7 @@ using TMPro;
 using SocialUniverse.Config;
 using SocialUniverse.Core;
 using SocialUniverse.Progression;
+using SocialUniverse.Safety;
 using SocialUniverse.Travel;
 
 namespace SocialUniverse.UI
@@ -25,6 +26,7 @@ namespace SocialUniverse.UI
 
         [Inject] private TravelService _travelService;
         [Inject] private PlayerState   _playerState;
+        [Inject] private IAudioManager _audio;
 
         private PlanetDefinition _pending;
         private GameObject       _modelInstance;
@@ -78,6 +80,7 @@ namespace SocialUniverse.UI
         private void OnLaunchClicked()
         {
             if (_pending == null) return;
+            _audio.PlaySfx(SfxId.TravelConfirm);
             EventBus.Publish(new TravelConfirmedEvent { Planet = _pending });
             // Close();
         }

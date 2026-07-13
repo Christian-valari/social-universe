@@ -8,6 +8,7 @@ using VContainer;
 using SocialUniverse.Config;
 using SocialUniverse.Core;
 using SocialUniverse.Progression;
+using SocialUniverse.Safety;
 
 namespace SocialUniverse.Travel
 {
@@ -49,6 +50,7 @@ namespace SocialUniverse.Travel
         [Inject] private TravelService     _travelService;
         [Inject] private PlayerState       _playerState;
         [Inject] private PlanetDefinition  _currentPlanet;
+        [Inject] private IAudioManager     _audio;
 
         private PlanetDefinition[] _planets;
         private Vector3[]          _directions;
@@ -233,6 +235,7 @@ namespace SocialUniverse.Travel
         {
             if (_locked == null) return;
             _panel.gameObject.SetActive(false);
+            _audio.PlaySfx(SfxId.PlanetObserveConfirm);
             EventBus.Publish(new TravelPreviewRequestedEvent { Planet = _locked });
         }
         
