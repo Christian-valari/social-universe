@@ -58,10 +58,10 @@ namespace SocialUniverse.App
 
             // Audio settings: local device preference, spans scenes like the
             // other app-wide singletons above.
-            builder.RegisterInstance(_audioConfig);
+            builder.RegisterInstance(_audioConfig != null ? _audioConfig : ScriptableObject.CreateInstance<AudioConfig>());
             builder.Register<AudioSettingsService>(Lifetime.Singleton).As<IAudioSettingsService>();
 
-            builder.RegisterInstance(_audioCatalog);
+            builder.RegisterInstance(_audioCatalog != null ? _audioCatalog : ScriptableObject.CreateInstance<AudioCatalog>());
             builder.Register<AudioManager>(Lifetime.Singleton).As<IAudioManager>();
 
             if (_devMode)

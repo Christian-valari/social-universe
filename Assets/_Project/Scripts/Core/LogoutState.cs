@@ -37,15 +37,22 @@ namespace SocialUniverse.Core
 
         private async Task RunAsync()
         {
-            SULog.Info("Logout: signing out");
-            await _auth.SignOutAsync();
-            EventBus.Publish(new PlayerLoggedOutEvent());
-
-            using (LifetimeScope.EnqueueParent(_rootScope))
+            try
             {
-                await _sceneLoader.LoadAsync(Constants.SceneNames.Auth);
+                SULog.Info("Logout: signing out");
+                await _auth.SignOutAsync();
+                EventBus.Publish(new PlayerLoggedOutEvent());
+
+                using (LifetimeScope.EnqueueParent(_rootScope))
+                {
+                    await _sceneLoader.LoadAsync(Constants.SceneNames.Auth);
+                }
+                _fsm.TransitionTo(_resolver.Resolve<AuthState>());
             }
-            _fsm.TransitionTo(_resolver.Resolve<AuthState>());
+            catch (System.Exception ex)
+            {
+                SULog.Error($"Logout failed: {ex.Message}", SULog.Channel.Core);
+            }
         }
     }
 }

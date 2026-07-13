@@ -34,7 +34,6 @@ namespace SocialUniverse.Safety
         {
             _musicVolume01 = Mathf.Clamp01(value01);
             PlayerPrefs.SetFloat(SaveKeys.MusicVolume, _musicVolume01);
-            PlayerPrefs.Save();
             ApplyToMixer(_config.MusicVolumeParam, _musicVolume01);
             OnMusicVolumeChanged?.Invoke(_musicVolume01);
         }
@@ -43,7 +42,6 @@ namespace SocialUniverse.Safety
         {
             _sfxVolume01 = Mathf.Clamp01(value01);
             PlayerPrefs.SetFloat(SaveKeys.SfxVolume, _sfxVolume01);
-            PlayerPrefs.Save();
             ApplyToMixer(_config.SfxVolumeParam, _sfxVolume01);
             OnSfxVolumeChanged?.Invoke(_sfxVolume01);
         }

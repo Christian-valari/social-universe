@@ -13,9 +13,11 @@ namespace SocialUniverse.Config
         [SerializeField] private AudioMixer _mixer;
         [SerializeField] private string _musicVolumeParam = "MusicVolume";
         [SerializeField] private string _sfxVolumeParam   = "SFXVolume";
+        [SerializeField] private float _crossfadeSeconds = 1.5f;
 
         public AudioMixer Mixer          => _mixer;
         public string MusicVolumeParam   => _musicVolumeParam;
         public string SfxVolumeParam     => _sfxVolumeParam;
+        public float CrossfadeSeconds    => _crossfadeSeconds;
     }
 }

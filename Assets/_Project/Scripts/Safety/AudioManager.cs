@@ -13,17 +13,18 @@ namespace SocialUniverse.Safety
     // changes apply immediately to whatever is already playing.
     public class AudioManager : IAudioManager
     {
-        private const float CrossfadeSeconds = 1.5f;
-
         private readonly AudioCatalog _catalog;
         private readonly AudioSource  _bgmA;
         private readonly AudioSource  _bgmB;
         private readonly AudioSource  _sfx;
         private          AudioSource  _activeBgm;
+        private readonly float        _crossfadeSeconds;
+        private          int          _fadeGeneration;
 
         public AudioManager(AudioConfig config, AudioCatalog catalog)
         {
             _catalog = catalog;
+            _crossfadeSeconds = config.CrossfadeSeconds;
 
             var root = new GameObject("AudioManager (runtime)");
             Object.DontDestroyOnLoad(root);
@@ -67,20 +68,23 @@ namespace SocialUniverse.Safety
             incoming.Play();
             _activeBgm = incoming;
 
-            _ = FadeAsync(outgoing, incoming);
+            int generation = ++_fadeGeneration;
+            _ = FadeAsync(outgoing, incoming, generation, _crossfadeSeconds);
         }
 
-        private static async Task FadeAsync(AudioSource outgoing, AudioSource incoming)
+        private async Task FadeAsync(AudioSource outgoing, AudioSource incoming, int generation, float durationSeconds)
         {
             float t = 0f;
-            while (t < CrossfadeSeconds)
+            while (t < durationSeconds)
             {
+                if (generation != _fadeGeneration) return; // a newer crossfade superseded this one
                 t += Time.unscaledDeltaTime;
-                float p = Mathf.Clamp01(t / CrossfadeSeconds);
+                float p = Mathf.Clamp01(t / durationSeconds);
                 outgoing.volume = 1f - p;
                 incoming.volume = p;
                 await Task.Yield();
             }
+            if (generation != _fadeGeneration) return;
             outgoing.Stop();
             outgoing.volume = 1f;
             incoming.volume = 1f;
