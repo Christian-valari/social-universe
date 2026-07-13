@@ -7,6 +7,7 @@ using SocialUniverse.Core;
 using SocialUniverse.Social;
 using SocialUniverse.Progression;
 using SocialUniverse.Config;
+using SocialUniverse.Safety;
 
 namespace SocialUniverse.UI
 {
@@ -26,6 +27,7 @@ namespace SocialUniverse.UI
         [Inject] private PlayerState    _playerState;
         [Inject] private ProfileService _profiles;
         [Inject] private SocialConfig   _config;
+        [Inject] private IAudioManager  _audio;
 
         private void Awake()
         {
@@ -36,11 +38,16 @@ namespace SocialUniverse.UI
 
         public void Open()
         {
+            _audio.PlaySfx(SfxId.OpenPanel);
             _nameInput.text  = _playerState.DisplayName;
             _statusText.text = "";
         }
 
-        public void Close() => gameObject.SetActive(false);
+        public void Close()
+        {
+            _audio.PlaySfx(SfxId.Cancel);
+            gameObject.SetActive(false);
+        }
 
         private async void OnConfirmClicked()
         {
@@ -48,6 +55,7 @@ namespace SocialUniverse.UI
 
             if (name == _playerState.DisplayName)
             {
+                _audio.PlaySfx(SfxId.Confirm);
                 _avatarSelectionModal.UpdateAvatar();
                 return;
             }
@@ -78,9 +86,10 @@ namespace SocialUniverse.UI
                     string committed = result?.DisplayName ?? name;
                     _playerState.SetDisplayName(committed);
                     await _auth.UpdateDisplayNameAsync(committed);
-                
+
                     _avatarSelectionModal.UpdateAvatar();
-                    
+                    _audio.PlaySfx(SfxId.Confirm);
+
                     Close();
                 }
                 else

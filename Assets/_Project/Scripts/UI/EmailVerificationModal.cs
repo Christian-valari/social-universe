@@ -5,6 +5,8 @@ using VContainer;
 using TMPro;
 using SocialUniverse.Core;
 using SocialUniverse.Progression;
+using SocialUniverse.Safety;
+using SocialUniverse.Config;
 
 namespace SocialUniverse.UI
 {
@@ -22,6 +24,7 @@ namespace SocialUniverse.UI
 
         [Inject] private IAuthService _auth;
         [Inject] private PlayerState  _playerState;
+        [Inject] private IAudioManager _audio;
 
         private void Awake()
         {
@@ -40,10 +43,15 @@ namespace SocialUniverse.UI
             _verifyButton  .gameObject.SetActive(!verified);
             _codeInput     .gameObject.SetActive(!verified);
             _statusText.text = verified ? "Your email is verified." : "";
+            _audio.PlaySfx(SfxId.OpenPanel);
             gameObject.SetActive(true);
         }
 
-        public void Close() => gameObject.SetActive(false);
+        public void Close()
+        {
+            _audio.PlaySfx(SfxId.Cancel);
+            gameObject.SetActive(false);
+        }
 
         private async void OnSendCodeClicked()
         {

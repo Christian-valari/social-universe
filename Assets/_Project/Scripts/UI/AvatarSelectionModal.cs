@@ -9,6 +9,7 @@ using SocialUniverse.Core;
 using SocialUniverse.Social;
 using SocialUniverse.Progression;
 using SocialUniverse.Config;
+using SocialUniverse.Safety;
 
 namespace SocialUniverse.UI
 {
@@ -26,6 +27,7 @@ namespace SocialUniverse.UI
         [Inject] private PlayerState      _playerState;
         [Inject] private ProfileService   _profiles;
         [Inject] private DatabaseRegistry _registry;
+        [Inject] private IAudioManager    _audio;
 
         private string _selectedAvatarId;
 
@@ -45,6 +47,7 @@ namespace SocialUniverse.UI
             _selectedAvatarId = _playerState.AvatarId;
             var currentAvatar = _registry.AllAvatars.ToList().Find(x => x.AvatarId == _selectedAvatarId);
             _avatarPreview.sprite = currentAvatar.Sprite;
+            _audio.PlaySfx(SfxId.OpenPanel);
             gameObject.SetActive(true);
         }
 

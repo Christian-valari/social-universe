@@ -9,6 +9,7 @@ using SocialUniverse.Config;
 using SocialUniverse.Social;
 using SocialUniverse.Economy;
 using SocialUniverse.World;
+using SocialUniverse.Safety;
 
 namespace SocialUniverse.UI
 {
@@ -33,6 +34,7 @@ namespace SocialUniverse.UI
         [Inject] private LandRegistryService     _landRegistryService;
         [Inject] private EconomyConfig           _economyConfig;
         [Inject] private YieldEstimateCalculator _yieldEstimateCalculator;
+        [Inject] private IAudioManager           _audio;
 
         private TileData _currentTile;
 
@@ -71,6 +73,7 @@ namespace SocialUniverse.UI
             _ownerInfoText.gameObject.SetActive(false);
             _avatarImage.gameObject.SetActive(false);
 
+            _audio.PlaySfx(SfxId.OpenPanel);
             gameObject.SetActive(true);
 
             if (ownedByPlayer)
@@ -155,6 +158,7 @@ namespace SocialUniverse.UI
 
         public void Close()
         {
+            _audio.PlaySfx(SfxId.Cancel);
             _currentTile = null;
             CancelInvoke(nameof(RefreshYieldEstimate));
             gameObject.SetActive(false);
@@ -192,6 +196,7 @@ namespace SocialUniverse.UI
             SetBusy(false);
             if (e.Success)
             {
+                _audio.PlaySfx(SfxId.CoinsReward);
                 _statusText.text = $"+{e.Granted} coins!";
                 RefreshYieldEstimate();
             }

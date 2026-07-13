@@ -6,6 +6,7 @@ using SocialUniverse.Core;
 using SocialUniverse.Config;
 using SocialUniverse.Economy;
 using SocialUniverse.World;
+using SocialUniverse.Safety;
 
 namespace SocialUniverse.UI
 {
@@ -23,6 +24,7 @@ namespace SocialUniverse.UI
         [Inject] private Wallet           _wallet;
         [Inject] private PlanetDefinition _planet;
         [Inject] private EconomyConfig    _economyConfig;
+        [Inject] private IAudioManager    _audio;
 
         private TileData _currentTile;
 
@@ -49,11 +51,13 @@ namespace SocialUniverse.UI
             _statusText.text  = canAfford ? "" : "Not enough coins";
             _confirmButton.interactable = canAfford;
 
+            _audio.PlaySfx(SfxId.OpenPanel);
             gameObject.SetActive(true);
         }
 
         public void Close()
         {
+            _audio.PlaySfx(SfxId.Cancel);
             _currentTile = null;
             gameObject.SetActive(false);
         }
@@ -61,6 +65,7 @@ namespace SocialUniverse.UI
         private void OnConfirmClicked()
         {
             if (_currentTile == null) return;
+            _audio.PlaySfx(SfxId.Confirm);
             SetBusy(true);
             _statusText.text = "Purchasing…";
             EventBus.Publish(new TilePurchaseConfirmedEvent { Tile = _currentTile });
