@@ -19,6 +19,7 @@ namespace SocialUniverse.App
         [SerializeField] private bool _devMode = false;
         [SerializeField] private SocialConfig _socialConfig;
         [SerializeField] private AudioConfig  _audioConfig;
+        [SerializeField] private AudioCatalog _audioCatalog;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -59,6 +60,9 @@ namespace SocialUniverse.App
             // other app-wide singletons above.
             builder.RegisterInstance(_audioConfig);
             builder.Register<AudioSettingsService>(Lifetime.Singleton).As<IAudioSettingsService>();
+
+            builder.RegisterInstance(_audioCatalog);
+            builder.Register<AudioManager>(Lifetime.Singleton).As<IAudioManager>();
 
             if (_devMode)
                 builder.Register<LocalMockPresenceService>(Lifetime.Singleton).As<IPresenceService>();

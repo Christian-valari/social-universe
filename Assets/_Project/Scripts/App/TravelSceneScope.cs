@@ -7,6 +7,7 @@ using SocialUniverse.Config;
 using SocialUniverse.Core;
 using SocialUniverse.Net;
 using SocialUniverse.Progression;
+using SocialUniverse.Safety;
 using SocialUniverse.Travel;
 
 namespace SocialUniverse.App
@@ -21,6 +22,8 @@ namespace SocialUniverse.App
     public class TravelSceneScope : LifetimeScope
     {
         [SerializeField] private DatabaseRegistry _databaseRegistry;
+        [SerializeField] private AudioConfig      _audioConfig;   // standalone-mode fallback, mirrors PlanetSceneScope
+        [SerializeField] private AudioCatalog     _audioCatalog;  // standalone-mode fallback, mirrors PlanetSceneScope
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -46,6 +49,11 @@ namespace SocialUniverse.App
                 builder.Register<SceneLoader>(Lifetime.Singleton);
                 builder.Register<LocalMockBackendClient>(Lifetime.Singleton).As<IBackendClient>();
                 builder.Register<ServerTime>(Lifetime.Singleton);
+
+                builder.RegisterInstance(_audioConfig != null ? _audioConfig : ScriptableObject.CreateInstance<AudioConfig>());
+                builder.Register<AudioSettingsService>(Lifetime.Singleton).As<IAudioSettingsService>();
+                builder.RegisterInstance(_audioCatalog != null ? _audioCatalog : ScriptableObject.CreateInstance<AudioCatalog>());
+                builder.Register<AudioManager>(Lifetime.Singleton).As<IAudioManager>();
             }
             builder.RegisterInstance(standalone);
 
@@ -66,12 +74,14 @@ namespace SocialUniverse.App
         private readonly TravelTripSystem _trips;
         private readonly SceneLoader      _sceneLoader;
         private readonly bool             _standalone;
+        private readonly IAudioManager    _audio;
 
-        public TravelSceneBootstrapper(TravelTripSystem trips, SceneLoader sceneLoader, bool standalone)
+        public TravelSceneBootstrapper(TravelTripSystem trips, SceneLoader sceneLoader, bool standalone, IAudioManager audio)
         {
             _trips       = trips;
             _sceneLoader = sceneLoader;
             _standalone  = standalone;
+            _audio       = audio;
         }
 
         public async void Start()
@@ -87,6 +97,8 @@ namespace SocialUniverse.App
                 if (!ls.IsValid() || !ls.isLoaded)
                     await _sceneLoader.LoadAsync(Constants.SceneNames.LoadingScreen);
             }
+
+            _audio.PlayTravelBgm();
 
             EventBus.Publish(new LoadingStatusEvent(0.5f));
             try

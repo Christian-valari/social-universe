@@ -8,6 +8,7 @@ using SocialUniverse.Core;
 using SocialUniverse.Economy;
 using SocialUniverse.Net;
 using SocialUniverse.Progression;
+using SocialUniverse.Safety;
 using SocialUniverse.Travel;
 
 namespace SocialUniverse.App
@@ -24,6 +25,8 @@ namespace SocialUniverse.App
         [SerializeField] private EconomyConfig    _economyConfig;
         [SerializeField] private DatabaseRegistry _databaseRegistry;
         [SerializeField] private TravelTimeTable  _travelTimeTable;
+        [SerializeField] private AudioConfig      _audioConfig;   // standalone-mode fallback, mirrors PlanetSceneScope
+        [SerializeField] private AudioCatalog     _audioCatalog;  // standalone-mode fallback, mirrors PlanetSceneScope
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -49,6 +52,11 @@ namespace SocialUniverse.App
                 builder.Register<SceneLoader>(Lifetime.Singleton);
                 builder.Register<LocalMockBackendClient>(Lifetime.Singleton).As<IBackendClient>();
                 builder.Register<ServerTime>(Lifetime.Singleton);
+
+                builder.RegisterInstance(_audioConfig != null ? _audioConfig : ScriptableObject.CreateInstance<AudioConfig>());
+                builder.Register<AudioSettingsService>(Lifetime.Singleton).As<IAudioSettingsService>();
+                builder.RegisterInstance(_audioCatalog != null ? _audioCatalog : ScriptableObject.CreateInstance<AudioCatalog>());
+                builder.Register<AudioManager>(Lifetime.Singleton).As<IAudioManager>();
             }
 
             builder.Register<Wallet>(Lifetime.Singleton);
@@ -78,12 +86,14 @@ namespace SocialUniverse.App
         private readonly FuelSystem      _fuel;
         private readonly IEconomyService _economy;
         private readonly SceneLoader     _sceneLoader;
+        private readonly IAudioManager   _audio;
 
-        public SolarSystemBootstrapper(FuelSystem fuel, IEconomyService economy, SceneLoader sceneLoader)
+        public SolarSystemBootstrapper(FuelSystem fuel, IEconomyService economy, SceneLoader sceneLoader, IAudioManager audio)
         {
             _fuel        = fuel;
             _economy     = economy;
             _sceneLoader = sceneLoader;
+            _audio       = audio;
         }
 
         public async void Start()
@@ -93,6 +103,8 @@ namespace SocialUniverse.App
             var ls = SceneManager.GetSceneByName(Constants.SceneNames.LoadingScreen);
             if (!ls.IsValid() || !ls.isLoaded)
                 await _sceneLoader.LoadAsync(Constants.SceneNames.LoadingScreen);
+
+            _audio.PlaySolarSystemBgm();
 
             EventBus.Publish(new LoadingStatusEvent(0.3f));
             try

@@ -29,6 +29,7 @@ namespace SocialUniverse.App
         [SerializeField] private PlanetDefinition _startPlanet;
         [SerializeField] private SocialConfig     _socialConfig;   // used in standalone mode only; production gets it from RootLifetimeScope
         [SerializeField] private AudioConfig      _audioConfig;    // used in standalone mode only; production gets it from RootLifetimeScope
+        [SerializeField] private AudioCatalog     _audioCatalog;   // used in standalone mode only; production gets it from RootLifetimeScope
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -87,6 +88,9 @@ namespace SocialUniverse.App
                 // since standalone mode has no parent scope to provide it.
                 builder.RegisterInstance(_audioConfig != null ? _audioConfig : ScriptableObject.CreateInstance<AudioConfig>());
                 builder.Register<AudioSettingsService>(Lifetime.Singleton).As<IAudioSettingsService>();
+
+                builder.RegisterInstance(_audioCatalog != null ? _audioCatalog : ScriptableObject.CreateInstance<AudioCatalog>());
+                builder.Register<AudioManager>(Lifetime.Singleton).As<IAudioManager>();
 
                 // GameStateMachine — has no real use standalone (nothing transitions it), but
                 // SettingsPanel's [Inject] GameStateMachine field is force-resolved at container
@@ -173,6 +177,7 @@ namespace SocialUniverse.App
         private readonly ProfileService    _profileService;
         private readonly SceneLoader       _sceneLoader;
         private readonly bool              _standalone;
+        private readonly IAudioManager     _audio;
 
         public PlanetSceneBootstrapper(
             PlanetController  planetController,
@@ -190,7 +195,8 @@ namespace SocialUniverse.App
             PlayerState       playerState,
             ProfileService    profileService,
             SceneLoader       sceneLoader,
-            bool              standalone)
+            bool              standalone,
+            IAudioManager     audio)
         {
             _planetController = planetController;
             _asteroidSpawner  = asteroidSpawner;
@@ -208,6 +214,7 @@ namespace SocialUniverse.App
             _profileService   = profileService;
             _sceneLoader      = sceneLoader;
             _standalone       = standalone;
+            _audio            = audio;
         }
 
         public async void Start()
@@ -226,6 +233,7 @@ namespace SocialUniverse.App
 
             EventBus.Publish(new LoadingStatusEvent(0.15f));
             _planetController.Load(_startPlanet);
+            _audio.PlayBgmForPlanet(_startPlanet);
             _asteroidSpawner.SpawnForPlanet(_startPlanet);
 
             await HydrateServerStateAsync();
