@@ -5,6 +5,7 @@ using UnityEngine;
 using SocialUniverse.Config;
 using SocialUniverse.Economy;
 using SocialUniverse.Core;
+using SocialUniverse.Safety;
 
 namespace SocialUniverse.Mining
 {
@@ -16,6 +17,7 @@ namespace SocialUniverse.Mining
         private readonly EconomyConfig           _config;
         private readonly PlanetDefinition        _planet;
         private readonly ActiveMiningHandoff     _handoff;
+        private readonly IAudioManager           _audio;
 
         public DroneRuntime Drone { get; private set; }
 
@@ -25,7 +27,8 @@ namespace SocialUniverse.Mining
         public event Action<IdleMiningSession> OnIdleSessionChanged;
 
         public MiningController(IEconomyService economy, MiningRewardCalculator rewardCalc,
-            AsteroidSpawner spawner, EconomyConfig config, PlanetDefinition planet, ActiveMiningHandoff handoff)
+            AsteroidSpawner spawner, EconomyConfig config, PlanetDefinition planet, ActiveMiningHandoff handoff,
+            IAudioManager audio)
         {
             _economy    = economy;
             _rewardCalc = rewardCalc;
@@ -33,6 +36,7 @@ namespace SocialUniverse.Mining
             _config     = config;
             _planet     = planet;
             _handoff    = handoff;
+            _audio      = audio;
         }
 
         public void Initialize(DroneRuntime drone)
@@ -69,8 +73,10 @@ namespace SocialUniverse.Mining
 
             var reward = _rewardCalc.Compute(asteroid);
             session.Claim();
+            _audio.PlaySfx(SfxId.MiningComplete);
 
             int mined = asteroid.Mine(asteroid.RemainingYield);
+            if (asteroid.IsDepleted) _audio.PlaySfx(SfxId.AsteroidDestroyed);
             int coins = mined * asteroid.Definition.CoinsPerUnit;
 
             CurrentIdleSession = null;
@@ -83,6 +89,7 @@ namespace SocialUniverse.Mining
                 try
                 {
                     int granted = await _economy.GrantMiningRewardAsync(coins, reward.IdleDurationSeconds, reward.CoinsPerSec);
+                    _audio.PlaySfx(SfxId.CoinsReward);
                     SULog.Info($"Idle session claimed: +{mined} {asteroid.Definition.MineralType} -> {granted} coins", SULog.Channel.Mining);
                 }
                 catch (Exception ex)

@@ -6,7 +6,8 @@
         "SocialUniverse.Core",
         "SocialUniverse.Config",
         "SocialUniverse.World",
-        "SocialUniverse.Economy"
+        "SocialUniverse.Economy",
+        "SocialUniverse.Safety"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -7,6 +7,7 @@ using SocialUniverse.Config;
 using SocialUniverse.Core;
 using SocialUniverse.Economy;
 using SocialUniverse.Mining;
+using SocialUniverse.Safety;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -24,6 +25,14 @@ namespace SocialUniverse.Tests
 
         public Task<int> GrantMiningRewardAsync(int claimedCoins, float sessionDurationSec, float coinsPerSec)
             => throw new System.InvalidOperationException("simulated network failure");
+    }
+
+    public class FakeAudioManager : IAudioManager
+    {
+        public void PlaySfx(SfxId id) { }
+        public void PlayBgmForPlanet(PlanetDefinition planet) { }
+        public void PlaySolarSystemBgm() { }
+        public void PlayTravelBgm() { }
     }
 
     public class MiningControllerTests
@@ -70,7 +79,7 @@ namespace SocialUniverse.Tests
             var spawnerGo = new GameObject("TestSpawner");
             _spawner = spawnerGo.AddComponent<AsteroidSpawner>();
 
-            _mining = new MiningController(_economy, _rewardCalc, _spawner, _config, _planet, _handoff);
+            _mining = new MiningController(_economy, _rewardCalc, _spawner, _config, _planet, _handoff, new FakeAudioManager());
         }
 
         [TearDown]
@@ -304,7 +313,7 @@ namespace SocialUniverse.Tests
         public async Task ClaimIdleSessionAsync_still_schedules_respawn_when_the_grant_call_throws()
         {
             var throwingEconomy = new ThrowingEconomyService();
-            var mining = new MiningController(throwingEconomy, _rewardCalc, _spawner, _config, _planet, _handoff);
+            var mining = new MiningController(throwingEconomy, _rewardCalc, _spawner, _config, _planet, _handoff, new FakeAudioManager());
 
             var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 20);
             Assert.IsTrue(mining.BeginIdleMining(asteroid));

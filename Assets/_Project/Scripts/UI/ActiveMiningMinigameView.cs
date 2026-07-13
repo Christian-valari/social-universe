@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using VContainer;
 using SocialUniverse.Mining;
 using SocialUniverse.Core;
+using SocialUniverse.Safety;
+using SocialUniverse.Config;
 using TMPro;
 
 namespace SocialUniverse.UI
@@ -46,6 +48,7 @@ namespace SocialUniverse.UI
         [Inject] private ActiveMiningSessionRunner _runner;
         [Inject] private ActiveMiningHandoff       _handoff;
         [Inject] private ActiveMiningState         _activeMiningState;
+        [Inject] private IAudioManager             _audio;
 
         private ActiveMiningTargetPoint _currentTargetAnchor;
         private bool                    _started;
@@ -117,6 +120,12 @@ namespace SocialUniverse.UI
         {
             bool succeeded = stage == ActiveMiningStage.Success;
 
+            if (succeeded)
+            {
+                _audio.PlaySfx(SfxId.MiningComplete);
+                _audio.PlaySfx(SfxId.AsteroidDestroyed);
+            }
+
             if (_resultBanner != null) _resultBanner.SetActive(true);
             if (_resultText   != null) _resultText.text = succeeded ? "Success!" : "Failed";
 
@@ -176,6 +185,7 @@ namespace SocialUniverse.UI
 
             if (hitTarget)
             {
+                _audio.PlaySfx(SfxId.ActiveMiningTap);
                 SpawnHitVfx();
                 _runner.Session.RegisterHit();
             }
