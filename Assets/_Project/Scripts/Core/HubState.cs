@@ -11,12 +11,14 @@ namespace SocialUniverse.Core
         private readonly SceneLoader      _sceneLoader;
         private readonly GameStateMachine _fsm;
         private readonly IObjectResolver  _resolver;
+        private readonly IAuthService     _auth;
 
-        public HubState(SceneLoader sceneLoader, GameStateMachine fsm, IObjectResolver resolver)
+        public HubState(SceneLoader sceneLoader, GameStateMachine fsm, IObjectResolver resolver, IAuthService auth)
         {
             _sceneLoader = sceneLoader;
             _fsm         = fsm;
             _resolver    = resolver;
+            _auth        = auth;
         }
 
         public void Enter() => _ = EnterAsync();
@@ -81,8 +83,10 @@ namespace SocialUniverse.Core
             state.TargetPlanetId = planet.PlanetId;
 
             // Persisted locally (not server state) so the next launch resumes on the
-            // last-visited planet instead of always landing back on Earth.
-            PlayerPrefs.SetString(SaveKeys.LastPlanetId, planet.PlanetId);
+            // last-visited planet instead of always landing back on Earth. Keyed per
+            // player so switching accounts on the same device doesn't resume on
+            // whichever account last wrote this key.
+            PlayerPrefs.SetString(SaveKeys.LastPlanetIdKey(_auth.PlayerId), planet.PlanetId);
             PlayerPrefs.Save();
 
             _fsm.TransitionTo(state);
@@ -98,7 +102,7 @@ namespace SocialUniverse.Core
             var state = _resolver.Resolve<PlanetState>();
             state.TargetPlanetId = planet.PlanetId;
 
-            PlayerPrefs.SetString(SaveKeys.LastPlanetId, planet.PlanetId);
+            PlayerPrefs.SetString(SaveKeys.LastPlanetIdKey(_auth.PlayerId), planet.PlanetId);
             PlayerPrefs.Save();
 
             var loading = _resolver.Resolve<TravelLoadingState>();

@@ -74,7 +74,7 @@ namespace SocialUniverse.Travel
             if (result.Fuel    >= 0f) _playerState.SetFuel(result.Fuel);
             if (result.MaxFuel >= 0f) _playerState.SetMaxFuel(result.MaxFuel);
 
-            // Client-cached resume hint (like SaveKeys.LastPlanetId) so Boot/Hub know to
+            // Client-cached resume hint (like SaveKeys.LastPlanetIdKey) so Boot/Hub know to
             // head straight for the Travel scene if the app was closed mid-trip — the
             // Travel scene itself re-validates against the server, this is not the
             // source of truth.

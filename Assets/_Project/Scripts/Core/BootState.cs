@@ -60,7 +60,7 @@ namespace SocialUniverse.Core
                 }
 
                 var planet = _resolver.Resolve<PlanetState>();
-                planet.TargetPlanetId = PlayerPrefs.GetString(SaveKeys.LastPlanetId, Constants.PlanetIds.Earth);
+                planet.TargetPlanetId = PlayerPrefs.GetString(SaveKeys.LastPlanetIdKey(_auth.PlayerId), Constants.PlanetIds.Earth);
                 _fsm.TransitionTo(planet);
                 return;
             }
