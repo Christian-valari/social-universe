@@ -5,7 +5,10 @@
 //   1. In the UGS dashboard (Cloud Code → Secrets), add:
 //        UGS_SERVICE_ACCOUNT_KEY    — service account key ID with Auth admin scope
 //        UGS_SERVICE_ACCOUNT_SECRET — service account secret
-//   2. Deploy this function via the UGS CLI.
+//   2. In the UGS dashboard (Cloud Save → Indexes), add an index on the
+//      "email_lookup" key (Player Data, Default access class) — see
+//      SaveEmail.js. findPlayerByEmail's query fails to match anyone without it.
+//   3. Deploy this function via the UGS CLI.
 //
 // Throws on invalid/expired OTP; always clears the OTP record on success.
 //
@@ -16,32 +19,31 @@
 // no deleteItem precedent exists elsewhere in this codebase's Cloud Code
 // functions (see LandTravel.js) — this now overwrites the OTP record with a
 // null sentinel rather than assuming a delete call exists on this SDK version.
+//
+// FIX: findPlayerByEmail previously hit a raw `GET .../items?key=...` REST
+// endpoint using the *caller's own* player access token, which can only ever
+// see the token owner's own Cloud Save items — it always returned null, so
+// this function always threw "No account found" (see RequestPasswordReset.js
+// for the matching fix). Cross-player lookups require Cloud Save's Query API
+// (queryDefaultPlayerData) via the elevated Cloud Code DataApi, matched
+// against the fixed "email_lookup" key SaveEmail.js writes.
 const { DataApi } = require("@unity-services/cloud-save-1.4");
 const axios       = require("axios-1.6");
 
+const EMAIL_LOOKUP_KEY = "email_lookup"; // must match SaveEmail.js
 const RESET_KEY   = "auth_reset_otp";
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// Cloud Code's JS runtime has no global `fetch` — outbound HTTP goes through
-// the whitelisted `axios-1.6` library instead (see Unity's Cloud Code
-// "Available libraries" reference). Axios throws on non-2xx responses.
-async function findPlayerByEmail(projectId, accessToken, email) {
-  const emailKey = "idx_email_" + emailToKey(email);
+async function findPlayerByEmail(saveApi, projectId, email) {
   try {
-    const res = await axios.get(
-      `https://cloud-save.services.api.unity.com/v1/data/projects/${projectId}/items?key=${encodeURIComponent(emailKey)}`,
-      { headers: { Authorization: `Bearer ${accessToken}` } }
-    );
-    return res.data.results?.[0]?.value?.playerId ?? null;
+    const res = await saveApi.queryDefaultPlayerData(projectId, {
+      fields: [{ key: EMAIL_LOOKUP_KEY, op: "EQ", value: email }],
+    });
+    const match = res.data.results?.[0];
+    return match?.id ?? match?.playerId ?? null;
   } catch (_) {
     return null;
   }
-}
-
-function emailToKey(email) {
-  let h = 5381;
-  for (let i = 0; i < email.length; i++) h = ((h << 5) + h) ^ email.charCodeAt(i);
-  return (h >>> 0).toString(16).padStart(8, "0");
 }
 
 async function getAdminToken(serviceKey, serviceSecret) {
@@ -89,10 +91,10 @@ module.exports = async ({ params, context, logger, secretManager }) => {
   if (code.length !== 6)        throw new Error("Reset code must be 6 digits");
   if (newPassword.length < 6)   throw new Error("Password must be at least 6 characters");
 
-  const { projectId, accessToken } = context;
+  const { projectId } = context;
   const saveApi = new DataApi(context);
 
-  const targetPlayerId = await findPlayerByEmail(projectId, accessToken, email);
+  const targetPlayerId = await findPlayerByEmail(saveApi, projectId, email);
   if (!targetPlayerId) throw new Error("No account found for this email address");
 
   // Load and validate OTP record

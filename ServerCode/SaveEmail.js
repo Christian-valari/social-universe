@@ -1,6 +1,11 @@
 // SaveEmail — stores the player's email in their "player_profile" Cloud Save
-// record and writes a reverse-lookup index used by RequestPasswordReset to
+// record and writes a reverse-lookup field used by RequestPasswordReset to
 // identify the account from an email address alone.
+//
+// SETUP REQUIRED: in the UGS dashboard (Cloud Save → Indexes), add an index
+// on the "email_lookup" key (Player Data, Default access class). Without it,
+// RequestPasswordReset/ConfirmPasswordReset's cross-player query fails to
+// find any player, regardless of whether the email is registered.
 //
 // FIX: DataApi's constructor doesn't read a { headers: ... } field, and
 // getItems/setItem take positional args (projectId, playerId, keys[])/
@@ -12,16 +17,15 @@
 // calling player via the service token, matching PurchaseLand/GetFuelState/etc.
 const { DataApi } = require("@unity-services/cloud-save-1.4");
 
-const PROFILE_KEY = "player_profile";
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PROFILE_KEY     = "player_profile";
+const EMAIL_REGEX     = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-function emailToKey(email) {
-  // Deterministic short key from the email without storing PII as a key name.
-  // djb2 hash — no crypto module needed (not available in UGS Cloud Code).
-  let h = 5381;
-  for (let i = 0; i < email.length; i++) h = ((h << 5) + h) ^ email.charCodeAt(i);
-  return (h >>> 0).toString(16).padStart(8, "0");
-}
+// Fixed key name (not per-email) that RequestPasswordReset/ConfirmPasswordReset
+// look up via Cloud Save's cross-player Query API — indexes are configured per
+// key name in the UGS dashboard, so the key must be constant across players;
+// the email itself is the value being matched. Must be identical in this file
+// and in RequestPasswordReset.js/ConfirmPasswordReset.js.
+const EMAIL_LOOKUP_KEY = "email_lookup";
 
 /**
  * @param {string} email - The player's email address to persist.
@@ -51,11 +55,11 @@ module.exports = async ({ params, context, logger }) => {
   profile.updatedMs = Date.now();
   await saveApi.setItem(projectId, playerId, { key: PROFILE_KEY, value: profile });
 
-  // Write the reverse-lookup index: idx_email_<hash> → { playerId, email }
-  // Stored under the calling player's own record so no admin token is needed.
-  // RequestPasswordReset reads this via the UGS Cloud Save admin query API.
-  const indexKey = "idx_email_" + emailToKey(email);
-  await saveApi.setItem(projectId, playerId, { key: indexKey, value: { playerId, email } });
+  // Write the reverse-lookup field under a fixed key name so
+  // RequestPasswordReset/ConfirmPasswordReset can find this player by email
+  // via Cloud Save's cross-player Query API (queryDefaultPlayerData) — see
+  // SETUP REQUIRED below.
+  await saveApi.setItem(projectId, playerId, { key: EMAIL_LOOKUP_KEY, value: email });
 
   logger.info(`SaveEmail: email stored and index written for ${playerId}`);
   return { success: true };
