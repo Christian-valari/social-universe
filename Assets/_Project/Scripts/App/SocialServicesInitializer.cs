@@ -58,9 +58,14 @@ namespace SocialUniverse.App
 
         private async void OnPlayerReady(PlayerReadyEvent _)
         {
+            // Never fall back further than "Player" here — this name is baked into
+            // the Vivox login and shown to every other player as the chat sender
+            // name (ChatMessageItemView), so falling through to _auth.PlayerId
+            // would leak the player's raw UGS id into every chat message. Same
+            // placeholder PlayerState/PlanetSceneScope use when no name is set.
             string displayName = _auth.DisplayName;
             if (string.IsNullOrEmpty(displayName)) displayName = _auth.Username;
-            if (string.IsNullOrEmpty(displayName)) displayName = _auth.PlayerId;
+            if (string.IsNullOrEmpty(displayName)) displayName = "Player";
 
             // Kick off the real Vivox login immediately, synchronously, with the
             // best display name we already have - before awaiting anything below.
@@ -92,6 +97,8 @@ namespace SocialUniverse.App
             {
                 var profile = await _profile.GetProfileAsync(_auth.PlayerId);
                 avatarId = profile?.AvatarId;
+                if (!string.IsNullOrEmpty(profile?.DisplayName))
+                    displayName = profile.DisplayName;
             }
             catch (Exception ex)
             {
