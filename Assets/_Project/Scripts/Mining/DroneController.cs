@@ -47,6 +47,23 @@ namespace SocialUniverse.Mining
             _returningToBase = false;
         }
 
+        // Places the drone directly at the target with no travel animation or VFX — used when
+        // an idle session is restored (e.g. app relaunch), since the travel already
+        // conceptually happened off-screen while the app was closed.
+        public void SnapToTarget(Transform target)
+        {
+            _target          = target;
+            _orbiting        = false;
+            _isMoving        = false;
+            _returningToBase = false;
+
+            if (target != null)
+            {
+                transform.position = target.position + Vector3.forward * _stopDistance;
+                transform.LookAt(target.position);
+            }
+        }
+
         // Sends the drone back to its base anchor; it travels there and then idles (no orbit/VFX).
         public void ReturnToBase()
         {

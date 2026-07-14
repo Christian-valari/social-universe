@@ -17,16 +17,22 @@ namespace SocialUniverse.Mining
         public float           DurationSeconds { get; }
         public IdleMiningStage Stage           { get; private set; }
 
+        // True when this session was reconstructed from persisted state (app relaunch) rather
+        // than started fresh this session — the drone should snap to the asteroid instead of
+        // traveling there, since the travel already conceptually happened off-screen.
+        public bool WasRestored { get; }
+
         public float MiningProgress01 =>
             Mathf.Clamp01((float)(DateTime.UtcNow - StartUtc).TotalSeconds / DurationSeconds);
 
         public event Action<IdleMiningStage> OnStageChanged;
 
-        public IdleMiningSession(Asteroid asteroid, DateTime startUtc, float durationSeconds)
+        public IdleMiningSession(Asteroid asteroid, DateTime startUtc, float durationSeconds, bool restored = false)
         {
             Asteroid        = asteroid;
             StartUtc        = startUtc;
             DurationSeconds = Mathf.Max(0.01f, durationSeconds);
+            WasRestored     = restored;
             Stage           = HasDurationElapsed() ? IdleMiningStage.ReadyToClaim : IdleMiningStage.Traveling;
         }
 

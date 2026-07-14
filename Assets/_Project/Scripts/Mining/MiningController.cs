@@ -217,7 +217,7 @@ namespace SocialUniverse.Mining
                 return;
             }
 
-            CurrentIdleSession = new IdleMiningSession(asteroid, startUtc, duration);
+            CurrentIdleSession = new IdleMiningSession(asteroid, startUtc, duration, restored: true);
             CurrentIdleSession.OnStageChanged += _ => OnIdleSessionChanged?.Invoke(CurrentIdleSession);
 
             SULog.Info($"Idle session restored on {asteroid.name} (stage={CurrentIdleSession.Stage})", SULog.Channel.Mining);

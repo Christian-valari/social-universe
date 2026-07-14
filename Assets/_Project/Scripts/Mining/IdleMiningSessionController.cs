@@ -32,7 +32,12 @@ namespace SocialUniverse.Mining
             {
                 _trackedSession = session;
                 if (session != null)
-                    _drone.SetTarget(session.Asteroid.transform);
+                {
+                    if (session.WasRestored)
+                        _drone.SnapToTarget(session.Asteroid.transform);
+                    else
+                        _drone.SetTarget(session.Asteroid.transform);
+                }
                 else
                     _drone.ReturnToBase(); // asteroid claimed — head back to base
             }
