@@ -41,6 +41,12 @@ namespace SocialUniverse.App
             _config        = config;
         }
 
+        // PlanetSceneBootstrapper awaits one RefreshAndApplyAsync() call directly
+        // (see HydrateServerStateAsync) before publishing SceneReadyEvent, so
+        // other players' tile ownership is painted before the LoadingScreen
+        // unloads — without this, tiles owned by other players briefly show as
+        // Available. The poll loop below waits a full interval before its own
+        // first refresh so that gating call isn't duplicated a second time here.
         public void Start() => PollLoopAsync(_cts.Token);
 
         public void Dispose() => _cts.Cancel();
@@ -49,8 +55,6 @@ namespace SocialUniverse.App
         {
             while (!token.IsCancellationRequested)
             {
-                await RefreshAndApplyAsync();
-
                 try
                 {
                     await Task.Delay(TimeSpan.FromSeconds(_config.LandRegistryPollIntervalSec), token);
@@ -59,10 +63,12 @@ namespace SocialUniverse.App
                 {
                     break;
                 }
+
+                await RefreshAndApplyAsync();
             }
         }
 
-        private async Task RefreshAndApplyAsync()
+        public async Task RefreshAndApplyAsync()
         {
             try
             {

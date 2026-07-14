@@ -149,7 +149,10 @@ namespace SocialUniverse.App
             builder.RegisterEntryPoint<PlanetSceneBootstrapper>();
             builder.RegisterEntryPoint<IdleMiningSessionController>();
             builder.RegisterEntryPoint<TilePurchaseHandler>();
-            builder.RegisterEntryPoint<LandRegistrySyncController>();
+            // AsSelf() alongside the entry-point registration: PlanetSceneBootstrapper
+            // injects the concrete type directly to await its initial refresh (see
+            // HydrateServerStateAsync), same pattern as ActiveMiningSessionRunner.
+            builder.RegisterEntryPoint<LandRegistrySyncController>().AsSelf();
             builder.RegisterEntryPoint<BuildModeController>();
             builder.RegisterEntryPoint<VisitorTrackingController>();
             builder.RegisterEntryPoint<UpkeepController>();
@@ -170,6 +173,7 @@ namespace SocialUniverse.App
         private readonly FuelSystem        _fuel;
         private readonly ICloudSave        _cloudSave;
         private readonly LandRegistry      _landRegistry;
+        private readonly LandRegistrySyncController _landRegistrySync;
         private readonly HexasphereManager _hexasphere;
         private readonly TileColorizer     _colorizer;
         private readonly IAuthService      _auth;
@@ -189,6 +193,7 @@ namespace SocialUniverse.App
             FuelSystem        fuel,
             ICloudSave        cloudSave,
             LandRegistry      landRegistry,
+            LandRegistrySyncController landRegistrySync,
             HexasphereManager hexasphere,
             TileColorizer     colorizer,
             IAuthService      auth,
@@ -207,6 +212,7 @@ namespace SocialUniverse.App
             _fuel             = fuel;
             _cloudSave        = cloudSave;
             _landRegistry     = landRegistry;
+            _landRegistrySync = landRegistrySync;
             _hexasphere       = hexasphere;
             _colorizer        = colorizer;
             _auth             = auth;
@@ -359,6 +365,14 @@ namespace SocialUniverse.App
             {
                 SULog.Warn($"PlanetSceneBootstrapper: tile restore failed ({ex.Message})", SULog.Channel.World);
             }
+
+            // Paint other players' owned tiles before the LoadingScreen unloads —
+            // LandRegistrySyncController's own poll loop runs independently of scene
+            // load and wouldn't otherwise resolve until its first interval elapses,
+            // which would show every other player's tiles as Available for a while.
+            // RefreshAndApplyAsync already catches and logs its own failures.
+            EventBus.Publish(new LoadingStatusEvent(0.85f));
+            await _landRegistrySync.RefreshAndApplyAsync();
         }
     }
 }
