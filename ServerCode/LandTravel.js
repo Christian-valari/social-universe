@@ -12,7 +12,8 @@
 // follow-up.
 const { DataApi } = require("@unity-services/cloud-save-1.4");
 
-const TRAVEL_KEY = "travel_state";
+const TRAVEL_KEY  = "travel_state";
+const PLANET_KEY  = "current_planet";
 
 /**
  * No parameters.
@@ -38,6 +39,18 @@ module.exports = async ({ context, logger }) => {
 
   const targetPlanetId = trip.targetPlanetId;
   await saveApi.setItem(projectId, playerId, { key: TRAVEL_KEY, value: { targetPlanetId: null } });
+
+  // Cross-device resume hint (see GetCurrentPlanet.js) — best-effort. The trip
+  // itself already completed successfully above; a failure here only means
+  // GetCurrentPlanet keeps returning the previous value until this player's
+  // next real landing, so it must not fail the whole call.
+  try {
+    await saveApi.setItem(projectId, playerId, {
+      key: PLANET_KEY, value: { planetId: targetPlanetId, updatedTs: Date.now() }
+    });
+  } catch (err) {
+    logger.warn(`LandTravel: current_planet write failed for ${playerId}: ${err?.message}`);
+  }
 
   logger.info(`LandTravel: player ${playerId} landed on ${targetPlanetId}`);
   return { success: true, traveling: false, targetPlanetId };

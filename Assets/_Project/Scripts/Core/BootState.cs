@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using VContainer;
@@ -13,9 +14,10 @@ namespace SocialUniverse.Core
         private readonly GameStateMachine  _fsm;
         private readonly IObjectResolver   _resolver;
         private readonly LifetimeScope     _rootScope;
+        private readonly IBackendClient    _backend;
 
         public BootState(IAuthService auth, INetworkBootstrap network, SceneLoader sceneLoader,
-            GameStateMachine fsm, IObjectResolver resolver, LifetimeScope rootScope)
+            GameStateMachine fsm, IObjectResolver resolver, LifetimeScope rootScope, IBackendClient backend)
         {
             _auth        = auth;
             _network     = network;
@@ -23,6 +25,7 @@ namespace SocialUniverse.Core
             _fsm         = fsm;
             _resolver    = resolver;
             _rootScope   = rootScope;
+            _backend     = backend;
         }
 
         public void Enter() => _ = RunAsync();
@@ -60,7 +63,7 @@ namespace SocialUniverse.Core
                 }
 
                 var planet = _resolver.Resolve<PlanetState>();
-                planet.TargetPlanetId = PlayerPrefs.GetString(SaveKeys.LastPlanetIdKey(_auth.PlayerId), Constants.PlanetIds.Earth);
+                planet.TargetPlanetId = await ResolveTargetPlanetIdAsync();
                 _fsm.TransitionTo(planet);
                 return;
             }
@@ -73,6 +76,27 @@ namespace SocialUniverse.Core
                 await _sceneLoader.LoadAsync(Constants.SceneNames.Auth);
             }
             _fsm.TransitionTo(_resolver.Resolve<AuthState>());
+        }
+
+        // Server record (cross-device source of truth) wins over the local
+        // PlayerPrefs resume hint, which wins over the hard Earth default —
+        // see PlanetResumeResolver. Non-fatal on failure, same hydration
+        // convention as PlanetSceneScope.HydrateServerStateAsync.
+        private async Task<string> ResolveTargetPlanetIdAsync()
+        {
+            string serverPlanetId = null;
+            try
+            {
+                var result = await _backend.CallAsync<CurrentPlanetResult>("GetCurrentPlanet");
+                serverPlanetId = result?.PlanetId;
+            }
+            catch (Exception ex)
+            {
+                SULog.Warn($"BootState: GetCurrentPlanet failed ({ex.Message}), using local state", SULog.Channel.Core);
+            }
+
+            string localPlanetId = PlayerPrefs.GetString(SaveKeys.LastPlanetIdKey(_auth.PlayerId), null);
+            return PlanetResumeResolver.Resolve(serverPlanetId, localPlanetId, Constants.PlanetIds.Earth);
         }
     }
 }

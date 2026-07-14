@@ -114,6 +114,9 @@ namespace SocialUniverse.Net
         [Button("Call LandTravel")]
         private void CallLandTravel() => _ = RunAsync<TravelTripDebugResult>("LandTravel");
 
+        [Button("Call GetCurrentPlanet")]
+        private void CallGetCurrentPlanet() => _ = RunAsync<CurrentPlanetResult>("GetCurrentPlanet");
+
         private async Task SignOutAsync()
         {
             if (!_auth.IsSignedIn)
