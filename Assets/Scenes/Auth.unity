@@ -6230,7 +6230,7 @@ MonoBehaviour:
   _guestButton: {fileID: 1166374667}
   _googleButton: {fileID: 0}
   _goToRegisterButton: {fileID: 1899551635}
-  _forgotPasswordButton: {fileID: 0}
+  _forgotPasswordButton: {fileID: 952243148}
   _regUsernameField: {fileID: 616578427}
   _regEmailField: {fileID: 232326913}
   _regPasswordField: {fileID: 27549743}
