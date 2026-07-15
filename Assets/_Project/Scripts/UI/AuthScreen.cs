@@ -200,8 +200,20 @@ namespace SocialUniverse.UI
 
             SetBusy(true);
             _regStatusText.text = "Creating account…";
-            try   { await _auth.RegisterAsync(username, password, email); }
+            // Suppress the SignedIn-driven transition until RegisterAsync fully
+            // completes: UGS raises SignedIn at account creation, BEFORE
+            // UpdatePlayerNameAsync has stored the chosen username — advancing
+            // there would bake a nameless "Player" into the session-locked
+            // Vivox login (SocialServicesInitializer connects on PlayerReadyEvent).
+            _suppressAutoTransition = true;
+            try
+            {
+                await _auth.RegisterAsync(username, password, email);
+                _suppressAutoTransition = false;
+                HandleSignedIn();
+            }
             catch (Exception ex) { _regStatusText.text = FriendlyError(ex); SetBusy(false); }
+            finally { _suppressAutoTransition = false; }
         }
 
         private async void OnSendResetCodeClicked()

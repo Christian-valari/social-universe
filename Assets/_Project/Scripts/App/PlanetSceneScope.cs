@@ -286,13 +286,13 @@ namespace SocialUniverse.App
                 SULog.Warn($"PlanetSceneBootstrapper: fuel hydration failed ({ex.Message}), using local state", SULog.Channel.Economy);
             }
 
-            // Hydrate display name — prefer DisplayName (set during registration), fall back to Username, then "Player".
+            // Hydrate display name — prefer DisplayName (set during registration), fall
+            // back to Username, then "Player". The resolver also strips the UGS "#1234"
+            // suffix so it never reaches the HUD.
             EventBus.Publish(new LoadingStatusEvent(0.55f));
             string authId = _auth.IsSignedIn
-                ? (!string.IsNullOrEmpty(_auth.DisplayName) ? _auth.DisplayName
-                   : !string.IsNullOrEmpty(_auth.Username)  ? _auth.Username
-                   : "Player")
-                : "Player";
+                ? ChatDisplayNameResolver.Resolve(_auth.DisplayName, _auth.Username)
+                : ChatDisplayNameResolver.Fallback;
             _playerState.SetDisplayName(authId);
 
             try

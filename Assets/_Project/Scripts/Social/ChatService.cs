@@ -77,7 +77,7 @@ namespace SocialUniverse.Social
         {
             if (IsConnected) return Task.CompletedTask;
             if (_connectTask != null && !_connectTask.IsCompleted) return _connectTask;
-            return ConnectAsync(_lastDisplayName ?? "Player", _selfAvatarId);
+            return ConnectAsync(_lastDisplayName ?? ChatDisplayNameResolver.Fallback, _selfAvatarId);
         }
 
         public async Task JoinChannelAsync(string channelName)

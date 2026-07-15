@@ -58,14 +58,15 @@ namespace SocialUniverse.App
 
         private async void OnPlayerReady(PlayerReadyEvent _)
         {
-            // Never fall back further than "Player" here — this name is baked into
-            // the Vivox login and shown to every other player as the chat sender
-            // name (ChatMessageItemView), so falling through to _auth.PlayerId
-            // would leak the player's raw UGS id into every chat message. Same
-            // placeholder PlayerState/PlanetSceneScope use when no name is set.
-            string displayName = _auth.DisplayName;
-            if (string.IsNullOrEmpty(displayName)) displayName = _auth.Username;
-            if (string.IsNullOrEmpty(displayName)) displayName = "Player";
+            // This name is baked into the Vivox login and shown to every other
+            // player as the chat sender name (ChatMessageItemView), so the
+            // resolver never falls back further than "Player" — falling through
+            // to _auth.PlayerId would leak the player's raw UGS id into every
+            // chat message. AuthService hydrates the UGS PlayerName cache before
+            // the PlayerReadyEvent that triggers this, so DisplayName is the
+            // real registered name here, not null (the pre-hydration bug that
+            // baked "Player" into every post-registration session).
+            string displayName = ChatDisplayNameResolver.Resolve(_auth.DisplayName, _auth.Username);
 
             // Kick off the real Vivox login immediately, synchronously, with the
             // best display name we already have - before awaiting anything below.

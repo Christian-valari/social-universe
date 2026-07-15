@@ -10,6 +10,7 @@ namespace SocialUniverse.Net
     {
         private readonly IBackendClient _backend;
         private string _email;
+        private Task _playerNameFetch;
 
         public bool   IsSignedIn         => AuthenticationService.Instance.IsSignedIn;
         public bool   SessionTokenExists => AuthenticationService.Instance.SessionTokenExists;
@@ -28,9 +29,44 @@ namespace SocialUniverse.Net
 
         public Task InitializeAsync()
         {
-            AuthenticationService.Instance.SignedIn     += () => OnSignedIn?.Invoke();
-            AuthenticationService.Instance.SignInFailed += e  => OnSignInFailed?.Invoke(e);
+            // Hydrate the player name BEFORE raising OnSignedIn: AuthScreen
+            // publishes PlayerReadyEvent from that callback, and
+            // SocialServicesInitializer immediately bakes DisplayName into the
+            // Vivox login, which is session-locked — a name that arrives late
+            // can never be applied.
+            AuthenticationService.Instance.SignedIn += async () =>
+            {
+                await HydratePlayerNameAsync();
+                OnSignedIn?.Invoke();
+            };
+            AuthenticationService.Instance.SignInFailed += e => OnSignInFailed?.Invoke(e);
             return Task.CompletedTask;
+        }
+
+        // UGS's PlayerName property is a lazy local cache: it returns null until
+        // GetPlayerNameAsync or UpdatePlayerNameAsync runs in the current
+        // session, so without this fetch every launch after the registration
+        // session sees a null name. autoGenerate: false keeps guests who never
+        // chose a name on the "Player" placeholder instead of a random
+        // UGS-generated one (the API returns null on 404 in that case).
+        // Non-fatal: on failure the existing fallback chain still applies.
+        private Task HydratePlayerNameAsync()
+        {
+            if (_playerNameFetch == null || _playerNameFetch.IsCompleted)
+                _playerNameFetch = FetchPlayerNameAsync();
+            return _playerNameFetch;
+        }
+
+        private async Task FetchPlayerNameAsync()
+        {
+            try
+            {
+                await AuthenticationService.Instance.GetPlayerNameAsync(autoGenerate: false);
+            }
+            catch (Exception ex)
+            {
+                SULog.Warn($"AuthService: player name fetch failed ({ex.Message})", SULog.Channel.Net);
+            }
         }
 
         // Resumes the player's previous session via UGS's cached session token, if one
@@ -45,6 +81,11 @@ namespace SocialUniverse.Net
             try
             {
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
+                // BootState publishes PlayerReadyEvent as soon as this returns
+                // (the Auth scene is skipped, so the SignedIn-callback hydration
+                // above may still be in flight) — await it here so the name is
+                // cached before the Vivox login reads it.
+                await HydratePlayerNameAsync();
                 SULog.Info($"Restored session (playerId: {PlayerId})", SULog.Channel.Net);
                 return true;
             }
@@ -74,6 +115,11 @@ namespace SocialUniverse.Net
         {
             string loginKey = EmailLoginKey.Derive(email);
             await AuthenticationService.Instance.SignUpWithUsernamePasswordAsync(loginKey, password);
+            // The SignedIn-callback hydration is in flight for this brand-new
+            // account and will 404 (no name yet), which clears the UGS name
+            // cache — await it before UpdatePlayerNameAsync so its stale
+            // response can't land afterwards and wipe the freshly-set name.
+            await HydratePlayerNameAsync();
             if (!string.IsNullOrEmpty(username))
                 await AuthenticationService.Instance.UpdatePlayerNameAsync(username);
 
