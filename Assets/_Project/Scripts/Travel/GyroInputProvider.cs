@@ -39,7 +39,7 @@ namespace SocialUniverse.Travel
                 var sensor = AttitudeSensor.current;
                 if (sensor != null)
                 {
-                    CurrentAttitude = sensor.attitude.ReadValue();
+                    CurrentAttitude = GyroAttitudeMath.DeviceToUnityCamera(sensor.attitude.ReadValue());
                     return;
                 }
                 IsGyroAvailable = false; // sensor disappeared mid-session — degrade gracefully
