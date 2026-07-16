@@ -34,14 +34,20 @@ const EMAIL_LOOKUP_KEY = "email_lookup"; // must match SaveEmail.js
 const RESET_KEY   = "auth_reset_otp";
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-async function findPlayerByEmail(saveApi, projectId, email) {
+async function findPlayerByEmail(saveApi, projectId, email, logger) {
+  // A query error (e.g. the index missing or not yet READY) is logged loudly
+  // instead of being folded into "no match" — see RequestPasswordReset.js.
   try {
     const res = await saveApi.queryDefaultPlayerData(projectId, {
       fields: [{ key: EMAIL_LOOKUP_KEY, op: "EQ", value: email }],
     });
-    const match = res.data.results?.[0];
+    const results = res.data.results ?? [];
+    logger.info(`findPlayerByEmail v2: query returned ${results.length} match(es)`);
+    const match = results[0];
     return match?.id ?? match?.playerId ?? null;
-  } catch (_) {
+  } catch (err) {
+    const detail = err.response?.data ? JSON.stringify(err.response.data) : err.message;
+    logger.error(`findPlayerByEmail v2: query FAILED (not a no-match): ${detail}`);
     return null;
   }
 }
@@ -94,7 +100,7 @@ module.exports = async ({ params, context, logger, secretManager }) => {
   const { projectId } = context;
   const saveApi = new DataApi(context);
 
-  const targetPlayerId = await findPlayerByEmail(saveApi, projectId, email);
+  const targetPlayerId = await findPlayerByEmail(saveApi, projectId, email, logger);
   if (!targetPlayerId) throw new Error("No account found for this email address");
 
   // Load and validate OTP record

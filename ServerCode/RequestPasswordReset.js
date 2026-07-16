@@ -42,17 +42,24 @@ function generateOtp() {
   return String(Math.floor(100000 + Math.random() * 900000));
 }
 
-async function findPlayerByEmail(saveApi, projectId, email) {
+async function findPlayerByEmail(saveApi, projectId, email, logger) {
   // Looks up the player whose email_lookup field (written by SaveEmail.js)
   // matches, via Cloud Save's cross-player Query API. Requires "email_lookup"
   // to be indexed in the UGS dashboard — see SETUP REQUIRED above.
+  // A query error (e.g. the index missing or not yet READY) is logged loudly
+  // instead of being folded into "no match": the two failure modes need
+  // different fixes and were previously indistinguishable in the logs.
   try {
     const res = await saveApi.queryDefaultPlayerData(projectId, {
       fields: [{ key: EMAIL_LOOKUP_KEY, op: "EQ", value: email }],
     });
-    const match = res.data.results?.[0];
+    const results = res.data.results ?? [];
+    logger.info(`findPlayerByEmail v2: query returned ${results.length} match(es)`);
+    const match = results[0];
     return match?.id ?? match?.playerId ?? null;
-  } catch (_) {
+  } catch (err) {
+    const detail = err.response?.data ? JSON.stringify(err.response.data) : err.message;
+    logger.error(`findPlayerByEmail v2: query FAILED (not a no-match): ${detail}`);
     return null;
   }
 }
@@ -131,7 +138,7 @@ module.exports = async ({ params, context, logger, secretManager }) => {
   const { projectId } = context;
   const saveApi = new DataApi(context);
 
-  const targetPlayerId = await findPlayerByEmail(saveApi, projectId, email);
+  const targetPlayerId = await findPlayerByEmail(saveApi, projectId, email, logger);
   if (!targetPlayerId) {
     logger.info("RequestPasswordReset: no player found for submitted email");
     return { success: true };
