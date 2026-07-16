@@ -84,7 +84,11 @@ async function sendVerificationEmail(email, otp, apiKey, fromEmail) {
       }
     });
   } catch (err) {
-    throw new Error(`Resend error: ${err.response?.status ?? err.message}`);
+    // Include Resend's response body — it names the exact problem (invalid
+    // from address, unverified domain, restricted recipient, …); the bare
+    // status code alone is undiagnosable.
+    const detail = err.response?.data ? JSON.stringify(err.response.data) : err.message;
+    throw new Error(`Resend error: ${err.response?.status ?? ""} ${detail}`);
   }
 }
 
