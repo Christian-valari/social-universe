@@ -43,6 +43,18 @@ namespace SocialUniverse.Core
             if (!_auth.IsSignedIn)
                 await _auth.TryAutoSignInAsync();
 
+            // A leftover anonymous session (app killed mid-registration or
+            // mid-password-reset before the quit-time sign-out ran) must never
+            // walk into the game: guest play was removed, and anonymous sessions
+            // exist only as a Cloud Code transport inside the Auth scene flows.
+            // Signing out (credentials cleared) drops us into the normal
+            // Auth-scene path below.
+            if (_auth.IsSignedIn && _auth.IsAnonymous)
+            {
+                SULog.Info("Boot: restored session is anonymous — signing out");
+                await _auth.SignOutAsync();
+            }
+
             if (_auth.IsSignedIn)
             {
                 SULog.Info("Boot: session restored, skipping Auth scene");
