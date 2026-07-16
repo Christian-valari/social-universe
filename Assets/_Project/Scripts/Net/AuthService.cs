@@ -10,6 +10,7 @@ namespace SocialUniverse.Net
     {
         private readonly IBackendClient _backend;
         private string _email;
+        private bool _isAnonymous;
         private Task _playerNameFetch;
 
         public bool   IsSignedIn         => AuthenticationService.Instance.IsSignedIn;
@@ -18,6 +19,7 @@ namespace SocialUniverse.Net
         public string Username           => AuthenticationService.Instance.PlayerName;
         public string DisplayName        => AuthenticationService.Instance.PlayerName;
         public string Email              => _email;
+        public bool   IsAnonymous        => _isAnonymous;
 
         public event Action            OnSignedIn;
         public event Action<Exception> OnSignInFailed;
@@ -86,6 +88,21 @@ namespace SocialUniverse.Net
                 // above may still be in flight) — await it here so the name is
                 // cached before the Vivox login reads it.
                 await HydratePlayerNameAsync();
+                // Restored sessions don't reveal how the account was created —
+                // ask UGS for its identities. No external identities = anonymous,
+                // and BootState must not let it into the game. On lookup failure
+                // assume non-anonymous: wrongly gating a real account out would
+                // force a pointless re-login on every network blip.
+                try
+                {
+                    var info = await AuthenticationService.Instance.GetPlayerInfoAsync();
+                    _isAnonymous = (info?.Identities?.Count ?? 0) == 0;
+                }
+                catch (Exception ex)
+                {
+                    _isAnonymous = false;
+                    SULog.Warn($"AuthService: identity lookup failed ({ex.Message})", SULog.Channel.Net);
+                }
                 SULog.Info($"Restored session (playerId: {PlayerId})", SULog.Channel.Net);
                 return true;
             }
@@ -100,6 +117,7 @@ namespace SocialUniverse.Net
         {
             if (IsSignedIn) return;
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            _isAnonymous = true;
             SULog.Info($"Signed in anonymously (playerId: {PlayerId})", SULog.Channel.Net);
         }
 
@@ -107,6 +125,7 @@ namespace SocialUniverse.Net
         {
             string loginKey = EmailLoginKey.Derive(email);
             await AuthenticationService.Instance.SignInWithUsernamePasswordAsync(loginKey, password);
+            _isAnonymous = false;
             _email = email;
 
             // Re-write email_lookup on every email login: Cloud Save indexes only
@@ -130,7 +149,15 @@ namespace SocialUniverse.Net
         public async Task RegisterAsync(string username, string password, string email)
         {
             string loginKey = EmailLoginKey.Derive(email);
-            await AuthenticationService.Instance.SignUpWithUsernamePasswordAsync(loginKey, password);
+            // Registration now starts from the anonymous pre-check session
+            // (see AuthScreen.OnRegisterClicked): AddUsernamePasswordAsync
+            // upgrades that account in place instead of creating a second one.
+            // The signed-out path is kept for any caller without a session.
+            if (IsSignedIn && _isAnonymous)
+                await AuthenticationService.Instance.AddUsernamePasswordAsync(loginKey, password);
+            else
+                await AuthenticationService.Instance.SignUpWithUsernamePasswordAsync(loginKey, password);
+            _isAnonymous = false;
             // The SignedIn-callback hydration is in flight for this brand-new
             // account and will 404 (no name yet), which clears the UGS name
             // cache — await it before UpdatePlayerNameAsync so its stale
@@ -171,12 +198,14 @@ namespace SocialUniverse.Net
         public async Task SignInWithAppleAsync(string idToken)
         {
             await AuthenticationService.Instance.SignInWithAppleAsync(idToken);
+            _isAnonymous = false;
             SULog.Info($"Signed in with Apple (playerId: {PlayerId})", SULog.Channel.Net);
         }
 
         public async Task SignInWithGoogleAsync(string idToken)
         {
             await AuthenticationService.Instance.SignInWithGoogleAsync(idToken);
+            _isAnonymous = false;
             SULog.Info($"Signed in with Google (playerId: {PlayerId})", SULog.Channel.Net);
         }
 
@@ -186,8 +215,26 @@ namespace SocialUniverse.Net
             // otherwise TryAutoSignInAsync would silently restore this session on next launch.
             AuthenticationService.Instance.SignOut(clearCredentials: true);
             _email = null;
+            _isAnonymous = false;
             SULog.Info("Signed out", SULog.Channel.Net);
             return Task.CompletedTask;
+        }
+
+        public async Task<bool> IsEmailAvailableAsync(string email)
+        {
+            var result = await _backend.CallAsync<EmailAvailableResult>("CheckEmailAvailable",
+                new Dictionary<string, object> { { "email", email } });
+            // Fail open on a null payload: sign-up's ENTITY_EXISTS is the backstop.
+            return result?.Available ?? true;
+        }
+
+        public async Task DeleteAccountAsync()
+        {
+            await AuthenticationService.Instance.DeleteAccountAsync();
+            AuthenticationService.Instance.SignOut(clearCredentials: true);
+            _email       = null;
+            _isAnonymous = false;
+            SULog.Info("Account deleted and signed out", SULog.Channel.Net);
         }
 
         public async Task RequestPasswordResetAsync(string email)

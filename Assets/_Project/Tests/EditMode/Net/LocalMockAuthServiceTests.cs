@@ -14,6 +14,12 @@ namespace SocialUniverse.Tests
         [SetUp]
         public void SetUp() => _auth = new LocalMockAuthService();
 
+        [TearDown]
+        public void TearDown()
+        {
+            if (_auth.IsSignedIn) _auth.SignOutAsync();
+        }
+
         [Test]
         public async Task Confirming_with_correct_code_after_request_succeeds()
         {
@@ -47,6 +53,50 @@ namespace SocialUniverse.Tests
 
             Assert.ThrowsAsync<System.InvalidOperationException>(async () =>
                 await _auth.ConfirmEmailVerificationCodeAsync("123456"));
+        }
+
+        [Test]
+        public async Task Anonymous_sign_in_is_reported_anonymous()
+        {
+            await _auth.SignInAnonymouslyAsync();
+            Assert.IsTrue(_auth.IsAnonymous);
+        }
+
+        [Test]
+        public async Task Email_availability_reflects_registration()
+        {
+            Assert.IsTrue(await _auth.IsEmailAvailableAsync("new@example.com"));
+            await _auth.RegisterAsync("Player1", "Passw0rd!", "new@example.com");
+            Assert.IsFalse(await _auth.IsEmailAvailableAsync("New@Example.com")); // case-insensitive
+        }
+
+        [Test]
+        public async Task Registering_over_an_anonymous_session_upgrades_it()
+        {
+            await _auth.SignInAnonymouslyAsync();
+            string anonId = _auth.PlayerId;
+            await _auth.RegisterAsync("Player1", "Passw0rd!", "up@example.com");
+            Assert.AreEqual(anonId, _auth.PlayerId);   // same account, upgraded
+            Assert.IsFalse(_auth.IsAnonymous);
+        }
+
+        [Test]
+        public async Task Deleting_account_frees_the_email_and_signs_out()
+        {
+            await _auth.RegisterAsync("Player1", "Passw0rd!", "del@example.com");
+            await _auth.DeleteAccountAsync();
+            Assert.IsFalse(_auth.IsSignedIn);
+            Assert.IsTrue(await _auth.IsEmailAvailableAsync("del@example.com"));
+        }
+
+        [Test]
+        public async Task Restored_session_remembers_it_was_anonymous()
+        {
+            await _auth.SignInAnonymouslyAsync();
+            var restored = new LocalMockAuthService();
+            await restored.TryAutoSignInAsync();
+            Assert.IsTrue(restored.IsAnonymous);
+            await restored.SignOutAsync();
         }
     }
 }

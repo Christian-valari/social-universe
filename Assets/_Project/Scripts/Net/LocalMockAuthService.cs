@@ -26,12 +26,14 @@ namespace SocialUniverse.Net
         private static string NormalizeEmail(string email) => email.Trim().ToLowerInvariant();
 
         private bool   _isSignedIn;
+        private bool   _isAnonymous;
         private string _playerId     = "";
         private string _username     = "";
         private string _displayName  = "";
         private string _email        = "";
 
         public bool   IsSignedIn         => _isSignedIn;
+        public bool   IsAnonymous        => _isAnonymous;
         public bool   SessionTokenExists => PlayerPrefs.HasKey(SaveKeys.AuthSession);
         public string PlayerId           => _playerId;
         public string Username           => string.IsNullOrEmpty(_username) ? null : _username;
@@ -54,6 +56,7 @@ namespace SocialUniverse.Net
             _username    = PlayerPrefs.GetString(SaveKeys.AuthSession + "_name", "");
             _displayName = PlayerPrefs.GetString(SaveKeys.AuthSession + "_display_name", "");
             _email       = PlayerPrefs.GetString(SaveKeys.AuthSession + "_email", "");
+            _isAnonymous = PlayerPrefs.GetInt(SaveKeys.AuthSession + "_anon", 0) == 1;
             _isSignedIn  = true;
             SULog.Info($"[MOCK] Restored session ({_playerId})", SULog.Channel.Net);
             OnSignedIn?.Invoke();
@@ -64,8 +67,9 @@ namespace SocialUniverse.Net
         {
             if (_isSignedIn) { OnSignedIn?.Invoke(); return; }
             await Task.Delay(900);
-            _playerId   = "guest_" + UnityEngine.Random.Range(10000, 99999);
-            _isSignedIn = true;
+            _playerId    = "guest_" + UnityEngine.Random.Range(10000, 99999);
+            _isSignedIn  = true;
+            _isAnonymous = true;
             PersistSession();
             SULog.Info($"[MOCK] Signed in as guest ({_playerId})", SULog.Channel.Net);
             OnSignedIn?.Invoke();
@@ -77,10 +81,11 @@ namespace SocialUniverse.Net
             string key = NormalizeEmail(email);
             if (!_users.TryGetValue(key, out var record) || record.Password != password)
                 throw new InvalidOperationException("Incorrect email or password");
-            _playerId   = "mock_" + key;
-            _username   = record.Username;
-            _email      = email;
-            _isSignedIn = true;
+            _playerId    = "mock_" + key;
+            _username    = record.Username;
+            _email       = email;
+            _isSignedIn  = true;
+            _isAnonymous = false;
             PersistSession();
             SULog.Info($"[MOCK] Signed in as {record.Username}", SULog.Channel.Net);
             OnSignedIn?.Invoke();
@@ -92,10 +97,12 @@ namespace SocialUniverse.Net
             string key = NormalizeEmail(email);
             if (_users.ContainsKey(key))
                 throw new InvalidOperationException("An account with that email already exists");
-            _users[key]  = new UserRecord(password, username);
-            _playerId    = "mock_" + key;
+            _users[key] = new UserRecord(password, username);
+            if (!_isSignedIn)
+                _playerId = "mock_" + key;   // fresh account; anonymous upgrade keeps its id
             _username    = username;
             _email       = email;
+            _isAnonymous = false;
             _isSignedIn  = true;
             PersistSession();
             SULog.Info($"[MOCK] Registered {username} (email: {_email})", SULog.Channel.Net);
@@ -110,17 +117,47 @@ namespace SocialUniverse.Net
             return Task.CompletedTask;
         }
 
-        public Task SignInWithAppleAsync(string idToken)  => SignInAnonymouslyAsync();
-        public Task SignInWithGoogleAsync(string idToken) => SignInAnonymouslyAsync();
+        public Task SignInWithAppleAsync(string idToken)  => MockSsoSignInAsync("apple");
+        public Task SignInWithGoogleAsync(string idToken) => MockSsoSignInAsync("google");
+
+        private async Task MockSsoSignInAsync(string provider)
+        {
+            if (_isSignedIn) { OnSignedIn?.Invoke(); return; }
+            await Task.Delay(900);
+            _playerId    = provider + "_" + UnityEngine.Random.Range(10000, 99999);
+            _isAnonymous = false;
+            _isSignedIn  = true;
+            PersistSession();
+            SULog.Info($"[MOCK] Signed in with {provider} ({_playerId})", SULog.Channel.Net);
+            OnSignedIn?.Invoke();
+        }
 
         public Task SignOutAsync()
         {
-            _isSignedIn = false;
-            _playerId   = "";
-            _email      = "";
+            _isSignedIn  = false;
+            _isAnonymous = false;
+            _playerId    = "";
+            _email       = "";
             PlayerPrefs.DeleteKey(SaveKeys.AuthSession);
+            PlayerPrefs.DeleteKey(SaveKeys.AuthSession + "_anon");
             PlayerPrefs.Save();
             return Task.CompletedTask;
+        }
+
+        public async Task<bool> IsEmailAvailableAsync(string email)
+        {
+            await Task.Delay(300);
+            return !_users.ContainsKey(NormalizeEmail(email));
+        }
+
+        public Task DeleteAccountAsync()
+        {
+            if (!_isSignedIn) throw new InvalidOperationException("Not signed in");
+            if (!string.IsNullOrEmpty(_email))
+                _users.Remove(NormalizeEmail(_email));
+            _pendingEmailVerificationCode = false;
+            SULog.Info($"[MOCK] Account deleted ({_playerId})", SULog.Channel.Net);
+            return SignOutAsync();
         }
 
         // Always "succeeds" — never confirms whether the email is registered (prevents enumeration).
@@ -173,6 +210,7 @@ namespace SocialUniverse.Net
             PlayerPrefs.SetString(SaveKeys.AuthSession + "_name", _username);
             PlayerPrefs.SetString(SaveKeys.AuthSession + "_display_name", _displayName);
             PlayerPrefs.SetString(SaveKeys.AuthSession + "_email", _email);
+            PlayerPrefs.SetInt(SaveKeys.AuthSession + "_anon", _isAnonymous ? 1 : 0);
             PlayerPrefs.Save();
         }
     }

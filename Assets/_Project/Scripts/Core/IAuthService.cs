@@ -28,6 +28,21 @@ namespace SocialUniverse.Core
         Task SignInWithGoogleAsync(string idToken);
         Task SignOutAsync();
 
+        // True while the current session has no external identities (UGS anonymous
+        // account). Anonymous sessions exist only as a Cloud Code transport during
+        // registration / forgot-password and must never enter the game.
+        bool IsAnonymous { get; }
+
+        // Registration pre-check against the server-side email_lookup index.
+        // Requires an authenticated (anonymous) session. True = free to register.
+        // Accounts predating the email_lookup index are invisible to this check —
+        // sign-up's ENTITY_EXISTS error remains the backstop.
+        Task<bool> IsEmailAvailableAsync(string email);
+
+        // Deletes the signed-in account (rollback for a cancelled registration)
+        // and signs out, clearing cached credentials.
+        Task DeleteAccountAsync();
+
         // Updates the display name stored in the auth layer (UGS PlayerName / local prefs).
         // The ProfileService also persists this to the game profile for cross-player visibility.
         Task UpdateDisplayNameAsync(string displayName);
