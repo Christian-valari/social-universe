@@ -1674,11 +1674,15 @@ module.exports = async ({ params, context, logger }) => {
 
 ---
 
-## CheckEmailAvailable
+### CheckEmailAvailable
 
 Registration pre-check: returns whether an email is free to register by querying the cross-player `email_lookup` index (written by `SaveEmail.js`) through the elevated Cloud Code DataApi. Same setup prerequisites as `RequestPasswordReset.js`: the `email_lookup` Cloud Save index (Player Data, Default access class) must exist, and values saved before the index was created are never matched (no backfill). Unlike `RequestPasswordReset`, this endpoint intentionally reveals whether an email is registered — that is its purpose (pre-registration duplicate check), and the same fact already leaks through sign-up's `ENTITY_EXISTS` response. Fails OPEN (`{ available: true }`) on query errors: sign-up's `ENTITY_EXISTS` remains the duplicate backstop, and a broken index shouldn't block all registrations.
 
-**Parameters:** email (string)
+**Parameters:**
+
+| Name | Type | Required | Description |
+|---|---|---|---|
+| `email` | `string` | Yes | The email address to check for availability during registration. |
 
 ```js
 // CheckEmailAvailable — registration pre-check: returns whether an email is
