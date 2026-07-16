@@ -3,7 +3,10 @@
 // identify the account from an email address alone.
 //
 // SETUP REQUIRED: in the UGS dashboard (Cloud Save → Indexes), add an index
-// on the "email_lookup" key (Player Data, Default access class). Without it,
+// on the "email_lookup" key (Player Data, Default access class). Values saved
+// BEFORE the index existed are never indexed (Cloud Save does not backfill) —
+// AuthService re-runs this function on every email login to re-save the key
+// for such accounts. Without the index,
 // RequestPasswordReset/ConfirmPasswordReset's cross-player query fails to
 // find any player, regardless of whether the email is registered.
 //

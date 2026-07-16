@@ -8,6 +8,9 @@
 //   2. In the UGS dashboard (Cloud Save → Indexes), add an index on the
 //      "email_lookup" key (Player Data, Default access class) — see
 //      SaveEmail.js. findPlayerByEmail's query fails to match anyone without it.
+//      NOTE: values saved before the index existed are never indexed (no
+//      backfill) — such accounts stay unfindable until SaveEmail re-saves the
+//      key, which AuthService now does on every email login.
 //   3. Deploy this function via the UGS CLI.
 //
 // Throws on invalid/expired OTP; always clears the OTP record on success.

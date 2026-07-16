@@ -108,6 +108,22 @@ namespace SocialUniverse.Net
             string loginKey = EmailLoginKey.Derive(email);
             await AuthenticationService.Instance.SignInWithUsernamePasswordAsync(loginKey, password);
             _email = email;
+
+            // Re-write email_lookup on every email login: Cloud Save indexes only
+            // cover values saved AFTER the index was created (no backfill), so
+            // accounts registered before the email_lookup index went live are
+            // invisible to forgot-password until this key is re-saved. Idempotent
+            // and non-fatal, mirroring the RegisterAsync SaveEmail call.
+            try
+            {
+                await _backend.CallAsync("SaveEmail",
+                    new Dictionary<string, object> { { "email", email } });
+            }
+            catch (Exception ex)
+            {
+                SULog.Warn($"SaveEmail backfill failed after login (playerId: {PlayerId}): {ex.Message}", SULog.Channel.Net);
+            }
+
             SULog.Info($"Signed in with email (playerId: {PlayerId})", SULog.Channel.Net);
         }
 
