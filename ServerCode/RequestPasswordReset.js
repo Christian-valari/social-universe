@@ -51,7 +51,9 @@ async function findPlayerByEmail(saveApi, projectId, email, logger) {
   // different fixes and were previously indistinguishable in the logs.
   try {
     const res = await saveApi.queryDefaultPlayerData(projectId, {
-      fields: [{ key: EMAIL_LOOKUP_KEY, op: "EQ", value: email }],
+      // asc is mandatory on every query field (400 "asc must be specified"
+      // without it), even though sort order is irrelevant for an EQ match.
+      fields: [{ key: EMAIL_LOOKUP_KEY, op: "EQ", value: email, asc: true }],
     });
     const results = res.data.results ?? [];
     logger.info(`findPlayerByEmail v2: query returned ${results.length} match(es)`);
