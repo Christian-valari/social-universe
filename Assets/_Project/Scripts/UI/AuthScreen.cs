@@ -256,7 +256,6 @@ namespace SocialUniverse.UI
                 _pendingVerification = true;
 
                 ShowPanel(AuthPanel.VerifyEmail);
-                SetBusy(false);
                 await SendVerificationCodeAsync();
             }
             catch (Exception ex)
@@ -269,7 +268,7 @@ namespace SocialUniverse.UI
         // -------------------------------------------------------------------------
         private async Task SendVerificationCodeAsync()
         {
-            if (_resendCodeButton != null) _resendCodeButton.interactable = false;
+            SetBusy(true);
             _verifyStatusText.text = "Sending verification code…";
             try
             {
@@ -282,7 +281,7 @@ namespace SocialUniverse.UI
             }
             finally
             {
-                if (_resendCodeButton != null) _resendCodeButton.interactable = true;
+                SetBusy(false);
             }
         }
 
@@ -347,7 +346,7 @@ namespace SocialUniverse.UI
                 return;
             }
 
-            _sendResetCodeButton.interactable = false;
+            SetBusy(true);
             _forgotEmailStatusText.text = "Sending reset code…";
             try
             {
@@ -363,7 +362,7 @@ namespace SocialUniverse.UI
             }
             finally
             {
-                _sendResetCodeButton.interactable = true;
+                SetBusy(false);
             }
         }
 
@@ -389,7 +388,7 @@ namespace SocialUniverse.UI
                 return;
             }
 
-            _resetPasswordButton.interactable = false;
+            SetBusy(true);
             _forgotResetStatusText.text = "Resetting password…";
             try
             {
@@ -408,7 +407,7 @@ namespace SocialUniverse.UI
             }
             finally
             {
-                _resetPasswordButton.interactable = true;
+                SetBusy(false);
             }
         }
 
@@ -416,11 +415,19 @@ namespace SocialUniverse.UI
         private void SetBusy(bool busy)
         {
             _busy = busy;
-            _loginButton   .interactable = !busy;
-            _registerButton.interactable = !busy;
-            if (_googleButton       != null) _googleButton      .interactable = !busy;
-            if (_verifyButton       != null) _verifyButton      .interactable = !busy;
-            if (_verifyCancelButton != null) _verifyCancelButton.interactable = !busy;
+            _loginButton       .interactable = !busy;
+            _registerButton    .interactable = !busy;
+            if (_googleButton            != null) _googleButton           .interactable = !busy;
+            if (_goToRegisterButton      != null) _goToRegisterButton     .interactable = !busy;
+            if (_goToLoginButton         != null) _goToLoginButton        .interactable = !busy;
+            if (_forgotPasswordButton    != null) _forgotPasswordButton   .interactable = !busy;
+            if (_forgotBackToLoginButton != null) _forgotBackToLoginButton.interactable = !busy;
+            if (_forgotResetBackButton   != null) _forgotResetBackButton  .interactable = !busy;
+            if (_sendResetCodeButton     != null) _sendResetCodeButton    .interactable = !busy;
+            if (_resetPasswordButton     != null) _resetPasswordButton    .interactable = !busy;
+            if (_verifyButton            != null) _verifyButton           .interactable = !busy;
+            if (_resendCodeButton        != null) _resendCodeButton       .interactable = !busy;
+            if (_verifyCancelButton      != null) _verifyCancelButton     .interactable = !busy;
         }
 
         private void SetActiveStatus(string message)
