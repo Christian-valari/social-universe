@@ -11520,7 +11520,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: Reset code
 --- !u!222 &1974815977
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -12768,7 +12768,7 @@ GameObject:
   - component: {fileID: 700000012}
   - component: {fileID: 700000011}
   m_Layer: 0
-  m_Name: ForgotBackToLoginButton
+  m_Name: ForgotResetBackButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13025,7 +13025,7 @@ GameObject:
   - component: {fileID: 700000020}
   - component: {fileID: 700000019}
   m_Layer: 0
-  m_Name: ForgotStatusText
+  m_Name: ForgotResetStatusText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13265,7 +13265,7 @@ GameObject:
   - component: {fileID: 700000029}
   - component: {fileID: 700000032}
   m_Layer: 0
-  m_Name: RegisterSubtitle
+  m_Name: VerifyTitle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13344,7 +13344,7 @@ GameObject:
   - component: {fileID: 700000033}
   - component: {fileID: 700000036}
   m_Layer: 0
-  m_Name: RegisterSubtitle
+  m_Name: VerifyInstruction
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14433,7 +14433,7 @@ GameObject:
   - component: {fileID: 700000080}
   - component: {fileID: 700000079}
   m_Layer: 0
-  m_Name: ForgotBackToLoginButton
+  m_Name: VerifyButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14691,7 +14691,7 @@ GameObject:
   - component: {fileID: 700000089}
   - component: {fileID: 700000088}
   m_Layer: 0
-  m_Name: ForgotBackToLoginButton
+  m_Name: ResendCodeButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14949,7 +14949,7 @@ GameObject:
   - component: {fileID: 700000098}
   - component: {fileID: 700000097}
   m_Layer: 0
-  m_Name: ForgotBackToLoginButton
+  m_Name: VerifyCancelButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15206,7 +15206,7 @@ GameObject:
   - component: {fileID: 700000106}
   - component: {fileID: 700000105}
   m_Layer: 0
-  m_Name: ForgotStatusText
+  m_Name: VerifyStatusText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
