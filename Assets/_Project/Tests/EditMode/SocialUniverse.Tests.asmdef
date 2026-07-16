@@ -13,7 +13,8 @@
         "SocialUniverse.Social",
         "SocialUniverse.World",
         "SocialUniverse.Travel",
-        "SocialUniverse.Safety"
+        "SocialUniverse.Safety",
+        "SocialUniverse.UI"
     ],
     "includePlatforms": [
         "Editor"
