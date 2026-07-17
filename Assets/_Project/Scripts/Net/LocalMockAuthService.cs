@@ -77,6 +77,11 @@ namespace SocialUniverse.Net
 
         public async Task SignInWithEmailAsync(string email, string password)
         {
+            // Mirror UGS: SignInWithUsernamePasswordAsync throws over any live
+            // session (anonymous or not). Callers must SignOutAsync first — this
+            // is exactly the bricked-login path Fix 1 guards against in AuthScreen.
+            if (_isSignedIn)
+                throw new InvalidOperationException("A player is already signed in — sign out before signing in again.");
             await Task.Delay(800);
             string key = NormalizeEmail(email);
             if (!_users.TryGetValue(key, out var record) || record.Password != password)
@@ -122,7 +127,10 @@ namespace SocialUniverse.Net
 
         private async Task MockSsoSignInAsync(string provider)
         {
-            if (_isSignedIn) { OnSignedIn?.Invoke(); return; }
+            // Mirror UGS: SSO sign-in throws over any live session (anonymous or
+            // not) — same "already signed in" contract as SignInWithEmailAsync.
+            if (_isSignedIn)
+                throw new InvalidOperationException("A player is already signed in — sign out before signing in again.");
             await Task.Delay(900);
             _playerId    = provider + "_" + UnityEngine.Random.Range(10000, 99999);
             _isAnonymous = false;

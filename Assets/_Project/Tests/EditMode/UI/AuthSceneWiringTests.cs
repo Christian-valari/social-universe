@@ -13,6 +13,23 @@ namespace SocialUniverse.Tests
     {
         private const string ScenePath = "Assets/Scenes/Auth.unity";
 
+        private SceneSetup[] _originalSetup;
+
+        [SetUp]
+        public void SetUp() => _originalSetup = EditorSceneManager.GetSceneManagerSetup();
+
+        [TearDown]
+        public void TearDown()
+        {
+            // The test opens Auth.unity in Single mode, which would otherwise
+            // leave the developer's editor sitting on it. Restore whatever was
+            // open before. In batchmode there is no open scene to capture (empty
+            // setup) — skip the restore then, since RestoreSceneManagerSetup
+            // requires at least one scene.
+            if (_originalSetup != null && _originalSetup.Length > 0)
+                EditorSceneManager.RestoreSceneManagerSetup(_originalSetup);
+        }
+
         [Test]
         public void Every_AuthScreen_serialized_reference_is_wired()
         {

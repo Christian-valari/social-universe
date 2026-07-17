@@ -187,7 +187,15 @@ namespace SocialUniverse.UI
 
             SetBusy(true);
             _loginStatusText.text = "Signing in…";
-            try   { await _auth.SignInWithEmailAsync(email, password); }
+            try
+            {
+                // A registration pre-check or forgot-password flow may have left
+                // a throwaway anonymous transport session alive; UGS's
+                // SignInWithUsernamePasswordAsync throws "already signed in" over
+                // it. Drop it before signing in for real.
+                if (_auth.IsSignedIn && _auth.IsAnonymous) await _auth.SignOutAsync();
+                await _auth.SignInWithEmailAsync(email, password);
+            }
             catch (Exception ex) { _loginStatusText.text = FriendlyError(ex); SetBusy(false); }
         }
 
@@ -197,6 +205,10 @@ namespace SocialUniverse.UI
             _loginStatusText.text = "Signing in with Google…";
             try
             {
+                // Same anonymous-transport cleanup as OnLoginClicked: UGS rejects
+                // an SSO sign-in over a live anonymous session with "already
+                // signed in".
+                if (_auth.IsSignedIn && _auth.IsAnonymous) await _auth.SignOutAsync();
                 string idToken;
                 try   { idToken = await GoogleAuthHandler.GetIdTokenAsync(); }
                 catch (NotSupportedException) { idToken = "mock_google_token"; }
@@ -260,8 +272,25 @@ namespace SocialUniverse.UI
             }
             catch (Exception ex)
             {
-                _regStatusText.text = FriendlyError(ex);
-                SetBusy(false);
+                // If the UGS account was already created (AddUsernamePassword/
+                // SignUpWithUsernamePassword succeeded) but a later awaited step
+                // threw, the session is live and non-anonymous. Staying on the
+                // Register panel would strand it: a retry hits "already signed
+                // in" and so does Login. Advance to the Verify panel instead —
+                // Resend covers a code that was never sent, Cancel deletes the
+                // account.
+                if (_auth.IsSignedIn && !_auth.IsAnonymous)
+                {
+                    _pendingVerification = true;
+                    ShowPanel(AuthPanel.VerifyEmail);
+                    _verifyStatusText.text = FriendlyError(ex);
+                    SetBusy(false);
+                }
+                else
+                {
+                    _regStatusText.text = FriendlyError(ex);
+                    SetBusy(false);
+                }
             }
         }
 

@@ -230,6 +230,22 @@ namespace SocialUniverse.Net
 
         public async Task DeleteAccountAsync()
         {
+            // UGS DeleteAccountAsync removes only the Authentication account, not
+            // Cloud Save data — the orphaned email_lookup row would keep matching
+            // CheckEmailAvailable/RequestPasswordReset, marking the email as taken
+            // forever (the ENTITY_EXISTS backstop can't fire once the login-key
+            // identity is gone). Clear the caller's own email keys first, while
+            // the session token is still valid. Best-effort: a rare cleanup
+            // failure is an accepted residual risk; blocking a cancel is worse.
+            try
+            {
+                await _backend.CallAsync("ClearPlayerEmail");
+            }
+            catch (Exception ex)
+            {
+                SULog.Warn($"ClearPlayerEmail failed before account deletion (playerId: {PlayerId}): {ex.Message}", SULog.Channel.Net);
+            }
+
             await AuthenticationService.Instance.DeleteAccountAsync();
             AuthenticationService.Instance.SignOut(clearCredentials: true);
             _email       = null;
