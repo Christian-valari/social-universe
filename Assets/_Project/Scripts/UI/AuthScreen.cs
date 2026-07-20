@@ -10,13 +10,14 @@ namespace SocialUniverse.UI
 {
     public class AuthScreen : MonoBehaviour
     {
-        private enum AuthPanel { Login, Register, ForgotPasswordEmail, ForgotPasswordReset, VerifyEmail }
+        private enum AuthPanel { Login, Register, ForgotPasswordEmail, ForgotPasswordReset, ResetSuccess, VerifyEmail }
 
         // --- Panels ---
         [SerializeField] private GameObject _loginPanel;
         [SerializeField] private GameObject _registerPanel;
         [SerializeField] private GameObject _forgotEmailPanel;
         [SerializeField] private GameObject _forgotResetPanel;
+        [SerializeField] private GameObject _resetSuccessPanel;
         [SerializeField] private GameObject _verifyEmailPanel;
 
         // --- Login panel ---
@@ -51,6 +52,9 @@ namespace SocialUniverse.UI
         [SerializeField] private Button     _resetPasswordButton;
         [SerializeField] private Button     _forgotResetBackButton;
 
+        // --- Reset success panel ---
+        [SerializeField] private Button     _resetSuccessBackButton;
+
         // --- Verify email panel ---
         [SerializeField] private InputField _verifyCodeField;
         [SerializeField] private Text       _verifyStatusText;
@@ -82,6 +86,7 @@ namespace SocialUniverse.UI
             if (_forgotBackToLoginButton != null) _forgotBackToLoginButton.onClick.AddListener(() => ShowPanel(AuthPanel.Login));
             if (_forgotResetBackButton   != null) _forgotResetBackButton  .onClick.AddListener(() => ShowPanel(AuthPanel.ForgotPasswordEmail));
             if (_sendResetCodeButton     != null) _sendResetCodeButton    .onClick.AddListener(OnSendResetCodeClicked);
+            if (_resetSuccessBackButton  != null) _resetSuccessBackButton .onClick.AddListener(() => ShowPanel(AuthPanel.Login));
             if (_resetPasswordButton     != null) _resetPasswordButton    .onClick.AddListener(OnResetPasswordClicked);
             if (_verifyButton            != null) _verifyButton           .onClick.AddListener(OnVerifyClicked);
             if (_resendCodeButton        != null) _resendCodeButton       .onClick.AddListener(OnResendCodeClicked);
@@ -118,6 +123,7 @@ namespace SocialUniverse.UI
             _registerPanel.SetActive(panel == AuthPanel.Register);
             if (_forgotEmailPanel != null) _forgotEmailPanel.SetActive(panel == AuthPanel.ForgotPasswordEmail);
             if (_forgotResetPanel != null) _forgotResetPanel.SetActive(panel == AuthPanel.ForgotPasswordReset);
+            if (_resetSuccessPanel != null) _resetSuccessPanel.SetActive(panel == AuthPanel.ResetSuccess);
             if (_verifyEmailPanel != null) _verifyEmailPanel.SetActive(panel == AuthPanel.VerifyEmail);
 
             _loginStatusText.text = "";
@@ -427,8 +433,7 @@ namespace SocialUniverse.UI
                 // or the upcoming email login throws UGS's "already signed in".
                 if (_auth.IsAnonymous)
                     await _auth.SignOutAsync();
-                ShowPanel(AuthPanel.Login);
-                _loginStatusText.text = "Password reset — please sign in with your new password";
+                ShowPanel(AuthPanel.ResetSuccess);
             }
             catch (Exception ex)
             {
@@ -454,6 +459,7 @@ namespace SocialUniverse.UI
             if (_forgotResetBackButton   != null) _forgotResetBackButton  .interactable = !busy;
             if (_sendResetCodeButton     != null) _sendResetCodeButton    .interactable = !busy;
             if (_resetPasswordButton     != null) _resetPasswordButton    .interactable = !busy;
+            if (_resetSuccessBackButton  != null) _resetSuccessBackButton .interactable = !busy;
             if (_verifyButton            != null) _verifyButton           .interactable = !busy;
             if (_resendCodeButton        != null) _resendCodeButton       .interactable = !busy;
             if (_verifyCancelButton      != null) _verifyCancelButton     .interactable = !busy;
