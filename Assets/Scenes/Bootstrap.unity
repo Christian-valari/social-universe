@@ -386,6 +386,9 @@ MonoBehaviour:
   _tileId: tile_0
   _planetId: earth
   _price: 100
+  _fuelSpendAmount: 20
+  _travelOriginPlanetId: earth
+  _travelTargetPlanetId: venus
 --- !u!4 &1240742005
 Transform:
   m_ObjectHideFlags: 0

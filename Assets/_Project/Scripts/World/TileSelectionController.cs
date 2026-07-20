@@ -23,6 +23,8 @@ namespace SocialUniverse.World
 
         private void OnPluginTileClick(Hexasphere hex, int tileIndex)
         {
+            if (hex.style == STYLE.Invisible) return;
+            
             Debug.Log($"#{GetType().Name}# Tile Clicked {tileIndex}");
             _hexasphere.SelectTile(tileIndex.ToString());
         }

@@ -145,6 +145,8 @@ namespace SocialUniverse.App
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.LandPurchaseModal>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.TileInfoModal>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.SettingsPanel>();
+            builder.RegisterComponentInHierarchy<SocialUniverse.UI.FuelPanel>();
+
 
             builder.RegisterEntryPoint<PlanetSceneBootstrapper>();
             builder.RegisterEntryPoint<IdleMiningSessionController>();

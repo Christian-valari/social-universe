@@ -3,8 +3,11 @@
 //
 // SETUP REQUIRED:
 //   1. In the UGS dashboard (Cloud Code → Secrets), add:
-//        UGS_SERVICE_ACCOUNT_KEY    — service account key ID with Auth admin scope
-//        UGS_SERVICE_ACCOUNT_SECRET — service account secret
+//        UGS_SERVICE_ACCOUNT_KEY    — service account key ID
+//        UGS_SERVICE_ACCOUNT_SECRET — service account secret key
+//      The service account (cloud.unity.com → Administration → Service Accounts)
+//      needs the project-level "Authentication Admin" role — without it the
+//      change-password call below is rejected even with valid credentials.
 //   2. In the UGS dashboard (Cloud Save → Indexes), add an index on the
 //      "email_lookup" key (Player Data, Default access class) — see
 //      SaveEmail.js. findPlayerByEmail's query fails to match anyone without it.
@@ -57,34 +60,50 @@ async function findPlayerByEmail(saveApi, projectId, email, logger) {
   }
 }
 
-async function getAdminToken(serviceKey, serviceSecret) {
-  try {
-    const res = await axios.post("https://services.api.unity.com/auth/v1/genesis-token-exchange/unity", {
-      scopes: ["authentication.admin"], keyId: serviceKey, secretKey: serviceSecret
-    }, {
-      headers: { "Content-Type": "application/json" }
-    });
-    return res.data.accessToken;
-  } catch (err) {
-    throw new Error(`Service account token exchange failed: ${err.response?.status ?? err.message}`);
+// Cloud Code's runtime is Node-based so Buffer should exist, but a pure-JS
+// fallback costs nothing and spares a redeploy round-trip if it doesn't.
+// Credentials are ASCII (UUID-style key id + secret), so no UTF-8 handling needed.
+function toBase64(str) {
+  if (typeof Buffer !== "undefined") return Buffer.from(str, "utf8").toString("base64");
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  let out = "";
+  for (let i = 0; i < str.length; i += 3) {
+    const c1 = str.charCodeAt(i), c2 = str.charCodeAt(i + 1), c3 = str.charCodeAt(i + 2);
+    out += chars[c1 >> 2];
+    out += chars[((c1 & 3) << 4) | (isNaN(c2) ? 0 : c2 >> 4)];
+    out += isNaN(c2) ? "=" : chars[((c2 & 15) << 2) | (isNaN(c3) ? 0 : c3 >> 6)];
+    out += isNaN(c3) ? "=" : chars[c3 & 63];
   }
+  return out;
 }
 
 async function resetPasswordViaAdminApi(projectId, playerId, newPassword, serviceKey, serviceSecret) {
-  const adminToken = await getAdminToken(serviceKey, serviceSecret);
+  // The Player Authentication Admin API authenticates with HTTP Basic using the
+  // service account credentials directly — no token exchange step exists or is
+  // needed. (An earlier version first POSTed to
+  // auth/v1/genesis-token-exchange/unity, an endpoint that does not exist, so
+  // every reset died with "Service account token exchange failed: 404" before
+  // ever reaching the password change.) Endpoint per
+  // https://services.docs.unity.com/player-auth-admin/v1/ — the request body's
+  // newPassword must be 8-30 chars with upper, lower, number, and symbol; the
+  // API rejects weaker passwords with a 400.
+  const basic = toBase64(`${serviceKey}:${serviceSecret}`);
   try {
-    await axios.patch(
-      `https://player-auth.services.api.unity.com/v1/authentication/players/${playerId}/password`,
-      { password: newPassword },
+    await axios.post(
+      `https://services.api.unity.com/player-identity/v1/projects/${projectId}/users/${playerId}/change-password`,
+      { newPassword },
       {
         headers: {
-          "Authorization": `Bearer ${adminToken}`,
+          "Authorization": `Basic ${basic}`,
           "Content-Type":  "application/json"
         }
       }
     );
   } catch (err) {
-    throw new Error(`Admin password reset failed: ${err.response?.status ?? err.message}`);
+    // Include the response body — the status alone proved undiagnosable when
+    // the old endpoint 404'd.
+    const detail = err.response?.data ? JSON.stringify(err.response.data) : err.message;
+    throw new Error(`Admin password reset failed: ${err.response?.status ?? ""} ${detail}`);
   }
 }
 

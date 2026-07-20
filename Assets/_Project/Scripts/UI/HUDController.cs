@@ -42,6 +42,9 @@ namespace SocialUniverse.UI
         [SerializeField] private TileInfoModal     _tileInfoModal;
         [SerializeField] private Button             _settingsButton;
         [SerializeField] private SettingsPanel      _settingsPanel;
+        [SerializeField] private Button             _fuelButton;
+        [SerializeField] private FuelPanel          _fuelPanel;
+
 
         [Inject] private Wallet _wallet;
         [Inject] private PlayerState _playerState;
@@ -64,6 +67,8 @@ namespace SocialUniverse.UI
             });
             _launchButton?.onClick.AddListener(() => EventBus.Publish(new LaunchRequestedEvent()));
             _settingsButton?.onClick.AddListener(() => _settingsPanel?.Open());
+            _fuelButton?.onClick.AddListener(() => _fuelPanel?.Open());
+
             if (_verifyEmailButton != null) _verifyEmailButton.onClick.AddListener(() => _emailVerificationModal?.Open());
             EventBus.Subscribe<ShowEmailVerificationPromptEvent>(OnShowEmailVerificationPrompt);
             EventBus.Subscribe<TileSelectedEvent>(OnTileSelectedForModal);

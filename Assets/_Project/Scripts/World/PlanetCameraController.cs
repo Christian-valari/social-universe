@@ -1,3 +1,4 @@
+using System;
 using Lean.Touch;
 using UnityEngine;
 
@@ -14,6 +15,11 @@ namespace SocialUniverse.World
         private float _distance = 12f;
         private float _yaw;
         private float _pitch    = 20f;
+
+        private void Awake()
+        {
+            _distance  = Mathf.Clamp(5f, _minDistance, _maxDistance);
+        }
 
         private void LateUpdate()
         {

@@ -68,7 +68,7 @@ namespace SocialUniverse.UI
             _tileStatsText.text = $"{tile.BuildLevel}";
 
             bool ownedByPlayer = tile.State == TileState.OwnedByPlayer;
-            _sellButton.gameObject.SetActive(ownedByPlayer);
+            // _sellButton.gameObject.SetActive(ownedByPlayer);
             _claimButton.gameObject.SetActive(ownedByPlayer);
             _ownerInfoText.gameObject.SetActive(false);
             _avatarImage.gameObject.SetActive(false);
