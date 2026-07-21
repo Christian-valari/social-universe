@@ -26,8 +26,33 @@ namespace SocialUniverse.Net
 
         public static Task<string> GetIdTokenAsync()
         {
+#if UNITY_ANDROID && !UNITY_EDITOR
+            return GetIdTokenAndroidAsync();
+#else
             return Task.FromException<string>(
                 new NotSupportedException("Google Sign-In is unavailable in the Unity Editor or on this platform"));
+#endif
         }
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+        private static async Task<string> GetIdTokenAndroidAsync()
+        {
+            if (string.IsNullOrEmpty(_webClientId) || _webClientId.StartsWith("YOUR_"))
+                throw new InvalidOperationException(
+                    "GoogleAuthConfig.WebClientId is still the placeholder — see docs/google-signin-setup-checklist.md");
+
+            var config = new Google.GoogleSignInConfiguration
+            {
+                WebClientId    = _webClientId,
+                RequestIdToken = true,
+            };
+            Google.GoogleSignIn.Configuration = config;
+
+            Google.GoogleSignInUser user = await Google.GoogleSignIn.DefaultInstance.SignIn();
+            if (string.IsNullOrEmpty(user.IdToken))
+                throw new InvalidOperationException("Google Sign-In returned no ID token");
+            return user.IdToken;
+        }
+#endif
     }
 }
