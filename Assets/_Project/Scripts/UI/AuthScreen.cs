@@ -10,7 +10,7 @@ namespace SocialUniverse.UI
 {
     public class AuthScreen : MonoBehaviour
     {
-        private enum AuthPanel { Login, Register, ForgotPasswordEmail, ForgotPasswordReset, VerifyEmail }
+        private enum AuthPanel { Login, Register, ForgotPasswordEmail, ForgotPasswordReset, VerifyEmail, ChooseName }
 
         // --- Panels ---
         [SerializeField] private GameObject _loginPanel;
@@ -18,6 +18,7 @@ namespace SocialUniverse.UI
         [SerializeField] private GameObject _forgotEmailPanel;
         [SerializeField] private GameObject _forgotResetPanel;
         [SerializeField] private GameObject _verifyEmailPanel;
+        [SerializeField] private GameObject _chooseNamePanel;
 
         // --- Login panel ---
         [SerializeField] private InputField _loginEmailField;
@@ -58,6 +59,11 @@ namespace SocialUniverse.UI
         [SerializeField] private Button     _resendCodeButton;
         [SerializeField] private Button     _verifyCancelButton;
 
+        // --- Choose display name panel (first Google sign-in) ---
+        [SerializeField] private InputField _chooseNameInput;
+        [SerializeField] private Button     _chooseNameConfirmButton;
+        [SerializeField] private Text       _chooseNameStatusText;
+
         private IAuthService _auth;
         private bool         _busy;
         private bool         _suppressAutoTransition;
@@ -86,6 +92,7 @@ namespace SocialUniverse.UI
             if (_verifyButton            != null) _verifyButton           .onClick.AddListener(OnVerifyClicked);
             if (_resendCodeButton        != null) _resendCodeButton       .onClick.AddListener(OnResendCodeClicked);
             if (_verifyCancelButton      != null) _verifyCancelButton     .onClick.AddListener(OnVerifyCancelClicked);
+            if (_chooseNameConfirmButton != null) _chooseNameConfirmButton.onClick.AddListener(OnChooseNameConfirmed);
 
             if (_auth.IsSignedIn)
                 HandleSignedIn();
@@ -119,12 +126,14 @@ namespace SocialUniverse.UI
             if (_forgotEmailPanel != null) _forgotEmailPanel.SetActive(panel == AuthPanel.ForgotPasswordEmail);
             if (_forgotResetPanel != null) _forgotResetPanel.SetActive(panel == AuthPanel.ForgotPasswordReset);
             if (_verifyEmailPanel != null) _verifyEmailPanel.SetActive(panel == AuthPanel.VerifyEmail);
+            if (_chooseNamePanel  != null) _chooseNamePanel .SetActive(panel == AuthPanel.ChooseName);
 
             _loginStatusText.text = "";
             _regStatusText  .text = "";
             if (_forgotEmailStatusText != null) _forgotEmailStatusText.text = "";
             if (_forgotResetStatusText != null) _forgotResetStatusText.text = "";
             if (_verifyStatusText      != null) _verifyStatusText     .text = "";
+            if (_chooseNameStatusText  != null) _chooseNameStatusText .text = "";
 
             // Leaving a flow for the Login panel ends any in-flight registration
             // suppression; the flows themselves manage the flag while active.
@@ -141,6 +150,15 @@ namespace SocialUniverse.UI
             if (_auth.IsAnonymous)
             {
                 SULog.Warn("Auth: anonymous session may not enter the game — ignoring sign-in", SULog.Channel.Net);
+                return;
+            }
+            // A restored SSO session with no display name yet (the app was
+            // quit while gated at the choose-name panel — see BootState) is
+            // shown the panel again instead of entering the game nameless.
+            if (string.IsNullOrEmpty(_auth.DisplayName))
+            {
+                SetBusy(false);
+                ShowPanel(AuthPanel.ChooseName);
                 return;
             }
             SetBusy(false);
@@ -203,6 +221,11 @@ namespace SocialUniverse.UI
         {
             SetBusy(true);
             _loginStatusText.text = "Signing in with Google…";
+            // Suppress HandleSignedIn's auto-publish: the SignedIn event can
+            // fire before this method gets a chance to check below whether
+            // this is a first-time sign-in — same mechanism the verify-email
+            // flow uses. Cleared explicitly once we know which path to take.
+            _suppressAutoTransition = true;
             try
             {
                 // Same anonymous-transport cleanup as OnLoginClicked: UGS rejects
@@ -213,8 +236,53 @@ namespace SocialUniverse.UI
                 try   { idToken = await GoogleAuthHandler.GetIdTokenAsync(); }
                 catch (NotSupportedException) { idToken = "mock_google_token"; }
                 await _auth.SignInWithGoogleAsync(idToken);
+
+                if (string.IsNullOrEmpty(_auth.DisplayName))
+                {
+                    // First Google sign-in: hold at Auth until a name is chosen.
+                    SetBusy(false);
+                    ShowPanel(AuthPanel.ChooseName);
+                }
+                else
+                {
+                    _suppressAutoTransition = false;
+                    SetBusy(false);
+                    SULog.Info("Auth: Google sign-in (returning player) — advancing to game", SULog.Channel.Net);
+                    EventBus.Publish(new PlayerReadyEvent());
+                }
             }
-            catch (Exception ex) { _loginStatusText.text = FriendlyError(ex); SetBusy(false); }
+            catch (Exception ex)
+            {
+                _suppressAutoTransition = false;
+                _loginStatusText.text = FriendlyError(ex);
+                SetBusy(false);
+            }
+        }
+
+        private async void OnChooseNameConfirmed()
+        {
+            string name = _chooseNameInput.text;
+            if (!DisplayNameValidator.Validate(name, out string err))
+            {
+                _chooseNameStatusText.text = err;
+                return;
+            }
+
+            SetBusy(true);
+            _chooseNameStatusText.text = "Saving…";
+            try
+            {
+                await _auth.UpdateDisplayNameAsync(name.Trim());
+                _suppressAutoTransition = false;
+                SetBusy(false);
+                SULog.Info("Auth: display name chosen — advancing to game", SULog.Channel.Net);
+                EventBus.Publish(new PlayerReadyEvent());
+            }
+            catch (Exception ex)
+            {
+                _chooseNameStatusText.text = FriendlyError(ex);
+                SetBusy(false);
+            }
         }
 
         private async void OnRegisterClicked()
@@ -457,6 +525,7 @@ namespace SocialUniverse.UI
             if (_verifyButton            != null) _verifyButton           .interactable = !busy;
             if (_resendCodeButton        != null) _resendCodeButton       .interactable = !busy;
             if (_verifyCancelButton      != null) _verifyCancelButton     .interactable = !busy;
+            if (_chooseNameConfirmButton != null) _chooseNameConfirmButton.interactable = !busy;
         }
 
         private void SetActiveStatus(string message)
@@ -471,6 +540,8 @@ namespace SocialUniverse.UI
                 _forgotResetStatusText.text = message;
             else if (_verifyEmailPanel != null && _verifyEmailPanel.activeSelf && _verifyStatusText != null)
                 _verifyStatusText.text = message;
+            else if (_chooseNamePanel != null && _chooseNamePanel.activeSelf && _chooseNameStatusText != null)
+                _chooseNameStatusText.text = message;
         }
 
         // UGS's real password policy: 8-30 chars, at least one uppercase, lowercase,
