@@ -35,18 +35,27 @@ namespace SocialUniverse.Net
         }
 
 #if UNITY_ANDROID && !UNITY_EDITOR
+        private static Google.GoogleSignInConfiguration _configuration;
+
         private static async Task<string> GetIdTokenAndroidAsync()
         {
             if (string.IsNullOrEmpty(_webClientId) || _webClientId.StartsWith("YOUR_"))
                 throw new InvalidOperationException(
                     "GoogleAuthConfig.WebClientId is still the placeholder — see docs/google-signin-setup-checklist.md");
 
-            var config = new Google.GoogleSignInConfiguration
+            // GoogleSignIn.Configuration's setter throws once DefaultInstance
+            // already exists and a different config object is assigned — set
+            // it exactly once per app session, not on every sign-in attempt,
+            // so retrying after a cancel/failure doesn't throw.
+            if (_configuration == null)
             {
-                WebClientId    = _webClientId,
-                RequestIdToken = true,
-            };
-            Google.GoogleSignIn.Configuration = config;
+                _configuration = new Google.GoogleSignInConfiguration
+                {
+                    WebClientId    = _webClientId,
+                    RequestIdToken = true,
+                };
+                Google.GoogleSignIn.Configuration = _configuration;
+            }
 
             Google.GoogleSignInUser user = await Google.GoogleSignIn.DefaultInstance.SignIn();
             if (string.IsNullOrEmpty(user.IdToken))
