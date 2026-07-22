@@ -55,7 +55,12 @@ namespace SocialUniverse.Core
                 await _auth.SignOutAsync();
             }
 
-            if (_auth.IsSignedIn)
+            // A restored SSO session with no display name yet means the app
+            // was quit while gated at AuthScreen's choose-name panel — route
+            // through the Auth scene (below) instead of publishing
+            // PlayerReadyEvent directly, so HandleSignedIn can show the panel
+            // again rather than letting a nameless account into the game.
+            if (_auth.IsSignedIn && !string.IsNullOrEmpty(_auth.DisplayName))
             {
                 SULog.Info("Boot: session restored, skipping Auth scene");
                 // AuthScreen normally publishes this on sign-in to bring chat/friends

@@ -140,5 +140,34 @@ namespace SocialUniverse.Tests
             Assert.IsTrue(restored.IsAnonymous);
             await restored.SignOutAsync();
         }
+
+        [Test]
+        public async Task First_google_sign_in_has_no_display_name()
+        {
+            await _auth.SignInWithGoogleAsync("token");
+            Assert.IsNull(_auth.DisplayName);
+        }
+
+        [Test]
+        public async Task Choosing_a_name_then_signing_back_in_with_google_recalls_it()
+        {
+            await _auth.SignInWithGoogleAsync("token");
+            await _auth.UpdateDisplayNameAsync("Nova");
+            await _auth.SignOutAsync();
+
+            await _auth.SignInWithGoogleAsync("token");
+            Assert.AreEqual("Nova", _auth.DisplayName);
+        }
+
+        [Test]
+        public async Task Google_and_apple_mock_identities_are_independent()
+        {
+            await _auth.SignInWithGoogleAsync("token");
+            await _auth.UpdateDisplayNameAsync("Nova");
+            await _auth.SignOutAsync();
+
+            await _auth.SignInWithAppleAsync("token");
+            Assert.IsNull(_auth.DisplayName);
+        }
     }
 }

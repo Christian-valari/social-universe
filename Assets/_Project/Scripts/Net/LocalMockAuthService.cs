@@ -21,6 +21,11 @@ namespace SocialUniverse.Net
         // AuthService's UGS login-key derivation (see DeriveLoginKey there).
         private readonly Dictionary<string, UserRecord> _users          = new();
         private readonly HashSet<string>                 _pendingResets = new(); // normalized emails awaiting reset
+        // Keyed by mock playerId ("mock_google"/"mock_apple"). Lets a repeat
+        // mock SSO sign-in within this run recall a previously chosen name,
+        // mirroring a real OAuth provider always resolving to the same
+        // linked UGS account.
+        private readonly Dictionary<string, string> _ssoDisplayNames = new();
         private bool _pendingEmailVerificationCode; // an outstanding verification code exists (mock code: 123456)
 
         private static string NormalizeEmail(string email) => email.Trim().ToLowerInvariant();
@@ -117,6 +122,8 @@ namespace SocialUniverse.Net
         public Task UpdateDisplayNameAsync(string displayName)
         {
             _displayName = displayName;
+            if (!string.IsNullOrEmpty(_playerId))
+                _ssoDisplayNames[_playerId] = displayName;
             PersistSession();
             SULog.Info($"[MOCK] Display name updated to '{displayName}'", SULog.Channel.Net);
             return Task.CompletedTask;
@@ -132,9 +139,14 @@ namespace SocialUniverse.Net
             if (_isSignedIn)
                 throw new InvalidOperationException("A player is already signed in — sign out before signing in again.");
             await Task.Delay(900);
-            _playerId    = provider + "_" + UnityEngine.Random.Range(10000, 99999);
+            // Deterministic per-provider identity (not random): a real OAuth
+            // provider always resolves to the same linked UGS account, so
+            // repeat mock sign-ins with the same provider must be detected as
+            // the same returning player once a name has been chosen.
+            _playerId    = "mock_" + provider;
             _isAnonymous = false;
             _isSignedIn  = true;
+            _displayName = _ssoDisplayNames.TryGetValue(_playerId, out string name) ? name : "";
             PersistSession();
             SULog.Info($"[MOCK] Signed in with {provider} ({_playerId})", SULog.Channel.Net);
             OnSignedIn?.Invoke();

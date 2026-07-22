@@ -20,10 +20,13 @@ namespace SocialUniverse.App
         [SerializeField] private SocialConfig _socialConfig;
         [SerializeField] private AudioConfig  _audioConfig;
         [SerializeField] private AudioCatalog _audioCatalog;
+        [SerializeField] private GoogleAuthConfig _googleAuthConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
             base.Configure(builder);
+
+            GoogleAuthHandler.Configure(_googleAuthConfig);
 
             if (_devMode)
             {

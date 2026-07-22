@@ -206,6 +206,13 @@ namespace SocialUniverse.Net
         {
             await AuthenticationService.Instance.SignInWithGoogleAsync(idToken);
             _isAnonymous = false;
+            // The SignedIn-callback hydration (see InitializeAsync) runs
+            // fire-and-forget and isn't guaranteed to finish before this call
+            // returns — AuthScreen checks DisplayName immediately afterwards
+            // to decide first-time vs. returning player, so a returning
+            // player could otherwise be misdetected as first-time. Mirrors
+            // the same await already in RegisterAsync.
+            await HydratePlayerNameAsync();
             SULog.Info($"Signed in with Google (playerId: {PlayerId})", SULog.Channel.Net);
         }
 
