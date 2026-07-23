@@ -25,7 +25,12 @@ namespace SocialUniverse.Core
         Task SignInWithEmailAsync(string email, string password);
         Task RegisterAsync(string username, string password, string email);
         Task SignInWithAppleAsync(string idToken);
-        Task SignInWithGoogleAsync(string idToken);
+        // Google Play Games sign-in. The string is now a Play Games *v2 server
+        // auth code* (from GoogleAuthHandler.GetIdTokenAsync), exchanged by UGS's
+        // SignInWithGooglePlayGamesAsync — v1 ID-token sign-in is deprecated and
+        // blocked at Play upload. Name kept stable so existing callers (AuthScreen)
+        // are untouched.
+        Task SignInWithGoogleAsync(string authCode);
         Task SignOutAsync();
 
         // True while the current session has no external identities (UGS anonymous

@@ -1,75 +1,80 @@
-# Google Sign-In — Device Setup Checklist
+# Google Sign-In — Device Setup Checklist (Play Games Services **v2**)
 
-Token acquisition uses the **Google Play Games plugin** (per the official Unity
-docs: https://docs.unity.com/en-us/authentication/platform-signin/google).
-These are the plugin-import + account/console steps only a project owner can
-do. Nothing works on a real Android device until all of them are done. See also
+Token acquisition uses the **Google Play Games plugin (v2 / Play Games Services
+v2)** — Google **blocks the v1 SDK (`com.google.android.gms:play-services-games`)
+at upload**, so v1 is not an option. Per Unity's docs:
+https://docs.unity.com/en-us/authentication/platform-signin/google-play-games
+Nothing works on a real Android device until all steps are done. See also
 `docs/superpowers/specs/2026-07-23-google-signin-play-games-plugin-design.md`.
 
-1. **Google Play Games plugin (v0.10.14) — ALREADY IMPORTED on this branch.**
-   The plugin is committed under `Assets/GooglePlayGames/` +
-   `Assets/Plugins/Android/GooglePlayGamesManifest.androidlib`, with runtime +
-   Editor asmdefs added and referenced from `SocialUniverse.Net.asmdef`. If you
-   ever re-import it manually (Assets → Import Package → Custom Package…),
-   **UNCHECK the `Assets/ExternalDependencyManager` folder** — this project
-   already has a newer EDM4U as a UPM package
-   (`com.google.external-dependency-manager` 1.2.187), and importing the
-   bundled 1.2.167 duplicates its DLLs and throws import errors.
-   - NOTE: `.aar`/`.srcaar`/`.jar` are now marked `binary` in `.gitattributes`.
-     They previously fell through `*.* text eol=lf` and got EOL-mangled with
-     `core.autocrlf=true` — the root cause of the original `.aar` corruption.
-     Don't remove those rules.
+**v2 flow in one line:** plugin `Authenticate()` → `RequestServerSideAccess()`
+returns a one-time **server auth code** → `IAuthService.SignInWithGoogleAsync(authCode)`
+→ UGS `SignInWithGooglePlayGamesAsync` exchanges it server-side (needs Web client
+ID **and secret**). No ID token, unlike v1.
+
+1. **Import the Google Play Games plugin v11.01+ (v2).** The old v0.10.14 (v1)
+   plugin has been REMOVED on this branch.
+   - Import from the `.tar.gz`/`.unitypackage` you downloaded
+     (`current-build/…v2 unitypackage`).
+   - **UNCHECK the `Assets/ExternalDependencyManager` folder on import** — this
+     project already has a newer EDM4U UPM package
+     (`com.google.external-dependency-manager` 1.2.187); importing the bundled
+     copy duplicates its DLLs and throws import errors.
+   - After import, add the plugin's runtime assembly (e.g. `GooglePlayGames`) to
+     `SocialUniverse.Net.asmdef`'s references so `GoogleAuthHandler` compiles for
+     Android. Then **Assets → External Dependency Manager → Android Resolver →
+     Force Resolve**.
+   - NOTE: `.aar`/`.srcaar`/`.jar` are marked `binary` in `.gitattributes` (the
+     original `.aar`-corruption fix). Don't remove those rules.
 
 2. **Google Cloud Console** (https://console.cloud.google.com/):
-   - Configure the OAuth consent screen for the project.
-   - Create OAuth 2.0 credentials → **Web application** client ID. Copy it —
-     this is the value that goes in steps 4 and 5.
+   - Configure the OAuth consent screen; add your test accounts under **Test users**.
+   - Create OAuth 2.0 credentials → **Web application** client ID. Copy **both the
+     client ID and the client secret** — v2/UGS needs both (step 4).
    - Create OAuth 2.0 credentials → **Android** client ID:
-     - Package name: `com.ValariSolutions.socialuniverse` (from
-       `ProjectSettings/AndroidResolverDependencies.xml`'s `bundleId`).
-     - SHA-1 fingerprint of the signing keystore:
+     - Package name: `com.ValariSolutions.socialuniverse`.
+     - SHA-1 of the keystore that ACTUALLY signs the installed build. A Unity
+       dev build with no keystore set in Player Settings uses the **debug
+       keystore** — verify with the installed APK, not by assumption:
        ```
-       keytool -list -v -keystore zKeystore/user.keystore -alias <alias> -storepass <password>
+       adb shell pm path com.ValariSolutions.socialuniverse
+       adb pull <printed path> app.apk
+       keytool -printcert -jarfile app.apk
        ```
-       Copy the `SHA1:` fingerprint line into the Android client's config.
+       (Mismatched SHA-1 is the #1 cause of sign-in returning `Canceled` right
+       after the account picker.)
 
-3. **Google Play Console → Play Games Services** (do this BEFORE the Unity
-   Android setup in step 3b — the Unity dialog needs this step's output):
-   - Setup and management → **Configuration**: create / configure the Play
-     Games Services game. This mints the **App ID**.
-   - Link the **Android** OAuth client from step 2 (same package name + SHA-1).
-   - Add your Google account(s) as **license testers** so sign-in works before
-     the game is published.
-   - On the Configuration page, use **"Get resources"** (Android) and copy the
-     whole `<resources>…</resources>` XML block (contains `app_id` +
-     `package_name`). You paste this in step 3b.
+3. **Google Play Console → Play Games Services** (before the Unity Android setup):
+   - Setup and management → **Configuration**: create/configure the game (mints
+     the **App ID** / project ID).
+   - Link the **Android** OAuth client from step 2 (same package + SHA-1).
+   - Add your Google account(s) under **Testers** (unpublished games reject
+     non-testers → `Canceled`).
+   - Use **"Get resources"** (Android) and copy the `<resources>…</resources>`
+     XML — needed by the Unity setup dialog below.
 
-3b. **Unity → Window → Google Play Games → Setup → Android setup…** — the dialog
-   has THREE fields, and the Web client ID alone is NOT enough:
-   - **Constants class name:** leave as `GPGSIds` (must not be blank).
+3b. **Unity → Window → Google Play Games → Setup → Android setup…**:
+   - **Constants class name:** `GPGSIds` (must not be blank).
    - **Resources Definition:** paste the **Android Resources XML** from step 3's
-     "Get resources". *If this box is empty, Setup fails with
-     "Invalid classname: Root element is missing" — that error means the plugin
-     tried to parse empty XML, i.e. this field was blank, NOT a classname
-     problem.*
-   - **Web (client) ID:** the **Web** client ID from step 2 (`RequestIdToken()`
-     uses it to mint the ID token).
-   - Click **Setup**. This bakes the App ID into `GameInfo.cs` and the Android
-     manifest.
+     "Get resources". *Empty → "Invalid classname: Root element is missing"
+     (that error = empty XML box, not a classname problem).*
+   - **Web (client) ID:** the **Web** client ID from step 2.
+   - Click **Setup** (bakes the App ID into the v2 manifest meta-data).
 
-4. **Unity Gaming Services dashboard**: Authentication → enable **Google**
-   as an identity provider, pasting in the **Web** client ID from step 2
-   (not the Android one — UGS validates ID tokens against the Web client).
+4. **Unity Gaming Services dashboard → Authentication → ID Providers:** add
+   **Google Play Games** (not "Google"). Paste the **Web** client **ID** AND the
+   **client secret** from step 2. Save.
 
 5. **This repo**: open `Assets/_Project/ScriptableObjects/GoogleAuthConfig.asset`
-   in the Inspector and replace the placeholder `_webClientId` with the same
-   Web client ID from step 2. (This value is also the "setup not done yet"
-   tripwire in `GoogleAuthHandler` — sign-in refuses to start while it's the
-   placeholder.)
+   and replace the placeholder `_webClientId` with the same **Web** client ID.
+   (Also the "setup not done yet" tripwire — sign-in refuses to start while it's
+   the placeholder.)
 
-6. **Device smoke test** (after 1-5 are done and a Development Build is
-   installed on an Android device signed with the same keystore as step 2):
-   - First Google sign-in → the choose-name panel appears → enter a name →
-     enters the game.
-   - Reinstall (or clear app data) and sign in again with the same Google
-     account → goes straight into the game, no name panel.
+6. **Minification:** keep `Assets/Plugins/Android/proguard-user.txt` and the
+   "Custom Proguard File" Player Setting enabled — R8 strips
+   `com.google.android.gms.games.**` otherwise (runtime `ClassNotFoundException`).
+
+7. **Device smoke test** (Development Build, device signed with the keystore
+   whose SHA-1 you registered):
+   - First Google sign-in → the choose-name panel appears → enter a name → game.
+   - Reinstall / clear app data → sign in again → straight into the game.

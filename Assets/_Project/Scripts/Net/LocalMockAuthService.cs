@@ -130,7 +130,7 @@ namespace SocialUniverse.Net
         }
 
         public Task SignInWithAppleAsync(string idToken)  => MockSsoSignInAsync("apple");
-        public Task SignInWithGoogleAsync(string idToken) => MockSsoSignInAsync("google");
+        public Task SignInWithGoogleAsync(string authCode) => MockSsoSignInAsync("google");
 
         private async Task MockSsoSignInAsync(string provider)
         {

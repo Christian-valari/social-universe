@@ -202,9 +202,12 @@ namespace SocialUniverse.Net
             SULog.Info($"Signed in with Apple (playerId: {PlayerId})", SULog.Channel.Net);
         }
 
-        public async Task SignInWithGoogleAsync(string idToken)
+        // Name kept as SignInWithGoogleAsync (interface stability), but the string
+        // is a Play Games v2 server auth code and UGS exchanges it via its
+        // SignInWithGooglePlayGamesAsync — the v1 ID-token path is blocked at upload.
+        public async Task SignInWithGoogleAsync(string authCode)
         {
-            await AuthenticationService.Instance.SignInWithGoogleAsync(idToken);
+            await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(authCode);
             _isAnonymous = false;
             // The SignedIn-callback hydration (see InitializeAsync) runs
             // fire-and-forget and isn't guaranteed to finish before this call
@@ -213,7 +216,7 @@ namespace SocialUniverse.Net
             // player could otherwise be misdetected as first-time. Mirrors
             // the same await already in RegisterAsync.
             await HydratePlayerNameAsync();
-            SULog.Info($"Signed in with Google (playerId: {PlayerId})", SULog.Channel.Net);
+            SULog.Info($"Signed in with Google Play Games (playerId: {PlayerId})", SULog.Channel.Net);
         }
 
         public Task SignOutAsync()

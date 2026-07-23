@@ -2,19 +2,25 @@ using System;
 using System.Threading.Tasks;
 using SocialUniverse.Config;
 
-// Acquires a Google ID token via the Google Play Games plugin, ready to pass
-// to IAuthService.SignInWithGoogleAsync(idToken). Follows the official Unity
-// Authentication docs:
-// https://docs.unity.com/en-us/authentication/platform-signin/google
+// Acquires a Google Play Games *server auth code* (Play Games Services v2 flow),
+// ready to pass to IAuthService.SignInWithGoogleAsync(authCode). NOTE: the method
+// is still named GetIdTokenAsync and the interface method SignInWithGoogleAsync
+// for caller stability (AuthScreen is untouched), but under v2 the string is a
+// server auth code, not an ID token. Follows Unity's Google Play Games sign-in docs:
+// https://docs.unity.com/en-us/authentication/platform-signin/google-play-games
 //
-// Throws NotSupportedException in the Unity Editor and on non-Android
-// platforms — AuthScreen catches this and falls back to a mock token, so the
-// mock auth flow still works in dev mode. The Android device path needs the
-// Google Play Games plugin (v0.10.14) imported and Play Console setup done
-// before it compiles for the Android target — see
+// v2 (play-services-games-v2) is mandatory — Google blocks the v1 SDK
+// (com.google.android.gms:play-services-games) at upload. Unlike v1, v2 returns
+// a one-time server AUTH CODE via RequestServerSideAccess (not an ID token);
+// UGS exchanges it server-side using the Web client ID + secret configured in
+// the Authentication dashboard.
+//
+// Throws NotSupportedException in the Editor / on non-Android — AuthScreen
+// catches this and substitutes a mock auth code, so the mock flow still works
+// in dev. The Android device path needs the Google Play Games plugin for Unity
+// v11.01+ imported + Play Console setup before it compiles for Android — see
 // docs/google-signin-setup-checklist.md and
 // docs/superpowers/specs/2026-07-23-google-signin-play-games-plugin-design.md.
-// Configure lets the app wire up the OAuth Web Client ID at bootstrap.
 namespace SocialUniverse.Net
 {
     public static class GoogleAuthHandler
@@ -33,20 +39,19 @@ namespace SocialUniverse.Net
         public static Task<string> GetIdTokenAsync()
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            return GetIdTokenAndroidAsync();
+            return GetServerAuthCodeAndroidAsync();
 #else
             return Task.FromException<string>(
-                new NotSupportedException("Google Sign-In is unavailable in the Unity Editor or on this platform"));
+                new NotSupportedException("Google Play Games sign-in is unavailable in the Unity Editor or on this platform"));
 #endif
         }
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-        // InitializeInstance throws if called more than once per session, so
-        // initialise the Play Games platform exactly once — retrying after a
-        // cancel/failure must not re-initialise.
-        private static bool _initialized;
+        // v2 has no PlayGamesClientConfiguration — Activate() once per session is
+        // the whole init. Guarded so a retry after cancel/failure doesn't repeat it.
+        private static bool _activated;
 
-        private static Task<string> GetIdTokenAndroidAsync()
+        private static Task<string> GetServerAuthCodeAndroidAsync()
         {
             // The Web client ID isn't passed to Play Games in code (it's entered
             // in the plugin's Android setup dialog — see the checklist); this
@@ -56,52 +61,37 @@ namespace SocialUniverse.Net
                 return Task.FromException<string>(new InvalidOperationException(
                     "GoogleAuthConfig.WebClientId is still the placeholder — see docs/google-signin-setup-checklist.md"));
 
-            EnsureInitialized();
+            if (!_activated)
+            {
+                GooglePlayGames.PlayGamesPlatform.Activate();
+                _activated = true;
+            }
 
-            // Play Games authentication is callback-based; bridge it to the
-            // Task the callers (AuthScreen → AuthService) already await. Use the
-            // SignInStatus overload (not the bool one) so a failure carries the
-            // actual reason — DeveloperError almost always means the signing-key
-            // SHA-1 / OAuth / Play Games config doesn't match; Canceled means
-            // the user dismissed the prompt; NetworkError is connectivity. A
-            // faulted task surfaces via AuthScreen's existing catch (FriendlyError
-            // + busy cleared).
+            // Play Games auth is callback-based; bridge it to the Task the callers
+            // (AuthScreen → AuthService) already await. Authenticate first, then
+            // request the server auth code. A non-Success status (DeveloperError =
+            // SHA-1/OAuth config; Canceled = user/config rejection; NetworkError)
+            // or an empty code faults the task, surfacing via AuthScreen's catch.
             var tcs = new TaskCompletionSource<string>();
-            GooglePlayGames.PlayGamesPlatform.Instance.Authenticate(
-                GooglePlayGames.BasicApi.SignInInteractivity.CanPromptAlways,
-                (GooglePlayGames.BasicApi.SignInStatus status) =>
+            GooglePlayGames.PlayGamesPlatform.Instance.Authenticate(status =>
+            {
+                if (status != GooglePlayGames.BasicApi.SignInStatus.Success)
                 {
-                    if (status != GooglePlayGames.BasicApi.SignInStatus.Success)
-                    {
-                        tcs.SetException(new InvalidOperationException(
-                            $"Google Play Games sign-in failed: {status}"));
-                        return;
-                    }
+                    tcs.SetException(new InvalidOperationException(
+                        $"Google Play Games sign-in failed: {status}"));
+                    return;
+                }
 
-                    string idToken = GooglePlayGames.PlayGamesPlatform.Instance.GetIdToken();
-                    if (string.IsNullOrEmpty(idToken))
-                        tcs.SetException(new InvalidOperationException("Google Play Games returned no ID token"));
+                // forceRefreshToken:false — reuse the cached grant when possible.
+                GooglePlayGames.PlayGamesPlatform.Instance.RequestServerSideAccess(false, code =>
+                {
+                    if (string.IsNullOrEmpty(code))
+                        tcs.SetException(new InvalidOperationException("Google Play Games returned no server auth code"));
                     else
-                        tcs.SetResult(idToken);
+                        tcs.SetResult(code);
                 });
+            });
             return tcs.Task;
-        }
-
-        private static void EnsureInitialized()
-        {
-            if (_initialized) return;
-
-            // RequestIdToken() makes the plugin mint the OAuth ID token that
-            // UGS's SignInWithGoogleAsync validates against the Web client ID
-            // (the Web client ID is configured in the plugin's Android setup
-            // dialog, not here).
-            var config = new GooglePlayGames.BasicApi.PlayGamesClientConfiguration.Builder()
-                .RequestIdToken()
-                .Build();
-            GooglePlayGames.PlayGamesPlatform.InitializeInstance(config);
-            GooglePlayGames.PlayGamesPlatform.DebugLogEnabled = true;
-            GooglePlayGames.PlayGamesPlatform.Activate();
-            _initialized = true;
         }
 #endif
     }
