@@ -12,8 +12,7 @@
         "Unity.Services.CloudSave",
         "Unity.Services.Vivox",
         "NaughtyAttributes.Core",
-        "SocialUniverse.Social",
-        "GoogleSignIn"
+        "SocialUniverse.Social"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
