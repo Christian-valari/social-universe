@@ -59,24 +59,31 @@ namespace SocialUniverse.Net
             EnsureInitialized();
 
             // Play Games authentication is callback-based; bridge it to the
-            // Task the callers (AuthScreen → AuthService) already await. A
-            // cancel/failure faults the task so AuthScreen's existing catch
-            // shows FriendlyError and clears the busy state.
+            // Task the callers (AuthScreen → AuthService) already await. Use the
+            // SignInStatus overload (not the bool one) so a failure carries the
+            // actual reason — DeveloperError almost always means the signing-key
+            // SHA-1 / OAuth / Play Games config doesn't match; Canceled means
+            // the user dismissed the prompt; NetworkError is connectivity. A
+            // faulted task surfaces via AuthScreen's existing catch (FriendlyError
+            // + busy cleared).
             var tcs = new TaskCompletionSource<string>();
-            UnityEngine.Social.localUser.Authenticate((bool success) =>
-            {
-                if (!success)
+            GooglePlayGames.PlayGamesPlatform.Instance.Authenticate(
+                GooglePlayGames.BasicApi.SignInInteractivity.CanPromptAlways,
+                (GooglePlayGames.BasicApi.SignInStatus status) =>
                 {
-                    tcs.SetException(new InvalidOperationException("Google Play Games sign-in was unsuccessful or cancelled"));
-                    return;
-                }
+                    if (status != GooglePlayGames.BasicApi.SignInStatus.Success)
+                    {
+                        tcs.SetException(new InvalidOperationException(
+                            $"Google Play Games sign-in failed: {status}"));
+                        return;
+                    }
 
-                string idToken = ((GooglePlayGames.PlayGamesLocalUser)UnityEngine.Social.localUser).GetIdToken();
-                if (string.IsNullOrEmpty(idToken))
-                    tcs.SetException(new InvalidOperationException("Google Play Games returned no ID token"));
-                else
-                    tcs.SetResult(idToken);
-            });
+                    string idToken = GooglePlayGames.PlayGamesPlatform.Instance.GetIdToken();
+                    if (string.IsNullOrEmpty(idToken))
+                        tcs.SetException(new InvalidOperationException("Google Play Games returned no ID token"));
+                    else
+                        tcs.SetResult(idToken);
+                });
             return tcs.Task;
         }
 
