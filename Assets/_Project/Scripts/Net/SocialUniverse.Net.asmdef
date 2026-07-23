@@ -12,7 +12,8 @@
         "Unity.Services.CloudSave",
         "Unity.Services.Vivox",
         "NaughtyAttributes.Core",
-        "SocialUniverse.Social"
+        "SocialUniverse.Social",
+        "GooglePlayGames"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

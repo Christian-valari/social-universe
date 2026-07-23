@@ -5,6 +5,14 @@
 *.* text eol=lf
 *.tgz binary
 
+# Android build artifacts are zip archives — must be binary, or the "*.* text
+# eol=lf" rule above + core.autocrlf mangles them on checkout ("invalid
+# distance too far back" at build time). This is what corrupted the old
+# google-signin .aar. Keep these ahead of any text normalization.
+*.aar binary
+*.srcaar binary
+*.jar binary
+
 # Collapse Unity-generated files on GitHub.
 *.asset     linguist-generated
 *.mat       linguist-generated
