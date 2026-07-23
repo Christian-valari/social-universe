@@ -6,14 +6,19 @@ These are the plugin-import + account/console steps only a project owner can
 do. Nothing works on a real Android device until all of them are done. See also
 `docs/superpowers/specs/2026-07-23-google-signin-play-games-plugin-design.md`.
 
-1. **Import the Google Play Games plugin (v0.10.14)** into the Unity Editor:
-   - Download the `.unitypackage` from
-     https://github.com/playgameservices/play-games-plugin-for-unity/releases/tag/v10.14
-   - Assets → Import Package → Custom Package… → import all.
-   - This is required before the Android target will compile — until then the
-     `GooglePlayGames.*` calls in `GoogleAuthHandler` fail with `CS0246`
-     (Phase B in the design doc). After import, add the plugin's assembly
-     (e.g. `GooglePlayGames`) to `SocialUniverse.Net.asmdef`'s references.
+1. **Google Play Games plugin (v0.10.14) — ALREADY IMPORTED on this branch.**
+   The plugin is committed under `Assets/GooglePlayGames/` +
+   `Assets/Plugins/Android/GooglePlayGamesManifest.androidlib`, with runtime +
+   Editor asmdefs added and referenced from `SocialUniverse.Net.asmdef`. If you
+   ever re-import it manually (Assets → Import Package → Custom Package…),
+   **UNCHECK the `Assets/ExternalDependencyManager` folder** — this project
+   already has a newer EDM4U as a UPM package
+   (`com.google.external-dependency-manager` 1.2.187), and importing the
+   bundled 1.2.167 duplicates its DLLs and throws import errors.
+   - NOTE: `.aar`/`.srcaar`/`.jar` are now marked `binary` in `.gitattributes`.
+     They previously fell through `*.* text eol=lf` and got EOL-mangled with
+     `core.autocrlf=true` — the root cause of the original `.aar` corruption.
+     Don't remove those rules.
 
 2. **Google Cloud Console** (https://console.cloud.google.com/):
    - Configure the OAuth consent screen for the project.
