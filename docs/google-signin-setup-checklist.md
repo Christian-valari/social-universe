@@ -12,18 +12,17 @@ returns a one-time **server auth code** → `IAuthService.SignInWithGoogleAsync(
 → UGS `SignInWithGooglePlayGamesAsync` exchanges it server-side (needs Web client
 ID **and secret**). No ID token, unlike v1.
 
-1. **Import the Google Play Games plugin v11.01+ (v2).** The old v0.10.14 (v1)
-   plugin has been REMOVED on this branch.
-   - Import from the `.tar.gz`/`.unitypackage` you downloaded
-     (`current-build/…v2 unitypackage`).
-   - **UNCHECK the `Assets/ExternalDependencyManager` folder on import** — this
-     project already has a newer EDM4U UPM package
-     (`com.google.external-dependency-manager` 1.2.187); importing the bundled
-     copy duplicates its DLLs and throws import errors.
-   - After import, add the plugin's runtime assembly (e.g. `GooglePlayGames`) to
-     `SocialUniverse.Net.asmdef`'s references so `GoogleAuthHandler` compiles for
-     Android. Then **Assets → External Dependency Manager → Android Resolver →
-     Force Resolve**.
+1. **Google Play Games plugin v2.1.0 (Play Games Services v2) — ALREADY IMPORTED
+   on this branch** under `Assets/GooglePlayGames/com.google.play.games/`, with
+   its own asmdefs (`Google.Play.Games` runtime + `Google.Play.Games.Editor`)
+   referenced from `SocialUniverse.Net.asmdef`. The old v0.10.14 (v1) plugin is
+   removed. If you ever re-import manually:
+   - **UNCHECK the `Assets/ExternalDependencyManager` folder** — this project
+     already has a newer EDM4U UPM package
+     (`com.google.external-dependency-manager` 1.2.187); the bundled copy
+     duplicates its DLLs and throws import errors.
+   - After merge, run **Assets → External Dependency Manager → Android Resolver
+     → Force Resolve** so `play-services-games-v2` is pulled into the Gradle build.
    - NOTE: `.aar`/`.srcaar`/`.jar` are marked `binary` in `.gitattributes` (the
      original `.aar`-corruption fix). Don't remove those rules.
 
