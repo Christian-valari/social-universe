@@ -33,14 +33,29 @@ do. Nothing works on a real Android device until all of them are done. See also
        ```
        Copy the `SHA1:` fingerprint line into the Android client's config.
 
-3. **Google Play Console → Play Games Services**:
-   - Create / configure the Play Games Services project for this game.
+3. **Google Play Console → Play Games Services** (do this BEFORE the Unity
+   Android setup in step 3b — the Unity dialog needs this step's output):
+   - Setup and management → **Configuration**: create / configure the Play
+     Games Services game. This mints the **App ID**.
    - Link the **Android** OAuth client from step 2 (same package name + SHA-1).
    - Add your Google account(s) as **license testers** so sign-in works before
      the game is published.
-   - In Unity: **Window → Google Play Games → Setup → Android setup…**, paste
-     the **Web** client ID from step 2 (the plugin bakes it into its generated
-     Android manifest — `RequestIdToken()` uses it to mint the ID token).
+   - On the Configuration page, use **"Get resources"** (Android) and copy the
+     whole `<resources>…</resources>` XML block (contains `app_id` +
+     `package_name`). You paste this in step 3b.
+
+3b. **Unity → Window → Google Play Games → Setup → Android setup…** — the dialog
+   has THREE fields, and the Web client ID alone is NOT enough:
+   - **Constants class name:** leave as `GPGSIds` (must not be blank).
+   - **Resources Definition:** paste the **Android Resources XML** from step 3's
+     "Get resources". *If this box is empty, Setup fails with
+     "Invalid classname: Root element is missing" — that error means the plugin
+     tried to parse empty XML, i.e. this field was blank, NOT a classname
+     problem.*
+   - **Web (client) ID:** the **Web** client ID from step 2 (`RequestIdToken()`
+     uses it to mint the ID token).
+   - Click **Setup**. This bakes the App ID into `GameInfo.cs` and the Android
+     manifest.
 
 4. **Unity Gaming Services dashboard**: Authentication → enable **Google**
    as an identity provider, pasting in the **Web** client ID from step 2
