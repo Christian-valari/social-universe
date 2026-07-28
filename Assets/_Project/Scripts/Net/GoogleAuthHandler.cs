@@ -68,27 +68,48 @@ namespace SocialUniverse.Net
             }
 
             // Play Games auth is callback-based; bridge it to the Task the callers
-            // (AuthScreen → AuthService) already await. Authenticate first, then
-            // request the server auth code. A non-Success status (DeveloperError =
-            // SHA-1/OAuth config; Canceled = user/config rejection; NetworkError)
-            // or an empty code faults the task, surfacing via AuthScreen's catch.
+            // (AuthScreen → AuthService) already await.
             var tcs = new TaskCompletionSource<string>();
-            GooglePlayGames.PlayGamesPlatform.Instance.Authenticate(status =>
-            {
-                if (status != GooglePlayGames.BasicApi.SignInStatus.Success)
-                {
-                    tcs.SetException(new InvalidOperationException(
-                        $"Google Play Games sign-in failed: {status}"));
-                    return;
-                }
+            var instance = GooglePlayGames.PlayGamesPlatform.Instance;
 
-                // forceRefreshToken:false — reuse the cached grant when possible.
-                GooglePlayGames.PlayGamesPlatform.Instance.RequestServerSideAccess(false, code =>
+            // Once authenticated, exchange for the one-time server auth code.
+            // forceRefreshToken:false — reuse the cached grant when possible. An
+            // empty code faults the task, surfacing via AuthScreen's catch.
+            void RequestServerAuthCode()
+            {
+                instance.RequestServerSideAccess(false, code =>
                 {
                     if (string.IsNullOrEmpty(code))
                         tcs.SetException(new InvalidOperationException("Google Play Games returned no server auth code"));
                     else
                         tcs.SetResult(code);
+                });
+            }
+
+            // Authenticate() performs only the SILENT/automatic sign-in and will
+            // NOT show any UI: on a fresh session it returns a non-Success status
+            // (typically SignInRequired, logged by GMS as "suppressed an interactive
+            // prompt / SIGN_IN_REQUIRED"). The interactive account picker only
+            // appears via ManuallyAuthenticate(), so fall back to it instead of
+            // faulting — this is the plugin's intended silent-then-manual pattern.
+            // A non-Success from the MANUAL attempt is a real failure (DeveloperError
+            // = SHA-1/OAuth config; Canceled = user dismissed / not a tester;
+            // NetworkError) and faults the task, surfacing via AuthScreen's catch.
+            instance.Authenticate(status =>
+            {
+                if (status == GooglePlayGames.BasicApi.SignInStatus.Success)
+                {
+                    RequestServerAuthCode();
+                    return;
+                }
+
+                instance.ManuallyAuthenticate(manualStatus =>
+                {
+                    if (manualStatus == GooglePlayGames.BasicApi.SignInStatus.Success)
+                        RequestServerAuthCode();
+                    else
+                        tcs.SetException(new InvalidOperationException(
+                            $"Google Play Games sign-in failed: {manualStatus}"));
                 });
             });
             return tcs.Task;
