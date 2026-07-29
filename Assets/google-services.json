@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "755339053737",
+    "project_id": "social-universe-abfdf",
+    "storage_bucket": "social-universe-abfdf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:755339053737:android:f1397d86027ea759e877b8",
+        "android_client_info": {
+          "package_name": "com.ValariSolutions.SocialUniverse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "755339053737-j04fvcl4vt292j6584fhb8490dv103cs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDD05qTaP-uiLtEJv4vKsjyfvolEtJQZQc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "755339053737-j04fvcl4vt292j6584fhb8490dv103cs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

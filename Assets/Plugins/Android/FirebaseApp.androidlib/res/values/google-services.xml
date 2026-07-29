@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id,@string/default_web_client_id">
+  <string name="gcm_defaultSenderId" translatable="false">755339053737</string>
+  <string name="google_storage_bucket" translatable="false">social-universe-abfdf.firebasestorage.app</string>
+  <string name="project_id" translatable="false">social-universe-abfdf</string>
+  <string name="google_api_key" translatable="false">AIzaSyDD05qTaP-uiLtEJv4vKsjyfvolEtJQZQc</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDD05qTaP-uiLtEJv4vKsjyfvolEtJQZQc</string>
+  <string name="google_app_id" translatable="false">1:755339053737:android:f1397d86027ea759e877b8</string>
+  <string name="default_web_client_id" translatable="false">755339053737-j04fvcl4vt292j6584fhb8490dv103cs.apps.googleusercontent.com</string>
+</resources>
