@@ -110,6 +110,10 @@ namespace SocialUniverse.Net
             {
                 string idToken = await FirebaseAuthHandler.GetFreshIdTokenAsync();
                 await BridgeToUgsAsync(idToken);
+                // Freshen verification status now so IsEmailVerified is accurate
+                // when BootState reads it right after — avoids sending someone
+                // who verified out-of-band into the Verify-panel detour.
+                await FirebaseAuthHandler.ReloadAndCheckVerifiedAsync();
                 SULog.Info($"Restored Firebase session (playerId: {PlayerId})", SULog.Channel.Net);
                 return true;
             }
@@ -132,9 +136,18 @@ namespace SocialUniverse.Net
 
         public async Task DeleteAccountAsync()
         {
-            // Delete both sides: Firebase identity and UGS account/data.
+            // Delete both sides: Firebase identity and UGS account/data. If the
+            // Firebase delete fails (e.g. requires a recent login), sign the
+            // Firebase user out anyway so a live Firebase session can never
+            // survive a failed delete and get re-bridged into the now-deleted
+            // UGS account on next launch (TryAutoSignInAsync would mint a
+            // duplicate PlayerId).
             try { await FirebaseAuthHandler.DeleteCurrentUserAsync(); }
-            catch (Exception ex) { SULog.Warn($"Firebase delete failed: {ex.Message}", SULog.Channel.Net); }
+            catch (Exception ex)
+            {
+                SULog.Warn($"Firebase delete failed: {ex.Message}", SULog.Channel.Net);
+                FirebaseAuthHandler.SignOut();
+            }
             await AuthenticationService.Instance.DeleteAccountAsync();
             AuthenticationService.Instance.SignOut(clearCredentials: true);
             SULog.Info("Account deleted (Firebase + UGS)", SULog.Channel.Net);

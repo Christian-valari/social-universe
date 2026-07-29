@@ -117,6 +117,9 @@ namespace SocialUniverse.UI
             if (!_auth.IsEmailVerified)
             {
                 SULog.Info("Auth: signed in but email unverified — awaiting verification", SULog.Channel.Net);
+                ShowPanel(AuthPanel.VerifyEmail);
+                _verifyStatusText.text = "Please verify your email — check your inbox for the link, then tap ‘I've verified’.";
+                SetBusy(false);
                 return;
             }
             SetBusy(false);
