@@ -305,7 +305,7 @@ namespace SocialUniverse.App
                     if (!string.IsNullOrEmpty(profile.DisplayName))
                         _playerState.SetDisplayName(profile.DisplayName);
 
-                    _playerState.SetEmailVerified(profile.EmailVerified);
+                    _playerState.SetEmailVerified(_auth.IsEmailVerified);
 
                     var catalogIds = _registry.AllAvatars.Select(a => a.AvatarId).ToList();
                     string resolvedAvatarId = AvatarAssignment.ResolveAvatarId(profile.AvatarId, catalogIds, n => UnityEngine.Random.Range(0, n));
@@ -323,7 +323,7 @@ namespace SocialUniverse.App
                         }
                     }
 
-                    if (!profile.EmailVerified)
+                    if (!_auth.IsEmailVerified)
                     {
                         string promptedKey = SaveKeys.EmailVerificationPromptedKey(_auth.PlayerId);
                         if (!PlayerPrefs.HasKey(promptedKey))

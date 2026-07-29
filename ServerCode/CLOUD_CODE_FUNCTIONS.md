@@ -1421,10 +1421,10 @@ module.exports = async ({ params, context, logger }) => {
 //
 // FIX: DataApi's constructor doesn't read a { headers: ... } field, and
 // getItems takes positional args (projectId, playerId, keys[]), not an
-// options object — same SDK-shape mismatch as Known Issue #6 (see
-// SaveEmail.js). The old call silently failed every time (caught below),
-// so `profile` was always null. DataApi(context) authenticates via the
-// service token, which is required to read another player's data.
+// options object — same SDK-shape mismatch as Known Issue #6. The old call
+// silently failed every time (caught below), so `profile` was always null.
+// DataApi(context) authenticates via the service token, which is required
+// to read another player's data.
 //
 // FIX 2: displayName no longer defaults to a synthetic "Pilot {id6}"
 // placeholder — it's null when the player hasn't saved a custom display
@@ -1674,127 +1674,14 @@ module.exports = async ({ params, context, logger }) => {
 
 ---
 
-### CheckEmailAvailable
+## Email verification, password reset, and email availability
 
-Registration pre-check: returns whether an email is free to register by querying the cross-player `email_lookup` index (written by `SaveEmail.js`) through the elevated Cloud Code DataApi. Same setup prerequisites as `RequestPasswordReset.js`: the `email_lookup` Cloud Save index (Player Data, Default access class) must exist, and values saved before the index was created are never matched (no backfill). Unlike `RequestPasswordReset`, this endpoint intentionally reveals whether an email is registered — that is its purpose (pre-registration duplicate check), and the same fact already leaks through sign-up's `ENTITY_EXISTS` response. Fails OPEN (`{ available: true }`) on query errors: sign-up's `ENTITY_EXISTS` remains the duplicate backstop, and a broken index shouldn't block all registrations.
-
-**Parameters:**
-
-| Name | Type | Required | Description |
-|---|---|---|---|
-| `email` | `string` | Yes | The email address to check for availability during registration. |
-
-```js
-// CheckEmailAvailable — registration pre-check: returns whether an email is
-// free to register, by querying the cross-player email_lookup index (written
-// by SaveEmail.js) through the elevated Cloud Code DataApi. Same setup
-// prerequisites as RequestPasswordReset.js: the "email_lookup" Cloud Save
-// index (Player Data, Default access class) must exist, and values saved
-// before the index was created are never matched (no backfill).
-//
-// Unlike RequestPasswordReset, this endpoint intentionally reveals whether an
-// email is registered — that is its purpose (pre-registration duplicate
-// check), and the same fact already leaks through sign-up's ENTITY_EXISTS.
-//
-// Fails OPEN ({ available: true }) on query errors: sign-up's ENTITY_EXISTS
-// remains the duplicate backstop, and a broken index shouldn't block all
-// registrations.
-const { DataApi } = require("@unity-services/cloud-save-1.4");
-
-const EMAIL_LOOKUP_KEY = "email_lookup"; // must match SaveEmail.js
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-/**
- * @param {string} email - The address the player wants to register with.
- */
-module.exports = async ({ params, context, logger }) => {
-  const email = (params.email ?? "").trim().toLowerCase();
-  if (!EMAIL_REGEX.test(email)) throw new Error("Invalid email address");
-
-  const { projectId } = context;
-  const saveApi = new DataApi(context);
-
-  try {
-    const res = await saveApi.queryDefaultPlayerData(projectId, {
-      // asc is mandatory on every query field (400 "asc must be specified"
-      // without it), even though sort order is irrelevant for an EQ match.
-      fields: [{ key: EMAIL_LOOKUP_KEY, op: "EQ", value: email, asc: true }],
-    });
-    const matches = res.data.results ?? [];
-    logger.info(`CheckEmailAvailable: ${matches.length} match(es)`);
-    return { available: matches.length === 0 };
-  } catch (err) {
-    const detail = err.response?.data ? JSON.stringify(err.response.data) : err.message;
-    logger.error(`CheckEmailAvailable: query FAILED (treating as available): ${detail}`);
-    return { available: true };
-  }
-};
-```
-
----
-
-### ClearPlayerEmail
-
-Clears the calling player's own email keys — the inverse of `SaveEmail`. Overwrites the cross-player `email_lookup` index value and the `player_profile.email` field with the null sentinel so the account no longer matches `CheckEmailAvailable` / `RequestPasswordReset`'s query. `AuthService.DeleteAccountAsync` calls this immediately before UGS `DeleteAccountAsync` (while the session token is still valid), because UGS deletes only the Authentication account and does **not** cascade-delete Cloud Save data — without this, a cancelled registration would leave an orphaned `email_lookup` row that reports the email as taken forever (the login-key identity is gone, so sign-up's `ENTITY_EXISTS` backstop can never fire either). Uses the null-sentinel overwrite pattern (no `deleteItem` precedent — see `ConfirmPasswordReset` / `ConfirmEmailVerificationCode`).
-
-**Parameters:** none (operates on the caller)
-
-```js
-// ClearPlayerEmail — clears the CALLING player's own email keys. The inverse of
-// SaveEmail.js: it overwrites the reverse-lookup "email_lookup" index value and
-// the "player_profile.email" field with the null sentinel so the account no
-// longer matches CheckEmailAvailable / RequestPasswordReset's cross-player
-// query.
-//
-// WHY: UGS AuthenticationService.DeleteAccountAsync() deletes only the
-// Authentication account — it does NOT cascade-delete Cloud Save data. Without
-// this, a cancelled registration leaves an orphaned email_lookup row that keeps
-// reporting the email as taken forever (the login-key identity is gone, so
-// sign-up's ENTITY_EXISTS backstop can never fire either). AuthService calls
-// this immediately before DeleteAccountAsync, while the session token is still
-// valid.
-//
-// FIX: DataApi's constructor doesn't read a { headers: ... } field, and
-// getItems/setItem take positional args (projectId, playerId, keys[])/
-// (projectId, playerId, { key, value }), not an options object — same
-// SDK-shape mismatch documented as Known Issue #6 (see SaveEmail.js).
-// No deleteItem precedent exists in this codebase's Cloud Code functions
-// (see ConfirmPasswordReset.js / ConfirmEmailVerificationCode.js) — this
-// overwrites the records with a null sentinel rather than assuming a delete
-// call exists on this SDK version. DataApi(context) authenticates as the
-// calling player via the service token.
-const { DataApi } = require("@unity-services/cloud-save-1.4");
-
-const PROFILE_KEY      = "player_profile";
-const EMAIL_LOOKUP_KEY = "email_lookup"; // must match SaveEmail.js
-
-/**
- * No parameters — operates on the caller (context.playerId).
- */
-module.exports = async ({ context, logger }) => {
-  const { projectId, playerId } = context;
-  if (!playerId) {
-    throw new Error("Unauthorized: playerId missing from Cloud Code context — player must be authenticated");
-  }
-  const saveApi = new DataApi(context);
-
-  // Clear the cross-player reverse-lookup index value.
-  await saveApi.setItem(projectId, playerId, { key: EMAIL_LOOKUP_KEY, value: null });
-
-  // Clear the email fields on the profile, preserving any other profile data.
-  let profile = {};
-  try {
-    const res  = await saveApi.getItems(projectId, playerId, [PROFILE_KEY]);
-    const item = res.data.results.find(r => r.key === PROFILE_KEY);
-    if (item?.value) profile = typeof item.value === "string" ? JSON.parse(item.value) : item.value;
-  } catch (_) { /* no profile yet — nothing to clear */ }
-
-  profile.email         = null;
-  profile.emailVerified = false;
-  profile.updatedMs     = Date.now();
-  await saveApi.setItem(projectId, playerId, { key: PROFILE_KEY, value: profile });
-
-  logger.info(`ClearPlayerEmail: email keys cleared for ${playerId}`);
-  return { success: true };
-};
-```
+These are now handled entirely by Firebase Authentication on the client
+(`FirebaseAuthHandler`, behind `IAuthService`) — not by Cloud Code. The
+functions formerly listed here (`SaveEmail`, `CheckEmailAvailable`,
+`RequestPasswordReset`, `ConfirmPasswordReset`, `RequestEmailVerificationCode`,
+`ConfirmEmailVerificationCode`, `ClearPlayerEmail`, and the diagnostic
+`TestFindPlayerByEmail`) have been deleted along with the cross-player
+`email_lookup` Cloud Save index/query they depended on. `GetPlayerProfile`'s
+`emailVerified` field was removed for the same reason — the client now reads
+`IAuthService.IsEmailVerified` directly.

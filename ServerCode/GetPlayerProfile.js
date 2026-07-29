@@ -5,10 +5,10 @@
 //
 // FIX: DataApi's constructor doesn't read a { headers: ... } field, and
 // getItems takes positional args (projectId, playerId, keys[]), not an
-// options object — same SDK-shape mismatch as Known Issue #6 (see
-// SaveEmail.js). The old call silently failed every time (caught below),
-// so `profile` was always null. DataApi(context) authenticates via the
-// service token, which is required to read another player's data.
+// options object — same SDK-shape mismatch as Known Issue #6. The old call
+// silently failed every time (caught below), so `profile` was always null.
+// DataApi(context) authenticates via the service token, which is required
+// to read another player's data.
 //
 // FIX 2: displayName no longer defaults to a synthetic "Pilot {id6}"
 // placeholder — it's null when the player hasn't saved a custom display
@@ -58,7 +58,6 @@ module.exports = async ({ params, context, logger }) => {
     level:        profile?.level ?? 1,
     xp:           profile?.xp ?? 0,
     badges:       profile?.badges ?? [],
-    tilesOwned,
-    emailVerified: profile?.emailVerified ?? false
+    tilesOwned
   };
 };
