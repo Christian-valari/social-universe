@@ -4,12 +4,11 @@ using SocialUniverse.Net;
 
 namespace SocialUniverse.Tests
 {
-    // Exercises the in-memory LocalMockAuthService: email-verification codes,
-    // anonymous-session semantics and the "already signed in" guard that mirrors
-    // UGS (a live session blocks email/SSO sign-in until SignOutAsync),
-    // anonymous-to-account upgrade on register, email availability, account
-    // deletion, and session restore. The UGS-backed AuthService is a thin
-    // SDK/Cloud-Code wrapper verified in PlayMode.
+    // Exercises the in-memory LocalMockAuthService against the Firebase + UGS OIDC
+    // contract: email-verification link state, the "already signed in" guard that
+    // mirrors UGS (a live session blocks email/SSO sign-in until SignOutAsync),
+    // account deletion, session restore, and deterministic Google identity. The
+    // UGS/Firebase-backed AuthService is a thin SDK wrapper verified in PlayMode.
     public class LocalMockAuthServiceTests
     {
         private LocalMockAuthService _auth;
@@ -24,55 +23,36 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
-        public async Task Confirming_with_correct_code_after_request_succeeds()
+        public async Task Registered_user_starts_unverified_then_verifies()
         {
-            await _auth.RequestEmailVerificationCodeAsync();
-
-            Assert.DoesNotThrowAsync(async () =>
-                await _auth.ConfirmEmailVerificationCodeAsync("123456"));
+            await _auth.RegisterAsync("Player1", "Passw0rd!", "v@example.com");
+            Assert.IsFalse(_auth.IsEmailVerified);
+            Assert.IsTrue(await _auth.ReloadAndCheckVerifiedAsync());
+            Assert.IsTrue(_auth.IsEmailVerified);
         }
 
         [Test]
-        public void Confirming_without_requesting_first_throws()
+        public void Apple_sign_in_is_not_supported()
         {
-            Assert.ThrowsAsync<System.InvalidOperationException>(async () =>
-                await _auth.ConfirmEmailVerificationCodeAsync("123456"));
+            Assert.ThrowsAsync<System.NotSupportedException>(async () =>
+                await _auth.SignInWithAppleAsync("token"));
         }
 
         [Test]
-        public async Task Confirming_with_wrong_code_throws()
+        public async Task First_google_sign_in_has_no_display_name()
         {
-            await _auth.RequestEmailVerificationCodeAsync();
-
-            Assert.ThrowsAsync<System.InvalidOperationException>(async () =>
-                await _auth.ConfirmEmailVerificationCodeAsync("000000"));
+            await _auth.SignInWithGoogleAsync();
+            Assert.IsNull(_auth.DisplayName);
         }
 
         [Test]
-        public async Task Code_is_single_use()
-        {
-            await _auth.RequestEmailVerificationCodeAsync();
-            await _auth.ConfirmEmailVerificationCodeAsync("123456");
-
-            Assert.ThrowsAsync<System.InvalidOperationException>(async () =>
-                await _auth.ConfirmEmailVerificationCodeAsync("123456"));
-        }
-
-        [Test]
-        public async Task Anonymous_sign_in_is_reported_anonymous()
-        {
-            await _auth.SignInAnonymouslyAsync();
-            Assert.IsTrue(_auth.IsAnonymous);
-        }
-
-        [Test]
-        public async Task Email_sign_in_over_a_live_anonymous_session_throws()
+        public async Task Email_sign_in_over_a_live_session_throws()
         {
             // Await the async call directly rather than wrapping it in a blocking
             // assertion helper: those helpers block the Unity main thread while
             // the mock's Task.Delay continuation is posted back to it, deadlocking
             // the EditMode run.
-            await _auth.SignInAnonymouslyAsync();
+            await _auth.SignInWithGoogleAsync();
             try
             {
                 await _auth.SignInWithEmailAsync("someone@example.com", "Passw0rd!");
@@ -85,41 +65,16 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
-        public async Task Signing_out_the_anonymous_session_lets_email_sign_in_succeed()
+        public async Task Signing_out_lets_email_sign_in_succeed()
         {
             // Establish a real account, then sign out so its record persists.
             await _auth.RegisterAsync("Player1", "Passw0rd!", "back@example.com");
-            await _auth.SignOutAsync();
-
-            // A throwaway anonymous transport session (as a registration pre-check
-            // or forgot-password flow leaves behind), then the Fix-1 cleanup
-            // AuthScreen performs before signing in for real.
-            await _auth.SignInAnonymouslyAsync();
             await _auth.SignOutAsync();
 
             // Await directly — an unexpected exception fails the test on its own,
             // and a blocking assertion helper would deadlock the run.
             await _auth.SignInWithEmailAsync("back@example.com", "Passw0rd!");
             Assert.IsTrue(_auth.IsSignedIn);
-            Assert.IsFalse(_auth.IsAnonymous);
-        }
-
-        [Test]
-        public async Task Email_availability_reflects_registration()
-        {
-            Assert.IsTrue(await _auth.IsEmailAvailableAsync("new@example.com"));
-            await _auth.RegisterAsync("Player1", "Passw0rd!", "new@example.com");
-            Assert.IsFalse(await _auth.IsEmailAvailableAsync("New@Example.com")); // case-insensitive
-        }
-
-        [Test]
-        public async Task Registering_over_an_anonymous_session_upgrades_it()
-        {
-            await _auth.SignInAnonymouslyAsync();
-            string anonId = _auth.PlayerId;
-            await _auth.RegisterAsync("Player1", "Passw0rd!", "up@example.com");
-            Assert.AreEqual(anonId, _auth.PlayerId);   // same account, upgraded
-            Assert.IsFalse(_auth.IsAnonymous);
         }
 
         [Test]
@@ -128,46 +83,23 @@ namespace SocialUniverse.Tests
             await _auth.RegisterAsync("Player1", "Passw0rd!", "del@example.com");
             await _auth.DeleteAccountAsync();
             Assert.IsFalse(_auth.IsSignedIn);
-            Assert.IsTrue(await _auth.IsEmailAvailableAsync("del@example.com"));
-        }
 
-        [Test]
-        public async Task Restored_session_remembers_it_was_anonymous()
-        {
-            await _auth.SignInAnonymouslyAsync();
-            var restored = new LocalMockAuthService();
-            await restored.TryAutoSignInAsync();
-            Assert.IsTrue(restored.IsAnonymous);
-            await restored.SignOutAsync();
-        }
-
-        [Test]
-        public async Task First_google_sign_in_has_no_display_name()
-        {
-            await _auth.SignInWithGoogleAsync("token");
-            Assert.IsNull(_auth.DisplayName);
+            // The email record is freed: re-registering the same address succeeds.
+            // Awaited directly — a blocking assertion wrapper around a call with an
+            // internal Task.Delay would deadlock the EditMode main thread.
+            await _auth.RegisterAsync("Player2", "Passw0rd!", "del@example.com");
+            Assert.IsTrue(_auth.IsSignedIn);
         }
 
         [Test]
         public async Task Choosing_a_name_then_signing_back_in_with_google_recalls_it()
         {
-            await _auth.SignInWithGoogleAsync("token");
+            await _auth.SignInWithGoogleAsync();
             await _auth.UpdateDisplayNameAsync("Nova");
             await _auth.SignOutAsync();
 
-            await _auth.SignInWithGoogleAsync("token");
+            await _auth.SignInWithGoogleAsync();
             Assert.AreEqual("Nova", _auth.DisplayName);
-        }
-
-        [Test]
-        public async Task Google_and_apple_mock_identities_are_independent()
-        {
-            await _auth.SignInWithGoogleAsync("token");
-            await _auth.UpdateDisplayNameAsync("Nova");
-            await _auth.SignOutAsync();
-
-            await _auth.SignInWithAppleAsync("token");
-            Assert.IsNull(_auth.DisplayName);
         }
     }
 }
