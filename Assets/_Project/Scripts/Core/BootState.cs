@@ -43,24 +43,15 @@ namespace SocialUniverse.Core
             if (!_auth.IsSignedIn)
                 await _auth.TryAutoSignInAsync();
 
-            // A leftover anonymous session (app killed mid-registration or
-            // mid-password-reset before the quit-time sign-out ran) must never
-            // walk into the game: guest play was removed, and anonymous sessions
-            // exist only as a Cloud Code transport inside the Auth scene flows.
-            // Signing out (credentials cleared) drops us into the normal
-            // Auth-scene path below.
-            if (_auth.IsSignedIn && _auth.IsAnonymous)
-            {
-                SULog.Info("Boot: restored session is anonymous — signing out");
-                await _auth.SignOutAsync();
-            }
-
-            // A restored SSO session with no display name yet means the app
-            // was quit while gated at AuthScreen's choose-name panel — route
-            // through the Auth scene (below) instead of publishing
-            // PlayerReadyEvent directly, so HandleSignedIn can show the panel
-            // again rather than letting a nameless account into the game.
-            if (_auth.IsSignedIn && !string.IsNullOrEmpty(_auth.DisplayName))
+            // A restored session with no display name yet means the app was quit
+            // while gated at AuthScreen's choose-name panel — route through the
+            // Auth scene (below) instead of publishing PlayerReadyEvent directly,
+            // so HandleSignedIn can show the panel again rather than letting a
+            // nameless account into the game. Also require a verified email:
+            // Google accounts report IsEmailVerified true, while an unverified
+            // email account reports false and must be routed through the Auth
+            // scene rather than entering the game.
+            if (_auth.IsSignedIn && _auth.IsEmailVerified && !string.IsNullOrEmpty(_auth.DisplayName))
             {
                 SULog.Info("Boot: session restored, skipping Auth scene");
                 // AuthScreen normally publishes this on sign-in to bring chat/friends

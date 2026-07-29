@@ -36,12 +36,13 @@ namespace SocialUniverse.UI
 
         public void Open()
         {
-            _codeInput.text  = "";
             _statusText.text = "";
             bool verified = _playerState.IsEmailVerified;
             _sendCodeButton.gameObject.SetActive(!verified);
             _verifyButton  .gameObject.SetActive(!verified);
-            _codeInput     .gameObject.SetActive(!verified);
+            // Firebase verification is link-based; the OTP code entry is retired.
+            // The serialized field is kept for prefab stability but always hidden.
+            if (_codeInput != null) _codeInput.gameObject.SetActive(false);
             _statusText.text = verified ? "Your email is verified." : "";
             _audio.PlaySfx(SfxId.OpenPanel);
             gameObject.SetActive(true);
@@ -56,11 +57,11 @@ namespace SocialUniverse.UI
         private async void OnSendCodeClicked()
         {
             SetBusy(true);
-            _statusText.text = "Sending verification code…";
+            _statusText.text = "Sending verification email…";
             try
             {
-                await _auth.RequestEmailVerificationCodeAsync();
-                _statusText.text = "Verification code sent — check your email (mock code: 123456)";
+                await _auth.SendEmailVerificationAsync();
+                _statusText.text = "Verification email sent — check your inbox and click the link";
             }
             catch (Exception ex)
             {
@@ -74,23 +75,22 @@ namespace SocialUniverse.UI
 
         private async void OnVerifyClicked()
         {
-            string code = _codeInput.text.Trim();
-            if (string.IsNullOrWhiteSpace(code))
-            {
-                _statusText.text = "Enter the verification code sent to your email";
-                return;
-            }
-
             SetBusy(true);
-            _statusText.text = "Verifying…";
+            _statusText.text = "Checking…";
             try
             {
-                await _auth.ConfirmEmailVerificationCodeAsync(code);
-                _playerState.SetEmailVerified(true);
-                _statusText.text = "Your email is verified.";
-                _sendCodeButton.gameObject.SetActive(false);
-                _verifyButton  .gameObject.SetActive(false);
-                _codeInput     .gameObject.SetActive(false);
+                if (await _auth.ReloadAndCheckVerifiedAsync())
+                {
+                    _playerState.SetEmailVerified(true);
+                    _statusText.text = "Your email is verified.";
+                    _sendCodeButton.gameObject.SetActive(false);
+                    _verifyButton  .gameObject.SetActive(false);
+                    if (_codeInput != null) _codeInput.gameObject.SetActive(false);
+                }
+                else
+                {
+                    _statusText.text = "Not verified yet — click the link in your email, then try again";
+                }
             }
             catch (Exception ex)
             {

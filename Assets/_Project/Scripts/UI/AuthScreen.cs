@@ -1,23 +1,19 @@
 using System;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
 using SocialUniverse.Core;
-using SocialUniverse.Net;
 
 namespace SocialUniverse.UI
 {
     public class AuthScreen : MonoBehaviour
     {
-        private enum AuthPanel { Login, Register, ForgotPasswordEmail, ForgotPasswordReset, ResetSuccess, VerifyEmail }
+        private enum AuthPanel { Login, Register, ForgotPasswordEmail, VerifyEmail }
 
         // --- Panels ---
         [SerializeField] private GameObject _loginPanel;
         [SerializeField] private GameObject _registerPanel;
         [SerializeField] private GameObject _forgotEmailPanel;
-        [SerializeField] private GameObject _forgotResetPanel;
-        [SerializeField] private GameObject _resetSuccessPanel;
         [SerializeField] private GameObject _verifyEmailPanel;
 
         // --- Login panel ---
@@ -38,35 +34,20 @@ namespace SocialUniverse.UI
         [SerializeField] private Button     _registerButton;
         [SerializeField] private Button     _goToLoginButton;
 
-        // --- Forgot password: email panel ---
+        // --- Forgot password: email panel (single-step Firebase reset link) ---
         [SerializeField] private InputField _forgotEmailField;
         [SerializeField] private Text       _forgotEmailStatusText;
         [SerializeField] private Button     _sendResetCodeButton;
         [SerializeField] private Button     _forgotBackToLoginButton;
 
-        // --- Forgot password: reset panel ---
-        [SerializeField] private InputField _forgotCodeField;
-        [SerializeField] private InputField _forgotNewPasswordField;
-        [SerializeField] private InputField _forgotConfirmField;
-        [SerializeField] private Text       _forgotResetStatusText;
-        [SerializeField] private Button     _resetPasswordButton;
-        [SerializeField] private Button     _forgotResetBackButton;
-
-        // --- Reset success panel ---
-        [SerializeField] private Button     _resetSuccessBackButton;
-
-        // --- Verify email panel ---
-        [SerializeField] private InputField _verifyCodeField;
-        [SerializeField] private Text       _verifyStatusText;
-        [SerializeField] private Button     _verifyButton;
-        [SerializeField] private Button     _resendCodeButton;
-        [SerializeField] private Button     _verifyCancelButton;
+        // --- Verify email panel (link-based Firebase verification) ---
+        [SerializeField] private Text   _verifyStatusText;
+        [SerializeField] private Button _verifyButton;      // "I've verified my email"
+        [SerializeField] private Button _resendCodeButton;  // "Resend email"
+        [SerializeField] private Button _verifyCancelButton;
 
         private IAuthService _auth;
         private bool         _busy;
-        private bool         _suppressAutoTransition;
-        private bool         _pendingVerification; // account created, email not yet verified
-        private string       _pendingResetEmail;   // captured on the send-code panel for the reset call
 
         [Inject]
         public void Construct(IAuthService auth) => _auth = auth;
@@ -84,10 +65,7 @@ namespace SocialUniverse.UI
             if (_googleButton            != null) _googleButton           .onClick.AddListener(OnGoogleClicked);
             if (_forgotPasswordButton    != null) _forgotPasswordButton   .onClick.AddListener(() => ShowPanel(AuthPanel.ForgotPasswordEmail));
             if (_forgotBackToLoginButton != null) _forgotBackToLoginButton.onClick.AddListener(() => ShowPanel(AuthPanel.Login));
-            if (_forgotResetBackButton   != null) _forgotResetBackButton  .onClick.AddListener(() => ShowPanel(AuthPanel.ForgotPasswordEmail));
             if (_sendResetCodeButton     != null) _sendResetCodeButton    .onClick.AddListener(OnSendResetCodeClicked);
-            if (_resetSuccessBackButton  != null) _resetSuccessBackButton .onClick.AddListener(() => ShowPanel(AuthPanel.Login));
-            if (_resetPasswordButton     != null) _resetPasswordButton    .onClick.AddListener(OnResetPasswordClicked);
             if (_verifyButton            != null) _verifyButton           .onClick.AddListener(OnVerifyClicked);
             if (_resendCodeButton        != null) _resendCodeButton       .onClick.AddListener(OnResendCodeClicked);
             if (_verifyCancelButton      != null) _verifyCancelButton     .onClick.AddListener(OnVerifyCancelClicked);
@@ -105,15 +83,14 @@ namespace SocialUniverse.UI
             _auth.OnSignInFailed -= HandleSignInFailed;
         }
 
-        // Desktop/editor quits: drop any session that must not survive into the
-        // next launch — the throwaway anonymous Cloud Code session, or a freshly
-        // registered account whose email was never verified. Mobile swipe-kills
-        // skip this callback entirely; BootState's IsAnonymous guard is the
-        // safety net there.
+        // Desktop/editor quits: drop a freshly-registered account whose email was
+        // never verified so it can't be resumed into the game on next launch.
+        // Mobile swipe-kills skip this callback; BootState's IsEmailVerified gate
+        // is the safety net there.
         private void OnApplicationQuit()
         {
             if (_auth == null || !_auth.IsSignedIn) return;
-            if (_auth.IsAnonymous || _pendingVerification)
+            if (!_auth.IsEmailVerified)
                 _ = _auth.SignOutAsync();
         }
 
@@ -122,31 +99,24 @@ namespace SocialUniverse.UI
             _loginPanel   .SetActive(panel == AuthPanel.Login);
             _registerPanel.SetActive(panel == AuthPanel.Register);
             if (_forgotEmailPanel != null) _forgotEmailPanel.SetActive(panel == AuthPanel.ForgotPasswordEmail);
-            if (_forgotResetPanel != null) _forgotResetPanel.SetActive(panel == AuthPanel.ForgotPasswordReset);
-            if (_resetSuccessPanel != null) _resetSuccessPanel.SetActive(panel == AuthPanel.ResetSuccess);
             if (_verifyEmailPanel != null) _verifyEmailPanel.SetActive(panel == AuthPanel.VerifyEmail);
 
             _loginStatusText.text = "";
             _regStatusText  .text = "";
             if (_forgotEmailStatusText != null) _forgotEmailStatusText.text = "";
-            if (_forgotResetStatusText != null) _forgotResetStatusText.text = "";
             if (_verifyStatusText      != null) _verifyStatusText     .text = "";
-
-            // Leaving a flow for the Login panel ends any in-flight registration
-            // suppression; the flows themselves manage the flag while active.
-            if (panel == AuthPanel.Login)
-                _suppressAutoTransition = false;
         }
 
         // -------------------------------------------------------------------------
         private void HandleSignedIn()
         {
-            if (_suppressAutoTransition) return;
-            // Anonymous sessions are a Cloud Code transport, never a player:
-            // guest play was removed, so nothing anonymous may enter the game.
-            if (_auth.IsAnonymous)
+            // Every UGS sign-in (login, register's OIDC bridge, Google) raises this.
+            // An unverified email account must never enter the game — the Verify
+            // panel drives it to completion. Google accounts report a verified
+            // email and advance immediately.
+            if (!_auth.IsEmailVerified)
             {
-                SULog.Warn("Auth: anonymous session may not enter the game — ignoring sign-in", SULog.Channel.Net);
+                SULog.Info("Auth: signed in but email unverified — awaiting verification", SULog.Channel.Net);
                 return;
             }
             SetBusy(false);
@@ -158,20 +128,6 @@ namespace SocialUniverse.UI
         {
             SetActiveStatus(FriendlyError(ex));
             SetBusy(false);
-        }
-
-        // Cloud Code calls require an authenticated UGS session even before an
-        // account exists — CheckEmailAvailable and the password-reset functions
-        // fail with PlayerIdMissing otherwise. Silently establishes an anonymous
-        // session if none exists yet. Preserves the caller's suppression state
-        // instead of clobbering it: registration holds the flag across this call.
-        private async Task EnsureSessionAsync()
-        {
-            if (_auth.IsSignedIn) return;
-            bool prev = _suppressAutoTransition;
-            _suppressAutoTransition = true;
-            try   { await _auth.SignInAnonymouslyAsync(); }
-            finally { _suppressAutoTransition = prev; }
         }
 
         // -------------------------------------------------------------------------
@@ -195,12 +151,15 @@ namespace SocialUniverse.UI
             _loginStatusText.text = "Signing in…";
             try
             {
-                // A registration pre-check or forgot-password flow may have left
-                // a throwaway anonymous transport session alive; UGS's
-                // SignInWithUsernamePasswordAsync throws "already signed in" over
-                // it. Drop it before signing in for real.
-                if (_auth.IsSignedIn && _auth.IsAnonymous) await _auth.SignOutAsync();
                 await _auth.SignInWithEmailAsync(email, password);
+                // Verified accounts advance via HandleSignedIn; an unverified
+                // account signed in here must finish verification first.
+                if (!_auth.IsEmailVerified)
+                {
+                    ShowPanel(AuthPanel.VerifyEmail);
+                    _verifyStatusText.text = "Your email isn't verified yet — check your inbox or resend the link";
+                    SetBusy(false);
+                }
             }
             catch (Exception ex) { _loginStatusText.text = FriendlyError(ex); SetBusy(false); }
         }
@@ -209,17 +168,8 @@ namespace SocialUniverse.UI
         {
             SetBusy(true);
             _loginStatusText.text = "Signing in with Google…";
-            try
-            {
-                // Same anonymous-transport cleanup as OnLoginClicked: UGS rejects
-                // an SSO sign-in over a live anonymous session with "already
-                // signed in".
-                if (_auth.IsSignedIn && _auth.IsAnonymous) await _auth.SignOutAsync();
-                string idToken;
-                try   { idToken = await GoogleAuthHandler.GetIdTokenAsync(); }
-                catch (NotSupportedException) { idToken = "mock_google_token"; }
-                await _auth.SignInWithGoogleAsync(idToken);
-            }
+            try { await _auth.SignInWithGoogleAsync(); }
+            catch (NotSupportedException) { _loginStatusText.text = "Google sign-in isn't available here"; SetBusy(false); }
             catch (Exception ex) { _loginStatusText.text = FriendlyError(ex); SetBusy(false); }
         }
 
@@ -252,101 +202,52 @@ namespace SocialUniverse.UI
             }
 
             SetBusy(true);
-            // Raised for the whole registration flow: the anonymous pre-check
-            // session and the account upgrade both fire sign-in signals that
-            // must not advance to the game — only a verified email does (see
-            // OnVerifyClicked). Cleared on verify success, cancel, or returning
-            // to the Login panel.
-            _suppressAutoTransition = true;
+            _regStatusText.text = "Creating account…";
             try
             {
-                _regStatusText.text = "Checking email…";
-                await EnsureSessionAsync();
-                if (!await _auth.IsEmailAvailableAsync(email))
-                {
-                    _regStatusText.text = "An account with that email already exists";
-                    SetBusy(false);
-                    return;
-                }
-
-                _regStatusText.text = "Creating account…";
+                // AuthService.RegisterAsync creates the Firebase account, bridges
+                // to UGS, and sends the verification email. The sign-in it triggers
+                // is gated in HandleSignedIn (unverified accounts don't advance).
                 await _auth.RegisterAsync(username, password, email);
-                _pendingVerification = true;
-
                 ShowPanel(AuthPanel.VerifyEmail);
-                await SendVerificationCodeAsync();
+                _verifyStatusText.text = "Account created — check your email and click the verification link";
+                SetBusy(false);
             }
             catch (Exception ex)
             {
-                // If the UGS account was already created (AddUsernamePassword/
-                // SignUpWithUsernamePassword succeeded) but a later awaited step
-                // threw, the session is live and non-anonymous. Staying on the
-                // Register panel would strand it: a retry hits "already signed
-                // in" and so does Login. Advance to the Verify panel instead —
-                // Resend covers a code that was never sent, Cancel deletes the
-                // account.
-                if (_auth.IsSignedIn && !_auth.IsAnonymous)
-                {
-                    _pendingVerification = true;
-                    ShowPanel(AuthPanel.VerifyEmail);
-                    _verifyStatusText.text = FriendlyError(ex);
-                    SetBusy(false);
-                }
-                else
-                {
-                    _regStatusText.text = FriendlyError(ex);
-                    SetBusy(false);
-                }
+                _regStatusText.text = FriendlyError(ex);
+                SetBusy(false);
             }
         }
 
         // -------------------------------------------------------------------------
-        private async Task SendVerificationCodeAsync()
+        private async void OnVerifyClicked() // button relabelled "I've verified my email"
         {
             SetBusy(true);
-            _verifyStatusText.text = "Sending verification code…";
+            _verifyStatusText.text = "Checking…";
             try
             {
-                await _auth.RequestEmailVerificationCodeAsync();
-                _verifyStatusText.text = "Verification code sent — check your email";
+                if (await _auth.ReloadAndCheckVerifiedAsync())
+                {
+                    SetBusy(false);
+                    SULog.Info("Auth: email verified — advancing to game", SULog.Channel.Net);
+                    EventBus.Publish(new PlayerReadyEvent());
+                }
+                else
+                {
+                    _verifyStatusText.text = "Not verified yet — click the link in your email, then try again";
+                    SetBusy(false);
+                }
             }
-            catch (Exception ex)
-            {
-                _verifyStatusText.text = FriendlyError(ex);
-            }
-            finally
-            {
-                SetBusy(false);
-            }
+            catch (Exception ex) { _verifyStatusText.text = FriendlyError(ex); SetBusy(false); }
         }
 
-        private async void OnResendCodeClicked() => await SendVerificationCodeAsync();
-
-        private async void OnVerifyClicked()
+        private async void OnResendCodeClicked() // "Resend email"
         {
-            string code = _verifyCodeField.text.Trim();
-            if (string.IsNullOrWhiteSpace(code))
-            {
-                _verifyStatusText.text = "Enter the verification code sent to your email";
-                return;
-            }
-
             SetBusy(true);
-            _verifyStatusText.text = "Verifying…";
-            try
-            {
-                await _auth.ConfirmEmailVerificationCodeAsync(code);
-                _pendingVerification    = false;
-                _suppressAutoTransition = false;
-                SetBusy(false);
-                SULog.Info("Auth: email verified — advancing to game", SULog.Channel.Net);
-                EventBus.Publish(new PlayerReadyEvent());
-            }
-            catch (Exception ex)
-            {
-                _verifyStatusText.text = FriendlyError(ex);
-                SetBusy(false);
-            }
+            try { await _auth.SendEmailVerificationAsync(); _verifyStatusText.text = "Verification email sent"; }
+            catch (Exception ex) { _verifyStatusText.text = FriendlyError(ex); }
+            finally { SetBusy(false); }
         }
 
         private async void OnVerifyCancelClicked()
@@ -365,7 +266,6 @@ namespace SocialUniverse.UI
                 SULog.Warn($"Auth: account deletion failed ({ex.Message}) — signing out instead", SULog.Channel.Net);
                 try { await _auth.SignOutAsync(); } catch { /* best effort */ }
             }
-            _pendingVerification = false;
             SetBusy(false);
             ShowPanel(AuthPanel.Login);
             _loginStatusText.text = "Registration cancelled — the unverified account was removed";
@@ -382,14 +282,12 @@ namespace SocialUniverse.UI
             }
 
             SetBusy(true);
-            _forgotEmailStatusText.text = "Sending reset code…";
+            _forgotEmailStatusText.text = "Sending reset link…";
             try
             {
-                await EnsureSessionAsync();
                 await _auth.RequestPasswordResetAsync(email);
-                _pendingResetEmail = email;
-                ShowPanel(AuthPanel.ForgotPasswordReset);
-                _forgotResetStatusText.text = "Reset code sent — check your email";
+                ShowPanel(AuthPanel.Login);
+                _loginStatusText.text = "Password reset link sent — check your email";
             }
             catch (Exception ex)
             {
@@ -401,65 +299,18 @@ namespace SocialUniverse.UI
             }
         }
 
-        private async void OnResetPasswordClicked()
-        {
-            string code        = _forgotCodeField.text.Trim();
-            string newPassword = _forgotNewPasswordField.text;
-            string confirm     = _forgotConfirmField.text;
-
-            if (string.IsNullOrWhiteSpace(code))
-            {
-                _forgotResetStatusText.text = "Enter the reset code from your email";
-                return;
-            }
-            if (!ValidatePassword(newPassword, out string passErr))
-            {
-                _forgotResetStatusText.text = passErr;
-                return;
-            }
-            if (newPassword != confirm)
-            {
-                _forgotResetStatusText.text = "Passwords do not match";
-                return;
-            }
-
-            SetBusy(true);
-            _forgotResetStatusText.text = "Resetting password…";
-            try
-            {
-                await EnsureSessionAsync();
-                await _auth.ConfirmPasswordResetAsync(_pendingResetEmail, code, newPassword);
-                // The reset ran on a throwaway anonymous session — drop it now,
-                // or the upcoming email login throws UGS's "already signed in".
-                if (_auth.IsAnonymous)
-                    await _auth.SignOutAsync();
-                ShowPanel(AuthPanel.ResetSuccess);
-            }
-            catch (Exception ex)
-            {
-                _forgotResetStatusText.text = FriendlyError(ex);
-            }
-            finally
-            {
-                SetBusy(false);
-            }
-        }
-
         // -------------------------------------------------------------------------
         private void SetBusy(bool busy)
         {
             _busy = busy;
-            _loginButton       .interactable = !busy;
-            _registerButton    .interactable = !busy;
+            _loginButton   .interactable = !busy;
+            _registerButton.interactable = !busy;
             if (_googleButton            != null) _googleButton           .interactable = !busy;
             if (_goToRegisterButton      != null) _goToRegisterButton     .interactable = !busy;
             if (_goToLoginButton         != null) _goToLoginButton        .interactable = !busy;
             if (_forgotPasswordButton    != null) _forgotPasswordButton   .interactable = !busy;
             if (_forgotBackToLoginButton != null) _forgotBackToLoginButton.interactable = !busy;
-            if (_forgotResetBackButton   != null) _forgotResetBackButton  .interactable = !busy;
             if (_sendResetCodeButton     != null) _sendResetCodeButton    .interactable = !busy;
-            if (_resetPasswordButton     != null) _resetPasswordButton    .interactable = !busy;
-            if (_resetSuccessBackButton  != null) _resetSuccessBackButton .interactable = !busy;
             if (_verifyButton            != null) _verifyButton           .interactable = !busy;
             if (_resendCodeButton        != null) _resendCodeButton       .interactable = !busy;
             if (_verifyCancelButton      != null) _verifyCancelButton     .interactable = !busy;
@@ -473,8 +324,6 @@ namespace SocialUniverse.UI
                 _regStatusText.text = message;
             else if (_forgotEmailPanel != null && _forgotEmailPanel.activeSelf && _forgotEmailStatusText != null)
                 _forgotEmailStatusText.text = message;
-            else if (_forgotResetPanel != null && _forgotResetPanel.activeSelf && _forgotResetStatusText != null)
-                _forgotResetStatusText.text = message;
             else if (_verifyEmailPanel != null && _verifyEmailPanel.activeSelf && _verifyStatusText != null)
                 _verifyStatusText.text = message;
         }
@@ -543,22 +392,10 @@ namespace SocialUniverse.UI
         private static string FriendlyError(Exception ex)
         {
             string msg = ex.Message;
-            if (msg.Contains("already exists") || msg.Contains("already taken") || msg.Contains("EntityExists") || msg.Contains("ENTITY_EXISTS"))
+            if (msg.Contains("already exists") || msg.Contains("already taken") || msg.Contains("EntityExists") || msg.Contains("ENTITY_EXISTS") || msg.Contains("EMAIL_EXISTS"))
                 return "An account with that email already exists";
-            if (msg.Contains("INVALID_PASSWORD") || msg.Contains("wrong password") || msg.Contains("Incorrect"))
+            if (msg.Contains("INVALID_PASSWORD") || msg.Contains("wrong password") || msg.Contains("Incorrect") || msg.Contains("INVALID_LOGIN_CREDENTIALS"))
                 return "Incorrect email or password";
-            if (msg.Contains("No password reset") || msg.Contains("No reset"))
-                return "No reset was requested for this email — click Send Reset Code first";
-            if (msg.Contains("Invalid reset code"))
-                return "Incorrect reset code — check your email and try again";
-            if (msg.Contains("No email on file"))
-                return "No email is on file for this account — contact support";
-            if (msg.Contains("No verification code"))
-                return "No verification code was sent — click Resend Code";
-            if (msg.Contains("Verification code has expired"))
-                return "Verification code expired — click Resend Code to get a new one";
-            if (msg.Contains("Invalid verification code"))
-                return "Incorrect verification code — check your email and try again";
             if (msg.Contains("network") || msg.Contains("Network") || msg.Contains("unreachable"))
                 return "Network error — check your connection";
             return msg;
