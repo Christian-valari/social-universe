@@ -297,11 +297,14 @@ namespace SocialUniverse.App
                 : ChatDisplayNameResolver.Fallback;
             _playerState.SetDisplayName(authId);
 
+            string profileDisplayName = null;
             try
             {
                 var profile = await _profileService.GetProfileAsync(_auth.PlayerId);
                 if (profile != null)
                 {
+                    profileDisplayName = profile.DisplayName;
+
                     if (!string.IsNullOrEmpty(profile.DisplayName))
                         _playerState.SetDisplayName(profile.DisplayName);
 
@@ -359,6 +362,15 @@ namespace SocialUniverse.App
             catch (Exception ex)
             {
                 SULog.Warn($"PlanetSceneBootstrapper: profile fetch failed ({ex.Message}), using auth id", SULog.Channel.Net);
+            }
+
+            // A first-time nameless account (e.g. Google/SSO, whose UGS PlayerName is
+            // null) has never chosen an in-game name. Prompt them to before they play.
+            // Published in the same hydration phase as ShowEmailVerificationPromptEvent,
+            // so HUDController (subscribed in Start) receives it the same way.
+            if (ProfileOnboarding.NeedsOnboarding(profileDisplayName, _auth.DisplayName, _auth.Username))
+            {
+                EventBus.Publish(new ShowProfileOnboardingEvent());
             }
 
             // Restore owned tiles for this planet from Cloud Save.
