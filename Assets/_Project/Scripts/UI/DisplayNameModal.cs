@@ -29,6 +29,8 @@ namespace SocialUniverse.UI
         [Inject] private SocialConfig   _config;
         [Inject] private IAudioManager  _audio;
 
+        private bool _onboarding;
+
         private void Awake()
         {
             _confirmButton.onClick.AddListener(OnConfirmClicked);
@@ -43,8 +45,19 @@ namespace SocialUniverse.UI
             _statusText.text = "";
         }
 
+        public void OpenForOnboarding()
+        {
+            _onboarding = true;
+            if (_cancelButton != null) _cancelButton.gameObject.SetActive(false);
+            gameObject.SetActive(true);
+            _audio.PlaySfx(SfxId.OpenPanel);
+            _nameInput.text  = "";   // force the player to choose a name
+            _statusText.text = "Choose a display name to get started";
+        }
+
         public void Close()
         {
+            if (_onboarding) return;
             _audio.PlaySfx(SfxId.Cancel);
             gameObject.SetActive(false);
         }
@@ -53,7 +66,7 @@ namespace SocialUniverse.UI
         {
             string name = _nameInput.text.Trim();
 
-            if (name == _playerState.DisplayName)
+            if (!_onboarding && name == _playerState.DisplayName)
             {
                 _audio.PlaySfx(SfxId.Confirm);
                 _avatarSelectionModal.UpdateAvatar();
@@ -87,9 +100,18 @@ namespace SocialUniverse.UI
                     _playerState.SetDisplayName(committed);
                     await _auth.UpdateDisplayNameAsync(committed);
 
+                    // Onboarding commits name + avatar together, then releases the
+                    // non-dismiss lock on BOTH modals so they can close.
+                    _avatarSelectionModal.EndOnboarding();
                     _avatarSelectionModal.UpdateAvatar();
-                    _audio.PlaySfx(SfxId.Confirm);
 
+                    if (_onboarding)
+                    {
+                        _onboarding = false;
+                        if (_cancelButton != null) _cancelButton.gameObject.SetActive(true);
+                    }
+
+                    _audio.PlaySfx(SfxId.Confirm);
                     Close();
                 }
                 else
