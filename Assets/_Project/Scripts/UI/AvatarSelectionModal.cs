@@ -47,11 +47,14 @@ namespace SocialUniverse.UI
             RefreshHighlight();
             _statusText.text = "";
             _selectedAvatarId = _playerState.AvatarId;
+            Debug.LogWarning($"#{GetType().Name}# _playerState.AvatarId -> {_selectedAvatarId}");
             var currentAvatar = _registry.AllAvatars.ToList().Find(x => x.AvatarId == _selectedAvatarId);
             // currentAvatar is null when AvatarId is empty or references an id not in
             // the catalog (e.g. a first-login account whose avatar hasn't been assigned
             // yet) — AvatarDefinition is a reference type, so Find returns null on a miss.
-            _avatarPreview.sprite = currentAvatar != null ? currentAvatar.Sprite : null;
+            if(currentAvatar != null)
+                _avatarPreview.sprite = currentAvatar.Sprite;
+            
             _audio.PlaySfx(SfxId.OpenPanel);
             gameObject.SetActive(true);
         }

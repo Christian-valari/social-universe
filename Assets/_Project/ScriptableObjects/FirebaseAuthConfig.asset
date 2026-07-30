@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6931f8fc62ec224ea7f21c4e74f3143, type: 3}
   m_Name: FirebaseAuthConfig
   m_EditorClassIdentifier: SocialUniverse.Config::SocialUniverse.Config.FirebaseAuthConfig
-  _projectId: YOUR_FIREBASE_PROJECT_ID
-  _googleWebClientId: YOUR_WEB_CLIENT_ID.apps.googleusercontent.com
+  _projectId: social-universe-abfdf
+  _googleWebClientId: 755339053737-j04fvcl4vt292j6584fhb8490dv103cs.apps.googleusercontent.com
