@@ -71,6 +71,7 @@ namespace SocialUniverse.UI
 
             if (_verifyEmailButton != null) _verifyEmailButton.onClick.AddListener(() => _emailVerificationModal?.Open());
             EventBus.Subscribe<ShowEmailVerificationPromptEvent>(OnShowEmailVerificationPrompt);
+            EventBus.Subscribe<ShowProfileOnboardingEvent>(OnShowProfileOnboarding);
             EventBus.Subscribe<TileSelectedEvent>(OnTileSelectedForModal);
 
             // Tiles hidden by default; toggled by the view-land-tile toggle.
@@ -107,12 +108,21 @@ namespace SocialUniverse.UI
             _playerState.OnAvatarChanged      -= SetAvatar;
             _presence.PresenceChanged         -= RefreshExplorerCount;
             EventBus.Unsubscribe<ShowEmailVerificationPromptEvent>(OnShowEmailVerificationPrompt);
+            EventBus.Unsubscribe<ShowProfileOnboardingEvent>(OnShowProfileOnboarding);
             EventBus.Unsubscribe<TileSelectedEvent>(OnTileSelectedForModal);
         }
 
         private void OnShowEmailVerificationPrompt(ShowEmailVerificationPromptEvent _)
         {
             _emailVerificationModal?.Open();
+        }
+
+        private void OnShowProfileOnboarding(ShowProfileOnboardingEvent _)
+        {
+            // Mirrors the HUD avatar-button flow (opens both modals together), but in
+            // mandatory onboarding mode: Cancel hidden, a valid name required.
+            _avatarSelectionModal?.OpenForOnboarding();
+            _displayNameModal?.OpenForOnboarding();
         }
 
         private void OnTileSelectedForModal(TileSelectedEvent e)
