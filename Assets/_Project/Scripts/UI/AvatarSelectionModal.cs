@@ -23,6 +23,7 @@ namespace SocialUniverse.UI
         [SerializeField] private Image _avatarPreview;
         [SerializeField] private Button    _avatarButtonPrefab;  // Button + Image, one avatar tile; starts inactive
         [SerializeField] private TMP_Text  _statusText;
+        [SerializeField] private Button    _closeButton;          // optional; hidden during onboarding
 
         [Inject] private PlayerState      _playerState;
         [Inject] private ProfileService   _profiles;
@@ -30,6 +31,7 @@ namespace SocialUniverse.UI
         [Inject] private IAudioManager    _audio;
 
         private string _selectedAvatarId;
+        private bool _onboarding;
 
         private readonly List<(Button Button, string AvatarId)> _entries = new();
         private bool _built;
@@ -54,7 +56,26 @@ namespace SocialUniverse.UI
             gameObject.SetActive(true);
         }
 
-        public void Close() => gameObject.SetActive(false);
+        public void OpenForOnboarding()
+        {
+            _onboarding = true;
+            if (_closeButton != null) _closeButton.gameObject.SetActive(false);
+            Open();
+        }
+
+        // Releases the non-dismiss lock so Close() (called by UpdateAvatar on a
+        // successful commit) can actually hide the modal. Safe to call when not onboarding.
+        public void EndOnboarding()
+        {
+            _onboarding = false;
+            if (_closeButton != null) _closeButton.gameObject.SetActive(true);
+        }
+
+        public void Close()
+        {
+            if (_onboarding) return;
+            gameObject.SetActive(false);
+        }
 
         private void BuildGrid()
         {
