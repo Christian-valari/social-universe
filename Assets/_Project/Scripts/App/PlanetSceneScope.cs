@@ -334,6 +334,27 @@ namespace SocialUniverse.App
                         }
                     }
                 }
+                else
+                {
+                    // New player — no server profile yet (e.g. just registered via
+                    // Firebase). Assign a random avatar so AvatarId isn't null (the
+                    // avatar picker would null-ref), and persist it for next login.
+                    var catalogIds = _registry.AllAvatars.Select(a => a.AvatarId).ToList();
+                    string resolvedAvatarId = AvatarAssignment.ResolveAvatarId(null, catalogIds, n => UnityEngine.Random.Range(0, n));
+                    _playerState.SetAvatarId(resolvedAvatarId);
+
+                    if (!string.IsNullOrEmpty(resolvedAvatarId))
+                    {
+                        try
+                        {
+                            await _profileService.UpdateAvatarAsync(resolvedAvatarId);
+                        }
+                        catch (Exception ex)
+                        {
+                            SULog.Warn($"PlanetSceneBootstrapper: avatar assignment failed to persist ({ex.Message}), using local pick", SULog.Channel.Net);
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {

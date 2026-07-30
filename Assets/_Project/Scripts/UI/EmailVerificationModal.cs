@@ -111,16 +111,11 @@ namespace SocialUniverse.UI
         private static string FriendlyError(Exception ex)
         {
             string msg = ex.Message;
-            if (msg.Contains("No email on file"))
-                return "No email is on file for this account — contact support";
-            if (msg.Contains("Please wait a moment"))
-                return "Please wait a moment before requesting another code";
-            if (msg.Contains("No verification code"))
-                return "No verification code was sent — click Send Code first";
-            if (msg.Contains("Verification code has expired"))
-                return "Verification code expired — click Send Code to get a new one";
-            if (msg.Contains("Invalid verification code"))
-                return "Incorrect verification code — check your email and try again";
+            // Firebase verification is link-based: the only user-actionable errors
+            // are rate limiting on resend and connectivity. (Firebase returns
+            // TOO_MANY_REQUESTS when the verification email is resent too often.)
+            if (msg.Contains("TOO_MANY_REQUESTS") || msg.Contains("too many") || msg.Contains("Please wait a moment"))
+                return "Please wait a moment before requesting another email";
             if (msg.Contains("network") || msg.Contains("Network") || msg.Contains("unreachable"))
                 return "Network error — check your connection";
             return msg;

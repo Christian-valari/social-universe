@@ -392,6 +392,12 @@ namespace SocialUniverse.UI
             return true;
         }
 
+        // Firebase's AuthError codes are already translated into clean, specific
+        // messages by FirebaseAuthHandler (SocialUniverse.Net) — the UI can't read
+        // those codes itself (Architecture Rule #2: no Firebase types here). This
+        // maps the remaining UGS/text-based errors and relays the normalized
+        // messages, with a final guard so Firebase's opaque generic text never
+        // reaches the player.
         private static string FriendlyError(Exception ex)
         {
             string msg = ex.Message;
@@ -401,6 +407,8 @@ namespace SocialUniverse.UI
                 return "Incorrect email or password";
             if (msg.Contains("network") || msg.Contains("Network") || msg.Contains("unreachable"))
                 return "Network error — check your connection";
+            if (msg.Contains("internal error"))
+                return "Something went wrong — please try again.";
             return msg;
         }
     }
