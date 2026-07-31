@@ -20,13 +20,10 @@ namespace SocialUniverse.App
         [SerializeField] private SocialConfig _socialConfig;
         [SerializeField] private AudioConfig  _audioConfig;
         [SerializeField] private AudioCatalog _audioCatalog;
-        [SerializeField] private FirebaseAuthConfig _firebaseAuthConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
             base.Configure(builder);
-
-            FirebaseAuthHandler.Configure(_firebaseAuthConfig);
 
             if (_devMode)
             {

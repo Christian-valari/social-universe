@@ -310,6 +310,25 @@ namespace SocialUniverse.App
 
                     _playerState.SetEmailVerified(_auth.IsEmailVerified);
 
+                    // Backfill the profile's display name from the UGS auth name when the
+                    // profile record has none. Email-registered players set their name in
+                    // UGS auth only (RegisterAsync → UpdatePlayerNameAsync), never in the
+                    // Cloud Save profile — so a cross-player lookup (e.g. TileInfoModal
+                    // reading another owner's profile) sees an empty name. authId is the
+                    // clean, #suffix-stripped UGS name; persisting it here self-heals
+                    // existing accounts on their next login. Mirrors the avatar backfill below.
+                    if (string.IsNullOrEmpty(profile.DisplayName) && authId != ChatDisplayNameResolver.Fallback)
+                    {
+                        try
+                        {
+                            await _profileService.UpdateDisplayNameAsync(authId);
+                        }
+                        catch (Exception ex)
+                        {
+                            SULog.Warn($"PlanetSceneBootstrapper: display-name backfill failed ({ex.Message})", SULog.Channel.Net);
+                        }
+                    }
+
                     var catalogIds = _registry.AllAvatars.Select(a => a.AvatarId).ToList();
                     string resolvedAvatarId = AvatarAssignment.ResolveAvatarId(profile.AvatarId, catalogIds, n => UnityEngine.Random.Range(0, n));
                     _playerState.SetAvatarId(resolvedAvatarId);

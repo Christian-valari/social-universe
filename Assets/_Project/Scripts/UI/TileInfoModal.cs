@@ -136,9 +136,17 @@ namespace SocialUniverse.UI
                 var profile = await _profileService.GetProfileAsync(tile.OwnerId);
                 if (_currentTile != tile) return;
 
-                _titleText.text = $"{profile.DisplayName}'s Tile";
+                // profile.DisplayName is empty for owners whose name lives only in UGS
+                // auth (email-registered users, or Google users pre-onboarding) and was
+                // never persisted to their Cloud Save profile — a cross-player lookup
+                // can't read the UGS name, so fall back to a non-possessive label rather
+                // than render a bare "'s Tile".
+                string ownerName = profile?.DisplayName;
+                _titleText.text = !string.IsNullOrWhiteSpace(ownerName)
+                    ? $"{ownerName}'s Tile"
+                    : (tile.State == TileState.OwnedByPlayer ? "Your Tile" : "Owned Tile");
                 _ownerInfoText.gameObject.SetActive(true);
-                _ownerInfoText.text = $"{profile.TilesOwned}";
+                _ownerInfoText.text = $"{profile?.TilesOwned ?? 0}";
 
                 // var avatar = _registry.GetAvatar(profile.AvatarId);
                 // if (avatar != null)

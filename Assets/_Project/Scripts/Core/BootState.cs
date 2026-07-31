@@ -43,15 +43,14 @@ namespace SocialUniverse.Core
             if (!_auth.IsSignedIn)
                 await _auth.TryAutoSignInAsync();
 
-            // A restored session with no display name yet means the app was quit
-            // while gated at AuthScreen's choose-name panel — route through the
-            // Auth scene (below) instead of publishing PlayerReadyEvent directly,
-            // so HandleSignedIn can show the panel again rather than letting a
-            // nameless account into the game. Also require a verified email:
-            // Google accounts report IsEmailVerified true, while an unverified
-            // email account reports false and must be routed through the Auth
-            // scene rather than entering the game.
-            if (_auth.IsSignedIn && _auth.IsEmailVerified && !string.IsNullOrEmpty(_auth.DisplayName))
+            // Skip the Auth scene only for a fully game-ready session: signed in AND
+            // email-verified. An unverified email account must finish verification in
+            // the Auth scene first (Google accounts report verified and pass here). A
+            // verified account with no display name yet is fine to enter — the Planet
+            // scene's onboarding modal collects the name (ShowProfileOnboardingEvent),
+            // so a name is deliberately NOT required here (that would bounce nameless
+            // Google accounts through an Auth-scene detour on every launch).
+            if (_auth.IsSignedIn && _auth.IsEmailVerified)
             {
                 SULog.Info("Boot: session restored, skipping Auth scene");
                 // AuthScreen normally publishes this on sign-in to bring chat/friends

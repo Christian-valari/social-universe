@@ -25,14 +25,14 @@ namespace SocialUniverse.Core
 
         public void Enter()
         {
-            // Returning player whose session is still valid — skip Auth UI entirely.
-            if (_auth.IsSignedIn)
-            {
-                _ = TransitionToPlanetAsync();
-                return;
-            }
-
-            // New session — wait for the player to sign in and confirm via Continue.
+            // Wait for the AuthScreen flow to confirm a game-ready session and publish
+            // PlayerReadyEvent. AuthScreen.Start already handles a restored session: it
+            // shows the Verify panel for an unverified account, or publishes
+            // PlayerReadyEvent for a verified one. A verified resume never reaches this
+            // state — BootState skips it straight to Planet — so AuthState must NOT
+            // fast-forward a merely-signed-in (possibly unverified) session into the
+            // game: that would bypass email verification and skip PlayerReadyEvent,
+            // leaving chat/social uninitialized.
             EventBus.Subscribe<PlayerReadyEvent>(OnPlayerReady);
         }
 

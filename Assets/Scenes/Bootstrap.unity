@@ -172,7 +172,6 @@ MonoBehaviour:
   _socialConfig: {fileID: 11400000, guid: 86487a0a0a616b6468a0f6b573706480, type: 2}
   _audioConfig: {fileID: 11400000, guid: d2fed9e1bcf3d3245badb812c9c56d51, type: 2}
   _audioCatalog: {fileID: 11400000, guid: 4e2c47c75a208954fb8ba63613d05ae4, type: 2}
-  _firebaseAuthConfig: {fileID: 11400000, guid: 6818cc1df10a9a043aced83c81afc1d0, type: 2}
 --- !u!1 &791655229
 GameObject:
   m_ObjectHideFlags: 0

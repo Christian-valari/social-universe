@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Firebase;
 using Firebase.Auth;
 using UnityEngine;
-using SocialUniverse.Config;
 using SocialUniverse.Core;
 
 // Owns every Firebase Auth call and nothing else. AuthService consumes this
@@ -28,10 +27,7 @@ namespace SocialUniverse.Net
 {
     public static class FirebaseAuthHandler
     {
-        private static FirebaseAuthConfig _config;
         private static FirebaseAuth Auth => FirebaseAuth.DefaultInstance;
-
-        public static void Configure(FirebaseAuthConfig config) => _config = config;
 
         public static bool   HasCurrentUser  => Auth.CurrentUser != null;
         public static string CurrentEmail    => Auth.CurrentUser?.Email;
