@@ -21,7 +21,7 @@ namespace SocialUniverse.Config
         [SerializeField] private float _landRegistryPollIntervalSec = 20f; // how often to refresh other players' tile ownership
 
         [Header("Build")]
-        [SerializeField] private int   _maxBuildLevel           = 4;
+        [SerializeField] private int   _plotSlotCount           = 8;   // placement slots per plot; also the max build level
 
         [Header("Yield")]
         [SerializeField] private float _baseYieldPerTilePerHour     = 2f;
@@ -64,7 +64,8 @@ namespace SocialUniverse.Config
         public int   BaseLandPrice         => _baseLandPrice;
         public int   UpkeepPerTilePerDay   => _upkeepPerTilePerDay;
         public float LandRegistryPollIntervalSec => _landRegistryPollIntervalSec;
-        public int   MaxBuildLevel              => _maxBuildLevel;
+        public int   PlotSlotCount            => _plotSlotCount;
+        public int   MaxBuildLevel            => _plotSlotCount;   // a plot is "maxed" when every slot is filled
         public float BaseYieldPerTilePerHour    => _baseYieldPerTilePerHour;
         public float BuildLevelYieldMultiplier  => _buildLevelYieldMultiplier;
         public float VisitYieldBonus            => _visitYieldBonus;
