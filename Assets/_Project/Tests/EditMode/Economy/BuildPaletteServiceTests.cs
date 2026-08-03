@@ -15,17 +15,26 @@ namespace SocialUniverse.Tests
         private ItemDefinition[]    _items;
         private BuildPaletteService _palette;
 
+        private static ItemDefinition MakeItem(string itemId, int cost)
+        {
+            var item = ScriptableObject.CreateInstance<ItemDefinition>();
+            SetField(item, "_itemId", itemId);
+            SetField(item, "_cost", cost);
+            return item;
+        }
+
         [SetUp]
         public void SetUp()
         {
             _config   = ScriptableObject.CreateInstance<EconomyConfig>();
             _registry = ScriptableObject.CreateInstance<DatabaseRegistry>();
+            SetField(_config, "_plotSlotCount", 8);
 
             _items = new[]
             {
-                MakeItem("level1_solar", 1),
-                MakeItem("level2_dome", 2),
-                MakeItem("level2_garden", 2),
+                MakeItem("cheap_tree", 50),
+                MakeItem("mid_statue", 200),
+                MakeItem("pricey_house", 1000),
             };
             SetField(_registry, "_items", _items);
 
@@ -40,14 +49,6 @@ namespace SocialUniverse.Tests
             foreach (var item in _items) UnityEngine.Object.DestroyImmediate(item);
         }
 
-        private static ItemDefinition MakeItem(string itemId, int buildLevel)
-        {
-            var item = ScriptableObject.CreateInstance<ItemDefinition>();
-            SetField(item, "_itemId", itemId);
-            SetField(item, "_buildLevel", buildLevel);
-            return item;
-        }
-
         private static void SetField(object target, string fieldName, object value)
         {
             target.GetType()
@@ -56,49 +57,37 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
-        public void Returns_level1_items_for_owned_tile_at_level0()
+        public void Returns_all_affordable_items_for_owned_tile_with_free_slots()
         {
-            var tile = new TileData("1") { State = TileState.OwnedByPlayer, BuildLevel = 0 };
+            var tile = new TileData("1") { State = TileState.OwnedByPlayer, BuildLevel = 2 };
 
-            var available = _palette.GetAvailableItems(tile).ToList();
-
-            Assert.AreEqual(1, available.Count);
-            Assert.AreEqual("level1_solar", available[0].ItemId);
-        }
-
-        [Test]
-        public void Returns_level2_items_for_owned_tile_at_level1()
-        {
-            var tile = new TileData("1") { State = TileState.OwnedByPlayer, BuildLevel = 1 };
-
-            var available = _palette.GetAvailableItems(tile).ToList();
+            var available = _palette.GetAvailableItems(tile, 300).ToList();
 
             Assert.AreEqual(2, available.Count);
-            Assert.IsTrue(available.All(i => i.BuildLevel == 2));
+            Assert.IsTrue(available.Any(i => i.ItemId == "cheap_tree"));
+            Assert.IsTrue(available.Any(i => i.ItemId == "mid_statue"));
+            Assert.IsFalse(available.Any(i => i.ItemId == "pricey_house"));
         }
 
         [Test]
         public void Returns_empty_for_tile_not_owned_by_player()
         {
             var tile = new TileData("1") { State = TileState.OwnedByOther, BuildLevel = 0 };
-
-            Assert.IsEmpty(_palette.GetAvailableItems(tile));
+            Assert.IsEmpty(_palette.GetAvailableItems(tile, int.MaxValue));
         }
 
         [Test]
         public void Returns_empty_for_available_tile()
         {
             var tile = new TileData("1") { State = TileState.Available, BuildLevel = 0 };
-
-            Assert.IsEmpty(_palette.GetAvailableItems(tile));
+            Assert.IsEmpty(_palette.GetAvailableItems(tile, int.MaxValue));
         }
 
         [Test]
-        public void Returns_empty_when_tile_at_max_build_level()
+        public void Returns_empty_when_all_slots_full()
         {
             var tile = new TileData("1") { State = TileState.OwnedByPlayer, BuildLevel = _config.MaxBuildLevel };
-
-            Assert.IsEmpty(_palette.GetAvailableItems(tile));
+            Assert.IsEmpty(_palette.GetAvailableItems(tile, int.MaxValue));
         }
     }
 }

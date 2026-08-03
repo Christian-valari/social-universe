@@ -3,13 +3,10 @@ using System.Linq;
 using UnityEngine;
 using HexasphereGrid;
 using SocialUniverse.Core;
-using SocialUniverse.Config;
 
 namespace SocialUniverse.World
 {
     public class TileSelectedEvent { public TileData Tile; }
-
-    public class BuildItemRequestedEvent { public TileData Tile; public ItemDefinition Item; }
 
     public class TileSellRequestedEvent { public TileData Tile; }
 

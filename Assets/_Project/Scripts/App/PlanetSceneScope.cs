@@ -155,7 +155,6 @@ namespace SocialUniverse.App
             // injects the concrete type directly to await its initial refresh (see
             // HydrateServerStateAsync), same pattern as ActiveMiningSessionRunner.
             builder.RegisterEntryPoint<LandRegistrySyncController>().AsSelf();
-            builder.RegisterEntryPoint<BuildModeController>();
             builder.RegisterEntryPoint<VisitorTrackingController>();
             builder.RegisterEntryPoint<UpkeepController>();
             builder.RegisterEntryPoint<LandSaleHandler>();
