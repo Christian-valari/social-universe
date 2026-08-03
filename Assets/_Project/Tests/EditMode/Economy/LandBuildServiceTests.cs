@@ -1,24 +1,29 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SocialUniverse.Core;
 using SocialUniverse.Economy;
+using UnityEngine.TestTools;
 
 namespace SocialUniverse.Tests
 {
     public class LandBuildServiceTests
     {
         // Captures the last call and returns a pre-set object cast to the requested type.
+        // Set ThrowThis to simulate a network/backend failure instead of returning a result.
         private class FakeBackendClient : IBackendClient
         {
             public string LastFunction;
             public Dictionary<string, object> LastArgs;
             public object NextResult;
+            public Exception ThrowThis;
 
             public Task<T> CallAsync<T>(string function, Dictionary<string, object> args = null)
             {
                 LastFunction = function;
                 LastArgs = args;
+                if (ThrowThis != null) throw ThrowThis;
                 return Task.FromResult((T)NextResult);
             }
 
@@ -56,6 +61,15 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
+        public async Task PlaceAsync_returns_failure_when_backend_throws()
+        {
+            LogAssert.Expect(UnityEngine.LogType.Error, "[SU:Economy] LandBuildService.Place failed — boom");
+            var service = new LandBuildService(new FakeBackendClient { ThrowThis = new Exception("boom") });
+            var result = await service.PlaceAsync("12", "earth", 0, "x", 10);
+            Assert.IsFalse(result.Success);
+        }
+
+        [Test]
         public async Task RemoveAsync_sends_expected_params_and_maps_result()
         {
             var backend = new FakeBackendClient
@@ -67,9 +81,28 @@ namespace SocialUniverse.Tests
             var result = await service.RemoveAsync("12", "earth", 1);
 
             Assert.AreEqual("RemoveBuild", backend.LastFunction);
+            Assert.AreEqual("12",    backend.LastArgs["tileId"]);
+            Assert.AreEqual("earth", backend.LastArgs["planetId"]);
             Assert.AreEqual(1, backend.LastArgs["slotIndex"]);
             Assert.IsTrue(result.Success);
             Assert.AreEqual(1, result.BuildLevel);
+        }
+
+        [Test]
+        public async Task RemoveAsync_returns_failure_on_null_response()
+        {
+            var service = new LandBuildService(new FakeBackendClient { NextResult = null });
+            var result = await service.RemoveAsync("12", "earth", 0);
+            Assert.IsFalse(result.Success);
+        }
+
+        [Test]
+        public async Task RemoveAsync_returns_failure_when_backend_throws()
+        {
+            LogAssert.Expect(UnityEngine.LogType.Error, "[SU:Economy] LandBuildService.Remove failed — boom");
+            var service = new LandBuildService(new FakeBackendClient { ThrowThis = new Exception("boom") });
+            var result = await service.RemoveAsync("12", "earth", 0);
+            Assert.IsFalse(result.Success);
         }
 
         [Test]
@@ -84,9 +117,28 @@ namespace SocialUniverse.Tests
             var result = await service.MoveAsync("12", "earth", 0, 3);
 
             Assert.AreEqual("MoveBuild", backend.LastFunction);
+            Assert.AreEqual("12",    backend.LastArgs["tileId"]);
+            Assert.AreEqual("earth", backend.LastArgs["planetId"]);
             Assert.AreEqual(0, backend.LastArgs["fromSlot"]);
             Assert.AreEqual(3, backend.LastArgs["toSlot"]);
             Assert.IsTrue(result.Success);
+        }
+
+        [Test]
+        public async Task MoveAsync_returns_failure_on_null_response()
+        {
+            var service = new LandBuildService(new FakeBackendClient { NextResult = null });
+            var result = await service.MoveAsync("12", "earth", 0, 3);
+            Assert.IsFalse(result.Success);
+        }
+
+        [Test]
+        public async Task MoveAsync_returns_failure_when_backend_throws()
+        {
+            LogAssert.Expect(UnityEngine.LogType.Error, "[SU:Economy] LandBuildService.Move failed — boom");
+            var service = new LandBuildService(new FakeBackendClient { ThrowThis = new Exception("boom") });
+            var result = await service.MoveAsync("12", "earth", 0, 3);
+            Assert.IsFalse(result.Success);
         }
     }
 }
