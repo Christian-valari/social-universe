@@ -54,5 +54,10 @@ namespace SocialUniverse.Core
         // populated ActiveMiningHandoff — transitions the FSM to ActiveMiningState, which loads
         // the minigame scene as the sole running gameplay scene (Exit() below unloads Planet).
         public void EnterActiveMining() => _fsm.TransitionTo(_resolver.Resolve<ActiveMiningState>());
+
+        // Called by ViewLandRequestHandler once LandBuildingHandoff is populated — transitions to
+        // LandBuildingState, which loads the LandBuilding scene as the sole gameplay scene
+        // (Exit() below unloads Planet).
+        public void EnterLandBuilding() => _fsm.TransitionTo(_resolver.Resolve<LandBuildingState>());
     }
 }
