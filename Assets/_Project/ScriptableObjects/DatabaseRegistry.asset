@@ -32,7 +32,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b37f1cb13e8c51b4da4d72b515020755, type: 2}
   _drones:
   - {fileID: 11400000, guid: b0f50eb462295314fa2c6a9b68f14da3, type: 2}
-  _items: []
+  _items:
+  - {fileID: 11400000, guid: b0d58b8dfdabd0b418a4f83e368bff13, type: 2}
+  - {fileID: 11400000, guid: ebdc7f0a5f3a547408dbf4499b12e574, type: 2}
+  - {fileID: 11400000, guid: bb94a087f3e180d46bdba8140c29d0f3, type: 2}
   _avatars:
   - {fileID: 11400000, guid: 741f751b5ff6d7c4d9d634d2bf3fbd3c, type: 2}
   - {fileID: 11400000, guid: 1eceba68c10f0d2468a15ffff8d471b6, type: 2}
