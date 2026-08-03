@@ -1157,9 +1157,11 @@ using SocialUniverse.Net;
 namespace SocialUniverse.App
 {
     // Root LifetimeScope for the LandBuilding scene.
-    // Production mode: set Parent = RootLifetimeScope so IBackendClient/DatabaseRegistry/
-    // EconomyConfig/LandBuildingHandoff come from the parent. Standalone mode (opening
-    // LandBuilding.unity directly) registers a mock backend + empty handoff so it doesn't crash.
+    // This scope always registers the config assets (DatabaseRegistry/EconomyConfig) itself —
+    // like every other leaf scene scope (PlanetSceneScope/SolarSystemScope/TravelSceneScope);
+    // the root/Project scope never provides them. Production mode: set Parent = RootLifetimeScope
+    // so IBackendClient/LandBuildingHandoff come from the parent. Standalone mode (opening
+    // LandBuilding.unity directly) additionally registers a mock backend + handoff so it doesn't crash.
     public class LandBuildingSceneScope : LifetimeScope
     {
         [SerializeField] private DatabaseRegistry _databaseRegistry;
@@ -1167,11 +1169,13 @@ namespace SocialUniverse.App
 
         protected override void Configure(IContainerBuilder builder)
         {
+            // Config assets — registered unconditionally (no ancestor scope provides them).
+            builder.RegisterInstance(_databaseRegistry);
+            builder.RegisterInstance(_economyConfig);
+
             bool standalone = parentReference.Type == null;
             if (standalone)
             {
-                builder.RegisterInstance(_databaseRegistry);
-                builder.RegisterInstance(_economyConfig);
                 builder.Register<LandBuildingHandoff>(Lifetime.Singleton);
                 builder.Register<NetworkBootstrap>(Lifetime.Singleton).AsImplementedInterfaces();
                 builder.Register<LocalMockAuthService>(Lifetime.Singleton).As<IAuthService>();
