@@ -36,7 +36,7 @@ namespace SocialUniverse.App
 
             builder.Register<LandBuildService>(Lifetime.Singleton);
 
-            // builder.RegisterComponentInHierarchy<SocialUniverse.UI.LandBuildingController>();
+            builder.RegisterComponentInHierarchy<SocialUniverse.UI.LandBuildingController>();
             // builder.RegisterComponentInHierarchy<SocialUniverse.UI.LandBuildPaletteView>();
         }
     }
