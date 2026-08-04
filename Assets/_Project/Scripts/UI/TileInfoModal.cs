@@ -28,6 +28,7 @@ namespace SocialUniverse.UI
         [SerializeField] private Button   _closeButton;
         [SerializeField] private TMP_Text _statusText;
         [SerializeField] private TMP_Text _readyToClaimText;
+        [SerializeField] private Button   _viewLandButton;
 
         [Inject] private ProfileService          _profileService;
         [Inject] private DatabaseRegistry        _registry;
@@ -35,6 +36,7 @@ namespace SocialUniverse.UI
         [Inject] private EconomyConfig           _economyConfig;
         [Inject] private YieldEstimateCalculator _yieldEstimateCalculator;
         [Inject] private IAudioManager           _audio;
+        [Inject] private Wallet                  _wallet;
 
         private TileData _currentTile;
 
@@ -43,6 +45,7 @@ namespace SocialUniverse.UI
             _sellButton.onClick.AddListener(OnSellClicked);
             _claimButton.onClick.AddListener(OnClaimClicked);
             _closeButton.onClick.AddListener(Close);
+            _viewLandButton.onClick.AddListener(OnViewLandClicked);
             gameObject.SetActive(false);
         }
 
@@ -72,6 +75,9 @@ namespace SocialUniverse.UI
             _claimButton.gameObject.SetActive(ownedByPlayer);
             _ownerInfoText.gameObject.SetActive(false);
             _avatarImage.gameObject.SetActive(false);
+
+            bool owned = tile.State == TileState.OwnedByPlayer || tile.State == TileState.OwnedByOther;
+            _viewLandButton.gameObject.SetActive(owned);
 
             _audio.PlaySfx(SfxId.OpenPanel);
             gameObject.SetActive(true);
@@ -170,6 +176,26 @@ namespace SocialUniverse.UI
             _currentTile = null;
             CancelInvoke(nameof(RefreshYieldEstimate));
             gameObject.SetActive(false);
+        }
+
+        private void OnViewLandClicked()
+        {
+            if (_currentTile == null) return;
+            _audio.PlaySfx(SfxId.OpenPanel);
+
+            var entry = _landRegistryService.GetEntry(_currentTile.TileId);
+            var slots = LandBuildMath.EnsureSize(entry?.Slots, _economyConfig.PlotSlotCount);
+
+            EventBus.Publish(new ViewLandRequestedEvent
+            {
+                TileId  = _currentTile.TileId,
+                OwnerId = _currentTile.OwnerId,
+                CanEdit = _currentTile.State == TileState.OwnedByPlayer,
+                Slots   = slots,
+                Coins   = _wallet.Coins,
+            });
+
+            Close();
         }
 
         private void OnSellClicked()
