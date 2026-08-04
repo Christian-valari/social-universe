@@ -1183,6 +1183,7 @@ namespace SocialUniverse.App
             }
 
             builder.Register<LandBuildService>(Lifetime.Singleton);
+            builder.Register<BuildPaletteService>(Lifetime.Singleton); // LandBuildPaletteView injects it; deps (DatabaseRegistry/EconomyConfig) registered above
 
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.LandBuildingController>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.LandBuildPaletteView>();
