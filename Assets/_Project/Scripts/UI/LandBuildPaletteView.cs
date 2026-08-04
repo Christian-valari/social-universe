@@ -1,4 +1,3 @@
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -16,7 +15,8 @@ namespace SocialUniverse.UI
     // are updated locally on success so the plot reflects the change immediately.
     public class LandBuildPaletteView : MonoBehaviour
     {
-        [SerializeField] private GameObject   _paletteRoot;     // bottom bar; disabled in view mode
+        [SerializeField] private GameObject   _paletteRoot;      // bottom bar; disabled in view mode
+        [SerializeField] private GameObject   _slotButtonsRoot;  // parent of the 8 slot tap targets; disabled in view mode
         [SerializeField] private Transform    _itemButtonParent;
         [SerializeField] private Button       _itemButtonPrefab; // a button with a child TMP_Text
         [SerializeField] private Button[]     _slotButtons;      // one per slot; screen-space hit targets
@@ -25,8 +25,6 @@ namespace SocialUniverse.UI
         [Inject] private LandBuildingHandoff  _handoff;
         [Inject] private LandBuildService     _buildService;
         [Inject] private BuildPaletteService  _palette;
-        [Inject] private DatabaseRegistry     _registry;
-        [Inject] private EconomyConfig        _config;
         [Inject] private LandBuildingController _controller;
 
         private ItemDefinition _selectedItem;
@@ -38,6 +36,7 @@ namespace SocialUniverse.UI
 
             bool canEdit = _handoff.CanEdit;
             _paletteRoot.SetActive(canEdit);
+            _slotButtonsRoot.SetActive(canEdit);
             if (!canEdit) return;
 
             BuildPalette();
@@ -72,6 +71,12 @@ namespace SocialUniverse.UI
         private async void OnSlotClicked(int slotIndex)
         {
             var slots = _handoff.Slots;
+            if (slots == null || slotIndex < 0 || slotIndex >= slots.Length)
+            {
+                _statusText.text = "Plot not ready";
+                return;
+            }
+
             bool empty = LandBuildMath.IsEmpty(slots, slotIndex);
 
             if (empty)
