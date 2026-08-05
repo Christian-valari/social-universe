@@ -39,6 +39,8 @@ namespace SocialUniverse.App
 
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.LandBuildingController>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.LandBuildPaletteView>();
+            builder.RegisterComponentInHierarchy<SocialUniverse.UI.PlotHexBoard>();
+            builder.RegisterComponentInHierarchy<SocialUniverse.UI.PlotBoardInputController>();
 
             builder.RegisterEntryPoint<LandBuildingSceneBootstrapper>();
         }

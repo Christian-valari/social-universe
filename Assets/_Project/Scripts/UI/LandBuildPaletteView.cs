@@ -9,102 +9,166 @@ using SocialUniverse.World;
 
 namespace SocialUniverse.UI
 {
-    // Edit-mode UI for a plot: an affordable-item palette plus slot tap-targets that place,
-    // remove, or move decorations. Hidden entirely in view mode (visitor). All economy/slot
-    // mutations go through LandBuildService (server-authoritative); the handoff's working Slots
-    // are updated locally on success so the plot reflects the change immediately.
+    // Owner edit flow for the hex board: a drag-source palette of affordable buildings plus
+    // tap-to-purchase (locked hexatile) and tap-to-remove (placed building) via popups. Builds
+    // the board for everyone (view + edit); hides the palette + skips interaction wiring in view
+    // mode. All economy/slot mutations go through LandBuildService (server-authoritative); the
+    // handoff's working Slots/Unlocked are updated locally on success so the board reflects the
+    // change immediately.
     public class LandBuildPaletteView : MonoBehaviour
     {
-        [SerializeField] private GameObject   _paletteRoot;      // bottom bar; disabled in view mode
-        [SerializeField] private GameObject   _slotButtonsRoot;  // parent of the 8 slot tap targets; disabled in view mode
+        [SerializeField] private GameObject   _paletteRoot;     // bottom bar; disabled in view mode
         [SerializeField] private Transform    _itemButtonParent;
         [SerializeField] private Button       _itemButtonPrefab; // a button with a child TMP_Text
-        [SerializeField] private Button[]     _slotButtons;      // one per slot; screen-space hit targets
         [SerializeField] private TMP_Text     _statusText;
+        [SerializeField] private HexBuildPopup _purchasePopup;
+        [SerializeField] private HexBuildPopup _removePopup;
+        [SerializeField] private Camera       _camera;          // for palette drag -> board raycast
 
-        [Inject] private LandBuildingHandoff  _handoff;
-        [Inject] private LandBuildService     _buildService;
-        [Inject] private BuildPaletteService  _palette;
-        [Inject] private LandBuildingController _controller;
+        [Inject] private LandBuildingHandoff     _handoff;
+        [Inject] private LandBuildService        _buildService;
+        [Inject] private BuildPaletteService     _palette;
+        [Inject] private PlotHexBoard            _board;
+        [Inject] private PlotBoardInputController _input;
+        [Inject] private DatabaseRegistry        _registry;
+        [Inject] private EconomyConfig           _config;
 
-        private ItemDefinition _selectedItem;
-        private int            _localCoins;
+        private int      _localCoins;
+        private bool[]   _unlocked;
+        private string[] _slots;
 
         private void Start()
         {
             _localCoins = _handoff.Coins;
+            _unlocked   = _handoff.Unlocked;
+            _slots      = _handoff.Slots;
+
+            _board.Build(_unlocked, _slots);
 
             bool canEdit = _handoff.CanEdit;
             _paletteRoot.SetActive(canEdit);
-            _slotButtonsRoot.SetActive(canEdit);
             if (!canEdit) return;
 
+            _input.CellTapped      += OnCellTapped;
+            _input.BuildingDragged += OnBuildingDragged;
             BuildPalette();
-            for (int i = 0; i < _slotButtons.Length; i++)
-            {
-                int index = i;
-                _slotButtons[i].onClick.AddListener(() => OnSlotClicked(index));
-            }
+        }
+
+        private void OnDestroy()
+        {
+            if (_input == null) return;
+            _input.CellTapped      -= OnCellTapped;
+            _input.BuildingDragged -= OnBuildingDragged;
         }
 
         private void BuildPalette()
         {
             foreach (Transform c in _itemButtonParent) Destroy(c.gameObject);
 
-            // Build a throwaway TileData describing this owned plot for the palette rule.
             var tile = new TileData(_handoff.TileId)
             {
                 State      = TileState.OwnedByPlayer,
-                BuildLevel = LandBuildMath.FilledCount(_handoff.Slots),
+                BuildLevel = LandBuildMath.FilledCount(_slots),
             };
 
             foreach (var item in _palette.GetAvailableItems(tile, _localCoins))
             {
-                var btn = Instantiate(_itemButtonPrefab, _itemButtonParent);
+                var btn   = Instantiate(_itemButtonPrefab, _itemButtonParent);
                 var label = btn.GetComponentInChildren<TMP_Text>();
                 if (label != null) label.text = $"{item.DisplayName}\n{item.Cost}";
+
                 var captured = item;
-                btn.onClick.AddListener(() => _selectedItem = captured);
+                var drag = btn.gameObject.AddComponent<PaletteItemDragHandler>();
+                drag.Init(_camera, hex => PlaceFromPalette(captured, hex));
             }
         }
 
-        private async void OnSlotClicked(int slotIndex)
+        private void OnCellTapped(int hexIndex)
         {
-            var slots = _handoff.Slots;
-            if (slots == null || slotIndex < 0 || slotIndex >= slots.Length)
+            bool unlocked = _unlocked[hexIndex];
+            bool occupied = unlocked && !string.IsNullOrEmpty(_slots[hexIndex]);
+
+            if (!unlocked)
             {
-                _statusText.text = "Plot not ready";
-                return;
+                if (!HexBoardMath.IsAdjacentToUnlocked(hexIndex, _unlocked, _config.HexBoardRadius))
+                { SetStatus("Expand from your unlocked tiles"); return; }
+
+                int price = HexBoardMath.HexatilePrice(CountUnlocked(), _config.FreeHexCount, _config.HexatileBasePrice, _config.HexatilePriceStep);
+                if (price > _localCoins) { SetStatus("Not enough coins"); return; }
+
+                _purchasePopup.Show($"Unlock this hexatile for {price} coins?", () => Purchase(hexIndex));
             }
-
-            bool empty = LandBuildMath.IsEmpty(slots, slotIndex);
-
-            if (empty)
+            else if (occupied)
             {
-                if (_selectedItem == null) { _statusText.text = "Pick an item first"; return; }
-                if (_selectedItem.Cost > _localCoins) { _statusText.text = "Not enough coins"; return; }
-
-                var result = await _buildService.PlaceAsync(_handoff.TileId, _handoff.RegistryPlanetId, slotIndex, _selectedItem.ItemId, _selectedItem.Cost);
-                if (!result.Success) { _statusText.text = $"Place failed: {result.Reason}"; return; }
-
-                slots[slotIndex] = _selectedItem.ItemId;
-                if (result.NewBalance >= 0) _localCoins = result.NewBalance;
-                _controller.SetSlotVisual(slotIndex, _selectedItem);
-                _statusText.text = "";
-                BuildPalette(); // affordability may have changed
+                _removePopup.Show("Remove this building?", () => Remove(hexIndex));
             }
-            else
-            {
-                // Filled slot tapped → remove it. (Move is available via a long-press/drag in a
-                // later pass; v1 exposes remove, then re-place, which is functionally complete.)
-                var result = await _buildService.RemoveAsync(_handoff.TileId, _handoff.RegistryPlanetId, slotIndex);
-                if (!result.Success) { _statusText.text = $"Remove failed: {result.Reason}"; return; }
+        }
 
-                slots[slotIndex] = null;
-                _controller.SetSlotVisual(slotIndex, null);
-                _statusText.text = "";
-                BuildPalette();
-            }
+        private async void Purchase(int hexIndex)
+        {
+            var r = await _buildService.PurchaseHexatileAsync(_handoff.TileId, _handoff.RegistryPlanetId, hexIndex);
+            if (!r.Success) { SetStatus($"Unlock failed: {r.Reason}"); return; }
+
+            _unlocked[hexIndex] = true;
+            if (r.NewBalance >= 0) _localCoins = r.NewBalance;
+            _board.SetCell(hexIndex, true, null);
+            SetStatus("");
+            BuildPalette();
+        }
+
+        private async void Remove(int hexIndex)
+        {
+            var r = await _buildService.RemoveAsync(_handoff.TileId, _handoff.RegistryPlanetId, hexIndex);
+            if (!r.Success) { SetStatus($"Remove failed: {r.Reason}"); return; }
+
+            _slots[hexIndex] = null;
+            _board.SetCell(hexIndex, true, null);
+            SetStatus("");
+            BuildPalette();
+        }
+
+        private async void OnBuildingDragged(int fromHex, int toHex)
+        {
+            if (string.IsNullOrEmpty(_slots[fromHex])) return;
+            if (!_unlocked[toHex] || !string.IsNullOrEmpty(_slots[toHex])) { SetStatus("Can't move there"); return; }
+
+            var r = await _buildService.MoveAsync(_handoff.TileId, _handoff.RegistryPlanetId, fromHex, toHex);
+            if (!r.Success) { SetStatus($"Move failed: {r.Reason}"); return; }
+
+            _slots[toHex] = _slots[fromHex];
+            _slots[fromHex] = null;
+            _board.SetCell(fromHex, true, null);
+            _board.SetCell(toHex, true, _slots[toHex]);
+            SetStatus("");
+        }
+
+        // Called by a palette item's drag-end (PaletteItemDragHandler) with the target hex (or -1).
+        private async void PlaceFromPalette(ItemDefinition item, int hexIndex)
+        {
+            if (hexIndex < 0) return;
+            if (!_unlocked[hexIndex] || !string.IsNullOrEmpty(_slots[hexIndex])) { SetStatus("Pick an unlocked empty tile"); return; }
+            if (item.Cost > _localCoins) { SetStatus("Not enough coins"); return; }
+
+            var r = await _buildService.PlaceAsync(_handoff.TileId, _handoff.RegistryPlanetId, hexIndex, item.ItemId, item.Cost);
+            if (!r.Success) { SetStatus($"Place failed: {r.Reason}"); return; }
+
+            _slots[hexIndex] = item.ItemId;
+            if (r.NewBalance >= 0) _localCoins = r.NewBalance;
+            _board.SetCell(hexIndex, true, item.ItemId);
+            SetStatus("");
+            BuildPalette();
+        }
+
+        private int CountUnlocked()
+        {
+            int n = 0;
+            foreach (var b in _unlocked) if (b) n++;
+            return n;
+        }
+
+        private void SetStatus(string text)
+        {
+            if (_statusText != null) _statusText.text = text;
         }
     }
 }
