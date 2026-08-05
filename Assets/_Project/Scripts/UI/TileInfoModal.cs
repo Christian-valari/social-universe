@@ -183,16 +183,18 @@ namespace SocialUniverse.UI
             if (_currentTile == null) return;
             _audio.PlaySfx(SfxId.OpenPanel);
 
-            var entry = _landRegistryService.GetEntry(_currentTile.TileId);
-            var slots = LandBuildMath.EnsureSize(entry?.Slots, _economyConfig.HexCount);
+            var entry    = _landRegistryService.GetEntry(_currentTile.TileId);
+            var slots    = LandBuildMath.EnsureSize(entry?.Slots, _economyConfig.HexCount);
+            var unlocked = HexBoardMath.EnsureUnlocked(entry?.Unlocked, _economyConfig.HexBoardRadius, _economyConfig.FreeHexCount);
 
             EventBus.Publish(new ViewLandRequestedEvent
             {
-                TileId  = _currentTile.TileId,
-                OwnerId = _currentTile.OwnerId,
-                CanEdit = _currentTile.State == TileState.OwnedByPlayer,
-                Slots   = slots,
-                Coins   = _wallet.Coins,
+                TileId   = _currentTile.TileId,
+                OwnerId  = _currentTile.OwnerId,
+                CanEdit  = _currentTile.State == TileState.OwnedByPlayer,
+                Slots    = slots,
+                Unlocked = unlocked,
+                Coins    = _wallet.Coins,
             });
 
             Close();

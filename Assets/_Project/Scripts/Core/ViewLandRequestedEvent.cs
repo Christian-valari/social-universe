@@ -11,6 +11,7 @@ namespace SocialUniverse.Core
         public string   OwnerId;
         public bool     CanEdit;
         public string[] Slots;
+        public bool[]   Unlocked;
         public int      Coins;
     }
 }

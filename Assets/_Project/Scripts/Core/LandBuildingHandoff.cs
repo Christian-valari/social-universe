@@ -21,8 +21,10 @@ namespace SocialUniverse.Core
         public bool     CanEdit          { get; private set; }
         public int      Coins            { get; private set; }
         public string[] Slots            { get; private set; }
+        // hexIndex -> unlocked. Free hexatiles default true (built via HexBoardMath.EnsureUnlocked).
+        public bool[]   Unlocked         { get; private set; }
 
-        public void Begin(string tileId, string planetId, string registryPlanetId, string ownerId, bool canEdit, string[] slots, int coins)
+        public void Begin(string tileId, string planetId, string registryPlanetId, string ownerId, bool canEdit, string[] slots, bool[] unlocked, int coins)
         {
             TileId           = tileId;
             PlanetId         = planetId;
@@ -30,6 +32,7 @@ namespace SocialUniverse.Core
             OwnerId          = ownerId;
             CanEdit          = canEdit;
             Slots            = slots;
+            Unlocked         = unlocked;
             Coins            = coins;
         }
 
@@ -40,6 +43,7 @@ namespace SocialUniverse.Core
             RegistryPlanetId = null;
             OwnerId          = null;
             Slots            = null;
+            Unlocked         = null;
         }
     }
 }
