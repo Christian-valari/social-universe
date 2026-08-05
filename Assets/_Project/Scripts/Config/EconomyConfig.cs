@@ -20,8 +20,11 @@ namespace SocialUniverse.Config
         [Header("Land Registry")]
         [SerializeField] private float _landRegistryPollIntervalSec = 20f; // how often to refresh other players' tile ownership
 
-        [Header("Build")]
-        [SerializeField] private int   _plotSlotCount           = 8;   // placement slots per plot; also the max build level
+        [Header("Build — Hex Board")]
+        [SerializeField] private int _hexBoardRadius    = 2;   // radius-2 hexagon = 19 hexatiles
+        [SerializeField] private int _freeHexCount      = 5;   // central hexatiles unlocked for free
+        [SerializeField] private int _hexatileBasePrice = 200; // coins for the first purchased tile
+        [SerializeField] private int _hexatilePriceStep = 100; // added per already-purchased tile
 
         [Header("Yield")]
         [SerializeField] private float _baseYieldPerTilePerHour     = 2f;
@@ -64,8 +67,13 @@ namespace SocialUniverse.Config
         public int   BaseLandPrice         => _baseLandPrice;
         public int   UpkeepPerTilePerDay   => _upkeepPerTilePerDay;
         public float LandRegistryPollIntervalSec => _landRegistryPollIntervalSec;
-        public int   PlotSlotCount            => _plotSlotCount;
-        public int   MaxBuildLevel            => _plotSlotCount;   // a plot is "maxed" when every slot is filled
+        public int HexBoardRadius    => _hexBoardRadius;
+        public int FreeHexCount      => _freeHexCount;
+        public int HexatileBasePrice => _hexatileBasePrice;
+        public int HexatilePriceStep => _hexatilePriceStep;
+        // Mirror of HexBoardMath.HexCount — Config can't reference Economy (cycle), so inline it.
+        public int HexCount     => 3 * _hexBoardRadius * _hexBoardRadius + 3 * _hexBoardRadius + 1;
+        public int MaxBuildLevel => HexCount;   // a plot is "maxed" when every hexatile holds a building
         public float BaseYieldPerTilePerHour    => _baseYieldPerTilePerHour;
         public float BuildLevelYieldMultiplier  => _buildLevelYieldMultiplier;
         public float VisitYieldBonus            => _visitYieldBonus;

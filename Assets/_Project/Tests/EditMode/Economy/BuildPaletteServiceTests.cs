@@ -28,7 +28,7 @@ namespace SocialUniverse.Tests
         {
             _config   = ScriptableObject.CreateInstance<EconomyConfig>();
             _registry = ScriptableObject.CreateInstance<DatabaseRegistry>();
-            SetField(_config, "_plotSlotCount", 8);
+            SetField(_config, "_hexBoardRadius", 2); // HexCount 19 -> MaxBuildLevel 19
 
             _items = new[]
             {

@@ -12,12 +12,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ad60a27ea0eaeb41be08b3e58f231aa, type: 3}
   m_Name: EconomyConfig
   m_EditorClassIdentifier: SocialUniverse.Config::SocialUniverse.Config.EconomyConfig
+  _coinsCurrencyId: COINS
+  _stardustCurrencyId: STARDUST
   _startingCoins: 500
   _startingStardust: 10
   _baseLandPrice: 100
   _upkeepPerTilePerDay: 5
-  _idleMiningRate: 1
-  _maxOfflineHours: 8
-  _activeTapYield: 5
-  _critChance: 0.1
-  _critMultiplier: 2
+  _landRegistryPollIntervalSec: 20
+  _hexBoardRadius: 2
+  _freeHexCount: 5
+  _hexatileBasePrice: 200
+  _hexatilePriceStep: 100
+  _baseYieldPerTilePerHour: 2
+  _buildLevelYieldMultiplier: 0.25
+  _visitYieldBonus: 0.1
+  _maxYieldAccrualHours: 24
+  _maxVisitCount: 50
+  _upkeepPollIntervalSec: 60
+  _landResaleRate: 0.5
+  _asteroidRespawnHours: 4
+  _idleSecondsPerYieldUnit: 3
+  _minIdleSessionSeconds: 30
+  _maxIdleSessionSeconds: 1800
+  _activeYieldPerTap: 8
+  _minActiveTaps: 5
+  _maxActiveTaps: 20
+  _activeSecondsPerTap: 3
+  _minActiveSessionSeconds: 12
+  _maxActiveSessionSeconds: 60
+  _activeMaxErrors: 3
+  _maxFuel: 100
+  _fuelRechargePerHour: 10
+  _fuelRefillCost: 50

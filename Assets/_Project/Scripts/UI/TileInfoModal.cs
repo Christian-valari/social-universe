@@ -184,7 +184,7 @@ namespace SocialUniverse.UI
             _audio.PlaySfx(SfxId.OpenPanel);
 
             var entry = _landRegistryService.GetEntry(_currentTile.TileId);
-            var slots = LandBuildMath.EnsureSize(entry?.Slots, _economyConfig.PlotSlotCount);
+            var slots = LandBuildMath.EnsureSize(entry?.Slots, _economyConfig.HexCount);
 
             EventBus.Publish(new ViewLandRequestedEvent
             {
