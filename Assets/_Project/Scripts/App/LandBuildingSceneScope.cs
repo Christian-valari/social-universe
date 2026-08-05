@@ -39,6 +39,19 @@ namespace SocialUniverse.App
 
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.LandBuildingController>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.LandBuildPaletteView>();
+
+            builder.RegisterEntryPoint<LandBuildingSceneBootstrapper>();
         }
+    }
+
+    // Publishes SceneReadyEvent once the LandBuilding scene's container is up, so LoadingScreenView
+    // unloads itself. The plot renders synchronously from LandBuildingHandoff (LandBuildingController),
+    // so there is no async hydration to await — unlike ActiveMiningSceneBootstrapper, this scene has
+    // nothing else to set up. Without this, the LoadingScreen (its sole subscriber) never unloads and
+    // the transition into LandBuilding hangs on the loading screen — same contract every other
+    // gameplay scene scope (Planet/SolarSystem/Travel/ActiveMining) already honors.
+    public class LandBuildingSceneBootstrapper : IStartable
+    {
+        public void Start() => EventBus.Publish(new SceneReadyEvent());
     }
 }
