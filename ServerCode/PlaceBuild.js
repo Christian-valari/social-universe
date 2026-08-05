@@ -4,8 +4,11 @@
 // the number of filled slots.
 // NOTE: the validate -> deduct -> registry-write sequence is not transactional;
 // same caveat as PurchaseLand.
-const { CurrenciesApi } = require("@unity-services/economy-2.5");
-const { DataApi }       = require("@unity-services/cloud-save-1.4");
+// NOTE (same as PurchaseLand): CurrenciesApi has no getPlayerCurrencyBalance — read via
+// getPlayerCurrencies and find the currency. decrementPlayerCurrencyBalance requires a
+// configAssignmentHash fetched from ConfigurationApi and a request body carrying currencyId.
+const { CurrenciesApi, ConfigurationApi } = require("@unity-services/economy-2.5");
+const { DataApi }                         = require("@unity-services/cloud-save-1.4");
 
 const CURRENCY_ID  = "COINS";
 const REGISTRY_KEY = "land_registry";
@@ -34,6 +37,7 @@ module.exports = async ({ params, context, logger }) => {
 
   const { projectId, playerId, accessToken } = context;
   const econApi       = new CurrenciesApi({ accessToken });
+  const config        = new ConfigurationApi({ accessToken });
   const customDataApi = new DataApi(context);
   const customId      = planetId.toLowerCase();
 
@@ -55,14 +59,20 @@ module.exports = async ({ params, context, logger }) => {
       return { success: false, reason: "SLOT_OCCUPIED" };
     }
 
-    const balanceRes = await econApi.getPlayerCurrencyBalance({ projectId, playerId, currencyId: CURRENCY_ID });
-    if (balanceRes.data.balance < cost) {
+    const balancesRes = await econApi.getPlayerCurrencies({ projectId, playerId });
+    const coins       = balancesRes.data.results.find(c => c.currencyId === CURRENCY_ID);
+    const balance     = coins ? coins.balance : 0;
+    if (balance < cost) {
       return { success: false, reason: "INSUFFICIENT_FUNDS" };
     }
 
+    // decrementPlayerCurrencyBalance requires a configAssignmentHash fetched via ConfigurationApi.
+    const cfg = await config.getPlayerConfiguration({ projectId, playerId });
+    const configAssignmentHash = cfg.data.metadata.configAssignmentHash;
+
     const deductRes = await econApi.decrementPlayerCurrencyBalance({
-      projectId, playerId, currencyId: CURRENCY_ID,
-      currencyModifyBalanceRequest: { amount: cost }
+      projectId, playerId, currencyId: CURRENCY_ID, configAssignmentHash,
+      currencyModifyBalanceRequest: { currencyId: CURRENCY_ID, amount: cost }
     });
     const newBalance = deductRes.data.balance;
 
