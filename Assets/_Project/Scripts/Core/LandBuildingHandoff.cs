@@ -7,29 +7,39 @@ namespace SocialUniverse.Core
     // primitives/strings; Core must never depend on Economy/World types.
     public class LandBuildingHandoff
     {
-        public string   TileId   { get; private set; }
-        public string   PlanetId { get; private set; }
-        public string   OwnerId  { get; private set; }
-        public bool     CanEdit  { get; private set; }
-        public int      Coins    { get; private set; }
-        public string[] Slots    { get; private set; }
+        public string   TileId           { get; private set; }
+        // Navigation id (PlanetDefinition._planetId, e.g. "earth") — used by LandBuildingState.Finish
+        // to return to the origin planet via PlanetState.TargetPlanetId (DatabaseRegistry.GetPlanet
+        // keys on _planetId).
+        public string   PlanetId         { get; private set; }
+        // Land-registry key (PlanetDefinition.name, e.g. "Planet_Earth"). This — NOT PlanetId — is the
+        // "planetId" every land Cloud Code function uses (PurchaseLand/GetLandRegistry/PlaceBuild/...);
+        // the registry is keyed by planet.name.toLowerCase(). The two ids differ (see PlanetDefinition),
+        // so build server calls must send this or PlaceBuild reads the wrong registry -> NOT_OWNER.
+        public string   RegistryPlanetId { get; private set; }
+        public string   OwnerId          { get; private set; }
+        public bool     CanEdit          { get; private set; }
+        public int      Coins            { get; private set; }
+        public string[] Slots            { get; private set; }
 
-        public void Begin(string tileId, string planetId, string ownerId, bool canEdit, string[] slots, int coins)
+        public void Begin(string tileId, string planetId, string registryPlanetId, string ownerId, bool canEdit, string[] slots, int coins)
         {
-            TileId   = tileId;
-            PlanetId = planetId;
-            OwnerId  = ownerId;
-            CanEdit  = canEdit;
-            Slots    = slots;
-            Coins    = coins;
+            TileId           = tileId;
+            PlanetId         = planetId;
+            RegistryPlanetId = registryPlanetId;
+            OwnerId          = ownerId;
+            CanEdit          = canEdit;
+            Slots            = slots;
+            Coins            = coins;
         }
 
         public void Clear()
         {
-            TileId   = null;
-            PlanetId = null;
-            OwnerId  = null;
-            Slots    = null;
+            TileId           = null;
+            PlanetId         = null;
+            RegistryPlanetId = null;
+            OwnerId          = null;
+            Slots            = null;
         }
     }
 }

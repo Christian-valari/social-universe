@@ -84,7 +84,7 @@ namespace SocialUniverse.UI
                 if (_selectedItem == null) { _statusText.text = "Pick an item first"; return; }
                 if (_selectedItem.Cost > _localCoins) { _statusText.text = "Not enough coins"; return; }
 
-                var result = await _buildService.PlaceAsync(_handoff.TileId, _handoff.PlanetId, slotIndex, _selectedItem.ItemId, _selectedItem.Cost);
+                var result = await _buildService.PlaceAsync(_handoff.TileId, _handoff.RegistryPlanetId, slotIndex, _selectedItem.ItemId, _selectedItem.Cost);
                 if (!result.Success) { _statusText.text = $"Place failed: {result.Reason}"; return; }
 
                 slots[slotIndex] = _selectedItem.ItemId;
@@ -97,7 +97,7 @@ namespace SocialUniverse.UI
             {
                 // Filled slot tapped → remove it. (Move is available via a long-press/drag in a
                 // later pass; v1 exposes remove, then re-place, which is functionally complete.)
-                var result = await _buildService.RemoveAsync(_handoff.TileId, _handoff.PlanetId, slotIndex);
+                var result = await _buildService.RemoveAsync(_handoff.TileId, _handoff.RegistryPlanetId, slotIndex);
                 if (!result.Success) { _statusText.text = $"Remove failed: {result.Reason}"; return; }
 
                 slots[slotIndex] = null;
