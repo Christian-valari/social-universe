@@ -9,6 +9,7 @@ namespace SocialUniverse.Economy
     public class PlaceBuildResult  { public bool Success; public string Reason; public int NewBalance = -1; public int BuildLevel = -1; }
     public class RemoveBuildResult { public bool Success; public string Reason; public int BuildLevel = -1; }
     public class MoveBuildResult   { public bool Success; public string Reason; }
+    public class PurchaseHexatileResult { public bool Success; public string Reason; public int NewBalance = -1; public int UnlockedCount = -1; }
 
     // Client wrapper over the PlaceBuild/RemoveBuild/MoveBuild cloud functions.
     // Pure request/response: performs no local state mutation. Callers apply the
@@ -19,18 +20,18 @@ namespace SocialUniverse.Economy
 
         public LandBuildService(IBackendClient backend) => _backend = backend;
 
-        public async Task<PlaceBuildResult> PlaceAsync(string tileId, string planetId, int slotIndex, string itemId, int cost)
+        public async Task<PlaceBuildResult> PlaceAsync(string tileId, string planetId, int hexIndex, string itemId, int cost)
         {
             try
             {
                 var res = await _backend.CallAsync<PlaceBuildResult>("PlaceBuild",
                     new Dictionary<string, object>
                     {
-                        { "tileId",    tileId    },
-                        { "planetId",  planetId  },
-                        { "slotIndex", slotIndex },
-                        { "itemId",    itemId    },
-                        { "cost",      cost      },
+                        { "tileId",   tileId   },
+                        { "planetId", planetId },
+                        { "hexIndex", hexIndex },
+                        { "itemId",   itemId   },
+                        { "cost",     cost     },
                     });
                 return res ?? new PlaceBuildResult { Success = false, Reason = "No response" };
             }
@@ -41,16 +42,16 @@ namespace SocialUniverse.Economy
             }
         }
 
-        public async Task<RemoveBuildResult> RemoveAsync(string tileId, string planetId, int slotIndex)
+        public async Task<RemoveBuildResult> RemoveAsync(string tileId, string planetId, int hexIndex)
         {
             try
             {
                 var res = await _backend.CallAsync<RemoveBuildResult>("RemoveBuild",
                     new Dictionary<string, object>
                     {
-                        { "tileId",    tileId    },
-                        { "planetId",  planetId  },
-                        { "slotIndex", slotIndex },
+                        { "tileId",   tileId   },
+                        { "planetId", planetId },
+                        { "hexIndex", hexIndex },
                     });
                 return res ?? new RemoveBuildResult { Success = false, Reason = "No response" };
             }
@@ -61,7 +62,7 @@ namespace SocialUniverse.Economy
             }
         }
 
-        public async Task<MoveBuildResult> MoveAsync(string tileId, string planetId, int fromSlot, int toSlot)
+        public async Task<MoveBuildResult> MoveAsync(string tileId, string planetId, int fromHex, int toHex)
         {
             try
             {
@@ -70,8 +71,8 @@ namespace SocialUniverse.Economy
                     {
                         { "tileId",   tileId   },
                         { "planetId", planetId },
-                        { "fromSlot", fromSlot },
-                        { "toSlot",   toSlot   },
+                        { "fromHex",  fromHex  },
+                        { "toHex",    toHex    },
                     });
                 return res ?? new MoveBuildResult { Success = false, Reason = "No response" };
             }
@@ -79,6 +80,26 @@ namespace SocialUniverse.Economy
             {
                 SULog.Error($"LandBuildService.Move failed — {ex.Message}", SULog.Channel.Economy);
                 return new MoveBuildResult { Success = false, Reason = "Network error" };
+            }
+        }
+
+        public async Task<PurchaseHexatileResult> PurchaseHexatileAsync(string tileId, string planetId, int hexIndex)
+        {
+            try
+            {
+                var res = await _backend.CallAsync<PurchaseHexatileResult>("PurchaseHexatile",
+                    new Dictionary<string, object>
+                    {
+                        { "tileId",   tileId   },
+                        { "planetId", planetId },
+                        { "hexIndex", hexIndex },
+                    });
+                return res ?? new PurchaseHexatileResult { Success = false, Reason = "No response" };
+            }
+            catch (Exception ex)
+            {
+                SULog.Error($"LandBuildService.PurchaseHexatile failed — {ex.Message}", SULog.Channel.Economy);
+                return new PurchaseHexatileResult { Success = false, Reason = "Network error" };
             }
         }
     }

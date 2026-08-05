@@ -44,7 +44,7 @@ namespace SocialUniverse.Tests
             Assert.AreEqual("PlaceBuild", backend.LastFunction);
             Assert.AreEqual("12",        backend.LastArgs["tileId"]);
             Assert.AreEqual("earth",     backend.LastArgs["planetId"]);
-            Assert.AreEqual(2,           backend.LastArgs["slotIndex"]);
+            Assert.AreEqual(2,           backend.LastArgs["hexIndex"]);
             Assert.AreEqual("item_tree", backend.LastArgs["itemId"]);
             Assert.AreEqual(50,          backend.LastArgs["cost"]);
             Assert.IsTrue(result.Success);
@@ -83,7 +83,7 @@ namespace SocialUniverse.Tests
             Assert.AreEqual("RemoveBuild", backend.LastFunction);
             Assert.AreEqual("12",    backend.LastArgs["tileId"]);
             Assert.AreEqual("earth", backend.LastArgs["planetId"]);
-            Assert.AreEqual(1, backend.LastArgs["slotIndex"]);
+            Assert.AreEqual(1, backend.LastArgs["hexIndex"]);
             Assert.IsTrue(result.Success);
             Assert.AreEqual(1, result.BuildLevel);
         }
@@ -119,8 +119,8 @@ namespace SocialUniverse.Tests
             Assert.AreEqual("MoveBuild", backend.LastFunction);
             Assert.AreEqual("12",    backend.LastArgs["tileId"]);
             Assert.AreEqual("earth", backend.LastArgs["planetId"]);
-            Assert.AreEqual(0, backend.LastArgs["fromSlot"]);
-            Assert.AreEqual(3, backend.LastArgs["toSlot"]);
+            Assert.AreEqual(0, backend.LastArgs["fromHex"]);
+            Assert.AreEqual(3, backend.LastArgs["toHex"]);
             Assert.IsTrue(result.Success);
         }
 
@@ -138,6 +138,34 @@ namespace SocialUniverse.Tests
             LogAssert.Expect(UnityEngine.LogType.Error, "[SU:Economy] LandBuildService.Move failed — boom");
             var service = new LandBuildService(new FakeBackendClient { ThrowThis = new Exception("boom") });
             var result = await service.MoveAsync("12", "earth", 0, 3);
+            Assert.IsFalse(result.Success);
+        }
+
+        [Test]
+        public async Task PurchaseHexatileAsync_sends_expected_params_and_maps_result()
+        {
+            var backend = new FakeBackendClient
+            {
+                NextResult = new PurchaseHexatileResult { Success = true, NewBalance = 300, UnlockedCount = 6 }
+            };
+            var service = new LandBuildService(backend);
+
+            var result = await service.PurchaseHexatileAsync("t1", "Planet_Earth", 5);
+
+            Assert.AreEqual("PurchaseHexatile", backend.LastFunction);
+            Assert.AreEqual("t1",           backend.LastArgs["tileId"]);
+            Assert.AreEqual("Planet_Earth", backend.LastArgs["planetId"]);
+            Assert.AreEqual(5,              backend.LastArgs["hexIndex"]);
+            Assert.IsTrue(result.Success);
+            Assert.AreEqual(300, result.NewBalance);
+            Assert.AreEqual(6,   result.UnlockedCount);
+        }
+
+        [Test]
+        public async Task PurchaseHexatileAsync_returns_failure_on_null_response()
+        {
+            var service = new LandBuildService(new FakeBackendClient { NextResult = null });
+            var result = await service.PurchaseHexatileAsync("t1", "Planet_Earth", 5);
             Assert.IsFalse(result.Success);
         }
     }
