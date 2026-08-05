@@ -1,6 +1,6 @@
 // PlaceBuild — validates tile ownership, that the target slot is empty, and the
 // player's balance, then deducts the item's coin cost, writes itemId into
-// slots[slotIndex] in the planet's shared land registry, and sets buildLevel to
+// slots[hexIndex] in the planet's shared land registry, and sets buildLevel to
 // the number of filled slots.
 // NOTE: the validate -> deduct -> registry-write sequence is not transactional;
 // same caveat as PurchaseLand.
@@ -12,7 +12,8 @@ const { DataApi }                         = require("@unity-services/cloud-save-
 
 const CURRENCY_ID  = "COINS";
 const REGISTRY_KEY = "land_registry";
-const SLOT_COUNT   = 8; // must match EconomyConfig.PlotSlotCount
+const HEX_COUNT    = 19; // must match HexBoardMath.HexCount(2) / EconomyConfig.HexCount
+const FREE_COUNT   = 5;  // free hexatiles default unlocked
 
 function filledCount(slots) {
   if (!Array.isArray(slots)) return 0;
@@ -22,17 +23,17 @@ function filledCount(slots) {
 /**
  * @param {string} tileId
  * @param {string} planetId
- * @param {number} slotIndex - target slot, integer in [0, SLOT_COUNT).
+ * @param {number} hexIndex - target hexatile, integer in [0, HEX_COUNT).
  * @param {string} itemId - ItemDefinition id being placed.
  * @param {number} cost - coin cost, positive integer.
  */
 module.exports = async ({ params, context, logger }) => {
-  const { tileId, planetId, slotIndex, itemId, cost } = params;
+  const { tileId, planetId, hexIndex, itemId, cost } = params;
 
   if (!tileId || !planetId || !itemId ||
-      !Number.isInteger(slotIndex) || slotIndex < 0 || slotIndex >= SLOT_COUNT ||
+      !Number.isInteger(hexIndex) || hexIndex < 0 || hexIndex >= HEX_COUNT ||
       !Number.isInteger(cost) || cost <= 0) {
-    throw new Error("Invalid params: tileId, planetId, slotIndex, itemId, cost required");
+    throw new Error("Invalid params: tileId, planetId, hexIndex, itemId, cost required");
   }
 
   const { projectId, playerId, accessToken } = context;
@@ -54,8 +55,17 @@ module.exports = async ({ params, context, logger }) => {
       return { success: false, reason: "NOT_OWNER" };
     }
 
-    if (!Array.isArray(entry.slots)) entry.slots = new Array(SLOT_COUNT).fill(null);
-    if (entry.slots[slotIndex]) {
+    // Normalize unlocked mask (free indices default true) and require the hex unlocked.
+    let unlocked = Array.isArray(entry.unlocked) ? entry.unlocked.slice(0, HEX_COUNT) : [];
+    while (unlocked.length < HEX_COUNT) unlocked.push(false);
+    if (!Array.isArray(entry.unlocked)) for (let i = 0; i < FREE_COUNT; i++) unlocked[i] = true;
+    entry.unlocked = unlocked;
+    if (!unlocked[hexIndex]) {
+      return { success: false, reason: "TILE_LOCKED" };
+    }
+
+    if (!Array.isArray(entry.slots)) entry.slots = new Array(HEX_COUNT).fill(null);
+    if (entry.slots[hexIndex]) {
       return { success: false, reason: "SLOT_OCCUPIED" };
     }
 
@@ -76,12 +86,12 @@ module.exports = async ({ params, context, logger }) => {
     });
     const newBalance = deductRes.data.balance;
 
-    entry.slots[slotIndex] = itemId;
+    entry.slots[hexIndex] = itemId;
     entry.buildLevel = filledCount(entry.slots);
     registry[tileId] = entry;
     await customDataApi.setCustomItem(projectId, customId, { key: REGISTRY_KEY, value: registry });
 
-    logger.info(`PlaceBuild: ${playerId} placed ${itemId} in slot ${slotIndex} of ${tileId} (${planetId}) for ${cost} -> ${newBalance}, buildLevel ${entry.buildLevel}`);
+    logger.info(`PlaceBuild: ${playerId} placed ${itemId} in hex ${hexIndex} of ${tileId} (${planetId}) for ${cost} -> ${newBalance}, buildLevel ${entry.buildLevel}`);
     return { success: true, newBalance, buildLevel: entry.buildLevel };
   } catch (err) {
     logger.error("PlaceBuild failed", { "error.message": err.message });
