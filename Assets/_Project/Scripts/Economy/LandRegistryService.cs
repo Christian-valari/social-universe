@@ -13,7 +13,8 @@ namespace SocialUniverse.Economy
         public long   LastYieldClaimTs;
         public long   LastUpkeepTs;
         public int    VisitCount;
-        public string[] Slots;   // slotIndex -> itemId (null/empty = empty slot). BuildLevel == filled count.
+        public string[] Slots;   // hexIndex -> itemId (null/empty = empty). BuildLevel == filled count.
+        public bool[]   Unlocked; // hexIndex -> unlocked. null on legacy entries; caller defaults via HexBoardMath.EnsureUnlocked.
     }
 
     // Response shape for the "GetLandRegistry" Cloud Code function. Public so
