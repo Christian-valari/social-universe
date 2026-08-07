@@ -20,12 +20,15 @@ namespace SocialUniverse.Economy
             _config   = config;
         }
 
-        public IEnumerable<ItemDefinition> GetAvailableItems(TileData tile, int availableCoins)
+        // category == null returns every affordable item (the "All" tab); otherwise only items
+        // in that category.
+        public IEnumerable<ItemDefinition> GetAvailableItems(TileData tile, int availableCoins, ItemCategory? category = null)
         {
             if (tile.State != TileState.OwnedByPlayer) return Enumerable.Empty<ItemDefinition>();
             if (tile.BuildLevel >= _config.MaxBuildLevel) return Enumerable.Empty<ItemDefinition>();
 
-            return _registry.AllItems.Where(i => i.Cost <= availableCoins);
+            return _registry.AllItems.Where(i => i.Cost <= availableCoins &&
+                                                 (category == null || i.Category == category.Value));
         }
     }
 }

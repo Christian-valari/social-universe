@@ -23,8 +23,9 @@ namespace SocialUniverse.UI
         [SerializeField] private TMP_Text     _statusText;
         [SerializeField] private HexBuildPopup _purchasePopup;
         [SerializeField] private HexBuildPopup _removePopup;
-        [SerializeField] private Camera       _camera;          // for palette drag -> board raycast
-        [SerializeField] private Material     _dragGhostMaterial; // transparent preview material (optional)
+        [SerializeField] private Camera         _camera;          // for palette drag -> board raycast
+        [SerializeField] private Material       _dragGhostMaterial; // transparent preview material (optional)
+        [SerializeField] private CategoryTabBar _categoryBar;     // filters the palette by category (optional)
 
         [Inject] private LandBuildingHandoff     _handoff;
         [Inject] private LandBuildService        _buildService;
@@ -34,9 +35,10 @@ namespace SocialUniverse.UI
         [Inject] private DatabaseRegistry        _registry;
         [Inject] private EconomyConfig           _config;
 
-        private int      _localCoins;
-        private bool[]   _unlocked;
-        private string[] _slots;
+        private int           _localCoins;
+        private bool[]        _unlocked;
+        private string[]      _slots;
+        private ItemCategory? _activeCategory; // null = All
 
         private void Start()
         {
@@ -52,14 +54,24 @@ namespace SocialUniverse.UI
 
             _input.CellTapped      += OnCellTapped;
             _input.BuildingDragged += OnBuildingDragged;
+            if (_categoryBar != null) _categoryBar.CategorySelected += OnCategorySelected;
             BuildPalette();
         }
 
         private void OnDestroy()
         {
-            if (_input == null) return;
-            _input.CellTapped      -= OnCellTapped;
-            _input.BuildingDragged -= OnBuildingDragged;
+            if (_input != null)
+            {
+                _input.CellTapped      -= OnCellTapped;
+                _input.BuildingDragged -= OnBuildingDragged;
+            }
+            if (_categoryBar != null) _categoryBar.CategorySelected -= OnCategorySelected;
+        }
+
+        private void OnCategorySelected(ItemCategory? category)
+        {
+            _activeCategory = category;
+            BuildPalette();
         }
 
         private void BuildPalette()
@@ -72,7 +84,7 @@ namespace SocialUniverse.UI
                 BuildLevel = LandBuildMath.FilledCount(_slots),
             };
 
-            foreach (var item in _palette.GetAvailableItems(tile, _localCoins))
+            foreach (var item in _palette.GetAvailableItems(tile, _localCoins, _activeCategory))
             {
                 var btn      = Instantiate(_itemButtonPrefab, _itemButtonParent);
                 var captured = item;

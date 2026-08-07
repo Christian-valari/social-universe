@@ -89,5 +89,25 @@ namespace SocialUniverse.Tests
             var tile = new TileData("1") { State = TileState.OwnedByPlayer, BuildLevel = _config.MaxBuildLevel };
             Assert.IsEmpty(_palette.GetAvailableItems(tile, int.MaxValue));
         }
+
+        [Test]
+        public void Filters_by_category_when_provided()
+        {
+            var b = MakeItem("b", 10); SetField(b, "_category", ItemCategory.Buildings);
+            var n = MakeItem("n", 10); SetField(n, "_category", ItemCategory.Nature);
+            SetField(_registry, "_items", new[] { b, n });
+            var palette = new BuildPaletteService(_registry, _config);
+            var tile = new TileData("1") { State = TileState.OwnedByPlayer, BuildLevel = 0 };
+
+            var nature = palette.GetAvailableItems(tile, 100, ItemCategory.Nature).ToList();
+            Assert.AreEqual(1, nature.Count);
+            Assert.AreEqual("n", nature[0].ItemId);
+
+            // null category = the "All" tab.
+            Assert.AreEqual(2, palette.GetAvailableItems(tile, 100).Count());
+
+            UnityEngine.Object.DestroyImmediate(b);
+            UnityEngine.Object.DestroyImmediate(n);
+        }
     }
 }
