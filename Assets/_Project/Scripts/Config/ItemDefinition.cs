@@ -14,6 +14,7 @@ namespace SocialUniverse.Config
         [SerializeField] private float      _yieldBonus; // additive yield/hour when placed
         [SerializeField] private int        _buildLevel; // tile build level this item unlocks
         [SerializeField] private GameObject _prefab;
+        [SerializeField] private Sprite     _icon;       // UI icon shown in the build palette
 
         public string     ItemId      => _itemId;
         public string     DisplayName => _displayName;
@@ -22,5 +23,6 @@ namespace SocialUniverse.Config
         public float      YieldBonus  => _yieldBonus;
         public int        BuildLevel  => _buildLevel;
         public GameObject Prefab      => _prefab;
+        public Sprite     Icon        => _icon;
     }
 }

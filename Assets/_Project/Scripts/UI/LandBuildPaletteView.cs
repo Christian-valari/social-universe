@@ -24,6 +24,7 @@ namespace SocialUniverse.UI
         [SerializeField] private HexBuildPopup _purchasePopup;
         [SerializeField] private HexBuildPopup _removePopup;
         [SerializeField] private Camera       _camera;          // for palette drag -> board raycast
+        [SerializeField] private Material     _dragGhostMaterial; // transparent preview material (optional)
 
         [Inject] private LandBuildingHandoff     _handoff;
         [Inject] private LandBuildService        _buildService;
@@ -73,13 +74,22 @@ namespace SocialUniverse.UI
 
             foreach (var item in _palette.GetAvailableItems(tile, _localCoins))
             {
-                var btn   = Instantiate(_itemButtonPrefab, _itemButtonParent);
-                var label = btn.GetComponentInChildren<TMP_Text>();
-                if (label != null) label.text = $"{item.DisplayName}\n{item.Cost}";
-
+                var btn      = Instantiate(_itemButtonPrefab, _itemButtonParent);
                 var captured = item;
+
+                var view = btn.GetComponent<ItemButtonView>();
+                if (view != null)
+                {
+                    view.Bind(item);
+                }
+                else
+                {
+                    var label = btn.GetComponentInChildren<TMP_Text>();
+                    if (label != null) label.text = $"{item.DisplayName}\n{item.Cost}";
+                }
+
                 var drag = btn.gameObject.AddComponent<PaletteItemDragHandler>();
-                drag.Init(_camera, hex => PlaceFromPalette(captured, hex));
+                drag.Init(_camera, captured.Prefab, _dragGhostMaterial, hex => PlaceFromPalette(captured, hex));
             }
         }
 
