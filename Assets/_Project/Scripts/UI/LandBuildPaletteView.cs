@@ -26,6 +26,8 @@ namespace SocialUniverse.UI
         [SerializeField] private Camera         _camera;          // for palette drag -> board raycast
         [SerializeField] private Material       _dragGhostMaterial; // transparent preview material (optional)
         [SerializeField] private CategoryTabBar _categoryBar;     // filters the palette by category (optional)
+        [SerializeField] private TMP_Text       _buildLevelText;  // "Build Level X/Y" shown to the owner (optional)
+        [SerializeField] private Slider         _buildLevelBar;   // build-level progress toward max (optional)
 
         [Inject] private LandBuildingHandoff     _handoff;
         [Inject] private LandBuildService        _buildService;
@@ -56,6 +58,7 @@ namespace SocialUniverse.UI
             _input.BuildingDragged += OnBuildingDragged;
             if (_categoryBar != null) _categoryBar.CategorySelected += OnCategorySelected;
             BuildPalette();
+            UpdateBuildLevel();
         }
 
         private void OnDestroy()
@@ -109,7 +112,7 @@ namespace SocialUniverse.UI
                 if (affordable)
                 {
                     var drag = btn.gameObject.AddComponent<PaletteItemDragHandler>();
-                    drag.Init(_camera, captured.Prefab, _dragGhostMaterial, hex => PlaceFromPalette(captured, hex));
+                    drag.Init(_camera, captured.Prefab, _dragGhostMaterial, _board.transform.position.y, hex => PlaceFromPalette(captured, hex));
                 }
             }
         }
@@ -156,6 +159,7 @@ namespace SocialUniverse.UI
             _board.SetCell(hexIndex, true, null);
             SetStatus("");
             BuildPalette();
+            UpdateBuildLevel();
         }
 
         private async void OnBuildingDragged(int fromHex, int toHex)
@@ -188,6 +192,7 @@ namespace SocialUniverse.UI
             _board.SetCell(hexIndex, true, item.ItemId);
             SetStatus("");
             BuildPalette();
+            UpdateBuildLevel();
         }
 
         private int CountUnlocked()
@@ -195,6 +200,19 @@ namespace SocialUniverse.UI
             int n = 0;
             foreach (var b in _unlocked) if (b) n++;
             return n;
+        }
+
+        // Build level = number of occupied hexatiles; max = every plot occupied (HexCount, 19).
+        private void UpdateBuildLevel()
+        {
+            int level = LandBuildMath.FilledCount(_slots);
+            int max   = _config.MaxBuildLevel;
+            if (_buildLevelText != null) _buildLevelText.text = $"Build Level {level}/{max}";
+            if (_buildLevelBar != null)
+            {
+                _buildLevelBar.maxValue = max;
+                _buildLevelBar.value    = level;
+            }
         }
 
         private void SetStatus(string text)

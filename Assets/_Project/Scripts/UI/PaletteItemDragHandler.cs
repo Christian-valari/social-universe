@@ -14,15 +14,17 @@ namespace SocialUniverse.UI
         private Camera      _camera;
         private GameObject  _previewPrefab;
         private Material    _ghostMaterial;
+        private float       _groundY;
         private Action<int> _onDrop;
 
         private GameObject _ghost;
 
-        public void Init(Camera cam, GameObject previewPrefab, Material ghostMaterial, Action<int> onDrop)
+        public void Init(Camera cam, GameObject previewPrefab, Material ghostMaterial, float groundY, Action<int> onDrop)
         {
             _camera        = cam;
             _previewPrefab = previewPrefab;
             _ghostMaterial = ghostMaterial;
+            _groundY       = groundY;
             _onDrop        = onDrop;
         }
 
@@ -59,10 +61,24 @@ namespace SocialUniverse.UI
             _onDrop?.Invoke(RaycastCell(e.position, out _));
         }
 
+        // The ghost always follows the pointer: snapped to a cell's anchor when over the board,
+        // otherwise projected onto the board's ground plane so it tracks the finger/cursor even
+        // when off the board (placement itself still only happens on a valid cell — see OnEndDrag).
         private void PositionGhost(Vector2 screen)
         {
-            RaycastCell(screen, out var worldPoint);
-            if (worldPoint.HasValue) _ghost.transform.position = worldPoint.Value;
+            if (_ghost == null || _camera == null) return;
+            var ray = _camera.ScreenPointToRay(screen);
+
+            if (Physics.Raycast(ray, out var hit, 100f))
+            {
+                var cell = hit.collider.GetComponentInParent<HexCell>();
+                _ghost.transform.position = cell != null ? cell.Anchor.position : hit.point;
+                return;
+            }
+
+            var plane = new Plane(Vector3.up, new Vector3(0f, _groundY, 0f));
+            if (plane.Raycast(ray, out float enter))
+                _ghost.transform.position = ray.GetPoint(enter);
         }
 
         // Returns the hex index under the screen point (or -1) and, via out, the world point to
