@@ -9,8 +9,8 @@ using SocialUniverse.World;
 
 namespace SocialUniverse.UI
 {
-    // Owner edit flow for the hex board: a drag-source palette of affordable buildings plus
-    // tap-to-purchase (locked hexatile) and tap-to-remove (placed building) via popups. Builds
+    // Owner edit flow for the hex board: a drag-source palette of buildings (unaffordable ones are
+    // shown but non-interactable) plus tap-to-purchase (locked hexatile) and tap-to-remove via popups. Builds
     // the board for everyone (view + edit); hides the palette + skips interaction wiring in view
     // mode. All economy/slot mutations go through LandBuildService (server-authoritative); the
     // handoff's working Slots/Unlocked are updated locally on success so the board reflects the
@@ -84,10 +84,14 @@ namespace SocialUniverse.UI
                 BuildLevel = LandBuildMath.FilledCount(_slots),
             };
 
-            foreach (var item in _palette.GetAvailableItems(tile, _localCoins, _activeCategory))
+            // Show every item in the active category (int.MaxValue ignores the coin filter); an
+            // item the player can't currently afford is still listed, but non-interactable and
+            // non-draggable so it reads as locked-by-cost.
+            foreach (var item in _palette.GetAvailableItems(tile, int.MaxValue, _activeCategory))
             {
-                var btn      = Instantiate(_itemButtonPrefab, _itemButtonParent);
-                var captured = item;
+                var btn        = Instantiate(_itemButtonPrefab, _itemButtonParent);
+                var captured   = item;
+                bool affordable = item.Cost <= _localCoins;
 
                 var view = btn.GetComponent<ItemButtonView>();
                 if (view != null)
@@ -100,8 +104,13 @@ namespace SocialUniverse.UI
                     if (label != null) label.text = $"{item.DisplayName}\n{item.Cost}";
                 }
 
-                var drag = btn.gameObject.AddComponent<PaletteItemDragHandler>();
-                drag.Init(_camera, captured.Prefab, _dragGhostMaterial, hex => PlaceFromPalette(captured, hex));
+                btn.interactable = affordable;
+
+                if (affordable)
+                {
+                    var drag = btn.gameObject.AddComponent<PaletteItemDragHandler>();
+                    drag.Init(_camera, captured.Prefab, _dragGhostMaterial, hex => PlaceFromPalette(captured, hex));
+                }
             }
         }
 
