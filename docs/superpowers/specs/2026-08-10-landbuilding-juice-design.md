@@ -164,13 +164,15 @@ public void Init(Camera cam, GameObject previewPrefab,
 ### Effect 5 — SFX layer
 
 - `SfxId` gains two entries: `BuildPlace`, `BuildRemove`.
-- `LandBuildPaletteView` injects `IAudioManager`. **`LandBuildingSceneScope` must register
-  its own `AudioManager` as `IAudioManager`** (`builder.Register<AudioManager>(Lifetime.Singleton).As<IAudioManager>()`),
-  mirroring `PlanetSceneScope`/`TravelSceneScope`/`SolarSystemScope`. Today it registers
-  none — in production it would resolve from the `RootLifetimeScope` parent, but in
-  **standalone mode** (opening `LandBuilding.unity` directly, `parentReference.Type == null`)
-  there is no parent and the injection would throw at scene load. Registering it in this
-  scope makes SFX work in both modes, consistent with every other gameplay scene.
+- `LandBuildPaletteView` injects `IAudioManager`. In **production** mode this resolves from
+  the `RootLifetimeScope` parent (which registers it). In **standalone** mode (opening
+  `LandBuilding.unity` directly, `parentReference.Type == null`) there is no parent, so the
+  injection would throw at scene load. **`LandBuildingSceneScope` must therefore register the
+  audio stack inside its existing `if (standalone)` branch**, exactly mirroring
+  `PlanetSceneScope` (lines 90-94): serialized `AudioConfig` + `AudioCatalog` fallbacks, then
+  `builder.Register<AudioManager>(Lifetime.Singleton).As<IAudioManager>()`. `AudioManager`'s
+  constructor needs only `AudioConfig` + `AudioCatalog` — `AudioSettingsService` is **not**
+  required (no settings panel in this scene), so it is omitted.
 - Trigger points:
   - `PlaceFromPalette` success → `PlaySfx(BuildPlace)`.
   - `OnBuildingDragged` (move) success → `PlaySfx(BuildPlace)`.
@@ -203,7 +205,7 @@ existing success/failure branches.
 | `Assets/_Project/Scripts/UI/LandBuildPaletteView.cs` | Inject `IAudioManager`; animate build-level; SFX; supply `isValidTarget` + invalid material to drag handler; call `PlayRemove` on remove. |
 | `Assets/_Project/Scripts/UI/PaletteItemDragHandler.cs` | `Init` gains valid/invalid materials + `isValidTarget`; per-frame tint. |
 | `Assets/_Project/Scripts/Config/SfxId.cs` | Add `BuildPlace`, `BuildRemove`. |
-| `Assets/_Project/Scripts/App/LandBuildingSceneScope.cs` | Register `AudioManager` as `IAudioManager` so SFX resolve in production **and** standalone. |
+| `Assets/_Project/Scripts/App/LandBuildingSceneScope.cs` | In the `standalone` branch, register `AudioConfig` + `AudioCatalog` + `AudioManager` (as `IAudioManager`) so SFX resolve when the scene is opened directly. |
 | `Assets/_Project/Tests/EditMode/UI/BuildFeedbackTests.cs` | **New.** EditMode tests for `EaseOutBack`/`EaseInBack`. |
 
 ## Testing
