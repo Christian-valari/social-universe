@@ -15,7 +15,7 @@ namespace SocialUniverse.UI
 
         public void SetLockVisual(bool locked, Material lockedMat, Material unlockedMat)
         {
-            if (_lock != null) _lock.SetActive(locked);
+            // if (_lock != null) _lock.SetActive(locked);
             if (_renderer != null && lockedMat != null && unlockedMat != null)
                 _renderer.sharedMaterial = locked ? lockedMat : unlockedMat;
         }

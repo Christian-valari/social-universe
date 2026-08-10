@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4073a3bf85e33da42b4f615720063a2f, type: 3}
+  m_Name: Props_Item_1
+  m_EditorClassIdentifier: SocialUniverse.Config::SocialUniverse.Config.ItemDefinition
+  _itemId: angel_statue_1
+  _displayName: Angel Statue
+  _cost: 1500
+  _rarity: 0
+  _category: 2
+  _yieldBonus: 0
+  _buildLevel: 0
+  _prefab: {fileID: 1397219519249710328, guid: 1a749408cd12266489ffb2ee022adbd6, type: 3}
+  _icon: {fileID: 21300000, guid: affbe03fc97a9ae458b66996bf518e51, type: 3}
