@@ -78,5 +78,17 @@ namespace SocialUniverse.UI
                 }
             }
         }
+
+        // Poofs the building currently on `index` out of existence (shrink + destroy). The caller has
+        // already cleared the logical slot server-side, so the cell stays unlocked+empty — only the
+        // visual needs animating away. No-op if the cell has no building.
+        public void PlayRemove(int index)
+        {
+            if (index < 0 || index >= _cells.Count) return;
+            var anchor = _cells[index].Anchor;
+            if (anchor.childCount == 0) return;
+            var building = anchor.GetChild(anchor.childCount - 1).gameObject;
+            StartCoroutine(BuildFeedback.PoofOut(building));
+        }
     }
 }

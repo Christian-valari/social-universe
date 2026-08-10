@@ -160,7 +160,7 @@ namespace SocialUniverse.UI
             if (!r.Success) { SetStatus($"Remove failed: {r.Reason}"); return; }
 
             _slots[hexIndex] = null;
-            _board.SetCell(hexIndex, true, null);
+            _board.PlayRemove(hexIndex);
             SetStatus("");
             BuildPalette();
             UpdateBuildLevel();
