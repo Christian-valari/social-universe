@@ -50,15 +50,19 @@ namespace SocialUniverse.UI
 
             _board.Build(_unlocked, _slots);
 
+            // Build level is shown to everyone (owner + visitors); the category tabs are an
+            // owner-only edit affordance, so hide them for visitors along with the palette.
+            UpdateBuildLevel();
+
             bool canEdit = _handoff.CanEdit;
             _paletteRoot.SetActive(canEdit);
+            if (_categoryBar != null) _categoryBar.gameObject.SetActive(canEdit);
             if (!canEdit) return;
 
             _input.CellTapped      += OnCellTapped;
             _input.BuildingDragged += OnBuildingDragged;
             if (_categoryBar != null) _categoryBar.CategorySelected += OnCategorySelected;
             BuildPalette();
-            UpdateBuildLevel();
         }
 
         private void OnDestroy()
@@ -173,7 +177,7 @@ namespace SocialUniverse.UI
             _slots[toHex] = _slots[fromHex];
             _slots[fromHex] = null;
             _board.SetCell(fromHex, true, null);
-            _board.SetCell(toHex, true, _slots[toHex]);
+            _board.SetCell(toHex, true, _slots[toHex], animate: true);
             SetStatus("");
         }
 
@@ -189,7 +193,7 @@ namespace SocialUniverse.UI
 
             _slots[hexIndex] = item.ItemId;
             if (r.NewBalance >= 0) _localCoins = r.NewBalance;
-            _board.SetCell(hexIndex, true, item.ItemId);
+            _board.SetCell(hexIndex, true, item.ItemId, animate: true);
             SetStatus("");
             BuildPalette();
             UpdateBuildLevel();

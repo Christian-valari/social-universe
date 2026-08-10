@@ -59,7 +59,7 @@ namespace SocialUniverse.UI
             }
         }
 
-        public void SetCell(int index, bool unlocked, string itemId)
+        public void SetCell(int index, bool unlocked, string itemId, bool animate = false)
         {
             if (index < 0 || index >= _cells.Count) return;
             var cell  = _cells[index];
@@ -71,7 +71,11 @@ namespace SocialUniverse.UI
             {
                 var item = _registry.GetItem(itemId);
                 if (item != null && item.Prefab != null)
-                    Instantiate(item.Prefab, cell.Anchor.position, cell.Anchor.rotation, cell.Anchor);
+                {
+                    var instance = Instantiate(item.Prefab, cell.Anchor.position, cell.Anchor.rotation, cell.Anchor);
+                    if (animate)
+                        StartCoroutine(BuildFeedback.PopIn(instance.transform, instance.transform.localScale));
+                }
             }
         }
     }
