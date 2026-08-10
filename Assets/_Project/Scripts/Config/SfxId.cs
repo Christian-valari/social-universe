@@ -13,6 +13,8 @@ namespace SocialUniverse.Config
         CoinsReward,
         AsteroidDestroyed,
         RocketDepart,
-        RocketArrive
+        RocketArrive,
+        BuildPlace,
+        BuildRemove
     }
 }

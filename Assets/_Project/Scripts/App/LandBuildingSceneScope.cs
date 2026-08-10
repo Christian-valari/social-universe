@@ -5,6 +5,7 @@ using SocialUniverse.Config;
 using SocialUniverse.Core;
 using SocialUniverse.Economy;
 using SocialUniverse.Net;
+using SocialUniverse.Safety;
 
 namespace SocialUniverse.App
 {
@@ -19,6 +20,8 @@ namespace SocialUniverse.App
     {
         [SerializeField] private DatabaseRegistry _databaseRegistry;
         [SerializeField] private EconomyConfig    _economyConfig;
+        [SerializeField] private AudioConfig  _audioConfig;   // standalone-mode fallback, mirrors PlanetSceneScope
+        [SerializeField] private AudioCatalog _audioCatalog;  // standalone-mode fallback, mirrors PlanetSceneScope
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -32,6 +35,12 @@ namespace SocialUniverse.App
                 builder.Register<NetworkBootstrap>(Lifetime.Singleton).AsImplementedInterfaces();
                 builder.Register<LocalMockAuthService>(Lifetime.Singleton).As<IAuthService>();
                 builder.Register<BackendClient>(Lifetime.Singleton).As<IBackendClient>();
+
+                // Audio — production resolves IAudioManager from the RootLifetimeScope parent;
+                // standalone has no parent, so provide the same stack here (mirrors PlanetSceneScope).
+                builder.RegisterInstance(_audioConfig  != null ? _audioConfig  : ScriptableObject.CreateInstance<AudioConfig>());
+                builder.RegisterInstance(_audioCatalog != null ? _audioCatalog : ScriptableObject.CreateInstance<AudioCatalog>());
+                builder.Register<AudioManager>(Lifetime.Singleton).As<IAudioManager>();
             }
 
             builder.Register<LandBuildService>(Lifetime.Singleton);

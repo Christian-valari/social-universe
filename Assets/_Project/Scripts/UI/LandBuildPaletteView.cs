@@ -5,6 +5,7 @@ using TMPro;
 using SocialUniverse.Config;
 using SocialUniverse.Core;
 using SocialUniverse.Economy;
+using SocialUniverse.Safety;
 using SocialUniverse.World;
 
 namespace SocialUniverse.UI
@@ -37,6 +38,7 @@ namespace SocialUniverse.UI
         [Inject] private PlotBoardInputController _input;
         [Inject] private DatabaseRegistry        _registry;
         [Inject] private EconomyConfig           _config;
+        [Inject] private IAudioManager           _audio;
 
         private int           _localCoins;
         private bool[]        _unlocked;
@@ -167,6 +169,7 @@ namespace SocialUniverse.UI
 
             _slots[hexIndex] = null;
             _board.PlayRemove(hexIndex);
+            if (_audio != null) _audio.PlaySfx(SfxId.BuildRemove);
             SetStatus("");
             BuildPalette();
             UpdateBuildLevel(animate: true);
@@ -184,22 +187,24 @@ namespace SocialUniverse.UI
             _slots[fromHex] = null;
             _board.SetCell(fromHex, true, null);
             _board.SetCell(toHex, true, _slots[toHex], animate: true);
+            if (_audio != null) _audio.PlaySfx(SfxId.BuildPlace);
             SetStatus("");
         }
 
         // Called by a palette item's drag-end (PaletteItemDragHandler) with the target hex (or -1).
         private async void PlaceFromPalette(ItemDefinition item, int hexIndex)
         {
-            if (hexIndex < 0) return;
-            if (!_unlocked[hexIndex] || !string.IsNullOrEmpty(_slots[hexIndex])) { SetStatus("Pick an unlocked empty tile"); return; }
-            if (item.Cost > _localCoins) { SetStatus("Not enough coins"); return; }
+            if (hexIndex < 0) { if (_audio != null) _audio.PlaySfx(SfxId.Cancel); return; }
+            if (!_unlocked[hexIndex] || !string.IsNullOrEmpty(_slots[hexIndex])) { SetStatus("Pick an unlocked empty tile"); if (_audio != null) _audio.PlaySfx(SfxId.Cancel); return; }
+            if (item.Cost > _localCoins) { SetStatus("Not enough coins"); if (_audio != null) _audio.PlaySfx(SfxId.Cancel); return; }
 
             var r = await _buildService.PlaceAsync(_handoff.TileId, _handoff.RegistryPlanetId, hexIndex, item.ItemId, item.Cost);
-            if (!r.Success) { SetStatus($"Place failed: {r.Reason}"); return; }
+            if (!r.Success) { SetStatus($"Place failed: {r.Reason}"); if (_audio != null) _audio.PlaySfx(SfxId.Cancel); return; }
 
             _slots[hexIndex] = item.ItemId;
             if (r.NewBalance >= 0) _localCoins = r.NewBalance;
             _board.SetCell(hexIndex, true, item.ItemId, animate: true);
+            if (_audio != null) _audio.PlaySfx(SfxId.BuildPlace);
             SetStatus("");
             BuildPalette();
             UpdateBuildLevel(animate: true);
