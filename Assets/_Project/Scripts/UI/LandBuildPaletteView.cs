@@ -41,6 +41,8 @@ namespace SocialUniverse.UI
         private bool[]        _unlocked;
         private string[]      _slots;
         private ItemCategory? _activeCategory; // null = All
+        private Vector3       _buildLevelTextBaseScale = Vector3.one;
+        private int           _lastBuildLevel;
 
         private void Start()
         {
@@ -52,7 +54,9 @@ namespace SocialUniverse.UI
 
             // Build level is shown to everyone (owner + visitors); the category tabs are an
             // owner-only edit affordance, so hide them for visitors along with the palette.
-            UpdateBuildLevel();
+            if (_buildLevelText != null) _buildLevelTextBaseScale = _buildLevelText.transform.localScale;
+            _lastBuildLevel = LandBuildMath.FilledCount(_slots);
+            UpdateBuildLevel(animate: false);
 
             bool canEdit = _handoff.CanEdit;
             _paletteRoot.SetActive(canEdit);
@@ -163,7 +167,7 @@ namespace SocialUniverse.UI
             _board.PlayRemove(hexIndex);
             SetStatus("");
             BuildPalette();
-            UpdateBuildLevel();
+            UpdateBuildLevel(animate: true);
         }
 
         private async void OnBuildingDragged(int fromHex, int toHex)
@@ -196,7 +200,7 @@ namespace SocialUniverse.UI
             _board.SetCell(hexIndex, true, item.ItemId, animate: true);
             SetStatus("");
             BuildPalette();
-            UpdateBuildLevel();
+            UpdateBuildLevel(animate: true);
         }
 
         private int CountUnlocked()
@@ -207,16 +211,26 @@ namespace SocialUniverse.UI
         }
 
         // Build level = number of occupied hexatiles; max = every plot occupied (HexCount, 19).
-        private void UpdateBuildLevel()
+        // Shown to everyone (owner + visitors). `animate` is true only for interactive changes —
+        // on scene load it is false so the bar is pre-filled and the text doesn't punch.
+        private void UpdateBuildLevel(bool animate = false)
         {
             int level = LandBuildMath.FilledCount(_slots);
             int max   = _config.MaxBuildLevel;
-            if (_buildLevelText != null) _buildLevelText.text = $"Build Level {level}/{max}";
+
+            if (_buildLevelText != null)
+            {
+                _buildLevelText.text = $"Build Level {level}/{max}";
+                if (animate && level > _lastBuildLevel)
+                    StartCoroutine(BuildFeedback.PunchScale(_buildLevelText.transform, _buildLevelTextBaseScale));
+            }
             if (_buildLevelBar != null)
             {
                 _buildLevelBar.maxValue = max;
-                _buildLevelBar.value    = level;
+                if (animate) StartCoroutine(BuildFeedback.AnimateSlider(_buildLevelBar, level));
+                else         _buildLevelBar.value = level;
             }
+            _lastBuildLevel = level;
         }
 
         private void SetStatus(string text)
