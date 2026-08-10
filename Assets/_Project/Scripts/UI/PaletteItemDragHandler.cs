@@ -11,21 +11,28 @@ namespace SocialUniverse.UI
     // IBeginDragHandler/IDragHandler must be present for OnEndDrag to fire.
     public class PaletteItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-        private Camera      _camera;
-        private GameObject  _previewPrefab;
-        private Material    _ghostMaterial;
-        private float       _groundY;
-        private Action<int> _onDrop;
+        private Camera         _camera;
+        private GameObject     _previewPrefab;
+        private Material        _validMaterial;
+        private Material        _invalidMaterial;
+        private float          _groundY;
+        private Func<int,bool> _isValidTarget;
+        private Action<int>    _onDrop;
 
         private GameObject _ghost;
+        private Material   _currentMaterial;  // last material applied to the ghost (avoid per-frame churn)
+        private Material   _fallbackMaterial; // lazily-built runtime ghost when nothing is assigned
 
-        public void Init(Camera cam, GameObject previewPrefab, Material ghostMaterial, float groundY, Action<int> onDrop)
+        public void Init(Camera cam, GameObject previewPrefab, Material validMaterial, Material invalidMaterial,
+                         float groundY, Func<int,bool> isValidTarget, Action<int> onDrop)
         {
-            _camera        = cam;
-            _previewPrefab = previewPrefab;
-            _ghostMaterial = ghostMaterial;
-            _groundY       = groundY;
-            _onDrop        = onDrop;
+            _camera          = cam;
+            _previewPrefab   = previewPrefab;
+            _validMaterial   = validMaterial;
+            _invalidMaterial = invalidMaterial;
+            _groundY         = groundY;
+            _isValidTarget   = isValidTarget;
+            _onDrop          = onDrop;
         }
 
         public void OnBeginDrag(PointerEventData e)
@@ -38,16 +45,8 @@ namespace SocialUniverse.UI
             // Don't let the ghost block the board raycast.
             foreach (var col in _ghost.GetComponentsInChildren<Collider>()) col.enabled = false;
 
-            // Apply the transparent ghost look so the board shows through the preview.
-            var mat = _ghostMaterial != null ? _ghostMaterial : RuntimeGhostMaterial();
-            foreach (var r in _ghost.GetComponentsInChildren<Renderer>())
-            {
-                var mats = new Material[r.sharedMaterials.Length == 0 ? 1 : r.sharedMaterials.Length];
-                for (int i = 0; i < mats.Length; i++) mats[i] = mat;
-                r.sharedMaterials = mats;
-            }
-
-            PositionGhost(e.position);
+            _currentMaterial = null;   // force the first ApplyMaterial
+            PositionGhost(e.position); // positions AND tints
         }
 
         public void OnDrag(PointerEventData e)
@@ -61,24 +60,45 @@ namespace SocialUniverse.UI
             _onDrop?.Invoke(RaycastCell(e.position, out _));
         }
 
-        // The ghost always follows the pointer: snapped to a cell's anchor when over the board,
-        // otherwise projected onto the board's ground plane so it tracks the finger/cursor even
-        // when off the board (placement itself still only happens on a valid cell — see OnEndDrag).
+        // The ghost always follows the pointer and is tinted valid (green) only when it is over a
+        // cell the drop would actually succeed on; otherwise invalid (red) — including off-board.
         private void PositionGhost(Vector2 screen)
         {
             if (_ghost == null || _camera == null) return;
             var ray = _camera.ScreenPointToRay(screen);
 
+            HexCell cell = null;
             if (Physics.Raycast(ray, out var hit, 100f))
             {
-                var cell = hit.collider.GetComponentInParent<HexCell>();
+                cell = hit.collider.GetComponentInParent<HexCell>();
                 _ghost.transform.position = cell != null ? cell.Anchor.position : hit.point;
-                return;
+            }
+            else
+            {
+                var plane = new Plane(Vector3.up, new Vector3(0f, _groundY, 0f));
+                if (plane.Raycast(ray, out float enter))
+                    _ghost.transform.position = ray.GetPoint(enter);
             }
 
-            var plane = new Plane(Vector3.up, new Vector3(0f, _groundY, 0f));
-            if (plane.Raycast(ray, out float enter))
-                _ghost.transform.position = ray.GetPoint(enter);
+            bool valid = cell != null && _isValidTarget != null && _isValidTarget(cell.Index);
+            ApplyMaterial(valid ? _validMaterial : _invalidMaterial);
+        }
+
+        // Applies `mat` to every ghost renderer, only when it changed. Falls back to the valid
+        // material, then to a runtime transparent material, if `mat` is null (graceful optional).
+        private void ApplyMaterial(Material mat)
+        {
+            if (mat == null) mat = _validMaterial;
+            if (mat == null) mat = _fallbackMaterial ??= RuntimeGhostMaterial();
+            if (mat == _currentMaterial || _ghost == null) return;
+            _currentMaterial = mat;
+
+            foreach (var r in _ghost.GetComponentsInChildren<Renderer>())
+            {
+                var mats = new Material[r.sharedMaterials.Length == 0 ? 1 : r.sharedMaterials.Length];
+                for (int i = 0; i < mats.Length; i++) mats[i] = mat;
+                r.sharedMaterials = mats;
+            }
         }
 
         // Returns the hex index under the screen point (or -1) and, via out, the world point to

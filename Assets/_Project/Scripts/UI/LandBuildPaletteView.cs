@@ -25,6 +25,7 @@ namespace SocialUniverse.UI
         [SerializeField] private HexBuildPopup _removePopup;
         [SerializeField] private Camera         _camera;          // for palette drag -> board raycast
         [SerializeField] private Material       _dragGhostMaterial; // transparent preview material (optional)
+        [SerializeField] private Material       _dragGhostInvalidMaterial; // red ghost for an invalid drop target (optional)
         [SerializeField] private CategoryTabBar _categoryBar;     // filters the palette by category (optional)
         [SerializeField] private TMP_Text       _buildLevelText;  // "Build Level X/Y" shown to the owner (optional)
         [SerializeField] private Slider         _buildLevelBar;   // build-level progress toward max (optional)
@@ -120,7 +121,8 @@ namespace SocialUniverse.UI
                 if (affordable)
                 {
                     var drag = btn.gameObject.AddComponent<PaletteItemDragHandler>();
-                    drag.Init(_camera, captured.Prefab, _dragGhostMaterial, _board.transform.position.y, hex => PlaceFromPalette(captured, hex));
+                    drag.Init(_camera, captured.Prefab, _dragGhostMaterial, _dragGhostInvalidMaterial,
+                              _board.transform.position.y, IsValidDropTarget, hex => PlaceFromPalette(captured, hex));
                 }
             }
         }
@@ -202,6 +204,11 @@ namespace SocialUniverse.UI
             BuildPalette();
             UpdateBuildLevel(animate: true);
         }
+
+        // A drop is valid on an unlocked, empty tile — the same rule PlaceFromPalette enforces, so
+        // the ghost colour never promises a placement that would be rejected.
+        private bool IsValidDropTarget(int hex) =>
+            hex >= 0 && hex < _unlocked.Length && _unlocked[hex] && string.IsNullOrEmpty(_slots[hex]);
 
         private int CountUnlocked()
         {
