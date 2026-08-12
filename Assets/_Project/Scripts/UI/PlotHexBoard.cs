@@ -90,5 +90,14 @@ namespace SocialUniverse.UI
             var building = anchor.GetChild(anchor.childCount - 1).gameObject;
             StartCoroutine(BuildFeedback.PoofOut(building));
         }
+
+        // Punches the cell itself so a freshly-unlocked hexatile pops to acknowledge the purchase.
+        // The caller has already flipped the cell to unlocked (SetCell); this only animates it.
+        public void PlayPurchase(int index)
+        {
+            if (index < 0 || index >= _cells.Count) return;
+            var t = _cells[index].transform;
+            StartCoroutine(BuildFeedback.PunchScale(t, t.localScale));
+        }
     }
 }

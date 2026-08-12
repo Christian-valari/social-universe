@@ -158,6 +158,7 @@ namespace SocialUniverse.UI
             _unlocked[hexIndex] = true;
             if (r.NewBalance >= 0) _localCoins = r.NewBalance;
             _board.SetCell(hexIndex, true, null);
+            _board.PlayPurchase(hexIndex);
             SetStatus("");
             BuildPalette();
         }

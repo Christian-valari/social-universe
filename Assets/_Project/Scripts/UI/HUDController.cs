@@ -17,16 +17,12 @@ namespace SocialUniverse.UI
     // Planet-scene HUD: surfaces currency and the player's current run state at a glance.
     public class HUDController : MonoBehaviour
     {
-        [SerializeField] private CurrencyView _currency;
+        [SerializeField] private PlayerTopBarView _topBar; // avatar + username + coins + stardust (reusable prefab)
         [SerializeField] private TMP_Text _levelText;
         [SerializeField] private Slider _fuelSlider;
         [SerializeField] private Text _miningStatusText;
         [SerializeField] private Text _landStatusText;
-        [SerializeField] private TMP_Text _usernameText;
-        [SerializeField] private Button _usernameButton;
         [SerializeField] private DisplayNameModal _displayNameModal;
-        [SerializeField] private Image _avatarImage;
-        [SerializeField] private Button _avatarButton;
         [SerializeField] private AvatarSelectionModal _avatarSelectionModal;
         [SerializeField] private EmailVerificationModal _emailVerificationModal;
         [SerializeField] private Button _verifyEmailButton;
@@ -57,10 +53,10 @@ namespace SocialUniverse.UI
 
         private void Start()
         {
-            _currency.Bind(_wallet);
+            _topBar.Bind(_wallet, _playerState, _registry);
             _chatButton.onClick.AddListener(_socialPanel.Open);
-            _usernameButton?.onClick.AddListener(OnUsernameClicked);
-            _avatarButton?.onClick.AddListener(() =>
+            _topBar.UsernameButton?.onClick.AddListener(OnUsernameClicked);
+            _topBar.AvatarButton?.onClick.AddListener(() =>
             {
                 _avatarSelectionModal?.Open();
                 _displayNameModal?.Open();
@@ -82,18 +78,14 @@ namespace SocialUniverse.UI
                 _tileViewToggle.onValueChanged.AddListener(OnTileViewToggled);
             }
 
-            _playerState.OnLevelChanged       += SetLevel;
-            _playerState.OnFuelChanged        += SetFuel;
-            _playerState.OnDisplayNameChanged += SetUsername;
-            _playerState.OnAvatarChanged      += SetAvatar;
-            _presence.PresenceChanged         += RefreshExplorerCount;
+            _playerState.OnLevelChanged += SetLevel;
+            _playerState.OnFuelChanged  += SetFuel;
+            _presence.PresenceChanged   += RefreshExplorerCount;
 
             if (_planetNameText != null) _planetNameText.text = _planet.DisplayName;
 
             SetLevel(_playerState.Level);
             SetFuel(_playerState.Fuel);
-            SetUsername(_playerState.DisplayName);
-            SetAvatar(_playerState.AvatarId);
             RefreshMiningStatus();
             RefreshLandStatus();
             RefreshAsteroidRefresh();
@@ -102,11 +94,9 @@ namespace SocialUniverse.UI
 
         private void OnDestroy()
         {
-            _playerState.OnLevelChanged       -= SetLevel;
-            _playerState.OnFuelChanged        -= SetFuel;
-            _playerState.OnDisplayNameChanged -= SetUsername;
-            _playerState.OnAvatarChanged      -= SetAvatar;
-            _presence.PresenceChanged         -= RefreshExplorerCount;
+            _playerState.OnLevelChanged -= SetLevel;
+            _playerState.OnFuelChanged  -= SetFuel;
+            _presence.PresenceChanged   -= RefreshExplorerCount;
             EventBus.Unsubscribe<ShowEmailVerificationPromptEvent>(OnShowEmailVerificationPrompt);
             EventBus.Unsubscribe<ShowProfileOnboardingEvent>(OnShowProfileOnboarding);
             EventBus.Unsubscribe<TileSelectedEvent>(OnTileSelectedForModal);
@@ -142,11 +132,6 @@ namespace SocialUniverse.UI
             RefreshAsteroidRefresh();
         }
 
-        private void SetUsername(string name)
-        {
-            if (_usernameText != null) _usernameText.text = name;
-        }
-
         private void OnUsernameClicked()
         {
             _displayNameModal?.Open();
@@ -159,13 +144,6 @@ namespace SocialUniverse.UI
             // Toggling the Hexasphere style regenerates its mesh and drops custom tile
             // materials, so owned/landmark/etc. colors must be reapplied each time tiles show.
             if (visible) _tileColorizer?.Refresh(_hexasphere.Tiles);
-        }
-
-        private void SetAvatar(string avatarId)
-        {
-            if (_avatarImage == null) return;
-            var avatar = _registry.GetAvatar(avatarId);
-            if (avatar != null) _avatarImage.sprite = avatar.Sprite;
         }
 
         private void RefreshAsteroidRefresh()
