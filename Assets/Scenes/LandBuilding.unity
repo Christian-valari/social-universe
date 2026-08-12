@@ -1253,6 +1253,55 @@ Material:
     - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
+--- !u!1 &553823236
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 553823238}
+  - component: {fileID: 553823237}
+  m_Layer: 0
+  m_Name: LandBuildingThemeApplier
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &553823237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 553823236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1465f2e7b814bee47beb9e2a2769fef4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SocialUniverse.UI::SocialUniverse.UI.LandBuildingThemeApplier
+  _skyRenderers:
+  - {fileID: 864274676}
+  - {fileID: 864274675}
+  - {fileID: 1296087775}
+  _defaultTheme: {fileID: 11400000, guid: c5c266ed62b379043b941c8243d3ebc0, type: 2}
+--- !u!4 &553823238
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 553823236}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &605027578
 GameObject:
   m_ObjectHideFlags: 0
@@ -2311,6 +2360,16 @@ PrefabInstance:
 --- !u!4 &864274674 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400010, guid: d0223f77114284b47a0e8b317e71e4dc, type: 3}
+  m_PrefabInstance: {fileID: 864274673}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &864274675 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5857435814977000066, guid: d0223f77114284b47a0e8b317e71e4dc, type: 3}
+  m_PrefabInstance: {fileID: 864274673}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &864274676 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8297109468298099663, guid: d0223f77114284b47a0e8b317e71e4dc, type: 3}
   m_PrefabInstance: {fileID: 864274673}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &874776665
@@ -6521,6 +6580,7 @@ MonoBehaviour:
   _cellSize: 0.6
   _lockedMat: {fileID: 2100000, guid: f3f96c9fb3978fb4aac555d481bc9153, type: 2}
   _unlockedMat: {fileID: 2100000, guid: a88912f015bd42d4197a5e704c115cf4, type: 2}
+  _defaultTheme: {fileID: 11400000, guid: c5c266ed62b379043b941c8243d3ebc0, type: 2}
 --- !u!4 &2082414514
 Transform:
   m_ObjectHideFlags: 0
@@ -6808,3 +6868,4 @@ SceneRoots:
   - {fileID: 2082414514}
   - {fileID: 769718365}
   - {fileID: 864274673}
+  - {fileID: 553823238}
