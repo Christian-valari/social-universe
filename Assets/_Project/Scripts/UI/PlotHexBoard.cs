@@ -27,11 +27,15 @@ namespace SocialUniverse.UI
         [SerializeField] private float      _cellSize = 0.6f;
         [SerializeField] private Material   _lockedMat;
         [SerializeField] private Material   _unlockedMat;
+        [SerializeField] private LandBuildingThemeDefinition _defaultTheme; // used when the active planet has no theme (standalone / not-yet-authored)
 
         [Inject] private DatabaseRegistry _registry;
         [Inject] private EconomyConfig    _config;
+        [Inject] private LandBuildingHandoff _handoff;
 
         private readonly List<HexCell> _cells = new();
+        private Material _resolvedLocked;
+        private Material _resolvedUnlocked;
 
         public int CellCount => _cells.Count;
 
@@ -42,6 +46,10 @@ namespace SocialUniverse.UI
         {
             foreach (var c in _cells) if (c != null) Destroy(c.gameObject);
             _cells.Clear();
+
+            var theme = LandBuildingThemeResolver.Resolve(_registry, _handoff != null ? _handoff.PlanetId : null, _defaultTheme);
+            _resolvedLocked   = (theme != null && theme.HexLockedMaterial   != null) ? theme.HexLockedMaterial   : _lockedMat;
+            _resolvedUnlocked = (theme != null && theme.HexUnlockedMaterial != null) ? theme.HexUnlockedMaterial : _unlockedMat;
 
             var positions = HexBoardMath.LocalPositions(_config.HexBoardRadius, _cellSize);
             for (int i = 0; i < positions.Length; i++)
@@ -64,7 +72,9 @@ namespace SocialUniverse.UI
             if (index < 0 || index >= _cells.Count) return;
             var cell  = _cells[index];
             var state = HexCellVisual.Resolve(unlocked, itemId);
-            cell.SetLockVisual(state == HexCellVisual.State.Locked, _lockedMat, _unlockedMat);
+            var lockedMat   = _resolvedLocked   != null ? _resolvedLocked   : _lockedMat;
+            var unlockedMat = _resolvedUnlocked != null ? _resolvedUnlocked : _unlockedMat;
+            cell.SetLockVisual(state == HexCellVisual.State.Locked, lockedMat, unlockedMat);
 
             for (int c = cell.Anchor.childCount - 1; c >= 0; c--) Destroy(cell.Anchor.GetChild(c).gameObject);
             if (state == HexCellVisual.State.Occupied)
