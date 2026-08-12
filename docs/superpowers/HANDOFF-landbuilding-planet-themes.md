@@ -47,6 +47,7 @@ Code changes were made in a git worktree (`.claude/worktrees/landbuild-themes`).
    2. Enter from a planet with no `_landBuildingTheme` → falls back to the Earth (default) look; no console errors.
    3. Open `LandBuilding.unity` directly and Play → no NullReference/DI errors; default look.
    4. Enter LandBuilding then Back → Planet scene lighting looks correct (no lingering ambient).
+   5. **Confirm the sky texture visibly changes** (not just "no errors"): the applier sets `Material.mainTexture`, which routes to the shader's main-texture property. If SimpleSky's dome shader exposes its texture under a non-main-tagged property, the swap silently no-ops and every planet keeps the same sky. Verify by giving a second planet a distinct sky texture and confirming it renders. If it no-ops, change `ApplySky` to set the shader's actual property, e.g. `_skyInstance.SetTexture("_MainTex", skyTexture)` (or whatever `SimpleSky.mat` uses).
 
 6. **Commit the Editor changes** (do this in whichever checkout has the Editor):
    - New: `Assets/_Project/ScriptableObjects/LandBuildingThemes/Earth_LandBuildingTheme.asset` (+ .meta)

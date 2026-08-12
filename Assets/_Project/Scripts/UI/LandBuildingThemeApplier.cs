@@ -20,6 +20,8 @@ namespace SocialUniverse.UI
         [Inject] private LandBuildingHandoff _handoff;
         [Inject] private DatabaseRegistry    _registry;
 
+        private Material _skyInstance; // runtime clone we own; destroyed with this component so it doesn't orphan per scene entry
+
         private void Start()
         {
             var theme = LandBuildingThemeResolver.Resolve(
@@ -34,17 +36,23 @@ namespace SocialUniverse.UI
         {
             if (skyTexture == null || _skyRenderers == null) return;
 
-            Material instance = null;
             foreach (var r in _skyRenderers)
             {
-                if (r == null) continue;
-                if (instance == null)
+                if (r == null || r.sharedMaterial == null) continue; // need a source material to clone from
+                if (_skyInstance == null)
                 {
-                    instance = new Material(r.sharedMaterial);
-                    instance.mainTexture = skyTexture;
+                    _skyInstance = new Material(r.sharedMaterial);
+                    _skyInstance.mainTexture = skyTexture;
                 }
-                r.sharedMaterial = instance;
+                r.sharedMaterial = _skyInstance;
             }
+        }
+
+        // The sky instance is a runtime Material we allocated and assigned via sharedMaterial, so Unity
+        // won't auto-destroy it on scene unload — free it here to avoid leaking one per LandBuilding entry.
+        private void OnDestroy()
+        {
+            if (_skyInstance != null) Destroy(_skyInstance);
         }
 
         private void ApplyAmbient(Color color, float intensity)
