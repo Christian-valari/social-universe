@@ -18,6 +18,7 @@ namespace SocialUniverse.Config
         [SerializeField] private int _orbitOrder = 0;      // display/adjacency order on the star map (ascending = outward from the sun)
         [SerializeField] private float _orbitDistanceAU = 1f; // approximate real distance from the sun in AU, used only to lay planets out at relatively-correct distances in Sky Discovery
         [SerializeField] private AudioClip _bgmClip;
+        [SerializeField] private LandBuildingThemeDefinition _landBuildingTheme; // per-planet LandBuilding look; null = scene fallback
 
         public string             PlanetId              => _planetId;
         public string             DisplayName           => _displayName;
@@ -32,5 +33,6 @@ namespace SocialUniverse.Config
         public int                OrbitOrder            => _orbitOrder;
         public float              OrbitDistanceAU       => _orbitDistanceAU;
         public AudioClip          BgmClip                => _bgmClip;
+        public LandBuildingThemeDefinition LandBuildingTheme => _landBuildingTheme;
     }
 }
