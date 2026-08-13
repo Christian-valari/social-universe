@@ -28,7 +28,7 @@ namespace SocialUniverse.App
 
         private void OnViewLandRequested(ViewLandRequestedEvent e)
         {
-            _handoff.Begin(e.TileId, _planetState.TargetPlanetId, _planet.name, e.OwnerId, e.CanEdit, e.Slots, e.Unlocked, e.Coins);
+            _handoff.Begin(e.TileId, _planetState.TargetPlanetId, _planet.name, e.OwnerId, e.CanEdit, e.Slots, e.Unlocked, e.Coins, e.Stardust, e.DisplayName, e.AvatarId);
             _planetState.EnterLandBuilding();
         }
     }

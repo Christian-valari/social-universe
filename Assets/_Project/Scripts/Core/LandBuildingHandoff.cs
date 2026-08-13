@@ -23,8 +23,13 @@ namespace SocialUniverse.Core
         public string[] Slots            { get; private set; }
         // hexIndex -> unlocked. Free hexatiles default true (built via HexBoardMath.EnsureUnlocked).
         public bool[]   Unlocked         { get; private set; }
+        // Player readout for the LandBuilding PlayerTopBar (Wallet/PlayerState don't survive the
+        // scene swap). Coins above live-updates as builds are placed; these three are a snapshot.
+        public int      Stardust         { get; private set; }
+        public string   DisplayName      { get; private set; }
+        public string   AvatarId         { get; private set; }
 
-        public void Begin(string tileId, string planetId, string registryPlanetId, string ownerId, bool canEdit, string[] slots, bool[] unlocked, int coins)
+        public void Begin(string tileId, string planetId, string registryPlanetId, string ownerId, bool canEdit, string[] slots, bool[] unlocked, int coins, int stardust, string displayName, string avatarId)
         {
             TileId           = tileId;
             PlanetId         = planetId;
@@ -34,6 +39,9 @@ namespace SocialUniverse.Core
             Slots            = slots;
             Unlocked         = unlocked;
             Coins            = coins;
+            Stardust         = stardust;
+            DisplayName      = displayName;
+            AvatarId         = avatarId;
         }
 
         public void Clear()
@@ -44,6 +52,8 @@ namespace SocialUniverse.Core
             OwnerId          = null;
             Slots            = null;
             Unlocked         = null;
+            DisplayName      = null;
+            AvatarId         = null;
         }
     }
 }

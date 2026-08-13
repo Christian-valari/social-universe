@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: SocialUniverse.Config::SocialUniverse.Config.LandBuildingThemeDefinition
   _skyTexture: {fileID: 2800000, guid: 7bab9ac1487e10c40b9ed77d4c551e04, type: 3}
   _hexLockedMaterial: {fileID: 2100000, guid: f3f96c9fb3978fb4aac555d481bc9153, type: 2}
-  _hexUnlockedMaterial: {fileID: 2100000, guid: a88912f015bd42d4197a5e704c115cf4, type: 2}
+  _hexUnlockedMaterial: {fileID: 2100000, guid: 3a3fca702ed144c43b9328ae38c6ace8, type: 2}
   _ambientColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
   _ambientIntensity: 1

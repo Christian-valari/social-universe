@@ -13,5 +13,11 @@ namespace SocialUniverse.Core
         public string[] Slots;
         public bool[]   Unlocked;
         public int      Coins;
+        // Player readout carried across to the LandBuilding scene's PlayerTopBar, since Wallet/
+        // PlayerState live in PlanetSceneScope and don't survive the scene swap. Coins live-updates
+        // in LandBuilding (build spends); Stardust/DisplayName/AvatarId are a static snapshot.
+        public int      Stardust;
+        public string   DisplayName;
+        public string   AvatarId;
     }
 }

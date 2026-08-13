@@ -389,6 +389,7 @@ MonoBehaviour:
   _fuelSpendAmount: 20
   _travelOriginPlanetId: earth
   _travelTargetPlanetId: venus
+  _instantPlanet: {fileID: 11400000, guid: ee60ac39f04c68742bd768d00736f9fc, type: 2}
 --- !u!4 &1240742005
 Transform:
   m_ObjectHideFlags: 0

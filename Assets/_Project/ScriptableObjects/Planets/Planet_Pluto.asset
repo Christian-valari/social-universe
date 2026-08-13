@@ -18,6 +18,7 @@ MonoBehaviour:
   _tileCount: 162
   _landPriceMultiplier: 5
   _asteroidTier: 3
+  _asteroidFieldSize: 6
   _asteroidTypes:
   - {fileID: 11400000, guid: 18f73dc4d9a8d9d43a26744869206dba, type: 2}
   - {fileID: 11400000, guid: b37f1cb13e8c51b4da4d72b515020755, type: 2}
@@ -25,4 +26,5 @@ MonoBehaviour:
   _travelDurationSeconds: 120
   _orbitOrder: 9
   _orbitDistanceAU: 39.5
-  _skyIcon: {fileID: 21300000, guid: ca249c011db912c4aae0fb4eb44c4382, type: 3}
+  _bgmClip: {fileID: 0}
+  _landBuildingTheme: {fileID: 11400000, guid: b21a84df56f3f9b49a05c8feb47f0849, type: 2}

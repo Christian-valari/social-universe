@@ -37,6 +37,7 @@ namespace SocialUniverse.UI
         [Inject] private YieldEstimateCalculator _yieldEstimateCalculator;
         [Inject] private IAudioManager           _audio;
         [Inject] private Wallet                  _wallet;
+        [Inject] private SocialUniverse.Progression.PlayerState _playerState;
 
         private TileData _currentTile;
 
@@ -195,6 +196,9 @@ namespace SocialUniverse.UI
                 Slots    = slots,
                 Unlocked = unlocked,
                 Coins    = _wallet.Coins,
+                Stardust    = _wallet.Stardust,
+                DisplayName = _playerState.DisplayName,
+                AvatarId    = _playerState.AvatarId,
             });
 
             Close();

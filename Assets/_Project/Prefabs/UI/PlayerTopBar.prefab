@@ -241,6 +241,7 @@ GameObject:
   - component: {fileID: 8449584132109783778}
   - component: {fileID: 2955590988818129112}
   - component: {fileID: 8931053189295394189}
+  - component: {fileID: 6321855864753627869}
   m_Layer: 0
   m_Name: PlayerTopBar
   m_TagString: Untagged
@@ -310,6 +311,18 @@ MonoBehaviour:
   _usernameText: {fileID: 6813787319034209060}
   _avatarButton: {fileID: 837114736791883566}
   _usernameButton: {fileID: 9005414123299130087}
+--- !u!114 &6321855864753627869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 276395885379768301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3d6b6e4975d8944f8b9bb9d9dd8d64e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SocialUniverse.UI::SocialUniverse.UI.PlayerTopBarBinder
 --- !u!1 &306372756884636723
 GameObject:
   m_ObjectHideFlags: 0

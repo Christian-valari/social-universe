@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bacdd571fd197004e8a8275761a01ee4, type: 3}
+  m_Name: Uranus_LandBuildingTheme
+  m_EditorClassIdentifier: SocialUniverse.Config::SocialUniverse.Config.LandBuildingThemeDefinition
+  _skyTexture: {fileID: 2800000, guid: 2c078cfeeec8f304bb47268be1d96281, type: 3}
+  _hexLockedMaterial: {fileID: 2100000, guid: f3f96c9fb3978fb4aac555d481bc9153, type: 2}
+  _hexUnlockedMaterial: {fileID: 2100000, guid: f1b156731b66410448285fc4165bc207, type: 2}
+  _ambientColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
+  _ambientIntensity: 1

@@ -5,6 +5,7 @@ using NaughtyAttributes;
 using UnityEngine;
 using VContainer;
 using SocialUniverse.Core;
+using SocialUniverse.Config;
 
 namespace SocialUniverse.Net
 {
@@ -37,14 +38,25 @@ namespace SocialUniverse.Net
         [SerializeField] private string _travelOriginPlanetId = "earth";
         [SerializeField] private string _travelTargetPlanetId = "venus";
 
-        private IBackendClient _backend;
-        private IAuthService   _auth;
+        [Header("Instant Planet Jump (dev)")]
+        [Tooltip("Drag the destination PlanetDefinition here, then hit 'Go To Planet (Instant)' in Play Mode to load that planet with no travel trip, fuel cost, or loading ceremony.")]
+        [SerializeField] private PlanetDefinition _instantPlanet;
+
+        private IBackendClient   _backend;
+        private IAuthService     _auth;
+        private GameStateMachine _fsm;
+        private PlanetState      _planetState;
+        private SceneLoader      _sceneLoader;
 
         [Inject]
-        public void Construct(IBackendClient backend, IAuthService auth)
+        public void Construct(IBackendClient backend, IAuthService auth,
+            GameStateMachine fsm, PlanetState planetState, SceneLoader sceneLoader)
         {
-            _backend = backend;
-            _auth    = auth;
+            _backend     = backend;
+            _auth        = auth;
+            _fsm         = fsm;
+            _planetState = planetState;
+            _sceneLoader = sceneLoader;
         }
 
         [Button("Sign Out")]
@@ -117,6 +129,9 @@ namespace SocialUniverse.Net
         [Button("Call GetCurrentPlanet")]
         private void CallGetCurrentPlanet() => _ = RunAsync<CurrentPlanetResult>("GetCurrentPlanet");
 
+        [Button("Go To Planet (Instant)")]
+        private void CallInstantPlanetJump() => _ = InstantPlanetJumpAsync();
+
         private async Task SignOutAsync()
         {
             if (!_auth.IsSignedIn)
@@ -128,6 +143,47 @@ namespace SocialUniverse.Net
             var playerId = _auth.PlayerId;
             await _auth.SignOutAsync();
             SULog.Info($"CloudCodeTestHarness: signed out (was {playerId})", SULog.Channel.Net);
+        }
+
+        // Dev shortcut: jump straight into the Planet scene for _instantPlanet with no
+        // travel trip / fuel cost / loading ceremony. Mirrors HubState.TravelToPlanet
+        // (sets PlanetState.TargetPlanetId + persists LastPlanetId) but also handles the
+        // already-on-a-planet case with an awaited same-scene reload, so the Planet scene
+        // rebuilds against the new planet instead of racing its own load vs unload (both
+        // PlanetState.Enter/Exit are fire-and-forget and SceneLoader is not queued).
+        private async Task InstantPlanetJumpAsync()
+        {
+            if (_instantPlanet == null)
+            {
+                SULog.Warn("CloudCodeTestHarness: assign _instantPlanet before jumping", SULog.Channel.Net);
+                return;
+            }
+            if (!_auth.IsSignedIn)
+            {
+                SULog.Warn("CloudCodeTestHarness: cannot jump — not signed in", SULog.Channel.Net);
+                return;
+            }
+
+            _planetState.TargetPlanetId = _instantPlanet.PlanetId;
+            PlayerPrefs.SetString(SaveKeys.LastPlanetIdKey(_auth.PlayerId), _instantPlanet.PlanetId);
+            PlayerPrefs.Save();
+
+            SULog.Info($"CloudCodeTestHarness: instant jump -> {_instantPlanet.PlanetId}", SULog.Channel.Net);
+
+            if (_fsm.Current is PlanetState)
+            {
+                // Already on a planet: the FSM would re-enter the same PlanetState singleton
+                // and race the Planet scene's unload against its reload. Do a clean awaited
+                // reload instead (FSM stays in PlanetState).
+                await _sceneLoader.UnloadAsync(Constants.SceneNames.Planet);
+                await _sceneLoader.LoadAsync(Constants.SceneNames.Planet);
+            }
+            else
+            {
+                // From Hub / Auth / mini-game / etc.: let the FSM exit the current scene
+                // and enter the Planet scene normally.
+                _fsm.TransitionTo(_planetState);
+            }
         }
 
         private async Task RunAsync<T>(string function, Dictionary<string, object> args = null)

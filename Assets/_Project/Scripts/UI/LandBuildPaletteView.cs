@@ -39,6 +39,7 @@ namespace SocialUniverse.UI
         [Inject] private DatabaseRegistry        _registry;
         [Inject] private EconomyConfig           _config;
         [Inject] private IAudioManager           _audio;
+        [Inject] private Wallet                  _wallet;    // seeded in LandBuildingSceneScope; drives the PlayerTopBar's live coin readout
 
         private int           _localCoins;
         private bool[]        _unlocked;
@@ -156,7 +157,7 @@ namespace SocialUniverse.UI
             if (!r.Success) { SetStatus($"Unlock failed: {r.Reason}"); return; }
 
             _unlocked[hexIndex] = true;
-            if (r.NewBalance >= 0) _localCoins = r.NewBalance;
+            if (r.NewBalance >= 0) { _localCoins = r.NewBalance; _wallet.SetCoins(r.NewBalance); }
             _board.SetCell(hexIndex, true, null);
             _board.PlayPurchase(hexIndex);
             SetStatus("");
@@ -203,7 +204,7 @@ namespace SocialUniverse.UI
             if (!r.Success) { SetStatus($"Place failed: {r.Reason}"); if (_audio != null) _audio.PlaySfx(SfxId.Cancel); return; }
 
             _slots[hexIndex] = item.ItemId;
-            if (r.NewBalance >= 0) _localCoins = r.NewBalance;
+            if (r.NewBalance >= 0) { _localCoins = r.NewBalance; _wallet.SetCoins(r.NewBalance); }
             _board.SetCell(hexIndex, true, item.ItemId, animate: true);
             if (_audio != null) _audio.PlaySfx(SfxId.BuildPlace);
             SetStatus("");

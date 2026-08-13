@@ -6,6 +6,7 @@ using SocialUniverse.Core;
 using SocialUniverse.Economy;
 using SocialUniverse.Net;
 using SocialUniverse.Safety;
+using SocialUniverse.Progression;
 
 namespace SocialUniverse.App
 {
@@ -45,12 +46,34 @@ namespace SocialUniverse.App
 
             builder.Register<LandBuildService>(Lifetime.Singleton);
             builder.Register<BuildPaletteService>(Lifetime.Singleton);
+            // Player readout for the LandBuilding PlayerTopBar. Wallet/PlayerState don't survive the
+            // Planet -> LandBuilding scene swap, so reconstruct them from the handoff snapshot. Coins
+            // live-updates (LandBuildPaletteView pushes each build's NewBalance into this same Wallet);
+            // DisplayName/AvatarId/Stardust are a static entry snapshot.
+            builder.Register<Wallet>(c =>
+            {
+                var h = c.Resolve<LandBuildingHandoff>();
+                var w = new Wallet();
+                w.SetCoins(h.Coins);
+                w.SetStardust(h.Stardust);
+                return w;
+            }, Lifetime.Singleton);
+            builder.Register<PlayerState>(c =>
+            {
+                var h  = c.Resolve<LandBuildingHandoff>();
+                var ps = new PlayerState();
+                if (!string.IsNullOrEmpty(h.DisplayName)) ps.SetDisplayName(h.DisplayName);
+                if (!string.IsNullOrEmpty(h.AvatarId))    ps.SetAvatarId(h.AvatarId);
+                return ps;
+            }, Lifetime.Singleton);
+
 
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.LandBuildingController>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.LandBuildPaletteView>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.PlotHexBoard>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.PlotBoardInputController>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.LandBuildingThemeApplier>();
+            builder.RegisterComponentInHierarchy<SocialUniverse.UI.PlayerTopBarBinder>();
 
             builder.RegisterEntryPoint<LandBuildingSceneBootstrapper>();
         }
