@@ -1,21 +1,20 @@
 # Social Universe — Project Progress Tracker
 
-> Last updated: 2026-06-18 — `refactor/vivox-only-social`: removed Netcode for GameObjects and
-> UGS Multiplayer Sessions/Relay; presence is now `VivoxPresenceService`, derived from the Vivox
-> channel roster (see `MIGRATION.md`). EditMode suite 83/83 passing (was 79/79). PlayMode
-> regression (Known Issue #7) confirmed still open and unrelated to this migration.
-> HUD now shows a live "N explorers here" count from `IPresenceService`. `ChatService` hardened
-> against Vivox login races: concurrent `ConnectAsync` calls share one in-flight login, and every
-> Vivox-touching method (`JoinChannelAsync`, `SendMessageAsync`, DMs, block/unblock, etc.) now
-> calls `EnsureConnectedAsync()` first so Vivox's own internal auto-login never collides with
-> ours — see "Chat & Moderation Notes" below.
-> **M5 (Travel & Solar System) is now code-complete** — star map travel, server-backed fuel
-> (recharge/spend/refill), rocket departure overlay, and gyroscope Sky Discovery (with
-> mouse/touch-drag fallback — the AR-vs-gyro Open Decision is resolved in favor of gyro).
-> `SolarSystem.unity` was built out with a working StarMap/SkyDiscovery UI via Unity MCP.
-> EditMode suite 97/97 passing (was 83/83). Awaiting Cloud Code deploy + PlayMode verification
-> (blocked on the same Known Issue #7 as M3/M4) — see the M5 section below.
-> Engine: Unity 6 (URP 17.3.0) · Branch: `refactor/vivox-only-social`
+> Last updated: 2026-08-17 — on `main`. **M0–M5 are code-complete** (server deploy + on-device
+> verification still outstanding — see each milestone's "Setup Required"). Since the last update a
+> large body of feature work has landed on `main` beyond the M-series milestones — most of it in
+> the M3/M4/M11 problem space (build depth, social polish, auth, UI). These are summarized in the
+> new **"Post-M5 Features Merged to `main`"** section below; the flagship is **Land Building
+> Mode** (a dedicated hexatile build scene with per-planet themes, code-complete + verified).
+> Other landed features: an ActiveMining scene redesign, avatar selection + first-time profile
+> onboarding, chat avatars/display-name fixes, a Settings panel + `AudioManager` (BGM/SFX),
+> cross-device planet resume, and an auth overhaul (email verify/reset → Google Sign-In → Firebase
+> Auth via UGS OIDC).
+> EditMode suite ≈296 passing across 59 files (up from 97/97 at M5); the 2 PlayMode
+> `PlanetSceneFlowTests` still fail at `SetUp` (Known Issue #7, unrelated). Much of the pending
+> work is now **UGS/Firebase dashboard config, Cloud Code deploy, and on-device verification**
+> rather than new code — see "Future Tasks" at the bottom.
+> Engine: Unity 6 (URP 17.3.0) · Branch: `main`
 
 ---
 
@@ -1085,6 +1084,65 @@ rocket departure overlay via Unity MCP. Covered by EditMode tests (97/97 passing
 
 ---
 
+## Post-M5 Features Merged to `main` (2026-07 → 2026-08)
+
+Work that landed on `main` after the M5 update. None of it is a new milestone — it deepens
+existing milestones (mostly M3 build depth, M4 social, and M11 UI/auth polish) and was built
+feature-by-feature via the SDD spec/plan workflow (`docs/superpowers/specs/` + `plans/`). All of
+it is **code-complete and merged to `main` with EditMode tests green**; what remains for most is
+UGS/Firebase dashboard config, Cloud Code deploy, and on-device verification (see "Future Tasks").
+
+| Feature | Landed | Maps to | Status | Key scripts / assets |
+|---|---|---|---|---|
+| **ActiveMining scene redesign** | 2026-07-04→06 | M1/M6 | ✅ code-complete | Dedicated `ActiveMining.unity` (true scene swap, not overlay); `ActiveMiningState` FSM, `ActiveMiningHandoff`, `ActiveMiningSessionRunner`, `ActiveMiningAsteroidStage`, Cinemachine close-up framing, pre/post-game panels, tap VFX |
+| **Avatar selection** | 2026-07-06→07 | M4/M11 | ✅ code-complete | `AvatarDefinition` SO + 25-avatar catalog on `DatabaseRegistry`; `AvatarSelectionModal` grid picker; `PlayerState.AvatarId`; `AvatarAssignment.ResolveAvatarId` (random on first hydrate); `avatarId` threaded through `UpdateProfile`/`GetPlayerProfile`/`PlayerProfile`/`ProfileService.UpdateAvatarAsync`; HUD avatar + picker |
+| **Chat avatars + display names** | 2026-07-09→14 | M4 | ✅ code-complete | `AvatarId` through `ChatMessage`/`IChatService`; sender avatar rendered in chat rows; `ChatDisplayNameResolver`; fixed IDs leaking as names and the "Player" display-name bug |
+| **TileInfo yield/claim rows** | 2026-07-09 | M3 | ✅ code-complete | `TileInfoPanel` grown to host yield + claim rows without shifting siblings |
+| **Settings panel + AudioManager** | 2026-07-10→13 | M10/M11 | ✅ code-complete | New `SocialUniverse.Safety` assembly; `AudioSettingsService` (music/SFX volume); `SettingsPanel` (logout + volume) on HUD gear; `AudioManager` + `AudioCatalog`; `PlanetDefinition.BgmClip`; per-scene BGM + mining/modal/coins SFX |
+| **Cross-device planet resume** | 2026-07-14 | M2/M5 | ✅ code-complete | Current planet persisted server-side; `PlanetResumeResolver` picks the resume planet on login |
+| **Auth overhaul** | 2026-07-16→29 | M2 | ✅ code-complete | Email verify + two-panel forgot-password + `CheckEmailAvailable` + `DeleteAccountAsync` → Google Sign-In (choose-name panel, `DisplayNameValidator`, Play Games Services v2) → **Firebase Auth via UGS OIDC** (`FirebaseAuthHandler`, `FirebaseAuthConfig` SO, FirebaseApp init in `NetworkBootstrap`; retired the email Cloud Code + Play Games plugin). Firebase SDK + `google-services.json` committed |
+| **First-time profile onboarding** | 2026-07-30 | M4/M11 | ✅ code-complete | `ProfileOnboarding.NeedsOnboarding`; `ShowProfileOnboardingEvent`; non-dismissable name+avatar onboarding modes on `DisplayNameModal`/`AvatarSelectionModal`; HUD triggers it for nameless first-time (Google/SSO) accounts |
+| **Land Building Mode** | 2026-08-04→13 | M3 (build depth) | ✅ code-complete + verified | See detail below |
+
+### Land Building Mode (flagship — 4 phases)
+
+A dedicated build scene reachable via "View Land" on `TileInfoModal`, replacing M3's in-planet
+`BuildModeController`. Built in four SDD passes:
+
+1. **Slot-model foundation** (2026-08-04) — new `LandBuilding.unity` scene + `LandBuildingSceneScope`
+   (parented to `RootLifetimeScope`), `LandBuildingState` FSM state + `LandBuildingHandoff` (carries
+   tile context across the scene swap), `LandBuildService` client, `LandBuildMath`, slot-aware
+   `PlaceBuild`/`RemoveBuild`/`MoveBuild` Cloud Code functions, `LandBuildingController` +
+   `LandBuildPaletteView` (owner edit mode vs. visitor view mode).
+2. **Hex-grid redesign** (2026-08-05) — retired the fixed slot model for a **hexatile board**:
+   `HexBoardMath` (geometry/neighbors/price), `PlotHexBoard` renderer + `PlotBoardInputController`
+   (tap vs. cell-drag routing), `PurchaseHexatile` (adjacency-gated, server-priced unlock), build
+   ops re-keyed to hex index, per-hexatile unlocked mask carried through the land registry + handoff.
+3. **Palette + juice** (2026-08-07→10) — item categories + category-tab filter, affordability
+   gating, price labels, transparent 3D drag-ghost preview, mobile touch, build-level slider;
+   `BuildFeedback` coroutine juice (place pop-in, remove poof, slider punch, ghost green/red tint by
+   drop validity), place/remove/invalid SFX.
+4. **Per-planet themes** (2026-08-12→13) — `LandBuildingThemeDefinition` SO, `LandBuildingThemeResolver`,
+   `LandBuildingThemeApplier` (swaps sky texture + ambient), per-planet hex materials via
+   `PlanetDefinition.LandBuildingTheme`; 12 theme assets + sky textures under
+   `ScriptableObjects/LandBuildingThemes/` and `Plugins/SimpleSky/Textures/`. Earth theme wired in
+   the scene; the remaining 11 planets fall back to Earth until each is authored/wired
+   (`docs/superpowers/HANDOFF-landbuilding-planet-themes.md` §C — no code needed per planet).
+
+**Tests:** `LandBuildMathTests`, `LandBuildServiceTests`, `HexBoardMathTests`, `BuildFeedbackTests`,
+`HexCellVisualTests`, `LandSlotResolverTests`, `PointerGestureTests`, `LandBuildingHandoffTests`,
+`LandBuildingThemeResolverTests` — all green.
+
+**Land Building — remaining (Editor/deploy, not code):**
+
+- [ ] Deploy the hex build Cloud Code functions (`PurchaseHexatile`, hex-keyed `PlaceBuild`/`RemoveBuild`/`MoveBuild`) to UGS.
+- [ ] Author + wire the 11 non-Earth `LandBuildingTheme` assets (per-planet sky/hex/ambient).
+- [ ] Manual visual verification of the theme swap (confirm SimpleSky's dome shader actually picks
+      up `Material.mainTexture` — HANDOFF §B.5; otherwise set the shader's real texture property).
+- [ ] On-device Play Mode walkthrough (enter LandBuilding → purchase hexatile → place/move/remove → Back).
+
+---
+
 ## M6 — Drones & Mining Depth 🔲 NOT STARTED
 
 **Exit criteria:** Drone upgrade tree, slots, asteroid tiers gating exploration.
@@ -1431,12 +1489,62 @@ rocket departure overlay via Unity MCP. Covered by EditMode tests (97/97 passing
 | `PlanetSceneFlowTests.cs`      | PlayMode | ⚠️ Both tests **fail at `SetUp`** with `PlanetSceneScope.Container not initialized` — see Known Issue #7 (pre-existing, unrelated to the mining rework). Intended coverage: (1) idle-mining a claimed asteroid reaches `ReadyToClaim`, a single tap claims it via `MiningController.ClaimIdleSessionAsync`, grants `RemainingYield × CoinsPerUnit` coins, and schedules respawn — this test replaced the old cargo-based `CommitCargoAsync` flow test as part of the mining rework, but remains blocked by the same Known Issue #7 its predecessor was; (2) selecting an available tile fires `TileSelectedEvent` → `TilePurchaseHandler` → `LandPurchaseService`, debits the wallet, and transfers the tile to `OwnedByPlayer` |
 
 
-**EditMode total: 102/102 passing** (up from 79/79 in M4 — 23 new tests: 18 from M5's Travel layer, plus 4 new `TravelRangeMathTests` and 1 new `TravelServiceTests` case for the post-M5 travel-range follow-up).
+**EditMode total: ≈296 passing across 59 EditMode files** (up from 97/97 at M5). The growth is
+the Post-M5 feature work: Land Building (`LandBuildMathTests`, `LandBuildServiceTests`,
+`HexBoardMathTests`, `BuildFeedbackTests`, `HexCellVisualTests`, `LandSlotResolverTests`,
+`PointerGestureTests`, `LandBuildingHandoffTests`, `LandBuildingThemeResolverTests`), avatars
+(`AvatarAssignmentTests`, `PlayerStateAvatarTests`, `DatabaseRegistryAvatarTests`), social polish
+(`ChatDisplayNameResolverTests`, `DisplayNameValidatorTests`), audio/settings
+(`AudioManagerTests`, `AudioSettingsServiceTests`), onboarding (`ProfileOnboardingTests`),
+active-mining redesign (`ActiveMiningHandoffTests`, `ActiveMiningAsteroidStageTests`,
+`ActiveMiningTargetPointTests`), travel/resume (`TravelTripSystemTests`,
+`FuelRechargeEstimatorTests`, `PlanetResumeResolverTests`, `PlayerStateTravelTests`,
+`GyroAttitudeMathTests`), and yield/mining estimators (`YieldEstimateCalculatorTests`,
+`EconomyServiceMiningTests`, `ValidateMiningCapAlignmentTests`). *(≈ because `[TestCase]`-driven
+tests expand to multiple cases; run Test Runner for the exact figure.)* The 2 PlayMode
+`PlanetSceneFlowTests` still fail at `SetUp` (Known Issue #7).
 
 **Missing tests (high priority):**
 
 - [ ] EditMode: `LandmarkService` marks exactly 12 tiles as `IsLandmark = true`
 - [ ] EditMode: `DatabaseRegistry` lookups (`GetPlanet`, `GetAsteroid`, `GetDrone`)
 - [ ] Fix `PlanetSceneFlowTests` PlayMode regression (Known Issue #7) — currently 0/2 passing
+
+---
+
+## Future Tasks (what's left, in rough priority order)
+
+The bulk of remaining work on the completed milestones is **not new code** — it's backend
+configuration and on-device verification that can't be done from the editor tooling alone.
+
+**1. Backend bring-up — unblocks M2–M5 + Land Building (highest priority)**
+
+- [ ] Create/link the UGS project (`Project Settings > Services`); set `AppConfig.Environment = Development`.
+- [ ] UGS Economy dashboard: define `COINS` + `STARDUST` currencies.
+- [ ] UGS Dashboard: enable/configure **Vivox** (text chat) and **Friends**.
+- [ ] Configure **Firebase Auth** (email/password + Google provider) and the UGS OIDC link; keep `google-services.json` current.
+- [ ] Deploy **all** `ServerCode/*.js` to Cloud Code — M2 (`GetBootstrapState`, `PurchaseLand`, `ValidateMining`, `GrantOfflineIncome`, `GetServerTime`, `SpendCoins`/`GrantCoins`/`GrantStardust`), M3 (`GetLandRegistry`, `PlaceBuild`, `ClaimYield`, `RecordVisit`, `ApplyUpkeep`, `SellLand`), M4 (`SubmitReport`, `BlockUser`, `GetPlayerProfile`, `UpdateProfile`), M5 (`GetFuelState`, `SpendFuel`, `RefillFuel`), and Land Building (`PurchaseHexatile`, hex-keyed `PlaceBuild`/`RemoveBuild`/`MoveBuild`). Verify the `@unity-services/cloud-save-1.4` Custom Data API shapes against the live dashboard SDK (M3/M5 notes flag these as written-from-best-knowledge).
+- [ ] Decide the fate of `ServerCode/ModerateMessage.js` (wire it in server-side or delete as dead code — see M4 notes).
+
+**2. Fix Known Issue #7 — unblocks all PlayMode verification**
+
+- [ ] `PlanetSceneFlowTests` fail at `SetUp` (`PlanetSceneScope.Container not initialized`) because the scene's `PlanetSceneScope` has a production `parentReference` but the test loads `Planet.unity` standalone. Fix via a test-only bootstrap that creates `RootLifetimeScope` first, or the `parentReference == null` standalone-mock path (Known Issue #7 for options). Blocks PlayMode checks for M3/M4/M5 alike.
+
+**3. Editor/scene housekeeping (small, unblocks clean runs)**
+
+- [ ] Create `Assets/Scenes/LoadingScreen.unity` + `LoadingScreenView` wiring and add to Build Settings (Post-M4 Infrastructure section).
+- [ ] Move `Assets/SocialConfig.asset` into `Assets/_Project/ScriptableObjects/` and re-point `RootLifetimeScope`/`PlanetSceneScope._socialConfig`.
+- [ ] Assign `_socialConfig` on `Planet.unity`'s `PlanetSceneScope` (field added in code, scene not re-saved).
+- [ ] Author ≥1 `ItemDefinition` per build level and add to `DatabaseRegistry._items` so `BuildPaletteService` has items to offer.
+- [ ] Author + wire the 11 non-Earth `LandBuildingTheme` assets.
+
+**4. On-device verification pass** — once (1)+(2) land, run each milestone's "Manual Play Mode Verification" checklist on a device (auth, persistence, two-client presence/chat, travel/fuel, gyro sky discovery, land building).
+
+**5. Resolve Open Decisions still outstanding**
+
+- [ ] **Age policy / content rating** — needed to layer per-age-band behavior over `SocialConfig`'s provisional `Strict` default (drives M10 `AgeGateService`).
+- [ ] **Land resale model** — confirm coins-only / no real-money cash-out before M8.
+
+**6. Next new-code milestone: M6 — Drones & Mining Depth** (drone upgrade tree, slots, mineral inventory, tier-gated asteroids). `DroneDefinition`/`AsteroidDefinition` SOs already exist; everything else in the M6 table is 🔲. M7–M11 remain not started.
 
 **Note:** The temporary `PlayModeVerifier.cs` smoke-test script (and its component on the `PlanetSceneScope` GameObject in `Planet.unity`) has been removed — its checks are now covered by `PlanetSceneFlowTests` under `Assets/_Project/Tests/PlayMode/` (assembly `SocialUniverse.PlayModeTests`). As of M4, both tests fail at `SetUp` — see Known Issue #7.
