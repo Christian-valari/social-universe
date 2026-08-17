@@ -54,6 +54,11 @@ namespace SocialUniverse.Config
         [SerializeField] private float _maxActiveSessionSeconds = 60f;   // clamp: largest asteroids cap out at this long
         [SerializeField] private int   _activeMaxErrors         = 3;     // wrong taps before the asteroid is lost
 
+        [Header("Drones — M6")]
+        [SerializeField] private int   _startingFleetSlots    = 2;
+        [SerializeField] private int   _slotUnlockBaseCost    = 500;  // MUST MATCH ServerCode/UnlockDroneSlot.js
+        [SerializeField] private float _slotUnlockCostGrowth  = 2f;   // MUST MATCH ServerCode/UnlockDroneSlot.js
+
         [Header("Travel — Fuel")]
         [SerializeField] private float _maxFuel                 = 100f;
         [SerializeField] private float _fuelRechargePerHour     = 10f;  // units/hour, recharges while offline too (server-computed)
@@ -94,6 +99,11 @@ namespace SocialUniverse.Config
         public float MinActiveSessionSeconds  => _minActiveSessionSeconds;
         public float MaxActiveSessionSeconds  => _maxActiveSessionSeconds;
         public int   ActiveMaxErrors          => _activeMaxErrors;
+
+        public int   StartingFleetSlots   => _startingFleetSlots;
+        public int   SlotUnlockBaseCost    => _slotUnlockBaseCost;
+        public float SlotUnlockCostGrowth  => _slotUnlockCostGrowth;
+
         public float MaxFuel               => _maxFuel;
         public float FuelRechargePerHour   => _fuelRechargePerHour;
         public int   FuelRefillCost        => _fuelRefillCost;
