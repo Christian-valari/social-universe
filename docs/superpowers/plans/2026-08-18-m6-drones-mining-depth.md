@@ -493,10 +493,12 @@ git commit -m "feat(mining): MineralInventory client cache + change event (M6)"
 **Interfaces:**
 - Consumes: `IBackendClient` (Core), `MineralInventory` (Task 4), `Wallet` (Economy), `DatabaseRegistry` (Config).
 - Produces: `class SellResult { bool Success; string Reason; int NewBalance; Dictionary<string,int> RemainingInventory; }` (public top-level).
-- Produces: `interface IMineralService` — `Task<SellResult> SellAsync(string mineralId, int qty)`, `Task<SellResult> SellAllAsync()`, `Task RefreshAsync()`, `Task<int> GrantMiningAsync(string mineralId, int qty, float sessionDurationSec, float unitsPerSec)`.
+- Produces: `interface IMineralService` — `Task<SellResult> SellAsync(string mineralId, int qty)`, `Task<SellResult> SellAllAsync()`, `Task<int> GrantMiningAsync(string mineralId, int qty, float sessionDurationSec, float unitsPerSec)`.
 - Produces: `MineralService` (real) and `LocalMockMineralService` (dev).
 
 Rationale for `GrantMiningAsync` on this interface: MiningController must not hold an `IBackendClient` directly (Rule 2). The mining grant round-trips `ValidateMining` and applies the returned minerals to `MineralInventory`, so it belongs beside the other mineral operations.
+
+> **Ruling R4 (2026-08-18):** `IMineralService` does **not** expose `RefreshAsync`/`ICloudSave`. `ICloudSave` lives in `SocialUniverse.Net`, which the `SocialUniverse.Mining` asmdef does not reference (and must not — it would pull the whole Net graph into Mining). Cloud Save hydration is an App-layer concern: the Planet bootstrapper (Task 17), which already has `ICloudSave`, loads the `mineral_inventory` record and calls `_inventory.SetAll(...)` directly — exactly how owned-tiles hydrate today. So `MineralService`'s constructor is `(IBackendClient, MineralInventory, Wallet)` — no `ICloudSave`.
 
 - [ ] **Step 1: Write the failing test** (mirrors `LandSaleServiceTests`' private-fake pattern)
 
@@ -540,7 +542,7 @@ namespace SocialUniverse.Tests
             var wallet = new Wallet();
             var inv    = new MineralInventory();
             inv.SetAll(new Dictionary<string, int> { { "iron", 12 } });
-            var svc = new MineralService(backend, inv, wallet, cloudSave: null);
+            var svc = new MineralService(backend, inv, wallet);
 
             var result = await svc.SellAsync("iron", 10);
 
@@ -559,7 +561,7 @@ namespace SocialUniverse.Tests
             var wallet = new Wallet();
             var inv    = new MineralInventory();
             inv.SetAll(new Dictionary<string, int> { { "iron", 12 } });
-            var svc = new MineralService(backend, inv, wallet, cloudSave: null);
+            var svc = new MineralService(backend, inv, wallet);
 
             var result = await svc.SellAsync("iron", 99);
 
@@ -619,11 +621,9 @@ namespace SocialUniverse.Mining
         Task<SellResult> SellAsync(string mineralId, int qty);
         Task<SellResult> SellAllAsync();
 
-        // Hydrate MineralInventory from the mineral_inventory Cloud Save record.
-        Task RefreshAsync();
-
         // Mining payout: round-trips ValidateMining (server caps qty) and applies the
         // granted minerals to MineralInventory. Returns the granted quantity.
+        // (Cloud Save hydration is App-layer, not here — see Ruling R4.)
         Task<int> GrantMiningAsync(string mineralId, int qty, float sessionDurationSec, float unitsPerSec);
     }
 }
@@ -645,14 +645,12 @@ namespace SocialUniverse.Mining
         private readonly IBackendClient   _backend;
         private readonly MineralInventory _inventory;
         private readonly Wallet           _wallet;
-        private readonly ICloudSave       _cloudSave;
 
-        public MineralService(IBackendClient backend, MineralInventory inventory, Wallet wallet, ICloudSave cloudSave)
+        public MineralService(IBackendClient backend, MineralInventory inventory, Wallet wallet)
         {
             _backend   = backend;
             _inventory = inventory;
             _wallet    = wallet;
-            _cloudSave = cloudSave;
         }
 
         public Task<SellResult> SellAsync(string mineralId, int qty) =>
@@ -680,13 +678,6 @@ namespace SocialUniverse.Mining
                 if (res.RemainingInventory != null) _inventory.SetAll(res.RemainingInventory);
             }
             return res ?? new SellResult { Success = false, Reason = "Empty response" };
-        }
-
-        public async Task RefreshAsync()
-        {
-            if (_cloudSave == null) return;
-            var held = await _cloudSave.LoadAsync<Dictionary<string, int>>(SaveKeys.MineralInventory, null);
-            if (held != null) _inventory.SetAll(held);
         }
 
         public async Task<int> GrantMiningAsync(string mineralId, int qty, float sessionDurationSec, float unitsPerSec)
@@ -760,8 +751,6 @@ namespace SocialUniverse.Mining
             _wallet.SetCoins(_wallet.Coins + payout);
             return Task.FromResult(Snapshot());
         }
-
-        public Task RefreshAsync() => Task.CompletedTask;
 
         public Task<int> GrantMiningAsync(string mineralId, int qty, float sessionDurationSec, float unitsPerSec)
         {
@@ -2693,14 +2682,20 @@ builder.RegisterComponentInHierarchy<SocialUniverse.UI.DroneGarageView>();
 builder.RegisterEntryPoint<DroneGarageHandler>();
 ```
 
-- [ ] **Step 2: Hydrate in `PlanetSceneBootstrapper`** — inject `DroneFleet _fleet`, `MineralInventory _inventory`, `IMineralService _minerals`, `ICloudSave _cloudSave` (already injected), and `DatabaseRegistry _registry` (already injected). Replace the Phase-A temporary single-drone seed (Task 8 Step 5) with a real hydrate helper, called from `HydrateServerStateAsync()`:
+- [ ] **Step 2: Hydrate in `PlanetSceneBootstrapper`** — inject `DroneFleet _fleet`, `MineralInventory _inventory`, `ICloudSave _cloudSave` (already injected), and `DatabaseRegistry _registry` (already injected). (Do **not** inject `IMineralService` for hydration — per Ruling R4, Cloud Save loads happen here in App, not in the service.) Replace the Phase-A temporary single-drone seed (Task 8 Step 5) with a real hydrate helper, called from `HydrateServerStateAsync()`:
 
 ```csharp
 // Hydrate fleet + mineral inventory (planet-scoped, like wallet + owned tiles). Non-fatal:
 // falls back to a local Scout-seeded fleet if the server/record is unavailable.
 private async Task HydrateDronesAndMineralsAsync()
 {
-    try { await _minerals.RefreshAsync(); }
+    // Mineral inventory: load the mineral_inventory Cloud Save record directly (App-layer,
+    // same pattern as owned-tiles hydration — Mining must not reference ICloudSave/Net).
+    try
+    {
+        var held = await _cloudSave.LoadAsync<Dictionary<string, int>>(SaveKeys.MineralInventory, null);
+        if (held != null) _inventory.SetAll(held);
+    }
     catch (Exception ex) { SULog.Warn($"Mineral inventory hydration failed ({ex.Message})", SULog.Channel.Economy); }
 
     DroneFleetSnapshot snapshot = null;
