@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd974ea8636137a4ab38ae02215e424c, type: 3}
   m_Name: Asteroid_Iron
   m_EditorClassIdentifier: SocialUniverse.Config::SocialUniverse.Config.AsteroidDefinition
+  _mineral: {fileID: 11400000, guid: 09c805177bc87be44a4cef763ac1b3c6, type: 2}
   _mineralType: Iron
   _tier: 1
   _baseYield: 80

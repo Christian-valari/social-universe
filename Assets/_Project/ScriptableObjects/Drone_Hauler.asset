@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a8c0c197d9359824c969c35f19071d25, type: 3}
-  m_Name: Drone_Scout
+  m_Name: Drone_Hauler
   m_EditorClassIdentifier: SocialUniverse.Config::SocialUniverse.Config.DroneDefinition
-  _droneId: scout
-  _displayName: Scout Drone
-  _tier: 1
-  _unlockCost: 0
-  _travelSpeed: 5
-  _cargoCap: 50
-  _yieldMultiplier: 1
+  _droneId: hauler
+  _displayName: Hauler Drone
+  _tier: 2
+  _unlockCost: 300
+  _travelSpeed: 4
+  _cargoCap: 120
+  _yieldMultiplier: 1.3
   _modelPrefab: {fileID: 8667300961151965220, guid: a948ba0ef83cc074a93fe60c476921a9, type: 3}

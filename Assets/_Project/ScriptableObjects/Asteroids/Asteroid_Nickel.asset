@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd974ea8636137a4ab38ae02215e424c, type: 3}
   m_Name: Asteroid_Nickel
   m_EditorClassIdentifier: SocialUniverse.Config::SocialUniverse.Config.AsteroidDefinition
+  _mineral: {fileID: 11400000, guid: 7ee157c2db59cc548a77e6acde7f7069, type: 2}
   _mineralType: Nickel
   _tier: 2
   _baseYield: 40

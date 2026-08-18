@@ -32,6 +32,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b37f1cb13e8c51b4da4d72b515020755, type: 2}
   _drones:
   - {fileID: 11400000, guid: b0f50eb462295314fa2c6a9b68f14da3, type: 2}
+  - {fileID: 11400000, guid: 43a5d98af571dfa43a6b7751eba0e5ee, type: 2}
+  - {fileID: 11400000, guid: efcc2ae12fcc0a34f82e96de7217a993, type: 2}
   _items:
   - {fileID: 11400000, guid: bb94a087f3e180d46bdba8140c29d0f3, type: 2}
   - {fileID: 11400000, guid: 21f1edfe29730634185f0950d19ff859, type: 2}
@@ -64,3 +66,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e085e694251b05e45bc64443087201e1, type: 2}
   - {fileID: 11400000, guid: c9367405ee71efe43a0277cb706d5156, type: 2}
   - {fileID: 11400000, guid: 557d28af4a71a2243b1821beca46a5ed, type: 2}
+  _minerals:
+  - {fileID: 11400000, guid: 09c805177bc87be44a4cef763ac1b3c6, type: 2}
+  - {fileID: 11400000, guid: cb40586b54dd06e4e943b8155d7d2186, type: 2}
+  - {fileID: 11400000, guid: d959426c2fd85d846a4d1b9e26062f1c, type: 2}
+  - {fileID: 11400000, guid: 7ee157c2db59cc548a77e6acde7f7069, type: 2}
+  - {fileID: 11400000, guid: 4b69d1ade43dc4347a5223b0987f69d3, type: 2}
+  - {fileID: 11400000, guid: 0a2f55164df90f44090333376368ac29, type: 2}
+  _upgrades:
+  - {fileID: 11400000, guid: aaddb508380db9442864340a9d30119b, type: 2}
+  - {fileID: 11400000, guid: b48340bf99d69f04d81f37a2298abca5, type: 2}
+  - {fileID: 11400000, guid: abbacb31995a97a46a824effa6c29373, type: 2}

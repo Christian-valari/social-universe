@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd974ea8636137a4ab38ae02215e424c, type: 3}
   m_Name: Asteroid_Carbon
   m_EditorClassIdentifier: SocialUniverse.Config::SocialUniverse.Config.AsteroidDefinition
+  _mineral: {fileID: 11400000, guid: cb40586b54dd06e4e943b8155d7d2186, type: 2}
   _mineralType: Carbon
   _tier: 1
   _baseYield: 65

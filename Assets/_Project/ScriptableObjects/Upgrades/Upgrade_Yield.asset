@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83b2923c21b5d3240b3702c5b1ac4240, type: 3}
+  m_Name: Upgrade_Yield
+  m_EditorClassIdentifier: SocialUniverse.Config::SocialUniverse.Config.UpgradeDefinition
+  _stat: 1
+  _maxLevel: 10
+  _baseCost: 80
+  _costGrowth: 1.6
+  _deltaPerLevel: 0.15

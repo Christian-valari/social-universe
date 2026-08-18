@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd974ea8636137a4ab38ae02215e424c, type: 3}
   m_Name: Asteroid_Platinum
   m_EditorClassIdentifier: SocialUniverse.Config::SocialUniverse.Config.AsteroidDefinition
+  _mineral: {fileID: 11400000, guid: 4b69d1ade43dc4347a5223b0987f69d3, type: 2}
   _mineralType: Platinum
   _tier: 3
   _baseYield: 25

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd974ea8636137a4ab38ae02215e424c, type: 3}
   m_Name: Asteroid_Silicon
   m_EditorClassIdentifier: SocialUniverse.Config::SocialUniverse.Config.AsteroidDefinition
+  _mineral: {fileID: 11400000, guid: d959426c2fd85d846a4d1b9e26062f1c, type: 2}
   _mineralType: Silicon
   _tier: 2
   _baseYield: 50
