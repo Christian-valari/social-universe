@@ -1296,14 +1296,13 @@ module.exports = async ({ params, context, logger }) => {
 
 - [ ] **Step 6: Retarget `ValidateMiningCapAlignmentTests.cs`** — the constant name is unchanged (`ABSOLUTE_SESSION_CAP_SECONDS`), so the existing regex still matches; no code change required. Re-run it to confirm it still passes against the rewritten JS. If the milestone later renames the constant, update the regex here.
 
-- [ ] **Step 7: Wire the view + handler in `PlanetSceneScope.cs`** — register the App handler as an entry point and the view component in hierarchy:
+- [ ] **Step 7: Wire the handler in `PlanetSceneScope.cs`** — register the App handler as an entry point (in the same block as the other `RegisterEntryPoint` calls):
 
 ```csharp
-builder.RegisterComponentInHierarchy<SocialUniverse.UI.MineralInventoryView>();
 builder.RegisterEntryPoint<MineralSaleHandler>();
 ```
 
-(Actual scene placement of the `MineralInventoryView` GameObject + HUD open button is deferred — see the checklist. The registration compiles and resolves once the component exists in the scene; until then it is null-tolerant like the other optional views.)
+> **Ruling R6 (2026-08-18):** do NOT add `builder.RegisterComponentInHierarchy<MineralInventoryView>()` here. VContainer's `FindComponentProvider` **throws** at container build if the component isn't in the scene, and these registrations are force-resolved at build (see the SettingsPanel note in `PlanetSceneScope`). The `MineralInventoryView` GameObject is added to `Planet.unity` only in the deferred Editor-wiring step, so its `RegisterComponentInHierarchy` line is added there too — adding it now would break the Planet scene at runtime. `MineralSaleHandler` is a plain entry point whose only dependency (`IMineralService`) is already registered, so it resolves fine.
 
 - [ ] **Step 8: Run** the EditMode suite. Expected: PASS (server JS is not executed by tests; the cap-alignment text-scan and the C# service/handler tests are the coverage).
 
@@ -2678,9 +2677,10 @@ if (standalone)
 else
     builder.Register<DroneService>(Lifetime.Singleton).As<IDroneService>();
 
-builder.RegisterComponentInHierarchy<SocialUniverse.UI.DroneGarageView>();
 builder.RegisterEntryPoint<DroneGarageHandler>();
 ```
+
+> **Ruling R6 (2026-08-18):** as with the mineral view, do NOT add `builder.RegisterComponentInHierarchy<DroneGarageView>()` here — it would throw at Planet-scene container build until the GameObject is placed. That registration line is added in the deferred Editor-wiring step alongside the GameObject. `DroneGarageHandler` (entry point, depends only on the already-registered `IDroneService`) resolves fine.
 
 - [ ] **Step 2: Hydrate in `PlanetSceneBootstrapper`** — inject `DroneFleet _fleet`, `MineralInventory _inventory`, `ICloudSave _cloudSave` (already injected), and `DatabaseRegistry _registry` (already injected). (Do **not** inject `IMineralService` for hydration — per Ruling R4, Cloud Save loads happen here in App, not in the service.) Replace the Phase-A temporary single-drone seed (Task 8 Step 5) with a real hydrate helper, called from `HydrateServerStateAsync()`:
 
@@ -2766,7 +2766,7 @@ These require the live Unity Editor (which owns the `main` checkout) and the UGS
   - Re-author the 6 existing `AsteroidDefinition` assets: set `_mineral` to the matching `MineralDefinition`, set `_tier` to the mineral's tier (the old `_mineralType`/`_coinsPerUnit` fields are gone).
   - Add all new `MineralDefinition`, `UpgradeDefinition`, and drone assets to `DatabaseRegistry` (`_minerals`, `_upgrades`, `_drones`).
   - Set `EconomyConfig`: `StartingFleetSlots = 2`, `SlotUnlockBaseCost = 500`, `SlotUnlockCostGrowth = 2`.
-- [ ] **Scene wiring** (`Planet.unity`): add `DroneGarageView` + `MineralInventoryView` GameObjects (root panel, row parents, row prefabs, buttons named `SetActive`/`UpgradeCargo`/`UpgradeYield`/`UpgradeSpeed`/`Acquire`), and HUD `Garage`/`Minerals` open buttons. Confirm `PlanetSceneScope`'s `RegisterComponentInHierarchy` calls resolve them.
+- [ ] **Scene wiring** (`Planet.unity`): add `DroneGarageView` + `MineralInventoryView` GameObjects (root panel, row parents, row prefabs, buttons named `SetActive`/`UpgradeCargo`/`UpgradeYield`/`UpgradeSpeed`/`Acquire`), and HUD `Garage`/`Minerals` open buttons. **Then** add `builder.RegisterComponentInHierarchy<SocialUniverse.UI.MineralInventoryView>();` and `builder.RegisterComponentInHierarchy<SocialUniverse.UI.DroneGarageView>();` to `PlanetSceneScope.Configure` (deferred per Ruling R6 — these throw at container build if the GameObjects aren't present, so they must be added together with the scene objects). After wiring, run the PlayMode `PlanetSceneFlowTests` to confirm the scene container still builds.
 - [ ] **Deploy Cloud Code** (UGS dashboard): `ValidateMining` (rewritten), `SellMinerals`, `AcquireDrone`, `UnlockDroneSlot`, `UpgradeDrone`, `SetActiveDrone`, `GetBootstrapState` (extended). Verify each against the live SDK (Known Issues #6/#8/#9). Confirm `mineral_inventory` + `drone_fleet` Cloud Save record shapes round-trip.
 - [ ] **Device/editor smoke test** the full loop: mine (tier-gated) → minerals in inventory → sell → coins → upgrade drone / unlock slot / acquire higher-tier drone → reach a higher-tier asteroid.
 
