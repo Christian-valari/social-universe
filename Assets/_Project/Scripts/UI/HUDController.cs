@@ -40,6 +40,10 @@ namespace SocialUniverse.UI
         [SerializeField] private SettingsPanel      _settingsPanel;
         [SerializeField] private Button             _fuelButton;
         [SerializeField] private FuelPanel          _fuelPanel;
+        [SerializeField] private Button             _garageButton;
+        [SerializeField] private DroneGarageView    _droneGarageView;
+        [SerializeField] private Button             _mineralsButton;
+        [SerializeField] private MineralInventoryView _mineralInventoryView;
 
 
         [Inject] private Wallet _wallet;
@@ -64,6 +68,8 @@ namespace SocialUniverse.UI
             _launchButton?.onClick.AddListener(() => EventBus.Publish(new LaunchRequestedEvent()));
             _settingsButton?.onClick.AddListener(() => _settingsPanel?.Open());
             _fuelButton?.onClick.AddListener(() => _fuelPanel?.Open());
+            _garageButton?.onClick.AddListener(() => _droneGarageView?.Open());
+            _mineralsButton?.onClick.AddListener(() => _mineralInventoryView?.Open());
 
             if (_verifyEmailButton != null) _verifyEmailButton.onClick.AddListener(() => _emailVerificationModal?.Open());
             EventBus.Subscribe<ShowEmailVerificationPromptEvent>(OnShowEmailVerificationPrompt);
