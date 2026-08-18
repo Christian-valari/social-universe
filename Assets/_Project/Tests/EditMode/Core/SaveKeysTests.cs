@@ -34,5 +34,12 @@ namespace SocialUniverse.Tests
 
             Assert.AreEqual("Earth", resumedForB);
         }
+
+        [Test]
+        public void M6_record_keys_are_stable()
+        {
+            Assert.AreEqual("mineral_inventory", SocialUniverse.Core.SaveKeys.MineralInventory);
+            Assert.AreEqual("drone_fleet",       SocialUniverse.Core.SaveKeys.DroneFleet);
+        }
     }
 }

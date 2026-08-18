@@ -19,6 +19,8 @@ namespace SocialUniverse.Core
         public const string AuthSession    = "auth_session_player_id";
         public const string MusicVolume    = "settings_music_volume";
         public const string SfxVolume      = "settings_sfx_volume";
+        public const string MineralInventory = "mineral_inventory";
+        public const string DroneFleet        = "drone_fleet";
 
         // Returns the Cloud Save key for a planet's owned-tile list.
         public static string OwnedTilesKey(string planetId) => $"owned_tiles_{planetId.ToLowerInvariant()}";
