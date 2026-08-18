@@ -148,6 +148,13 @@ namespace SocialUniverse.App
                 builder.Register<MineralService>(Lifetime.Singleton).As<IMineralService>();
             }
 
+            if (standalone)
+                builder.Register<LocalMockDroneService>(Lifetime.Singleton).As<IDroneService>();
+            else
+                builder.Register<DroneService>(Lifetime.Singleton).As<IDroneService>();
+
+            builder.RegisterEntryPoint<DroneGarageHandler>();
+
             // UI
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.HUDController>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.MiningModePromptView>();
@@ -199,6 +206,8 @@ namespace SocialUniverse.App
         private readonly IAudioManager     _audio;
         private readonly DroneFleet        _fleet;
         private readonly IMineralService   _minerals;
+        private readonly MineralInventory  _inventory;
+        private readonly EconomyConfig     _config;
 
         public PlanetSceneBootstrapper(
             PlanetController  planetController,
@@ -220,7 +229,9 @@ namespace SocialUniverse.App
             bool              standalone,
             IAudioManager     audio,
             DroneFleet        fleet,
-            IMineralService   minerals)
+            IMineralService   minerals,
+            MineralInventory  inventory,
+            EconomyConfig     config)
         {
             _planetController = planetController;
             _asteroidSpawner  = asteroidSpawner;
@@ -242,6 +253,8 @@ namespace SocialUniverse.App
             _audio            = audio;
             _fleet            = fleet;
             _minerals         = minerals;
+            _inventory        = inventory;
+            _config           = config;
         }
 
         public async void Start()
@@ -265,18 +278,7 @@ namespace SocialUniverse.App
 
             await HydrateServerStateAsync();
 
-            var droneDef = _registry.AllDrones.FirstOrDefault();
-            if (droneDef == null)
-            {
-                SULog.Error("PlanetSceneBootstrapper: no DroneDefinition in DatabaseRegistry");
-                EventBus.Publish(new SceneReadyEvent());
-                return;
-            }
-
             EventBus.Publish(new LoadingStatusEvent(0.90f));
-            // Phase A: seed a default single-drone fleet with a literal slot count (replaced by
-            // the real server-hydrated fleet in a later task).
-            _fleet.Apply(DroneFleetSnapshot.SingleDrone(droneDef.DroneId, 2), _registry);
             _miningController.Initialize();
 
             EventBus.Publish(new SceneReadyEvent());
@@ -308,6 +310,9 @@ namespace SocialUniverse.App
             {
                 SULog.Warn($"PlanetSceneBootstrapper: fuel hydration failed ({ex.Message}), using local state", SULog.Channel.Economy);
             }
+
+            // Hydrate drone fleet + mineral inventory (planet-scoped, like wallet + owned tiles).
+            await HydrateDronesAndMineralsAsync();
 
             // Hydrate display name — prefer DisplayName (set during registration), fall
             // back to Username, then "Player". The resolver also strips the UGS "#1234"
@@ -448,6 +453,40 @@ namespace SocialUniverse.App
             // RefreshAndApplyAsync already catches and logs its own failures.
             EventBus.Publish(new LoadingStatusEvent(0.85f));
             await _landRegistrySync.RefreshAndApplyAsync();
+        }
+
+        // Hydrate fleet + mineral inventory (planet-scoped, like wallet + owned tiles). Non-fatal:
+        // falls back to a local Scout-seeded fleet if the server/record is unavailable.
+        private async Task HydrateDronesAndMineralsAsync()
+        {
+            // Mineral inventory: load the mineral_inventory Cloud Save record directly (App-layer,
+            // same pattern as owned-tiles hydration — Mining must not reference ICloudSave/Net).
+            try
+            {
+                var held = await _cloudSave.LoadAsync<Dictionary<string, int>>(SaveKeys.MineralInventory, null);
+                if (held != null) _inventory.SetAll(held);
+            }
+            catch (Exception ex) { SULog.Warn($"Mineral inventory hydration failed ({ex.Message})", SULog.Channel.Economy); }
+
+            DroneFleetSnapshot snapshot = null;
+            try { snapshot = await _cloudSave.LoadAsync<DroneFleetSnapshot>(SaveKeys.DroneFleet, null); }
+            catch (Exception ex) { SULog.Warn($"Drone fleet hydration failed ({ex.Message})", SULog.Channel.Economy); }
+
+            if (snapshot == null || snapshot.Drones == null || snapshot.Drones.Count == 0)
+            {
+                // New player / server unavailable: own the starter Scout by default (spec Q1).
+                var scout = FirstStarterDrone();
+                snapshot = DroneFleetSnapshot.SingleDrone(scout?.DroneId ?? _registry.AllDrones.First().DroneId, _config.StartingFleetSlots);
+            }
+            _fleet.Apply(snapshot, _registry);
+        }
+
+        // The Tier-1, zero-cost starter drone (Scout); falls back to the first registered drone.
+        private DroneDefinition FirstStarterDrone()
+        {
+            foreach (var d in _registry.AllDrones)
+                if (d.Tier == 1 && d.UnlockCost == 0) return d;
+            return _registry.AllDrones.FirstOrDefault();
         }
     }
 }
