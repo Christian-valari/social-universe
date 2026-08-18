@@ -5,6 +5,7 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "SocialUniverse.Core",
+        "SocialUniverse.App",
         "SocialUniverse.Config",
         "SocialUniverse.Economy",
         "SocialUniverse.Mining",
