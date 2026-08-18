@@ -11,6 +11,7 @@ namespace SocialUniverse.Tests
         private EconomyConfig          _config;
         private AsteroidDefinition     _def;
         private MiningRewardCalculator _calc;
+        private Asteroid                _asteroid;
 
         [SetUp]
         public void SetUp()
@@ -27,9 +28,11 @@ namespace SocialUniverse.Tests
             SetField(_config, "_maxActiveSessionSeconds", 45f);
 
             _def = ScriptableObject.CreateInstance<AsteroidDefinition>();
-            SetField(_def, "_coinsPerUnit", 2);
+            SetField(_def, "_coinsPerUnit", 2); // retained (legacy); the calculator no longer reads it
 
             _calc = new MiningRewardCalculator(_config);
+
+            _asteroid = MakeAsteroid(10);
         }
 
         [TearDown]
@@ -60,60 +63,71 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
-        public void Mid_range_yield_is_not_clamped_and_coinsPerSec_reproduces_totalCoins_exactly()
+        public void Mid_range_yield_is_not_clamped_and_unitsPerSec_reproduces_mineralQuantity_exactly()
         {
             var asteroid = MakeAsteroid(100); // duration = 100*3 = 300s, within [30,1800]
 
-            var reward = _calc.Compute(asteroid);
+            var reward = _calc.Compute(asteroid, 1f);
 
-            Assert.AreEqual(200, reward.TotalCoins);          // 100 * 2 coins/unit
+            Assert.AreEqual(100, reward.MineralQuantity);          // 100 remaining yield * 1.0 mult
             Assert.AreEqual(300f, reward.IdleDurationSeconds, 0.001f);
-            Assert.AreEqual(200f / 300f, reward.CoinsPerSec, 0.0001f);
-            Assert.AreEqual(reward.TotalCoins, reward.IdleDurationSeconds * reward.CoinsPerSec, 0.01f,
-                "sessionDurationSec * coinsPerSec must reproduce totalCoins exactly so the server cap never under-grants");
+            Assert.AreEqual(100f / 300f, reward.UnitsPerSec, 0.0001f);
+            Assert.AreEqual(reward.MineralQuantity, reward.IdleDurationSeconds * reward.UnitsPerSec, 0.01f,
+                "sessionDurationSec * unitsPerSec must reproduce mineralQuantity exactly so the server cap never under-grants");
         }
 
         [Test]
-        public void Tiny_yield_clamps_duration_to_minimum_and_still_reproduces_totalCoins()
+        public void Tiny_yield_clamps_duration_to_minimum_and_still_reproduces_mineralQuantity()
         {
             var asteroid = MakeAsteroid(1); // raw duration = 3s, clamped up to 30s
 
-            var reward = _calc.Compute(asteroid);
+            var reward = _calc.Compute(asteroid, 1f);
 
             Assert.AreEqual(30f, reward.IdleDurationSeconds, 0.001f);
-            Assert.AreEqual(reward.TotalCoins, reward.IdleDurationSeconds * reward.CoinsPerSec, 0.01f);
+            Assert.AreEqual(reward.MineralQuantity, reward.IdleDurationSeconds * reward.UnitsPerSec, 0.01f);
         }
 
         [Test]
-        public void Huge_yield_clamps_duration_to_maximum_and_still_reproduces_totalCoins()
+        public void Huge_yield_clamps_duration_to_maximum_and_still_reproduces_mineralQuantity()
         {
             var asteroid = MakeAsteroid(10000); // raw duration = 30000s, clamped down to 1800s
 
-            var reward = _calc.Compute(asteroid);
+            var reward = _calc.Compute(asteroid, 1f);
 
             Assert.AreEqual(1800f, reward.IdleDurationSeconds, 0.001f);
-            Assert.AreEqual(20000, reward.TotalCoins); // 10000 * 2
-            Assert.AreEqual(reward.TotalCoins, reward.IdleDurationSeconds * reward.CoinsPerSec, 0.5f,
-                "even when duration is clamped down, coinsPerSec must be recomputed so the cap still equals totalCoins");
+            Assert.AreEqual(10000, reward.MineralQuantity); // 10000 * 1.0
+            Assert.AreEqual(reward.MineralQuantity, reward.IdleDurationSeconds * reward.UnitsPerSec, 0.5f,
+                "even when duration is clamped down, unitsPerSec must be recomputed so the cap still equals mineralQuantity");
         }
 
         [Test]
         public void Active_taps_scale_with_yield_and_clamp_at_bounds()
         {
-            Assert.AreEqual(5, _calc.Compute(MakeAsteroid(1)).ActiveTapsRequired);     // ceil(1/8)=1, clamped up to min 5
-            Assert.AreEqual(13, _calc.Compute(MakeAsteroid(100)).ActiveTapsRequired);  // ceil(100/8)=13
-            Assert.AreEqual(20, _calc.Compute(MakeAsteroid(10000)).ActiveTapsRequired); // clamped down to max 20
+            Assert.AreEqual(5, _calc.Compute(MakeAsteroid(1), 1f).ActiveTapsRequired);     // ceil(1/8)=1, clamped up to min 5
+            Assert.AreEqual(13, _calc.Compute(MakeAsteroid(100), 1f).ActiveTapsRequired);  // ceil(100/8)=13
+            Assert.AreEqual(20, _calc.Compute(MakeAsteroid(10000), 1f).ActiveTapsRequired); // clamped down to max 20
         }
 
         [Test]
         public void Active_session_duration_scales_with_taps_and_clamps_at_bounds()
         {
             // taps=5 (clamped up from ceil(1/8)=1) -> raw 5*3=15s, clamped up to min 20s
-            Assert.AreEqual(20f, _calc.Compute(MakeAsteroid(1)).ActiveSessionDurationSeconds, 0.001f);
+            Assert.AreEqual(20f, _calc.Compute(MakeAsteroid(1), 1f).ActiveSessionDurationSeconds, 0.001f);
             // taps=13 -> raw 13*3=39s, within [20,45]
-            Assert.AreEqual(39f, _calc.Compute(MakeAsteroid(100)).ActiveSessionDurationSeconds, 0.001f);
+            Assert.AreEqual(39f, _calc.Compute(MakeAsteroid(100), 1f).ActiveSessionDurationSeconds, 0.001f);
             // taps=20 (clamped down from a huge yield) -> raw 20*3=60s, clamped down to max 45s
-            Assert.AreEqual(45f, _calc.Compute(MakeAsteroid(10000)).ActiveSessionDurationSeconds, 0.001f);
+            Assert.AreEqual(45f, _calc.Compute(MakeAsteroid(10000), 1f).ActiveSessionDurationSeconds, 0.001f);
+        }
+
+        [Test]
+        public void Compute_scales_mineral_quantity_by_effective_yield_multiplier()
+        {
+            // config with 1:1 pacing; asteroid remaining yield = 10
+            var reward1 = _calc.Compute(_asteroid, 1f);
+            var reward2 = _calc.Compute(_asteroid, 2f);
+            Assert.AreEqual(reward1.MineralQuantity * 2, reward2.MineralQuantity);
+            // pacing (duration/taps) is independent of the yield multiplier
+            Assert.AreEqual(reward1.IdleDurationSeconds, reward2.IdleDurationSeconds);
         }
     }
 }

@@ -136,6 +136,18 @@ namespace SocialUniverse.App
             builder.RegisterComponentInHierarchy<DroneController>();
             builder.RegisterComponentInHierarchy<AsteroidSelectionController>();
 
+            // Mining — M6: mineral inventory + drone fleet + mineral service
+            builder.Register<MineralInventory>(Lifetime.Singleton);
+            builder.Register<DroneFleet>(Lifetime.Singleton);
+            if (standalone)
+            {
+                builder.Register<LocalMockMineralService>(Lifetime.Singleton).As<IMineralService>();
+            }
+            else
+            {
+                builder.Register<MineralService>(Lifetime.Singleton).As<IMineralService>();
+            }
+
             // UI
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.HUDController>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.MiningModePromptView>();
@@ -184,6 +196,8 @@ namespace SocialUniverse.App
         private readonly SceneLoader       _sceneLoader;
         private readonly bool              _standalone;
         private readonly IAudioManager     _audio;
+        private readonly DroneFleet        _fleet;
+        private readonly IMineralService   _minerals;
 
         public PlanetSceneBootstrapper(
             PlanetController  planetController,
@@ -203,7 +217,9 @@ namespace SocialUniverse.App
             ProfileService    profileService,
             SceneLoader       sceneLoader,
             bool              standalone,
-            IAudioManager     audio)
+            IAudioManager     audio,
+            DroneFleet        fleet,
+            IMineralService   minerals)
         {
             _planetController = planetController;
             _asteroidSpawner  = asteroidSpawner;
@@ -223,6 +239,8 @@ namespace SocialUniverse.App
             _sceneLoader      = sceneLoader;
             _standalone       = standalone;
             _audio            = audio;
+            _fleet            = fleet;
+            _minerals         = minerals;
         }
 
         public async void Start()
@@ -255,8 +273,10 @@ namespace SocialUniverse.App
             }
 
             EventBus.Publish(new LoadingStatusEvent(0.90f));
-            var drone = new DroneRuntime(droneDef);
-            _miningController.Initialize(drone);
+            // Phase A: seed a default single-drone fleet with a literal slot count (replaced by
+            // the real server-hydrated fleet in a later task).
+            _fleet.Apply(DroneFleetSnapshot.SingleDrone(droneDef.DroneId, 2), _registry);
+            _miningController.Initialize();
 
             EventBus.Publish(new SceneReadyEvent());
         }

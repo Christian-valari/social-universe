@@ -5,38 +5,36 @@ namespace SocialUniverse.Mining
 {
     public readonly struct MiningReward
     {
-        public readonly int   TotalCoins;
+        public readonly int   MineralQuantity;
         public readonly float IdleDurationSeconds;
         public readonly int   ActiveTapsRequired;
         public readonly float ActiveSessionDurationSeconds;
-        public readonly float CoinsPerSec;
+        public readonly float UnitsPerSec;
 
-        public MiningReward(int totalCoins, float idleDurationSeconds, int activeTapsRequired,
-            float activeSessionDurationSeconds, float coinsPerSec)
+        public MiningReward(int mineralQuantity, float idleDurationSeconds, int activeTapsRequired,
+            float activeSessionDurationSeconds, float unitsPerSec)
         {
-            TotalCoins                   = totalCoins;
+            MineralQuantity              = mineralQuantity;
             IdleDurationSeconds          = idleDurationSeconds;
             ActiveTapsRequired           = activeTapsRequired;
             ActiveSessionDurationSeconds = activeSessionDurationSeconds;
-            CoinsPerSec                  = coinsPerSec;
+            UnitsPerSec                  = unitsPerSec;
         }
     }
 
-    // Single source of truth for idle-mining duration, active-mining tap count, active-mining
-    // session countdown, and total coin payout for a given asteroid — all three pacing values
-    // derive from the same RemainingYield so both mining modes pay out identical totals (see
-    // MiningRewardCalculatorTests) and the active-mining countdown scales with the asteroid's
-    // effective size without needing a separate "size" field anywhere.
+    // Single source of truth for idle duration, active tap count, active countdown, and the
+    // mined mineral quantity for an asteroid. Pacing derives from RemainingYield (unchanged
+    // from M1); the mined quantity now scales by the active drone's effective yield multiplier.
     public class MiningRewardCalculator
     {
         private readonly EconomyConfig _config;
 
         public MiningRewardCalculator(EconomyConfig config) => _config = config;
 
-        public MiningReward Compute(Asteroid asteroid)
+        public MiningReward Compute(Asteroid asteroid, float effectiveYieldMult)
         {
             int remainingYield = asteroid.RemainingYield;
-            int totalCoins     = remainingYield * asteroid.Definition.CoinsPerUnit;
+            int quantity       = Mathf.RoundToInt(remainingYield * Mathf.Max(0f, effectiveYieldMult));
 
             float rawDuration = remainingYield * _config.IdleSecondsPerYieldUnit;
             float duration    = Mathf.Clamp(rawDuration, _config.MinIdleSessionSeconds, _config.MaxIdleSessionSeconds);
@@ -47,12 +45,11 @@ namespace SocialUniverse.Mining
             float rawActiveSeconds = taps * _config.ActiveSecondsPerTap;
             float activeSeconds    = Mathf.Clamp(rawActiveSeconds, _config.MinActiveSessionSeconds, _config.MaxActiveSessionSeconds);
 
-            // Computed per-claim from this asteroid's actual totalCoins/duration (not a fixed
-            // per-type constant) so sessionDurationSec * coinsPerSec always equals totalCoins
-            // exactly, even when duration was clamped — see EconomyService.GrantMiningRewardAsync.
-            float coinsPerSec = duration > 0f ? totalCoins / duration : 0f;
+            // Per-claim rate so durationSec * unitsPerSec == quantity exactly even when duration
+            // was clamped — feeds the server anti-cheat cap in ValidateMining (mineral units).
+            float unitsPerSec = duration > 0f ? quantity / duration : 0f;
 
-            return new MiningReward(totalCoins, duration, taps, activeSeconds, coinsPerSec);
+            return new MiningReward(quantity, duration, taps, activeSeconds, unitsPerSec);
         }
     }
 }

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using SocialUniverse.Config;
 using SocialUniverse.Core;
-using SocialUniverse.Economy;
 using SocialUniverse.Mining;
 using SocialUniverse.Safety;
 using UnityEngine;
@@ -13,18 +12,25 @@ using UnityEngine.TestTools;
 
 namespace SocialUniverse.Tests
 {
-    // Minimal IEconomyService test double that always throws from GrantMiningRewardAsync, to
-    // reproduce a fire-and-forget grant call failing (e.g. network error) after the asteroid
-    // has already been mined-out and the session torn down.
-    public class ThrowingEconomyService : IEconomyService
+    // Minimal IMineralService test double that captures the last grant call, or throws from
+    // GrantMiningAsync (to reproduce a fire-and-forget grant call failing, e.g. network error,
+    // after the asteroid has already been mined-out and the session torn down).
+    public class CapturingMineralService : IMineralService
     {
-        public Task<Wallet> GetWalletAsync() => throw new System.NotSupportedException("not used by this test");
-        public Task<bool>   SpendCoinsAsync(int amount) => throw new System.NotSupportedException("not used by this test");
-        public Task         GrantCoinsAsync(int amount) => throw new System.NotSupportedException("not used by this test");
-        public Task         GrantStardustAsync(int amount) => throw new System.NotSupportedException("not used by this test");
+        public string LastMineralId;
+        public int    LastQty;
+        public bool   Throw;
 
-        public Task<int> GrantMiningRewardAsync(int claimedCoins, float sessionDurationSec, float coinsPerSec)
-            => throw new System.InvalidOperationException("simulated network failure");
+        public Task<SellResult> SellAsync(string mineralId, int qty) => Task.FromResult(new SellResult { Success = true });
+        public Task<SellResult> SellAllAsync() => Task.FromResult(new SellResult { Success = true });
+
+        public Task<int> GrantMiningAsync(string mineralId, int qty, float sessionDurationSec, float unitsPerSec)
+        {
+            if (Throw) throw new System.InvalidOperationException("simulated");
+            LastMineralId = mineralId;
+            LastQty       = qty;
+            return Task.FromResult(qty);
+        }
     }
 
     public class FakeAudioManager : IAudioManager
@@ -39,12 +45,15 @@ namespace SocialUniverse.Tests
     {
         private EconomyConfig          _config;
         private AsteroidDefinition     _asteroidDef;
+        private MineralDefinition      _mineralDef;
         private PlanetDefinition       _planet;
-        private Wallet                 _wallet;
-        private LocalMockEconomy       _economy;
+        private CapturingMineralService _minerals;
         private MiningRewardCalculator _rewardCalc;
         private ActiveMiningHandoff    _handoff;
         private AsteroidSpawner        _spawner;
+        private DroneFleet             _fleet;
+        private DroneDefinition        _droneDef;
+        private DatabaseRegistry       _registry;
         private MiningController       _mining;
 
         private static void SetField(object target, string field, object value) =>
@@ -65,21 +74,35 @@ namespace SocialUniverse.Tests
             SetField(_config, "_activeMaxErrors", 3);
             SetField(_config, "_asteroidRespawnHours", 4f);
 
+            _mineralDef = ScriptableObject.CreateInstance<MineralDefinition>();
+            SetField(_mineralDef, "_mineralId", "iron");
+            SetField(_mineralDef, "_tier", 1);
+
             _asteroidDef = ScriptableObject.CreateInstance<AsteroidDefinition>();
             SetField(_asteroidDef, "_coinsPerUnit", 2);
+            SetField(_asteroidDef, "_mineral", _mineralDef);
+            SetField(_asteroidDef, "_tier", 1);
 
             _planet = ScriptableObject.CreateInstance<PlanetDefinition>();
             SetField(_planet, "_planetId", "test_planet");
 
-            _wallet     = new Wallet();
-            _economy    = new LocalMockEconomy(_wallet, _config);
+            _droneDef = ScriptableObject.CreateInstance<DroneDefinition>();
+            SetField(_droneDef, "_droneId", "starter_drone");
+            SetField(_droneDef, "_tier", 1);
+            SetField(_droneDef, "_yieldMultiplier", 1f);
+
+            _registry = MakeRegistry(_droneDef);
+            _fleet = new DroneFleet();
+            _fleet.Apply(DroneFleetSnapshot.SingleDrone("starter_drone", 1), _registry);
+
+            _minerals   = new CapturingMineralService();
             _rewardCalc = new MiningRewardCalculator(_config);
             _handoff    = new ActiveMiningHandoff();
 
             var spawnerGo = new GameObject("TestSpawner");
             _spawner = spawnerGo.AddComponent<AsteroidSpawner>();
 
-            _mining = new MiningController(_economy, _rewardCalc, _spawner, _config, _planet, _handoff, new FakeAudioManager());
+            _mining = new MiningController(_minerals, _rewardCalc, _spawner, _config, _planet, _handoff, new FakeAudioManager(), _fleet);
         }
 
         [TearDown]
@@ -87,8 +110,21 @@ namespace SocialUniverse.Tests
         {
             Object.DestroyImmediate(_config);
             Object.DestroyImmediate(_asteroidDef);
+            Object.DestroyImmediate(_mineralDef);
             Object.DestroyImmediate(_planet);
+            Object.DestroyImmediate(_droneDef);
+            Object.DestroyImmediate(_registry);
             PlayerPrefs.DeleteKey(SocialUniverse.Core.SaveKeys.IdleMiningSession);
+        }
+
+        // Minimal registry stub carrying just the one drone def DroneFleet.Apply needs to
+        // resolve DroneSnapshot.DroneId -> DroneDefinition.
+        private static DatabaseRegistry MakeRegistry(DroneDefinition droneDef)
+        {
+            var registry = ScriptableObject.CreateInstance<DatabaseRegistry>();
+            SetField(registry, "_drones", new[] { droneDef });
+            SetField(registry, "_upgrades", System.Array.Empty<UpgradeDefinition>());
+            return registry;
         }
 
         private Asteroid MakeAndRegisterAsteroid(string slotId, int remainingYield)
@@ -116,12 +152,11 @@ namespace SocialUniverse.Tests
             _mining.CurrentIdleSession.Tick(0f);
             Assert.AreEqual(IdleMiningStage.ReadyToClaim, _mining.CurrentIdleSession.Stage);
 
-            int coinsBefore = _wallet.Coins;
-
             await _mining.ClaimIdleSessionAsync(asteroid);
 
             Assert.IsNull(_mining.CurrentIdleSession);
-            Assert.AreEqual(coinsBefore + 40, _wallet.Coins); // 20 yield * 2 coins/unit
+            Assert.AreEqual("iron", _minerals.LastMineralId);
+            Assert.AreEqual(20, _minerals.LastQty); // 20 yield * 1.0 effective mult
             Assert.IsTrue(asteroid.IsDepleted);
         }
 
@@ -184,17 +219,14 @@ namespace SocialUniverse.Tests
             var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 10);
             Assert.IsTrue(_mining.BeginActiveMining(asteroid));
             _handoff.SetResult(succeeded: true);
-            int coinsBefore = _wallet.Coins;
 
-            var droneDef = ScriptableObject.CreateInstance<DroneDefinition>();
-            _mining.Initialize(new DroneRuntime(droneDef));
+            _mining.Initialize();
             await Task.Yield(); // let the fire-and-forget payout Task complete
 
-            Assert.AreEqual(coinsBefore + 20, _wallet.Coins); // 10 yield * 2 coins/unit
+            Assert.AreEqual("iron", _minerals.LastMineralId);
+            Assert.AreEqual(10, _minerals.LastQty); // 10 yield * 1.0 effective mult
             Assert.IsTrue(asteroid.IsDepleted);
             Assert.IsNull(_handoff.AsteroidSlotId, "handoff must be cleared after finalizing");
-
-            Object.DestroyImmediate(droneDef);
         }
 
         [Test]
@@ -203,16 +235,12 @@ namespace SocialUniverse.Tests
             var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 10);
             Assert.IsTrue(_mining.BeginActiveMining(asteroid));
             _handoff.SetResult(succeeded: false);
-            int coinsBefore = _wallet.Coins;
 
-            var droneDef = ScriptableObject.CreateInstance<DroneDefinition>();
-            _mining.Initialize(new DroneRuntime(droneDef));
+            _mining.Initialize();
 
-            Assert.AreEqual(coinsBefore, _wallet.Coins);
+            Assert.IsNull(_minerals.LastMineralId);
             Assert.IsTrue(asteroid.IsDepleted, "a failed asteroid is still consumed with zero payout");
             Assert.IsNull(_handoff.AsteroidSlotId);
-
-            Object.DestroyImmediate(droneDef);
         }
 
         [Test]
@@ -226,25 +254,17 @@ namespace SocialUniverse.Tests
                 .GetField("_active", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(_spawner);
             active.Remove(asteroid); // simulate the slot no longer resolving (e.g. already respawned)
 
-            var droneDef = ScriptableObject.CreateInstance<DroneDefinition>();
-            Assert.DoesNotThrow(() => _mining.Initialize(new DroneRuntime(droneDef)));
+            Assert.DoesNotThrow(() => _mining.Initialize());
 
             Assert.IsNull(_handoff.AsteroidSlotId);
-
-            Object.DestroyImmediate(droneDef);
         }
 
         [Test]
         public void Initialize_does_nothing_when_no_active_mining_result_is_pending()
         {
-            int coinsBefore = _wallet.Coins;
-            var droneDef = ScriptableObject.CreateInstance<DroneDefinition>();
+            Assert.DoesNotThrow(() => _mining.Initialize());
 
-            Assert.DoesNotThrow(() => _mining.Initialize(new DroneRuntime(droneDef)));
-
-            Assert.AreEqual(coinsBefore, _wallet.Coins);
-
-            Object.DestroyImmediate(droneDef);
+            Assert.IsNull(_minerals.LastMineralId);
         }
 
         // Regression test: reaching Planet with a handoff that was started but never resolved
@@ -257,16 +277,12 @@ namespace SocialUniverse.Tests
         {
             var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 10);
             Assert.IsTrue(_mining.BeginActiveMining(asteroid));
-            int coinsBefore = _wallet.Coins;
 
-            var droneDef = ScriptableObject.CreateInstance<DroneDefinition>();
-            Assert.DoesNotThrow(() => _mining.Initialize(new DroneRuntime(droneDef)));
+            Assert.DoesNotThrow(() => _mining.Initialize());
 
-            Assert.AreEqual(coinsBefore, _wallet.Coins, "no result was ever set, so no grant/mine should happen");
+            Assert.IsNull(_minerals.LastMineralId, "no result was ever set, so no grant/mine should happen");
             Assert.IsFalse(asteroid.IsDepleted);
             Assert.IsNull(_handoff.AsteroidSlotId, "the abandoned handoff must still be cleared");
-
-            Object.DestroyImmediate(droneDef);
         }
 
         [Test]
@@ -276,15 +292,12 @@ namespace SocialUniverse.Tests
             string value = $"test_planet|slot_0|{System.DateTime.UtcNow.AddMinutes(-10):O}|60";
             PlayerPrefs.SetString(SocialUniverse.Core.SaveKeys.IdleMiningSession, value);
 
-            var droneDef = ScriptableObject.CreateInstance<DroneDefinition>();
-            _mining.Initialize(new DroneRuntime(droneDef));
+            _mining.Initialize();
 
             Assert.IsNotNull(_mining.CurrentIdleSession);
             Assert.AreEqual(asteroid, _mining.CurrentIdleSession.Asteroid);
             Assert.AreEqual(IdleMiningStage.ReadyToClaim, _mining.CurrentIdleSession.Stage,
                 "10 minutes elapsed against a 60s duration should already be ready to claim");
-
-            Object.DestroyImmediate(droneDef);
         }
 
         [Test]
@@ -294,26 +307,23 @@ namespace SocialUniverse.Tests
             string value = $"other_planet|slot_0|{System.DateTime.UtcNow:O}|60";
             PlayerPrefs.SetString(SocialUniverse.Core.SaveKeys.IdleMiningSession, value);
 
-            var droneDef = ScriptableObject.CreateInstance<DroneDefinition>();
-            _mining.Initialize(new DroneRuntime(droneDef));
+            _mining.Initialize();
 
             Assert.IsNull(_mining.CurrentIdleSession);
-
-            Object.DestroyImmediate(droneDef);
         }
 
         // Regression test: previously, an exception thrown out of the fire-and-forget
-        // GrantMiningRewardAsync call (network error, backend hiccup) inside
-        // ClaimIdleSessionAsync was unhandled, which meant the ScheduleRespawn call that runs
-        // immediately after it never executed — the asteroid was left mined-out with no
-        // payout AND no respawn scheduled, effectively lost forever. The fix wraps the grant
-        // call in try/catch so the respawn still happens (the player does lose the coins on a
-        // genuine failure — that tradeoff is accepted).
+        // GrantMiningAsync call (network error, backend hiccup) inside ClaimIdleSessionAsync
+        // was unhandled, which meant the ScheduleRespawn call that runs immediately after it
+        // never executed — the asteroid was left mined-out with no payout AND no respawn
+        // scheduled, effectively lost forever. The fix wraps the grant call in try/catch so the
+        // respawn still happens (the player does lose the minerals on a genuine failure — that
+        // tradeoff is accepted).
         [Test]
         public async Task ClaimIdleSessionAsync_still_schedules_respawn_when_the_grant_call_throws()
         {
-            var throwingEconomy = new ThrowingEconomyService();
-            var mining = new MiningController(throwingEconomy, _rewardCalc, _spawner, _config, _planet, _handoff, new FakeAudioManager());
+            var throwingMinerals = new CapturingMineralService { Throw = true };
+            var mining = new MiningController(throwingMinerals, _rewardCalc, _spawner, _config, _planet, _handoff, new FakeAudioManager(), _fleet);
 
             var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 20);
             Assert.IsTrue(mining.BeginIdleMining(asteroid));
@@ -322,9 +332,9 @@ namespace SocialUniverse.Tests
             mining.CurrentIdleSession.Tick(0f);
             Assert.AreEqual(IdleMiningStage.ReadyToClaim, mining.CurrentIdleSession.Stage);
 
-            LogAssert.Expect(LogType.Error, new Regex("GrantMiningRewardAsync failed for idle claim.*"));
+            LogAssert.Expect(LogType.Error, new Regex("GrantMiningAsync.*"));
 
-            // The exception from GrantMiningRewardAsync must be caught internally — it must
+            // The exception from GrantMiningAsync must be caught internally — it must
             // not propagate out of ClaimIdleSessionAsync itself (which is invoked
             // fire-and-forget in production and would otherwise silently swallow it anyway).
             Assert.DoesNotThrowAsync(async () => await mining.ClaimIdleSessionAsync(asteroid));
@@ -332,6 +342,25 @@ namespace SocialUniverse.Tests
             Assert.IsNull(mining.CurrentIdleSession);
             Assert.IsNull(_spawner.FindBySlotId("slot_0"), "the claimed asteroid must no longer be active/findable by its old slot");
             Assert.IsTrue(_spawner.NextRespawnUtc.HasValue, "asteroid must still be scheduled for respawn even though the grant call failed");
+        }
+
+        [Test]
+        public void BeginIdleMining_blocks_and_publishes_when_drone_tier_below_asteroid_tier()
+        {
+            // asteroid def Tier 2, active drone Tier 1
+            SetField(_asteroidDef, "_tier", 2);
+            MiningBlockedEvent captured = null;
+            EventBus.Subscribe<MiningBlockedEvent>(e => captured = e);
+
+            var asteroid = MakeAndRegisterAsteroid("slot_0", 10);
+            bool started = _mining.BeginIdleMining(asteroid);
+
+            Assert.IsFalse(started);
+            Assert.IsNull(_mining.CurrentIdleSession);
+            Assert.IsNotNull(captured);
+            Assert.AreEqual(2, captured.RequiredTier);
+
+            EventBus.Clear();
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Threading.Tasks;
 using UnityEngine;
 using SocialUniverse.Config;
-using SocialUniverse.Economy;
 using SocialUniverse.Core;
 using SocialUniverse.Safety;
 
@@ -11,37 +10,36 @@ namespace SocialUniverse.Mining
 {
     public class MiningController
     {
-        private readonly IEconomyService        _economy;
+        private readonly IMineralService         _minerals;
         private readonly MiningRewardCalculator  _rewardCalc;
         private readonly AsteroidSpawner         _spawner;
         private readonly EconomyConfig           _config;
         private readonly PlanetDefinition        _planet;
         private readonly ActiveMiningHandoff     _handoff;
         private readonly IAudioManager           _audio;
-
-        public DroneRuntime Drone { get; private set; }
+        private readonly DroneFleet              _fleet;
 
         public IdleMiningSession CurrentIdleSession { get; private set; }
         public Asteroid          ClaimingAsteroid    { get; private set; }
 
         public event Action<IdleMiningSession> OnIdleSessionChanged;
 
-        public MiningController(IEconomyService economy, MiningRewardCalculator rewardCalc,
+        public MiningController(IMineralService minerals, MiningRewardCalculator rewardCalc,
             AsteroidSpawner spawner, EconomyConfig config, PlanetDefinition planet, ActiveMiningHandoff handoff,
-            IAudioManager audio)
+            IAudioManager audio, DroneFleet fleet)
         {
-            _economy    = economy;
+            _minerals   = minerals;
             _rewardCalc = rewardCalc;
             _spawner    = spawner;
             _config     = config;
             _planet     = planet;
             _handoff    = handoff;
             _audio      = audio;
+            _fleet      = fleet;
         }
 
-        public void Initialize(DroneRuntime drone)
+        public void Initialize()
         {
-            Drone = drone;
             TryRestoreIdleSession();
             TryFinalizePendingActiveMining();
         }
@@ -54,7 +52,14 @@ namespace SocialUniverse.Mining
                 (_handoff.AsteroidSlotId != null && _handoff.AsteroidSlotId == asteroid.SlotId))
                 return false;
 
-            var reward = _rewardCalc.Compute(asteroid);
+            var active = _fleet.Active;
+            if (active == null || active.Definition.Tier < asteroid.Definition.Tier)
+            {
+                EventBus.Publish(new MiningBlockedEvent { Asteroid = asteroid, RequiredTier = asteroid.Definition.Tier });
+                return false;
+            }
+
+            var reward = _rewardCalc.Compute(asteroid, _fleet.Active.EffectiveYieldMult);
             CurrentIdleSession = new IdleMiningSession(asteroid, DateTime.UtcNow, reward.IdleDurationSeconds);
             CurrentIdleSession.OnStageChanged += _ => OnIdleSessionChanged?.Invoke(CurrentIdleSession);
 
@@ -71,33 +76,34 @@ namespace SocialUniverse.Mining
             if (session == null || session.Asteroid != asteroid || session.Stage != IdleMiningStage.ReadyToClaim)
                 return;
 
-            var reward = _rewardCalc.Compute(asteroid);
+            var reward = _rewardCalc.Compute(asteroid, _fleet.Active.EffectiveYieldMult);
             session.Claim();
             _audio.PlaySfx(SfxId.MiningComplete);
 
             int mined = asteroid.Mine(asteroid.RemainingYield);
             if (asteroid.IsDepleted) _audio.PlaySfx(SfxId.AsteroidDestroyed);
-            int coins = mined * asteroid.Definition.CoinsPerUnit;
+            int quantity = reward.MineralQuantity;
+            var mineral  = asteroid.Definition.Mineral;
 
             CurrentIdleSession = null;
             ClaimingAsteroid   = asteroid;
             ClearPersistedIdleSession();
             OnIdleSessionChanged?.Invoke(null);
 
-            if (coins > 0)
+            if (quantity > 0 && mineral != null)
             {
                 try
                 {
-                    int granted = await _economy.GrantMiningRewardAsync(coins, reward.IdleDurationSeconds, reward.CoinsPerSec);
+                    int granted = await _minerals.GrantMiningAsync(mineral.MineralId, quantity, reward.IdleDurationSeconds, reward.UnitsPerSec);
                     _audio.PlaySfx(SfxId.CoinsReward);
-                    SULog.Info($"Idle session claimed: +{mined} {asteroid.Definition.MineralType} -> {granted} coins", SULog.Channel.Mining);
+                    SULog.Info($"Idle session claimed: +{granted} {mineral.MineralId}", SULog.Channel.Mining);
                 }
                 catch (Exception ex)
                 {
                     // Asteroid is already mined-out and the session already torn down (intentional,
-                    // for re-entrancy) — if the grant throws, the player loses the coins, but the
+                    // for re-entrancy) — if the grant throws, the player loses the minerals, but the
                     // asteroid must still respawn below instead of being stranded forever.
-                    SULog.Error($"GrantMiningRewardAsync failed for idle claim on {asteroid.Definition.MineralType} ({coins} coins): {ex.Message}", SULog.Channel.Mining);
+                    SULog.Error($"GrantMiningAsync failed for idle claim on {mineral.MineralId} ({quantity}): {ex.Message}", SULog.Channel.Mining);
                 }
             }
 
@@ -118,7 +124,14 @@ namespace SocialUniverse.Mining
             if (CurrentIdleSession != null && CurrentIdleSession.Asteroid == asteroid) return false;
             if (_handoff.AsteroidSlotId != null) return false; // a previous result is still pending finalize
 
-            var reward = _rewardCalc.Compute(asteroid);
+            var active = _fleet.Active;
+            if (active == null || active.Definition.Tier < asteroid.Definition.Tier)
+            {
+                EventBus.Publish(new MiningBlockedEvent { Asteroid = asteroid, RequiredTier = asteroid.Definition.Tier });
+                return false;
+            }
+
+            var reward = _rewardCalc.Compute(asteroid, _fleet.Active.EffectiveYieldMult);
             _handoff.Begin(_planet.PlanetId, asteroid.SlotId, asteroid.Definition, asteroid.RemainingYield,
                 reward.ActiveTapsRequired, _config.ActiveMaxErrors, reward.ActiveSessionDurationSeconds);
             return true;
@@ -152,24 +165,25 @@ namespace SocialUniverse.Mining
 
         private async Task CompleteActiveMiningAsync(Asteroid asteroid)
         {
-            var reward = _rewardCalc.Compute(asteroid);
+            var reward = _rewardCalc.Compute(asteroid, _fleet.Active.EffectiveYieldMult);
 
             int mined = asteroid.Mine(asteroid.RemainingYield);
-            int coins = mined * asteroid.Definition.CoinsPerUnit;
+            int quantity = reward.MineralQuantity;
+            var mineral  = asteroid.Definition.Mineral;
 
-            if (coins > 0)
+            if (quantity > 0 && mineral != null)
             {
                 try
                 {
-                    int granted = await _economy.GrantMiningRewardAsync(coins, reward.IdleDurationSeconds, reward.CoinsPerSec);
-                    SULog.Info($"Active mining success: +{mined} {asteroid.Definition.MineralType} -> {granted} coins", SULog.Channel.Mining);
+                    int granted = await _minerals.GrantMiningAsync(mineral.MineralId, quantity, reward.IdleDurationSeconds, reward.UnitsPerSec);
+                    SULog.Info($"Active mining success: +{granted} {mineral.MineralId}", SULog.Channel.Mining);
                 }
                 catch (Exception ex)
                 {
                     // Same reasoning as ClaimIdleSessionAsync: the asteroid is already mined-out
                     // (intentional, for re-entrancy) — if the grant throws, the player loses the
-                    // coins, but the asteroid must still respawn below instead of being stranded.
-                    SULog.Error($"GrantMiningRewardAsync failed for active-mining success on {asteroid.Definition.MineralType} ({coins} coins): {ex.Message}", SULog.Channel.Mining);
+                    // minerals, but the asteroid must still respawn below instead of being stranded.
+                    SULog.Error($"GrantMiningAsync failed for active-mining success on {mineral.MineralId} ({quantity}): {ex.Message}", SULog.Channel.Mining);
                 }
             }
 
