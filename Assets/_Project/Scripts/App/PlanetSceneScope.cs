@@ -205,7 +205,6 @@ namespace SocialUniverse.App
         private readonly bool              _standalone;
         private readonly IAudioManager     _audio;
         private readonly DroneFleet        _fleet;
-        private readonly IMineralService   _minerals;
         private readonly MineralInventory  _inventory;
         private readonly EconomyConfig     _config;
 
@@ -229,7 +228,6 @@ namespace SocialUniverse.App
             bool              standalone,
             IAudioManager     audio,
             DroneFleet        fleet,
-            IMineralService   minerals,
             MineralInventory  inventory,
             EconomyConfig     config)
         {
@@ -252,7 +250,6 @@ namespace SocialUniverse.App
             _standalone       = standalone;
             _audio            = audio;
             _fleet            = fleet;
-            _minerals         = minerals;
             _inventory        = inventory;
             _config           = config;
         }

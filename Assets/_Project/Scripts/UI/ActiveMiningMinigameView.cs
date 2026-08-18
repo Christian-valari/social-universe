@@ -134,9 +134,8 @@ namespace SocialUniverse.UI
                 if (succeeded && _handoff.Definition != null)
                 {
                     int mined = _handoff.RemainingYieldAtStart;
-                    int coins = mined * _handoff.Definition.CoinsPerUnit;
-                    _rewardText.text = $"+{coins} coins";
-                    //_rewardText.text = $"+{mined} {_handoff.Definition.MineralType} -> {coins} coins";
+                    string mineralName = _handoff.Definition.Mineral != null ? _handoff.Definition.Mineral.DisplayName : "minerals";
+                    _rewardText.text = $"+{mined} {mineralName}";
                 }
                 else
                 {
