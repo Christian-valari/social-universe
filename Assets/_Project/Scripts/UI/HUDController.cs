@@ -55,6 +55,12 @@ namespace SocialUniverse.UI
         [Inject] private PlanetDefinition _planet;
         [Inject] private DatabaseRegistry _registry;
 
+        // Transient "requires a higher-tier drone" message shown when MiningController blocks a
+        // too-high-tier mining attempt (published as MiningBlockedEvent). Overrides the idle
+        // mining status text for a few seconds so the tier gate isn't a silent no-op.
+        private float _blockedMessageUntil;
+        private int   _blockedRequiredTier;
+
         private void Start()
         {
             _topBar.Bind(_wallet, _playerState, _registry);
@@ -75,6 +81,7 @@ namespace SocialUniverse.UI
             EventBus.Subscribe<ShowEmailVerificationPromptEvent>(OnShowEmailVerificationPrompt);
             EventBus.Subscribe<ShowProfileOnboardingEvent>(OnShowProfileOnboarding);
             EventBus.Subscribe<TileSelectedEvent>(OnTileSelectedForModal);
+            EventBus.Subscribe<MiningBlockedEvent>(OnMiningBlocked);
 
             // Tiles hidden by default; toggled by the view-land-tile toggle.
             _hexasphere.SetTilesVisible(false);
@@ -106,6 +113,13 @@ namespace SocialUniverse.UI
             EventBus.Unsubscribe<ShowEmailVerificationPromptEvent>(OnShowEmailVerificationPrompt);
             EventBus.Unsubscribe<ShowProfileOnboardingEvent>(OnShowProfileOnboarding);
             EventBus.Unsubscribe<TileSelectedEvent>(OnTileSelectedForModal);
+            EventBus.Unsubscribe<MiningBlockedEvent>(OnMiningBlocked);
+        }
+
+        private void OnMiningBlocked(MiningBlockedEvent e)
+        {
+            _blockedRequiredTier  = e.RequiredTier;
+            _blockedMessageUntil  = Time.time + 3f;
         }
 
         private void OnShowEmailVerificationPrompt(ShowEmailVerificationPromptEvent _)
@@ -193,6 +207,13 @@ namespace SocialUniverse.UI
                     IdleMiningStage.ReadyToClaim => "Tap the asteroid to claim!",
                     _                            => "Mining: —"
                 };
+                return;
+            }
+
+            // No active session: surface a recent tier-block message before falling back to idle.
+            if (Time.time < _blockedMessageUntil)
+            {
+                _miningStatusText.text = $"Requires a Tier {_blockedRequiredTier} drone";
                 return;
             }
 

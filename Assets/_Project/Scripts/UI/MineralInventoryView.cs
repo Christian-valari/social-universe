@@ -51,7 +51,9 @@ namespace SocialUniverse.UI
 
         private void Rebuild()
         {
-            if (_rowParent == null || _rowPrefab == null) return;
+            // _inventory/_registry are injected at container build; OnEnable can fire earlier at
+            // scene load (this component lives on an always-active host), so guard against it.
+            if (_rowParent == null || _rowPrefab == null || _inventory == null || _registry == null) return;
             for (int i = _rowParent.childCount - 1; i >= 0; i--)
                 Destroy(_rowParent.GetChild(i).gameObject);
 
