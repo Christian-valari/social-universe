@@ -173,6 +173,7 @@ namespace SocialUniverse.App
             builder.RegisterEntryPoint<LandSaleHandler>();
             builder.RegisterEntryPoint<YieldClaimHandler>();
             builder.RegisterEntryPoint<PlanetPresenceController>();
+            builder.RegisterEntryPoint<MineralSaleHandler>();
         }
     }
 

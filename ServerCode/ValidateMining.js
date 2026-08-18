@@ -1,42 +1,48 @@
-// ValidateMining — validates an idle mining session payout and grants coins.
-// The client sends claimed coins and the session parameters; the server caps the
-// grant at (sessionDurationSec * coinsPerSec) to prevent inflated claims.
-// Full anti-cheat with a server-stored session token is scheduled for M3.
-const { CurrenciesApi } = require("@unity-services/economy-2.5");
+// ValidateMining — validates a mining session payout and grants MINERALS (M6).
+// The client sends the mined mineralId + claimed quantity + session params; the server
+// caps the grant at floor(sessionDurationSec * unitsPerSec) to prevent inflated claims,
+// then increments the player's mineral_inventory Cloud Save record.
+// FIX (Known Issue #6/#8): DataApi(context) uses the service token; getItems/setItem are positional.
+const { DataApi } = require("@unity-services/cloud-save-1.4");
 
-const ABSOLUTE_SESSION_CAP_SECONDS = 1800; // Must be >= EconomyConfig.MaxIdleSessionSeconds (client's clamp ceiling) or legitimate long-duration idle/active claims get under-granted here.
-const ABSOLUTE_COINS_CAP           = 10000; // hard upper bound per call
+const ABSOLUTE_SESSION_CAP_SECONDS = 1800; // MUST be >= EconomyConfig.MaxIdleSessionSeconds
+const ABSOLUTE_QTY_CAP             = 10000; // hard upper bound per call
+const INVENTORY_KEY                = "mineral_inventory";
 
 /**
- * @param {number} claimedCoins - Coins the client claims to have mined this session. Must be a positive integer.
- * @param {number} [sessionDurationSec] - Session length in seconds. Optional, defaults to 30 and is capped at 1800.
- * @param {number} [coinsPerSec] - Coin yield rate per second for the session. Optional, defaults to 1.
+ * @param {string} mineralId - Id of the mineral mined this session.
+ * @param {number} claimedQty - Units the client claims to have mined. Positive integer.
+ * @param {number} [sessionDurationSec] - Session length; defaults 30, capped at 1800.
+ * @param {number} [unitsPerSec] - Mineral yield rate/sec; defaults 1.
  */
 module.exports = async ({ params, context, logger }) => {
-  const { claimedCoins, sessionDurationSec, coinsPerSec } = params;
+  const { mineralId, claimedQty, sessionDurationSec, unitsPerSec } = params;
 
-  if (!Number.isInteger(claimedCoins) || claimedCoins <= 0) {
-    throw new Error(`Invalid claimedCoins: ${claimedCoins}`);
+  if (!mineralId || !Number.isInteger(claimedQty) || claimedQty <= 0) {
+    throw new Error(`Invalid params: mineralId + positive claimedQty required (got ${mineralId}, ${claimedQty})`);
   }
 
   const cappedDuration = Math.min(sessionDurationSec ?? 30, ABSOLUTE_SESSION_CAP_SECONDS);
-  const maxByRate      = Math.floor(cappedDuration * (coinsPerSec ?? 1));
-  const grantAmount    = Math.min(claimedCoins, maxByRate, ABSOLUTE_COINS_CAP);
+  const maxByRate      = Math.floor(cappedDuration * (unitsPerSec ?? 1));
+  const grantAmount    = Math.min(claimedQty, maxByRate, ABSOLUTE_QTY_CAP);
 
   if (grantAmount <= 0) {
-    return { granted: 0, newBalance: null };
+    return { granted: 0, mineralId };
   }
 
-  const { projectId, playerId, accessToken } = context;
-  const econApi    = new CurrenciesApi({ accessToken });
+  const { projectId, playerId } = context;
+  const saveApi = new DataApi(context);
 
-  const res = await econApi.incrementPlayerCurrencyBalance({
-    projectId,
-    playerId,
-    currencyId: "COINS",
-    currencyModifyBalanceRequest: { amount: grantAmount }
-  });
+  let inventory = {};
+  try {
+    const res  = await saveApi.getItems(projectId, playerId, [INVENTORY_KEY]);
+    const item = res.data.results.find(r => r.key === INVENTORY_KEY);
+    if (item && item.value && typeof item.value === "object") inventory = item.value;
+  } catch (_) { /* record doesn't exist yet */ }
 
-  logger.info(`ValidateMining: player ${playerId} claimed ${claimedCoins}, granted ${grantAmount} → balance ${res.data.balance}`);
-  return { granted: grantAmount, newBalance: res.data.balance };
+  inventory[mineralId] = (inventory[mineralId] || 0) + grantAmount;
+  await saveApi.setItem(projectId, playerId, { key: INVENTORY_KEY, value: inventory });
+
+  logger.info(`ValidateMining: player ${playerId} +${grantAmount} ${mineralId}`);
+  return { granted: grantAmount, mineralId };
 };
