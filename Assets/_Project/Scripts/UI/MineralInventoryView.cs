@@ -61,6 +61,7 @@ namespace SocialUniverse.UI
             {
                 var def = _registry.GetMineral(kv.Key);
                 var go  = Instantiate(_rowPrefab, _rowParent);
+                go.SetActive(true); // template is inactive; activate the clone
                 var label = go.GetComponentInChildren<Text>();
                 if (label != null)
                     label.text = $"{def?.DisplayName ?? kv.Key}  x{kv.Value}  ({(def != null ? def.SellValue : 0)}/ea)";

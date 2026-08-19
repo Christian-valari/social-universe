@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -8,19 +9,22 @@ using SocialUniverse.Mining;
 
 namespace SocialUniverse.UI
 {
-    // Functional (unpolished) Drone Garage: owned drones (active marker + per-stat upgrade rows),
-    // acquirable drone types, and an unlock-slot button. Publishes intent events; the
-    // DroneGarageHandler performs the service calls. Rebuilds on DroneFleetChangedEvent.
+    // Functional (unpolished) Drone Garage: a single unified list of rows — owned drones (active
+    // marker + per-stat upgrade buttons) and acquirable drone types (acquire button) — plus an
+    // unlock-slot button. One row prefab (DroneRowView) + one parent, so every row shares a layout.
+    // Publishes intent events; DroneGarageHandler performs the service calls. Rebuilds on
+    // DroneFleetChangedEvent.
     public class DroneGarageView : MonoBehaviour
     {
-        [SerializeField] private GameObject _root;
-        [SerializeField] private Transform  _ownedParent;      // rows for owned drones
-        [SerializeField] private Transform  _acquireParent;    // rows for acquirable drone types
-        [SerializeField] private GameObject _ownedRowPrefab;   // Text + N buttons (set-active + 3 upgrade)
-        [SerializeField] private GameObject _acquireRowPrefab; // Text + Acquire button
-        [SerializeField] private Button     _unlockSlotButton;
-        [SerializeField] private Text        _unlockSlotLabel;
-        [SerializeField] private Button     _closeButton;
+        // Stats shown per owned drone, in display order.
+        private static readonly DroneStat[] UpgradeStats = { DroneStat.Cargo, DroneStat.Yield, DroneStat.Speed };
+
+        [SerializeField] private GameObject   _root;
+        [SerializeField] private Transform    _rowParent;        // single unified list parent
+        [SerializeField] private DroneRowView _rowPrefab;        // single unified row prefab
+        [SerializeField] private Button       _unlockSlotButton;
+        [SerializeField] private Text         _unlockSlotLabel;
+        [SerializeField] private Button       _closeButton;
 
         private DroneFleet       _fleet;
         private DatabaseRegistry _registry;
@@ -55,40 +59,39 @@ namespace SocialUniverse.UI
 
         private void Rebuild()
         {
-            if (_registry == null) return;
-            ClearChildren(_ownedParent);
-            ClearChildren(_acquireParent);
+            // _fleet/_registry/_config are injected at container build; OnEnable can fire earlier at
+            // scene load (this lives on an always-active host), so guard against it.
+            if (_registry == null || _rowParent == null || _rowPrefab == null) return;
+            ClearChildren(_rowParent);
 
-            // Owned drones
+            // Owned drones.
             foreach (var drone in _fleet.Drones)
             {
-                var def = drone.Definition;
-                var go  = Instantiate(_ownedRowPrefab, _ownedParent);
-                var label = go.GetComponentInChildren<Text>();
-                bool isActive = def.DroneId == _fleet.ActiveDroneId;
-                if (label != null)
-                    label.text = $"{def.DisplayName} (T{def.Tier}){(isActive ? "  [ACTIVE]" : "")}\n" +
-                                 $"Cargo {drone.EffectiveCargoCap}  Yield {drone.EffectiveYieldMult:0.00}  Speed {drone.EffectiveTravelSpeed:0.0}";
+                var    def      = drone.Definition;
+                string droneId  = def.DroneId;
+                bool   isActive = def.DroneId == _fleet.ActiveDroneId;
+                string title    = $"{def.DisplayName} (T{def.Tier}){(isActive ? "  [ACTIVE]" : "")}\n" +
+                                  $"Cargo {drone.EffectiveCargoCap}  Yield {drone.EffectiveYieldMult:0.00}  Speed {drone.EffectiveTravelSpeed:0.0}";
 
-                // Wire buttons by name convention on the prefab. Expected child buttons:
-                //   "SetActive", "UpgradeCargo", "UpgradeYield", "UpgradeSpeed".
-                Wire(go, "SetActive", () => EventBus.Publish(new SetActiveDroneRequestedEvent { DroneId = def.DroneId }));
-                WireUpgrade(go, "UpgradeCargo", def.DroneId, DroneStat.Cargo, drone.Level(DroneStat.Cargo));
-                WireUpgrade(go, "UpgradeYield", def.DroneId, DroneStat.Yield, drone.Level(DroneStat.Yield));
-                WireUpgrade(go, "UpgradeSpeed", def.DroneId, DroneStat.Speed, drone.Level(DroneStat.Speed));
+                var row = Instantiate(_rowPrefab, _rowParent);
+                row.gameObject.SetActive(true); // template is an inactive prefab/clone source
+                row.BindOwned(title, isActive,
+                    () => EventBus.Publish(new SetActiveDroneRequestedEvent { DroneId = droneId }),
+                    BuildUpgradeVms(drone, droneId));
             }
 
-            // Acquirable drone types (in registry, not yet owned, and slots available)
+            // Acquirable drone types (in registry, not yet owned).
             bool slotsAvailable = _fleet.Drones.Count < _fleet.UnlockedSlots;
             foreach (var def in _registry.AllDrones)
             {
                 if (_fleet.Get(def.DroneId) != null) continue;
-                var go  = Instantiate(_acquireRowPrefab, _acquireParent);
-                var label = go.GetComponentInChildren<Text>();
-                if (label != null) label.text = $"{def.DisplayName} (T{def.Tier}) — {def.UnlockCost}";
-                Wire(go, null, () => EventBus.Publish(new DroneAcquireRequestedEvent { DroneId = def.DroneId }));
-                var btn = go.GetComponentInChildren<Button>();
-                if (btn != null) btn.interactable = slotsAvailable;
+                string droneId = def.DroneId;
+                string title   = $"{def.DisplayName} (T{def.Tier}) — {def.UnlockCost}";
+
+                var row = Instantiate(_rowPrefab, _rowParent);
+                row.gameObject.SetActive(true); // template is an inactive prefab/clone source
+                row.BindAcquirable(title, slotsAvailable,
+                    () => EventBus.Publish(new DroneAcquireRequestedEvent { DroneId = droneId }));
             }
 
             if (_unlockSlotLabel != null)
@@ -98,33 +101,22 @@ namespace SocialUniverse.UI
             }
         }
 
-        private void WireUpgrade(GameObject row, string childName, string droneId, DroneStat stat, int level)
+        private List<DroneUpgradeVm> BuildUpgradeVms(DroneRuntime drone, string droneId)
         {
-            var upgradeDef = _registry.GetUpgrade(stat);
-            int cost = DroneUpgradeMath.NextCost(upgradeDef, level);
-            bool maxed = upgradeDef != null && level >= upgradeDef.MaxLevel;
-            var btn = FindButton(row, childName);
-            if (btn == null) return;
-            var t = btn.GetComponentInChildren<Text>();
-            if (t != null) t.text = maxed ? $"{stat} MAX" : $"{stat} {level}→{level + 1} ({cost})";
-            btn.interactable = !maxed && upgradeDef != null;
-            btn.onClick.RemoveAllListeners();
-            btn.onClick.AddListener(() => EventBus.Publish(new DroneUpgradeRequestedEvent { DroneId = droneId, Stat = stat }));
-        }
+            var list = new List<DroneUpgradeVm>(UpgradeStats.Length);
+            foreach (var stat in UpgradeStats)
+            {
+                var capturedStat = stat;
+                int level        = drone.Level(stat);
+                var upgradeDef   = _registry.GetUpgrade(stat);
+                int cost         = DroneUpgradeMath.NextCost(upgradeDef, level);
+                bool maxed       = upgradeDef != null && level >= upgradeDef.MaxLevel;
+                string caption   = maxed ? $"{stat} MAX" : $"{stat} {level}→{level + 1} ({cost})";
 
-        private static void Wire(GameObject row, string childName, UnityEngine.Events.UnityAction action)
-        {
-            var btn = childName == null ? row.GetComponentInChildren<Button>() : FindButton(row, childName);
-            if (btn == null) return;
-            btn.onClick.RemoveAllListeners();
-            btn.onClick.AddListener(action);
-        }
-
-        private static Button FindButton(GameObject row, string childName)
-        {
-            foreach (var b in row.GetComponentsInChildren<Button>(true))
-                if (b.gameObject.name == childName) return b;
-            return null;
+                list.Add(new DroneUpgradeVm(stat, caption, !maxed && upgradeDef != null,
+                    () => EventBus.Publish(new DroneUpgradeRequestedEvent { DroneId = droneId, Stat = capturedStat })));
+            }
+            return list;
         }
 
         private static void ClearChildren(Transform parent)
