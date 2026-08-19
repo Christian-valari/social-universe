@@ -13,7 +13,8 @@
         "SocialUniverse.Net",
         "SocialUniverse.Social",
         "SocialUniverse.Safety",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "SimpleScrollSnap"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

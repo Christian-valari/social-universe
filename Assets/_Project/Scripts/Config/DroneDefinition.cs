@@ -12,6 +12,7 @@ namespace SocialUniverse.Config
         [SerializeField] private float      _travelSpeed     = 5f;  // base value, scaled by Speed upgrades
         [SerializeField] private int        _cargoCap        = 50;  // base value, scaled by Cargo upgrades
         [SerializeField] private float      _yieldMultiplier = 1f;  // base value, scaled by Yield upgrades
+        [SerializeField] private Sprite     _icon;                  // UI icon shown on the Drone Garage card
         [SerializeField] private GameObject _modelPrefab;
 
         public string     DroneId         => _droneId;
@@ -21,6 +22,7 @@ namespace SocialUniverse.Config
         public float      TravelSpeed     => _travelSpeed;
         public int        CargoCap        => _cargoCap;
         public float      YieldMultiplier => _yieldMultiplier;
+        public Sprite     Icon            => _icon;
         public GameObject ModelPrefab     => _modelPrefab;
     }
 }
