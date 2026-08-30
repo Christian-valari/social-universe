@@ -16,5 +16,5 @@ MonoBehaviour:
   _displayName: Iron
   _tier: 1
   _sellValue: 2
-  _icon: {fileID: 0}
+  _icon: {fileID: 21300000, guid: 262e681025ec0ed488bf67221151011a, type: 3}
   _tintColor: {r: 0.72, g: 0.45, b: 0.35, a: 1}

@@ -16,5 +16,5 @@ MonoBehaviour:
   _displayName: Silicon
   _tier: 2
   _sellValue: 5
-  _icon: {fileID: 0}
+  _icon: {fileID: 21300000, guid: 736a0e81713d15d4793cbdefd61b3502, type: 3}
   _tintColor: {r: 0.6, g: 0.65, b: 0.7, a: 1}

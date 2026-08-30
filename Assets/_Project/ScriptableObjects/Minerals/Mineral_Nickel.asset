@@ -16,5 +16,5 @@ MonoBehaviour:
   _displayName: Nickel
   _tier: 2
   _sellValue: 8
-  _icon: {fileID: 0}
+  _icon: {fileID: 21300000, guid: dbf85366a2932a949ae5c5579900bbc7, type: 3}
   _tintColor: {r: 0.7, g: 0.72, b: 0.75, a: 1}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using SocialUniverse.Config;
+using TMPro;
 
 namespace SocialUniverse.UI
 {
@@ -38,7 +39,7 @@ namespace SocialUniverse.UI
             public GameObject Root;          // whole meter row, toggled owned/acquirable
             public Text       NameLabel;     // "Cargo"
             public Transform  PipParent;     // holds the level pips (cleared + repopulated on bind)
-            public Text       CostLabel;     // "760" / "MAX"
+            public TMP_Text       CostLabel;     // "760" / "MAX"
             public Button     UpgradeButton; // "+"
         }
 
@@ -46,12 +47,15 @@ namespace SocialUniverse.UI
         [SerializeField] private Image  _icon;
         [SerializeField] private Text   _label;
         [SerializeField] private Button _setActiveButton;
-        [SerializeField] private Text   _setActiveLabel;
+        [SerializeField] private TMP_Text   _setActiveLabel;
         [SerializeField] private Button _acquireButton;
-        [SerializeField] private Text   _acquireLabel;
+        [SerializeField] private TMP_Text   _acquireLabel;
 
         [Header("Stat meters")]
         [SerializeField] private StatMeter[] _statMeters;
+
+        [Header("Acquirable comparison")]
+        [SerializeField] private TMP_Text _tierCallout; // "Mines up to Tier N asteroids" (acquirable only)
 
         [Header("Pip sprites (assign your art)")]
         [SerializeField] private Image  _pipTemplate;   // a single inactive pip Image, cloned per level
@@ -64,12 +68,13 @@ namespace SocialUniverse.UI
             SetIcon(icon);
             if (_label != null) _label.text = title;
             SetVisible(_acquireButton, false);
+            if (_tierCallout != null) _tierCallout.gameObject.SetActive(false);
 
             if (_setActiveButton != null)
             {
                 _setActiveButton.gameObject.SetActive(true);
                 _setActiveButton.interactable = !isActive;
-                if (_setActiveLabel != null) _setActiveLabel.text = isActive ? "Active" : "Set Active";
+                if (_setActiveLabel != null) _setActiveLabel.text = isActive ? "Selected" : "Select";
                 Rewire(_setActiveButton, onSetActive);
             }
 
@@ -81,7 +86,11 @@ namespace SocialUniverse.UI
                     if (m.Root != null) m.Root.SetActive(true);
 
                     var vm = Find(stats, m.Stat);
-                    if (m.NameLabel != null) m.NameLabel.text = m.Stat.ToString();
+                    if (m.NameLabel != null)
+                    {
+                        m.NameLabel.text  = m.Stat.ToString();
+                        m.NameLabel.color = Color.white; // undo any comparison-mode tint
+                    }
                     BuildPips(m.PipParent, vm.Level, vm.MaxLevel);
                     if (m.CostLabel != null) m.CostLabel.text = vm.Maxed ? "MAX" : vm.Cost.ToString();
 
@@ -95,22 +104,51 @@ namespace SocialUniverse.UI
             }
         }
 
-        // Configure this card for an acquirable (not-yet-owned) drone: icon + title + acquire only.
-        public void BindAcquirable(Sprite icon, string title, bool interactable, Action onAcquire)
+        // Configure this card for an acquirable (not-yet-owned) drone: icon + title + a "why buy this?"
+        // comparison against the active drone (per-stat "old → new" deltas + a tier callout) + acquire.
+        // The three stat-meter rows are reused in comparison mode: the CostLabel shows "from → to" and
+        // the pips/upgrade button are suppressed. (Cards are freshly instantiated each rebuild, so no
+        // owned-mode styling bleeds in.)
+        public void BindAcquirable(Sprite icon, string title, bool interactable, Action onAcquire,
+            IReadOnlyList<DroneStatDeltaVm> comparison, string tierText, DeltaDirection tierDirection)
         {
             SetIcon(icon);
             if (_label != null) _label.text = title;
 
             SetVisible(_setActiveButton, false);
+
             if (_statMeters != null)
+            {
                 foreach (var m in _statMeters)
-                    if (m != null && m.Root != null) m.Root.SetActive(false);
+                {
+                    if (m == null) continue;
+                    if (m.Root != null) m.Root.SetActive(true);
+
+                    var vm = FindDelta(comparison, m.Stat);
+                    // The CostLabel lives *inside* the upgrade button (hidden below), so the delta goes
+                    // in the always-visible name label instead: e.g. "Cargo   50 → 120".
+                    if (m.NameLabel != null)
+                    {
+                        m.NameLabel.text  = $"{m.Stat}   {vm.FromText} → {vm.ToText}";
+                        m.NameLabel.color = DeltaColor(vm.Direction);
+                    }
+                    ClearPips(m.PipParent);
+                    SetVisible(m.UpgradeButton, false);
+                }
+            }
+
+            if (_tierCallout != null)
+            {
+                _tierCallout.gameObject.SetActive(true);
+                _tierCallout.text  = tierText;
+                _tierCallout.color = DeltaColor(tierDirection);
+            }
 
             if (_acquireButton != null)
             {
                 _acquireButton.gameObject.SetActive(true);
                 _acquireButton.interactable = interactable;
-                if (_acquireLabel != null) _acquireLabel.text = "Acquire";
+                if (_acquireLabel != null) _acquireLabel.text = "Unlock";
                 Rewire(_acquireButton, onAcquire);
             }
         }
@@ -127,13 +165,39 @@ namespace SocialUniverse.UI
         {
             if (parent == null || _pipTemplate == null) return;
 
-            for (int i = parent.childCount - 1; i >= 0; i--) Destroy(parent.GetChild(i).gameObject);
+            ClearPips(parent);
 
             for (int i = 0; i < maxLevel; i++)
             {
                 var pip = Instantiate(_pipTemplate, parent);
                 pip.gameObject.SetActive(true);
                 pip.sprite = i < level ? _pipOnSprite : _pipOffSprite;
+            }
+        }
+
+        private void ClearPips(Transform parent)
+        {
+            if (parent == null) return;
+            for (int i = parent.childCount - 1; i >= 0; i--) Destroy(parent.GetChild(i).gameObject);
+        }
+
+        private static DroneStatDeltaVm FindDelta(IReadOnlyList<DroneStatDeltaVm> deltas, DroneStat stat)
+        {
+            string key = stat.ToString();
+            if (deltas != null)
+                for (int i = 0; i < deltas.Count; i++)
+                    if (deltas[i].Label == key) return deltas[i];
+            return new DroneStatDeltaVm(key, "—", "—", DeltaDirection.Same);
+        }
+
+        // Green = better, red = worse, muted = unchanged. Tuned for readability on the dark card.
+        private static Color DeltaColor(DeltaDirection dir)
+        {
+            switch (dir)
+            {
+                case DeltaDirection.Up:   return new Color(0.42f, 0.83f, 0.46f);
+                case DeltaDirection.Down: return new Color(0.90f, 0.45f, 0.45f);
+                default:                  return new Color(0.78f, 0.78f, 0.78f);
             }
         }
 

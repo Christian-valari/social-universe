@@ -44,6 +44,7 @@ namespace SocialUniverse.UI
         [SerializeField] private DroneGarageView    _droneGarageView;
         [SerializeField] private Button             _mineralsButton;
         [SerializeField] private MineralInventoryView _mineralInventoryView;
+        [SerializeField] private MiningClaimRewardModal _claimRewardModal;
 
 
         [Inject] private Wallet _wallet;
@@ -82,6 +83,7 @@ namespace SocialUniverse.UI
             EventBus.Subscribe<ShowProfileOnboardingEvent>(OnShowProfileOnboarding);
             EventBus.Subscribe<TileSelectedEvent>(OnTileSelectedForModal);
             EventBus.Subscribe<MiningBlockedEvent>(OnMiningBlocked);
+            EventBus.Subscribe<IdleClaimCompletedEvent>(OnIdleClaimCompleted);
 
             // Tiles hidden by default; toggled by the view-land-tile toggle.
             _hexasphere.SetTilesVisible(false);
@@ -114,12 +116,18 @@ namespace SocialUniverse.UI
             EventBus.Unsubscribe<ShowProfileOnboardingEvent>(OnShowProfileOnboarding);
             EventBus.Unsubscribe<TileSelectedEvent>(OnTileSelectedForModal);
             EventBus.Unsubscribe<MiningBlockedEvent>(OnMiningBlocked);
+            EventBus.Unsubscribe<IdleClaimCompletedEvent>(OnIdleClaimCompleted);
         }
 
         private void OnMiningBlocked(MiningBlockedEvent e)
         {
             _blockedRequiredTier  = e.RequiredTier;
             _blockedMessageUntil  = Time.time + 3f;
+        }
+
+        private void OnIdleClaimCompleted(IdleClaimCompletedEvent e)
+        {
+            _claimRewardModal?.Open(e.MineralId, e.Quantity);
         }
 
         private void OnShowEmailVerificationPrompt(ShowEmailVerificationPromptEvent _)

@@ -9,14 +9,19 @@ namespace SocialUniverse.Mining
         [SerializeField] private float _orbitSpeed   = 60f;  // degrees per second while mining
         [SerializeField] private float _turnSpeed    = 180f; // degrees per second while traveling
 
-        [Header("VFX")]
-        [SerializeField] private ParticleSystem _travelingEffect;
-        [SerializeField] private ParticleSystem _miningEffect;
+        [Header("Model")]
+        [SerializeField] private Transform _modelAnchor; // where the drone model spawns; defaults to this transform
 
         [Header("Base")]
         [SerializeField] private Transform _baseAnchor; // if unset, the drone's starting position is used
 
         private enum Activity { Idle, Traveling, Mining }
+
+        // Bound at runtime from the active drone's model (DroneModelView), since the model is swapped
+        // to match the selected drone — the rig can't hold fixed VFX references.
+        private ParticleSystem _travelingEffect;
+        private ParticleSystem _miningEffect;
+        private GameObject     _modelInstance;
 
         private Transform _target;
         private bool      _orbiting;
@@ -37,6 +42,32 @@ namespace SocialUniverse.Mining
                 anchor.transform.position = transform.position;
                 _baseAnchor = anchor.transform;
             }
+        }
+
+        // Swaps in the model for the currently-selected drone. Destroys the previous model, spawns
+        // the new one under the anchor, and rebinds the traveling/mining VFX from its DroneModelView.
+        // A null prefab is a no-op (keeps whatever is showing) — used as a fallback when a drone has
+        // no model assigned.
+        public void SetModel(GameObject prefab)
+        {
+            if (prefab == null) return;
+
+            if (_modelInstance != null) Destroy(_modelInstance);
+
+            Transform anchor = _modelAnchor != null ? _modelAnchor : transform;
+            _modelInstance = Instantiate(prefab, anchor);
+            _modelInstance.transform.localPosition = Vector3.zero;
+            _modelInstance.transform.localRotation = Quaternion.identity;
+
+            var view = _modelInstance.GetComponent<DroneModelView>();
+            _travelingEffect = view != null ? view.TravelingEffect : null;
+            _miningEffect    = view != null ? view.MiningEffect    : null;
+
+            // Start both effects off and force the activity to re-apply on the next Update so the new
+            // model's VFX match the current state (idle/travel/mine).
+            SetEffect(_travelingEffect, false);
+            SetEffect(_miningEffect, false);
+            _activity = Activity.Idle;
         }
 
         public void SetTarget(Transform target)

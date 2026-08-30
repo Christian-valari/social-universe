@@ -167,6 +167,7 @@ namespace SocialUniverse.App
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.SettingsPanel>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.FuelPanel>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.MineralInventoryView>();
+            builder.RegisterComponentInHierarchy<SocialUniverse.UI.MiningClaimRewardModal>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.DroneGarageView>();
 
 

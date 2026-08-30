@@ -16,5 +16,5 @@ MonoBehaviour:
   _displayName: Iridium
   _tier: 3
   _sellValue: 40
-  _icon: {fileID: 0}
+  _icon: {fileID: 21300000, guid: 2f2e9722933d86347bd3b45b184f957d, type: 3}
   _tintColor: {r: 0.78, g: 0.74, b: 0.86, a: 1}

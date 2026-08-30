@@ -10,13 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a8c0c197d9359824c969c35f19071d25, type: 3}
-  m_Name: Drone_Prospector
+  m_Name: Drone_Surveyor
   m_EditorClassIdentifier: SocialUniverse.Config::SocialUniverse.Config.DroneDefinition
-  _droneId: prospector
-  _displayName: Prospector Drone
-  _tier: 3
-  _unlockCost: 1200
-  _travelSpeed: 6
-  _cargoCap: 80
-  _yieldMultiplier: 2
-  _modelPrefab: {fileID: 8667300961151965220, guid: a948ba0ef83cc074a93fe60c476921a9, type: 3}
+  _droneId: surveyor
+  _displayName: Surveyor Drone
+  _tier: 4
+  _unlockCost: 6000
+  _travelSpeed: 7
+  _cargoCap: 90
+  _yieldMultiplier: 2.5
+  _icon: {fileID: 21300000, guid: 17ba84d31a2edea42bd6699276bce577, type: 3}
+  _modelPrefab: {fileID: 8667300961151965220, guid: 48317f2d109bd6d4baa3056cfa0cfaec, type: 3}

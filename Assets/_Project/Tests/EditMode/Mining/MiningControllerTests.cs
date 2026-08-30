@@ -161,6 +161,51 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
+        public async Task ClaimIdleSessionAsync_publishes_claim_completed_with_granted_mineral_and_quantity()
+        {
+            var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 20);
+            Assert.IsTrue(_mining.BeginIdleMining(asteroid));
+
+            await Task.Delay(100);
+            _mining.CurrentIdleSession.Tick(0f);
+            Assert.AreEqual(IdleMiningStage.ReadyToClaim, _mining.CurrentIdleSession.Stage);
+
+            IdleClaimCompletedEvent captured = null;
+            EventBus.Subscribe<IdleClaimCompletedEvent>(e => captured = e);
+
+            await _mining.ClaimIdleSessionAsync(asteroid);
+
+            Assert.IsNotNull(captured, "a successful claim must publish IdleClaimCompletedEvent");
+            Assert.AreEqual("iron", captured.MineralId);
+            Assert.AreEqual(20, captured.Quantity); // matches the granted amount
+
+            EventBus.Clear();
+        }
+
+        [Test]
+        public async Task ClaimIdleSessionAsync_does_not_publish_claim_completed_when_the_grant_throws()
+        {
+            var throwingMinerals = new CapturingMineralService { Throw = true };
+            var mining = new MiningController(throwingMinerals, _rewardCalc, _spawner, _config, _planet, _handoff, new FakeAudioManager(), _fleet);
+
+            var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 20);
+            Assert.IsTrue(mining.BeginIdleMining(asteroid));
+
+            await Task.Delay(100);
+            mining.CurrentIdleSession.Tick(0f);
+
+            IdleClaimCompletedEvent captured = null;
+            EventBus.Subscribe<IdleClaimCompletedEvent>(e => captured = e);
+            LogAssert.Expect(LogType.Error, new Regex("GrantMiningAsync.*"));
+
+            await mining.ClaimIdleSessionAsync(asteroid);
+
+            Assert.IsNull(captured, "a failed grant must not publish IdleClaimCompletedEvent — the player got nothing to celebrate");
+
+            EventBus.Clear();
+        }
+
+        [Test]
         public void BeginIdleMining_fails_while_a_session_is_already_running()
         {
             var a1 = MakeAndRegisterAsteroid("slot_0", 10);

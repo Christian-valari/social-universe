@@ -32,8 +32,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b37f1cb13e8c51b4da4d72b515020755, type: 2}
   _drones:
   - {fileID: 11400000, guid: b0f50eb462295314fa2c6a9b68f14da3, type: 2}
-  - {fileID: 11400000, guid: 43a5d98af571dfa43a6b7751eba0e5ee, type: 2}
-  - {fileID: 11400000, guid: efcc2ae12fcc0a34f82e96de7217a993, type: 2}
+  - {fileID: 11400000, guid: 9b32722ee62f4c6aa44ea8561b485639, type: 2}
+  - {fileID: 11400000, guid: 2e9666dce1af428ea0f28bdce5683ef2, type: 2}
+  - {fileID: 11400000, guid: f2dbe116da72495e9a176b35740d7ae3, type: 2}
+  - {fileID: 11400000, guid: c1aab65bc8bf477ba2e99806099f3ffb, type: 2}
   _items:
   - {fileID: 11400000, guid: bb94a087f3e180d46bdba8140c29d0f3, type: 2}
   - {fileID: 11400000, guid: 21f1edfe29730634185f0950d19ff859, type: 2}

@@ -8,6 +8,7 @@ using SocialUniverse.Core;
 using SocialUniverse.Config;
 using SocialUniverse.Economy;
 using SocialUniverse.Mining;
+using TMPro;
 
 namespace SocialUniverse.UI
 {
@@ -24,7 +25,7 @@ namespace SocialUniverse.UI
         [SerializeField] private SimpleScrollSnap _scrollSnap;      // carousel that hosts the cards
         [SerializeField] private DroneRowView    _rowPrefab;        // card prefab (AddToBack clones it)
         [SerializeField] private Button          _unlockSlotButton;
-        [SerializeField] private Text            _unlockSlotLabel;
+        [SerializeField] private TMP_Text        _unlockSlotLabel;
         [SerializeField] private Button          _closeButton;
 
         private DroneFleet       _fleet;
@@ -55,6 +56,9 @@ namespace SocialUniverse.UI
         public void Open()
         {
             if (_root != null) _root.SetActive(true);
+            // Hidden for now: the fleet-slot purchase flow confuses users pre-launch. Re-enable when
+            // slot economy is surfaced. Owned/acquirable drone cards still drive select/unlock.
+            if (_unlockSlotButton != null) _unlockSlotButton.gameObject.SetActive(false);
             // Defer one frame so SimpleScrollSnap.Start() runs before we add panels to it.
             if (isActiveAndEnabled) StartCoroutine(RebuildNextFrame());
         }
@@ -87,7 +91,7 @@ namespace SocialUniverse.UI
                 var    def      = drone.Definition;
                 string droneId  = def.DroneId;
                 bool   isActive = def.DroneId == _fleet.ActiveDroneId;
-                string title    = $"{def.DisplayName} (T{def.Tier}){(isActive ? "  [ACTIVE]" : "")}";
+                string title    = $"{def.DisplayName} (T{def.Tier})";
 
                 var card = AddCard();
                 if (card == null) continue;
@@ -107,13 +111,14 @@ namespace SocialUniverse.UI
                 var card = AddCard();
                 if (card == null) continue;
                 card.BindAcquirable(def.Icon, title, canBuy,
-                    () => EventBus.Publish(new DroneAcquireRequestedEvent { DroneId = droneId }));
+                    () => EventBus.Publish(new DroneAcquireRequestedEvent { DroneId = droneId }),
+                    BuildComparison(def), DroneComparison.TierLine(def.Tier), TierDirection(def));
             }
 
             if (_unlockSlotLabel != null)
             {
                 int cost = DroneUpgradeMath.SlotUnlockCost(_config.SlotUnlockBaseCost, _config.SlotUnlockCostGrowth, _fleet.UnlockedSlots, _config.StartingFleetSlots);
-                _unlockSlotLabel.text = $"Unlock slot — {cost}";
+                _unlockSlotLabel.text = $"{cost}";
             }
         }
 
@@ -125,6 +130,29 @@ namespace SocialUniverse.UI
             var content = _scrollSnap.GetComponent<ScrollRect>()?.content;
             if (content == null || content.childCount == 0) return null;
             return content.GetChild(content.childCount - 1).GetComponent<DroneRowView>();
+        }
+
+        // "Why buy this?" — how a candidate drone's base stats compare to the active drone. When there
+        // is no active drone (empty fleet), fall back to the candidate's own stats (neutral, no arrows).
+        private List<DroneStatDeltaVm> BuildComparison(DroneDefinition def)
+        {
+            var active = _fleet.Active;
+            float fromCargo = active != null ? active.EffectiveCargoCap    : def.CargoCap;
+            float fromYield = active != null ? active.EffectiveYieldMult   : def.YieldMultiplier;
+            float fromSpeed = active != null ? active.EffectiveTravelSpeed : def.TravelSpeed;
+
+            return new List<DroneStatDeltaVm>(3)
+            {
+                DroneComparison.IntStat (DroneStat.Cargo.ToString(), fromCargo, def.CargoCap),
+                DroneComparison.MultStat(DroneStat.Yield.ToString(), fromYield, def.YieldMultiplier),
+                DroneComparison.IntStat (DroneStat.Speed.ToString(), fromSpeed, def.TravelSpeed),
+            };
+        }
+
+        private DeltaDirection TierDirection(DroneDefinition def)
+        {
+            var active = _fleet.Active;
+            return active != null ? DroneComparison.DirectionOf(active.Definition.Tier, def.Tier) : DeltaDirection.Same;
         }
 
         private List<DroneStatVm> BuildStatVms(DroneRuntime drone, string droneId)

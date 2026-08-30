@@ -96,6 +96,7 @@ namespace SocialUniverse.Mining
                 {
                     int granted = await _minerals.GrantMiningAsync(mineral.MineralId, quantity, reward.IdleDurationSeconds, reward.UnitsPerSec);
                     _audio.PlaySfx(SfxId.CoinsReward);
+                    EventBus.Publish(new IdleClaimCompletedEvent { MineralId = mineral.MineralId, Quantity = granted });
                     SULog.Info($"Idle session claimed: +{granted} {mineral.MineralId}", SULog.Channel.Mining);
                 }
                 catch (Exception ex)
