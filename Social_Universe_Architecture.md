@@ -19,6 +19,8 @@
 
 **Architectural rule:** the backend sits **behind interfaces** (`IEconomyService`, `IAuthService`, `IChatService`, …). M1 ships against a `LocalMock*` implementation so the core loop is fun offline; M2 swaps in the real backend with no gameplay rewrites. Don't pick the backend on day one — pick the interfaces.
 
+**Resolved in M2:** the backend is **UGS** — Authentication, Economy, Cloud Save, Cloud Code, Vivox (text chat + presence) and Friends, with Firebase Auth linked through UGS OIDC for email/password and Google sign-in. Server functions live in `ServerCode/*.js` as Cloud Code scripts. Gameplay still depends only on the `I*Service` interfaces.
+
 **Resolved in M5:** Sky Discovery uses the **gyroscope-controlled virtual starfield** (Input System `AttitudeSensor`, with a mouse/touch-drag fallback when unavailable) rather than camera AR — see `GyroInputProvider`/`SkyDiscoveryController` and `PROGRESS.md`'s M5 section.
 
 ---
@@ -85,6 +87,7 @@ Assets/_Project/
   Scenes/         (Bootstrap, Auth, SolarSystem, Planet, Station)
   ScriptableObjects/ (the *Definition assets, configs)
   Scripts/
+    App/          SocialUniverse.App           (composition root: lifetime scopes + intent handlers)
     Core/         SocialUniverse.Core
     Config/       SocialUniverse.Config        (ScriptableObject definitions + registry)
     World/        SocialUniverse.World         (planet, hexasphere, tiles, camera)
@@ -340,8 +343,8 @@ Priority tags follow the PRD: **P0** = core/MVP, **P1** = launch, **P2** = later
 
 ## 10. Open Decisions to Resolve Early
 
-1. **Backend:** UGS (recommended) vs Nakama — decide before M2; interfaces in M1 make this swappable.
+1. **Backend:** UGS vs Nakama — ✅ resolved in M2 (**UGS**: Authentication, Economy, Cloud Save, Cloud Code, Vivox, Friends), with Firebase Auth linked through UGS OIDC. Gameplay still reaches it only via `I*Service`.
 2. **Sky Discovery:** camera AR vs gyro starfield — ✅ resolved in M5 (gyro starfield).
-3. **Age policy / rating** — decide before M4 (drives chat restrictions and moderation scope).
-4. **Land resale** — coins-only, no real-money cash-out, no NFT framing (per GDD); confirm before M8.
-5. **DI framework:** VContainer vs hand-rolled Service Locator — decide in M0.
+3. **Age policy / rating** — 🔲 still open. `SocialConfig` ships a provisional teen-safe default (`ChatFilterLevel.Strict` for everyone) so M4 wasn't blocked; the decision drives M10's `AgeGateService`.
+4. **Land resale** — 🔲 still open. Coins-only, no real-money cash-out, no NFT framing (per GDD); confirm before M8.
+5. **DI framework:** VContainer vs hand-rolled Service Locator — ✅ resolved in M0 (**VContainer**: `RootLifetimeScope` + `PlanetSceneScope` in `Scripts/App/`).

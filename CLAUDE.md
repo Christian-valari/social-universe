@@ -6,7 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Social Universe is a Unity 6 social MMO where players explore a solar system, mine asteroids, own hexagonal land tiles on planets, and interact with other players. The full architecture, milestone roadmap, and script inventory live in `Social_Universe_Architecture.md` — read it before any task.
 
-**Current state:** Fresh Unity 6 project (URP). No gameplay scripts exist yet. Development starts at M0 (Foundation).
+**Current state (2026-09-25):** M0–M5 are code-complete and M6 (drones & mining depth) is code-complete on `feature/m6-drones-mining-depth` (29 commits ahead of `main`, unmerged). 221 runtime scripts across 12 assemblies, 326 passing EditMode tests, 0/2 PlayMode. The backend is UGS (Auth/Economy/Cloud Save/Cloud Code/Vivox/Friends) with Firebase Auth via OIDC.
+
+**The game is not ready for internal testing.** Three server-side blockers break the M6 loop and parts of the land economy, no `ServerCode/` deploy has ever been confirmed, and the release keystore is committed to a public repo. Read `PROGRESS.md` — Known Issues #10–#17 and "Future Tasks" — before planning work; it is the source of truth for status.
 
 ## Pre-Task Protocol (mandatory)
 
@@ -16,7 +18,7 @@ Before writing any code, creating any file, or modifying any script — without 
 2. **Identify the correct namespace and assembly** for every file you will touch using the Project Structure table in this file. Never place a type in the wrong namespace.
 3. **Check milestone scope** — confirm the work is within the current milestone. If a request extends scope, flag it explicitly before proceeding.
 4. **Verify each Architecture Rule below applies** to your approach. If any rule is violated by the proposed implementation, stop and propose a compliant alternative.
-5. **Check Open Decisions** — if the task touches a flagged open decision (backend, DI, AR), do not resolve it silently; surface the dependency.
+5. **Check Open Decisions** — if the task touches a still-open decision (age policy, land resale), do not resolve it silently; surface the dependency.
 
 > Skip only for pure documentation edits (PROGRESS.md, CLAUDE.md, ARCHITECTURE.md) with no code changes.
 
@@ -24,10 +26,18 @@ Before writing any code, creating any file, or modifying any script — without 
 
 Tests run through Unity's Test Runner (Window > General > Test Runner). EditMode tests require no Play Mode; PlayMode tests run in-editor or on-device. There is no CLI build script yet.
 
-To run tests from command line (headless):
+To run tests from the command line (headless):
 ```
-"C:\Program Files\Unity\Hub\Editor\<version>\Editor\Unity.exe" -runTests -projectPath . -testResults results.xml -testPlatform EditMode
+"C:\Program Files\Unity\Hub\Editor\6000.3.12f1\Editor\Unity.exe" -runTests -batchmode -projectPath . -testResults results.xml -testPlatform EditMode
 ```
+
+Three things that will otherwise waste your time:
+
+- **A headless run cannot share the project folder with an open Editor** (Unity holds a lock). Close the Editor, or copy `Assets/`, `Packages/`, `ProjectSettings/` **and `ServerCode/`** somewhere else and run there. Keep the copy's path short: some asset paths already exceed Windows' 260-character limit, and long paths are not enabled on this machine.
+- **`ValidateMiningCapAlignmentTests` reads `ServerCode/ValidateMining.js`** from the repo root, so a copy without `ServerCode/` fails that test.
+- **EditMode tests touch the project's editor `PlayerPrefs`** (music/SFX volume, idle-mining session, asteroid respawn timers). Running the suite resets those values for the Editor on this machine.
+
+Current results (2026-09-17, Unity 6000.3.12f1): EditMode **326/326**; PlayMode **0/2** — both `PlanetSceneFlowTests` fail at `SetUp` (Known Issue #7).
 
 ## Architecture Rules (enforce on every task)
 
@@ -47,6 +57,7 @@ All game code lives under `Assets/_Project/Scripts/` in namespace-per-folder ass
 
 | Folder | Namespace | Scope |
 |---|---|---|
+| `App/` | `SocialUniverse.App` | Composition root: `RootLifetimeScope`, `PlanetSceneScope`, and the `IStartable` handlers that turn intent events into service calls |
 | `Core/` | `SocialUniverse.Core` | Bootstrap, FSM, EventBus, SceneLoader, DI |
 | `Config/` | `SocialUniverse.Config` | ScriptableObject definitions + DatabaseRegistry |
 | `World/` | `SocialUniverse.World` | Planet, hexasphere, tiles, camera |
@@ -56,12 +67,12 @@ All game code lives under `Assets/_Project/Scripts/` in namespace-per-folder ass
 | `Social/` | `SocialUniverse.Social` | Chat, friends, profiles, moderation |
 | `Travel/` | `SocialUniverse.Travel` | Star map, fuel, sky discovery, rocket |
 | `Progression/` | `SocialUniverse.Progression` | Player state, XP, quests, daily |
-| `Guild/` | `SocialUniverse.Guild` | Stations, guilds, events |
-| `Store/` | `SocialUniverse.Store` | IAP, season pass, ads |
+| `Guild/` | `SocialUniverse.Guild` | Stations, guilds, events — **planned (M7), folder does not exist yet** |
+| `Store/` | `SocialUniverse.Store` | IAP, season pass, ads — **planned (M9), folder does not exist yet** |
 | `Safety/` | `SocialUniverse.Safety` | Age gate, moderation hooks, analytics |
 | `UI/` | `SocialUniverse.UI` | UIManager, screens (MVP pattern), HUD, juice |
 
-Server-side logic (Cloud Code / Nakama RPCs) lives in `ServerCode/` at the repo root — this folder is **not** included in the Unity build.
+Server-side logic lives in `ServerCode/` at the repo root as UGS Cloud Code scripts (`*.js`) — this folder is **not** included in the Unity build. Deploying them is a manual dashboard step, and nothing in the repo records what is currently live, so treat `ServerCode/` as source-of-truth-to-be-deployed rather than as what the servers are running.
 
 ## Naming Conventions
 
@@ -81,17 +92,28 @@ Server-side logic (Cloud Code / Nakama RPCs) lives in `ServerCode/` at the repo 
 
 App flow is a `GameStateMachine` FSM — add new states as concrete `IGameState` implementations in `Core/`.
 
-## Open Decisions (do not resolve without flagging)
+## Open Decisions
 
-- **Backend:** UGS vs Nakama — undecided until M2. Keep all backend access behind `I*Service`.
-- **Sky Discovery:** camera AR (AR Foundation) vs gyroscope starfield — undecided until M5.
-- **DI framework:** VContainer vs hand-rolled Service Locator — decide in M0.
+**Resolved** (do not reopen without saying so):
+
+- **Backend: UGS** — Authentication, Economy, Cloud Save, Cloud Code, Vivox, Friends. Still reached only through `I*Service`.
+- **DI framework: VContainer** — `RootLifetimeScope` (Bootstrap) + `PlanetSceneScope` (Planet), both in `App/`.
+- **Sky Discovery: gyroscope starfield** — Input System `AttitudeSensor` with a drag fallback; no AR Foundation.
+- **Auth: Firebase Auth via UGS OIDC** (`oidc-firebase`) — email/password + Google Sign-In. The earlier email-verification Cloud Code was retired in `db028f19`.
+
+**Still open (do not resolve silently):**
+
+- **Age policy / content rating** — `SocialConfig` ships a provisional teen-safe default (`ChatFilterLevel.Strict` for everyone); drives M10's `AgeGateService`.
+- **Land resale model** — coins-only confirmed; confirm no real-money cash-out before M8.
 
 ## Installed Packages
 
-- **Rendering:** URP 17.3.0
-- **Input:** Unity Input System 1.19.0
-- **UI:** Unity UGUI 2.0.0
-- **Multiplayer tooling:** Multiplayer Center 1.0.1
-- **Testing:** Unity Test Framework 1.6.0
-- **Hexasphere Grid System** — not yet in `manifest.json`; to be acquired before M1.
+From `Packages/manifest.json` (57 dependencies) unless noted:
+
+- **Rendering:** URP 17.3.0 · **Input:** Input System 1.19.0 · **UI:** UGUI 2.0.0
+- **DI:** VContainer 1.18.0 (OpenUPM) · **Testing:** Test Framework 1.6.0
+- **UGS:** Core 1.13.0, Authentication 3.6.1, Economy 3.5.3, Cloud Save 3.4.0, Cloud Code 2.10.2, Friends 1.1.1, Vivox 16.11.0
+- **Also:** Cinemachine 3.1.7, AI Navigation 2.0.11, Timeline, Visual Scripting, Android Logcat, Multiplayer Center 1.0.1
+- **Google/Firebase:** External Dependency Manager 1.2.187 (package) + the Firebase SDK vendored at `Assets/Firebase/` with `Assets/ExternalDependencyManager/`, `Assets/PlayServicesResolver/`, `Assets/GeneratedLocalRepo/`. Google sign-in runs through Firebase Auth (`Net/FirebaseAuthHandler.cs`) — the Google Sign-In and Play Games plugins were removed, though stale `GoogleSignIn.csproj` / `GooglePlayGames*.csproj` files still sit at the repo root
+- **Asset-store plugins:** `Assets/Plugins/` — Hexasphere Grid System, DOTween (`Demigiant/`), Lean Touch (`CW/`), Lunar Console, Ultimate Clean GUI Pack, SimpleSky, Starfield Skybox; `Assets/NaughtyAttributes/` and `Assets/Simple Scroll-Snap/` sit at the Assets root
+- **Editor-only:** ParrelSync (`Assets/Plugins/ParrelSync/`), MCP for Unity (`com.coplaydev.unity-mcp`, git dependency)

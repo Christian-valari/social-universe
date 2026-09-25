@@ -1,20 +1,27 @@
 # Social Universe — Project Progress Tracker
 
-> Last updated: 2026-08-17 — on `main`. **M0–M5 are code-complete** (server deploy + on-device
-> verification still outstanding — see each milestone's "Setup Required"). Since the last update a
-> large body of feature work has landed on `main` beyond the M-series milestones — most of it in
-> the M3/M4/M11 problem space (build depth, social polish, auth, UI). These are summarized in the
-> new **"Post-M5 Features Merged to `main`"** section below; the flagship is **Land Building
-> Mode** (a dedicated hexatile build scene with per-planet themes, code-complete + verified).
-> Other landed features: an ActiveMining scene redesign, avatar selection + first-time profile
-> onboarding, chat avatars/display-name fixes, a Settings panel + `AudioManager` (BGM/SFX),
-> cross-device planet resume, and an auth overhaul (email verify/reset → Google Sign-In → Firebase
-> Auth via UGS OIDC).
-> EditMode suite ≈296 passing across 59 files (up from 97/97 at M5); the 2 PlayMode
-> `PlanetSceneFlowTests` still fail at `SetUp` (Known Issue #7, unrelated). Much of the pending
-> work is now **UGS/Firebase dashboard config, Cloud Code deploy, and on-device verification**
-> rather than new code — see "Future Tasks" at the bottom.
-> Engine: Unity 6 (URP 17.3.0) · Branch: `main`
+> Last updated: 2026-09-25 — on `feature/m6-drones-mining-depth` (29 commits ahead of `main`,
+> not merged). **M0–M5 are code-complete** and **M6 is code-complete on this branch**, but the
+> game is **not ready for internal testing**: three server-side blockers break the M6 loop and
+> parts of the land economy on the live backend, and no `ServerCode/` deploy has been confirmed.
+> See Known Issues #10–#17 and "Future Tasks" for the ordered fix list.
+>
+> **Verified 2026-09-17** (headless Unity 6000.3.12f1 run on a scratch copy of this branch, plus
+> a fresh asset import):
+> - EditMode: **326/326 passing** across 68 files (`ValidateMiningCapAlignmentTests` reads
+>   `ServerCode/ValidateMining.js`, so the repo root must be present when running).
+> - PlayMode: **0/2** — both `PlanetSceneFlowTests` still fail at `SetUp` (Known Issue #7).
+> - Android player scripts compile for release **and** development (12 `SocialUniverse.*`
+>   assemblies, 0 errors). This is a script compile, not a full IL2CPP/Gradle build.
+> - The Editor compiles the project with no errors.
+>
+> Since the last update, M6 (drones, minerals, mining depth) landed on this branch: mineral
+> inventory + sale, a 5-drone fleet with upgrade curves, tier-gated asteroids, the Drone Garage
+> and Mineral Inventory UI, and 7 Cloud Code functions (written, **not deployed**). The M0–M5
+> feature work summarized in "Post-M5 Features Merged to `main`" is unchanged.
+> Pending work remains mostly **server fixes, Cloud Code deploy, UGS/Firebase dashboard config,
+> and on-device verification** rather than new client code.
+> Engine: Unity 6 (URP 17.3.0) · Branch: `feature/m6-drones-mining-depth`
 
 ---
 
@@ -27,6 +34,7 @@
 | ⚠️     | Done but has a known issue |
 | 🔲     | Not started                |
 | 🚧     | In progress                |
+| 🚨     | Blocker — must be fixed before a build goes to testers |
 
 
 ---
@@ -54,7 +62,7 @@
 | #   | Severity | Description                                                                                                                                                                             | Fix                                                                                                                                                                           |
 | --- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1   | ✅ Fixed  | `PlanetCameraController` and the Hexasphere plugin use legacy `UnityEngine.Input`, but the project had the new Input System active → `InvalidOperationException` in Play Mode           | **Active Input Handling** set to **Both** in Player Settings                                                                                                                  |
-| 2   | ✅ Fixed  | `Planet_TerraPrime.asset` and old `Asteroid_Iron.asset` existed in `Assets/_Project/ScriptableObjects/` root (superseded by organized assets in `Asteroids/` and `Planets/` subfolders) | Stale assets deleted                                                                                                                                                          |
+| 2   | ⚠️ Open  | `Planet_TerraPrime.asset` and the old `Asteroid_Iron.asset` sit in `Assets/_Project/ScriptableObjects/` root (superseded by the organized assets in `Asteroids/` and `Planets/`). Previously recorded as fixed, but both files are **still present** (verified 2026-09-25); the root `Asteroid_Iron.asset` has no mineral reference, so it would break tier gating if anything picked it up | Delete both; neither is referenced by `DatabaseRegistry.asset`                                                                                                                 |
 | 3   | ✅ Fixed  | `FixInputSettings.cs` editor script was created but menu item execution was cancelled — input setting had not been applied                                                              | Applied manually; `FixInputSettings.cs` removed                                                                                                                               |
 | 4   | ✅ Fixed  | `PlanetCameraController` depended on legacy `UnityEngine.Input` (right-mouse orbit, scroll-wheel zoom), which doesn't translate to mobile touch                                         | Rewritten against **Lean Touch** (`Lean.Touch.LeanGesture`/`LeanTouch.Fingers`): one-finger drag orbits, two-finger pinch zooms — works uniformly across mouse and touch      |
 | 5   | ⚠️ Open  | Unity MCP `execute_code` tool fails on every invocation in this environment — even `return 1;` — with `Error running ...mono.exe: The filename or extension is too long`                | Environment/tooling issue (not project code). Blocks live in-editor smoke-testing via injected C#; use manual Play Mode tap-throughs or PlayMode tests instead until resolved |
@@ -62,6 +70,14 @@
 | 7   | ⚠️ Open  | `PlanetSceneFlowTests` (PlayMode) now fails both tests at `SetUp` with `PlanetSceneScope.Container not initialized`. Root cause: `Planet.unity`'s `PlanetSceneScope` has `parentReference.TypeName = SocialUniverse.App.RootLifetimeScope` set (production config). VContainer's `LifetimeScope.Awake()` sees `parentReference.Type != null` and calls `EnqueueParent`, queuing the scope to wait for a `RootLifetimeScope` instance before `Configure`/`Build` run. The test loads `Planet.unity` standalone via `LoadSceneMode.Single` (no `Bootstrap.unity`, no `RootLifetimeScope` ever created), so the wait never resolves, `Container` stays `null`, and downstream `[Inject]` fields (`CurrencyView._wallet`, `HUDController._wallet`/`_playerState`/`_mining`) throw NREs | Not yet fixed. Needs either: (a) a test-only bootstrap that instantiates `RootLifetimeScope` before loading `Planet.unity`, or (b) clearing `parentReference` on the scene's `PlanetSceneScope` and relying on the `parentReference.Type == null` standalone-mock path (would need re-adding `_socialConfig` + Net mocks to that scene instance) |
 | 8   | ✅ Fixed  | `ServerCode/GetFuelState.js`/`SpendFuel.js`/`RefillFuel.js` (M5 fuel functions) had the same SDK-shape bug as the original Known Issue #6 `PurchaseLand.js`: `new DataApi({ headers: { Authorization: ... } })` (constructor doesn't read that field) and options-object `getItems`/`setItem` calls (the SDK wants positional `(projectId, playerId, keys[])`/`(projectId, playerId, { key, value })`). Surfaced live as a 422 `ScriptError` on `SpendFuel` when `TravelService` tried to spend fuel | Rewrote all three to `new DataApi(context)` + positional `getItems`/`setItem` args, matching the convention already used in `PurchaseLand`/`UpdateProfile`/`BlockUser`/etc.; `CLOUD_CODE_FUNCTIONS.md` had the same bug baked into its "fixed" fuel-function listings and was corrected to match |
 | 9   | ✅ Fixed  | The same Known Issue #6 SDK-shape bug (`new CurrenciesApi({ headers: { Authorization: ... } })` / `new DataApi(authHeader)` instead of `{ accessToken }` / `context`, plus options-object `getItems`/`setItem`) turned out to still be present in 11 more functions that had never actually been live-tested: `ClaimYield.js`, `PlaceBuild.js`, `ApplyUpkeep.js`, `SellLand.js`, `GrantOfflineIncome.js`, `GrantCoins.js`, `SpendCoins.js`, `GrantStardust.js`, `ValidateMining.js`, `BlockUser.js`, and — critically — `GetBootstrapState.js`, which runs on every app launch. Worse, **`PurchaseLand.js` itself (the original Known Issue #6) still had the broken pattern in the actual deployable file** — only `CLOUD_CODE_FUNCTIONS.md`'s reference copy had ever been corrected; the real fix was never applied to the file that gets deployed. Surfaced live as a 422 `ScriptError` on `ClaimYield` after it was deployed and a Claim was attempted in Play Mode | Rewrote all 12 files (the 11 above plus `PurchaseLand.js`) to the proven-correct pattern (`CurrenciesApi({ accessToken })`, `DataApi(context)`/`PlayerDataApi(context)`, positional `getItems`/`setItem`, and — for `PurchaseLand.js` specifically — the `ConfigurationApi`/`configAssignmentHash` requirement and `getPlayerCurrencies` instead of the nonexistent `getPlayerCurrencyBalance`). Verified via a full grep of every `new CurrenciesApi(`/`new DataApi(`/`new PlayerDataApi(`/`new ConfigurationApi(` call site across all 30 `ServerCode/*.js` files — all now consistent. `CLOUD_CODE_FUNCTIONS.md`'s stale code blocks corrected to match for the 11 that had drifted (`BlockUser.js`'s doc block and `PurchaseLand.js`'s doc block were already correct — only the real files were stale for those two) |
+| 10  | 🚨 Blocker | **Drone purchases always fail.** `AcquireDrone.js:9-10` still lists `scout/hauler/prospector`, but the shipped `DroneDefinition` assets are `scout/extractor/excavator/surveyor/titan` (renamed in `3ae3971e`). Every purchase returns `UNKNOWN_DRONE`, so a tester can never leave the tier-1 Scout — which also makes tier-2+ asteroids unreachable | Rebuild the JS catalog from the `DroneDefinition` assets (id, `_unlockCost`, `_tier`) and add an EditMode test that parses `AcquireDrone.js` and asserts it matches `DatabaseRegistry.AllDrones` — `ValidateMiningCapAlignmentTests` is the pattern to copy. The M6 unit tests all use in-memory assets, which is why this drift was invisible |
+| 11  | 🚨 Blocker | **Scout never exists on the server.** `GetBootstrapState.js:29` is the only script that seeds the starter fleet and nothing in the game calls it — the only caller is the Editor-only `CloudCodeTestHarness.cs:69`. The client fabricates Scout locally (`PlanetSceneScope.cs:475-479`), so the server's fleet stays empty and `UpgradeDrone.js:26` / `SetActiveDrone.js:10` answer `NOT_OWNED` for it | Seed Scout in the empty-fleet default of `loadFleet` in all four drone functions, or call `GetBootstrapState` at login. The M6 plan (`:2772`) lists this as optional hardening — it is a blocker |
+| 12  | 🚨 Blocker | **`getPlayerCurrencyBalance` does not exist** in `@unity-services/economy-2.5` — `CurrenciesApi` exposes only `getPlayerCurrencies` and `increment`/`decrement`/`setPlayerCurrencyBalance` (checked against the live SDK reference, 2026-09-17). It is still called in `SellLand.js:49` and `ApplyUpkeep.js:42` (main path — every call throws), `ClaimYield.js:70` (the "nothing accrued" path), `GrantOfflineIncome.js:37`, `SpendCoins.js:19`, and `RefillFuel.js:44` (swallowed by a `try/catch`). `PurchaseLand.js:13` and `PlaceBuild.js:7` already document the method as nonexistent | Read via `getPlayerCurrencies` and find the currency, exactly as `PurchaseLand.js` does. Known Issue #9's "verified via a full grep" only checked constructor shapes, not method names — so land resale and upkeep were never actually working |
+| 13  | ⚠️ Open  | **One client generation per environment.** `ValidateMining.js:19-22` on this branch requires `mineralId` + `claimedQty`; `main` and every APK in `Build/` send `claimedCoins`. Whichever version is deployed, mining claims throw for the other build | Deploy the new function and move all testers to an M6 build together. Stop distributing `Build/*.apk` and the root `social-universe-build-1.0.apk` once it is deployed |
+| 14  | 🚨 Blocker | **The release keystore is public.** `zKeystore/user.keystore` has been tracked since `ee9398a4` (2026-07-02) and the GitHub remote `Christian-valari/social-universe` reports `"visibility": "public"` (checked 2026-09-17). No passwords are in the repo, but the key file itself is downloadable by anyone | Treat the key as exposed: request an upload-key reset in Play Console (Play App Signing), then `git rm --cached zKeystore/user.keystore` and add `zKeystore/` + `*.keystore` to `.gitignore`. Consider making the repo private — `ServerCode/` publishes the whole economy surface, including the grant functions in #16 |
+| 15  | ⚠️ Open  | **Cargo and Speed upgrades do nothing.** `DroneRuntime.EffectiveCargoCap`/`EffectiveTravelSpeed` (`:35`, `:37`) are read only by `DroneGarageView`'s comparison panel; no gameplay path and no server function applies them (`ValidateMining.js` never reads upgrades). Coins are spent for no effect. The unlock-slot button is also hidden (`DroneGarageView.cs:59-61`), so the fleet is capped at the starting 2 slots | Wire Cargo into the idle cargo cap and Speed into travel time, or hide both tracks until they mean something. Decide whether slot purchases are part of the tested loop |
+| 16  | ⚠️ Open  | **Economy hardening gaps** (all Architecture Rule 1). `GrantCoins.js:6` / `GrantStardust.js:4` accept any client-supplied amount up to 100k/10k and are callable by any signed-in player. `ValidateMining` trusts the client's `unitsPerSec`. `drone_fleet`, `mineral_inventory`, fuel and travel records are written with `DataApi.setItem`, i.e. the player-writable default access class. `SellMinerals.js` read-modify-writes without `writeLock` and `MineralSaleHandler.cs:17-19` has no in-flight guard, so a double-tap can pay twice. `BackendClient.cs:51` retries on `Unknown`, so a timed-out purchase can be charged twice | Leave `GrantCoins`/`GrantStardust` undeployed (nothing in the game calls them); derive the mining rate server-side from the saved fleet; move economy records to a server-only access class; add `writeLock` + an in-flight guard to the sale path; drop `Unknown` from the retry set for non-idempotent calls |
+| 17  | ⚠️ Open  | **Server rejections are invisible to players.** `DroneGarageHandler.cs:39-40` and `MineralSaleHandler.cs:21` only `SULog.Warn` on failure, and the project has no toast/feedback service, so a rejected purchase, upgrade or sale looks like a dead button. With #10–#12 unfixed this is how testers will experience every M6 action | Add a minimal toast (or reuse the tier-gate HUD message path in `HUDController.OnMiningBlocked`) for failed server calls before the test build |
 
 
 ---
@@ -109,9 +125,18 @@
 
 | Asset                               | Status | Notes                                                      |
 | ----------------------------------- | ------ | ---------------------------------------------------------- |
-| `DatabaseRegistry.asset`            | ✅      | Populated: 10 planets, 6 asteroids, 1 drone                |
+| `DatabaseRegistry.asset`            | ✅      | Populated: 10 planets · 6 asteroids · 5 drones · 6 minerals · 3 upgrades · 5 items · 25 avatars |
 | `EconomyConfig.asset`               | ✅      |                                                            |
-| `Drone_Scout.asset`                 | ✅      |                                                            |
+| `Drone_Scout.asset`                 | ✅      | Tier 1, unlock cost 0 — the starter drone                  |
+| `Drone_Extractor.asset`             | ✅      | Tier 2, 600 coins                                          |
+| `Drone_Excavator.asset`             | ✅      | Tier 4, 3000 coins — no tier-4 asteroid exists yet         |
+| `Drone_Surveyor.asset`              | ✅      | Tier 4, 6000 coins — no tier-4 asteroid exists yet         |
+| `Drone_Titan.asset`                 | ✅      | Tier 5, 15000 coins — no tier-5 asteroid exists yet        |
+| `Minerals/*.asset` (6)              | ✅      | Iron, Carbon, Silicon, Nickel, Platinum, Iridium — one per asteroid |
+| `Upgrades/*.asset` (3)              | ✅      | Cargo, Yield, Speed — only Yield affects gameplay (Known Issue #15) |
+| `Items/*.asset` (5)                 | ✅      | Buildables for `BuildPaletteService`                       |
+| `LandBuildingThemes/*.asset` (10)   | ✅      | One per planet, referenced from each `PlanetDefinition`     |
+| `AudioCatalog.asset` / `AudioConfig.asset` / `TravelTimeTable.asset` | ✅ | Post-M5 feature assets                    |
 | `Planets/Planet_Mercury.asset`      | ✅      | Tier 1, 162 tiles, ×0.8 price                              |
 | `Planets/Planet_Venus.asset`        | ✅      | Tier 1, 322 tiles, ×1.0 price                              |
 | `Planets/Planet_Earth.asset`        | ✅      | Tier 1, 642 tiles, ×1.5 price — **active in Planet scene** |
@@ -145,7 +170,11 @@ and `PlanetSceneScope` (Planet.unity) `_socialConfig` references to match projec
 | `SolarSystem.unity`    | ✅      | Shell — star map placeholder               |
 | `Planet.unity`         | ✅      | **Fully wired for Earth** — see M1 detail  |
 | `Station.unity`        | ✅      | Shell — guild hub placeholder              |
-| `LoadingScreen.unity`  | 🔲      | **To create** — additive overlay scene; add Canvas + `LoadingScreenView` + Slider + TMP_Text, then add to Build Settings. Loaded by `PlanetState` before `Planet.unity`; self-unloads when `PlanetSceneReadyEvent` fires |
+| `LoadingScreen.unity`  | ✅      | Additive overlay loaded by `PlanetState`; self-unloads on `PlanetSceneReadyEvent`. In Build Settings |
+| `Travel.unity` / `TravelLoading.unity` | ✅ | M5 travel transition + loading overlay     |
+| `ActiveMining.unity`   | ✅      | Active-mining minigame scene (post-M5 redesign) |
+| `LandBuilding.unity`   | ✅      | Hexatile build scene with per-planet themes |
+| `SampleScene.unity`    | ⚠️     | Unused URP template leftover — not in Build Settings; safe to delete |
 
 
 ---
@@ -1143,45 +1172,88 @@ A dedicated build scene reachable via "View Land" on `TileInfoModal`, replacing 
 
 ---
 
-## M6 — Drones & Mining Depth 🔲 NOT STARTED
+## M6 — Drones & Mining Depth 🚧 CODE COMPLETE (branch) — BLOCKED ON SERVER FIXES + DEPLOY
 
 **Exit criteria:** Drone upgrade tree, slots, asteroid tiers gating exploration.
 
+**Status (2026-09-25):** all client code, UI, SO assets and scene wiring are done on
+`feature/m6-drones-mining-depth`, and the EditMode suite (326 cases) passes. The loop is **not
+playable against the live backend**: `AcquireDrone` rejects every drone the game ships (Known
+Issue #10), Scout is never saved server-side (#11), and no M6 Cloud Code function has been
+deployed. Nothing in M6 has been exercised in Play Mode or on a device.
 
-| Script                    | Path          | Responsibility                                                 | Status | Notes                                                |
-| ------------------------- | ------------- | -------------------------------------------------------------- | ------ | ---------------------------------------------------- |
-| `DroneGarageController`   | `Mining/`     | Garage screen logic, slot management, display fleet            | 🔲     |                                                      |
-| `DroneUpgradeService`     | `Mining/`     | Apply upgrades server-validated; update `DroneRuntime` stats   | 🔲     |                                                      |
-| `DroneDefinition` (SO)    | `Config/`     | Base stats + upgrade curves per drone type                     | ✅      | `Drone_Scout.asset` exists — expand for upgrade tree |
-| `UpgradeDefinition` (SO)  | `Config/`     | Individual upgrade step: cost, stat delta, prerequisites       | 🔲     |                                                      |
-| `AsteroidDefinition` (SO) | `Config/`     | Tier, mineral table, rarity, value — gates exploration by tier | ✅      | 6 assets exist                                       |
-| `MineralInventory`        | `Mining/`     | Track mined minerals server-backed; expose to UI               | 🔲     |                                                      |
-| `UpgradeDrone`            | `ServerCode/` | Server function — validate currency, apply upgrade             | 🔲     |                                                      |
-| `UnlockDroneSlot`         | `ServerCode/` | Server function — validate cost, add fleet slot                | 🔲     |                                                      |
+### Client
 
+| Script                                                                       | Path              | Responsibility                                     | Status | Notes                                                                                                          |
+| ---------------------------------------------------------------------------- | ----------------- | -------------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------- |
+| `MineralDefinition` (SO)                                                     | `Config/`         | Mineral id, display name, icon, coin value         | ✅      | 6 assets in `ScriptableObjects/Minerals/`                                                                      |
+| `UpgradeDefinition` (SO) + `DroneStat`                                       | `Config/`         | Upgrade curve per stat: cost, step, max level      | ✅      | 3 assets (`Upgrade_Cargo`/`Yield`/`Speed`) — Cargo and Speed have no gameplay effect yet (Known Issue #15)      |
+| `DroneDefinition` (SO)                                                       | `Config/`         | Base stats, tier, unlock cost, model + icon        | ✅      | 5 assets: scout (T1, 0) · extractor (T2, 600) · excavator (T4, 3000) · surveyor (T4, 6000) · titan (T5, 15000) |
+| `AsteroidDefinition` (SO)                                                    | `Config/`         | Tier, mineral ref, rarity, value                   | ✅      | 6 assets, tiers 1–3 only — nothing yet for the T4/T5 drones to mine                                            |
+| `DatabaseRegistry`                                                           | `Config/`         | `_minerals` / `_upgrades` / `_drones` lookups      | ✅      | All M6 assets registered                                                                                       |
+| `MineralInventory`                                                           | `Mining/`         | Client cache of mined minerals + change event      | ✅      | Hydrated from Cloud Save in `PlanetSceneScope`                                                                 |
+| `IMineralService` + `MineralService` + `LocalMockMineralService`             | `Mining/`         | Grant minerals on claim, sell for coins            | ✅      | Calls `ValidateMining` / `SellMinerals`                                                                        |
+| `DroneFleet` + snapshot DTOs                                                 | `Mining/`         | Client fleet cache: slots, owned drones, active    | ✅      | Falls back to a local-only Scout when Cloud Save is empty — the client half of Known Issue #11                  |
+| `DroneRuntime` + `DroneUpgradeMath`                                          | `Mining/`         | Effective stats from base + upgrade levels         | ✅      | Pure math, unit-tested                                                                                         |
+| `IDroneService` + `DroneService` + `LocalMockDroneService`                    | `Mining/`         | Acquire / upgrade / unlock slot / set active       | ✅      | Server-validated; all four calls currently fail live — Known Issues #10/#11                                    |
+| `DroneEvents` + `DroneGarageHandler`                                         | `Mining/`, `App/` | Intent events → service calls                      | ✅      | Failures only log — Known Issue #17                                                                            |
+| `SellMineralsRequestedEvent` + `MineralSaleHandler`                          | `Mining/`, `App/` | Sell-all / sell-one intent                         | ✅      | No in-flight guard — Known Issue #16                                                                           |
+| `MiningController` + `MiningRewardCalculator`                                | `Mining/`         | Mineral payout + tier gate on the active drone     | ✅      | Publishes `MiningBlockedEvent` → HUD message                                                                   |
+| `DroneController` + `IdleMiningSessionController` + `DroneModelView`         | `Mining/`         | Swap the spawned model to the active drone         | ✅      | 4 new drone model prefabs                                                                                      |
+| `DroneGarageView` + `DroneRowView` + `DroneComparison`                       | `UI/`             | Garage carousel, upgrade pips, stat comparison     | ✅      | Unlock-slot button hidden — Known Issue #15                                                                    |
+| `MineralInventoryView` + `MineralRowView`                                    | `UI/`             | Mineral list + sell actions                        | ✅      | Opened from the Planet HUD                                                                                     |
+| `MiningClaimRewardModal` + `IdleClaimCompletedEvent`                         | `UI/`, `Mining/`  | Idle-claim reward popup                            | ⚠️     | Reads `def.Icon` without a null check                                                                          |
+
+### Server (`ServerCode/`) — written, **none confirmed deployed**
+
+| Function                     | Status | Notes                                                                                  |
+| ---------------------------- | ------ | -------------------------------------------------------------------------------------- |
+| `ValidateMining` (rewritten) | ⚠️     | Grants minerals instead of coins — incompatible with pre-M6 builds (Known Issue #13)   |
+| `SellMinerals`               | ⚠️     | Read-modify-write without `writeLock` (Known Issue #16)                                |
+| `AcquireDrone`               | 🚨     | Drone catalog does not match the shipped assets (Known Issue #10)                      |
+| `UpgradeDrone`               | 🚨     | Returns `NOT_OWNED` for Scout (Known Issue #11)                                        |
+| `SetActiveDrone`             | 🚨     | Same root cause as above                                                                |
+| `UnlockDroneSlot`            | ⚠️     | Logic fine, but the UI entry point is hidden                                            |
+| `GetBootstrapState` (ext.)   | 🚨     | Seeds the starter fleet but the game never calls it (Known Issue #11)                  |
 
 ### M6 Completion Checklist
 
-**Automated Tests**
+**Automated tests** — all passing in the 2026-09-17 headless run
 
-- [ ] EditMode: `DroneUpgradeService` — upgrade increments correct stat per `UpgradeDefinition`
-- [ ] EditMode: `MineralInventory` — adding minerals updates count; over-cap is rejected
-- [ ] EditMode: `DroneDefinition` — all upgrade tiers chain correctly without orphaned prereqs
-- [ ] PlayMode: Purchase upgrade from DroneGarage → drone stat reflected in next mining session
+- [x] EditMode: `DroneUpgradeMathTests` — effective stat per level and curve
+- [x] EditMode: `DroneRuntimeTests` — effective stats from fleet state
+- [x] EditMode: `DroneFleetTests` — slots, active drone, snapshot round-trip
+- [x] EditMode: `DroneServiceTests` — acquire/upgrade/unlock/set-active request shapes
+- [x] EditMode: `MineralInventoryTests` + `MineralServiceTests` — add, sell, change events
+- [x] EditMode: `DroneGarageHandlerTests` — intent events reach the service
+- [x] EditMode: `DatabaseRegistryM6Tests` — mineral/upgrade/drone lookups
+- [x] EditMode: `DroneComparisonTests` — stat comparison rows
+- [ ] EditMode: assert `AcquireDrone.js`'s catalog matches `DatabaseRegistry.AllDrones` — every M6 test uses in-memory assets, which is exactly why Known Issue #10 went unnoticed
+- [ ] PlayMode: purchase an upgrade → stat reflected in the next mining session (blocked by Known Issue #7)
 
-**Manual Play Mode Verification**
+**Server deploy — fix before deploying**
 
-- [ ] `DroneGarageScreen` shows current drone fleet and available upgrades
-- [ ] Upgrade a stat (e.g. cargo cap) — cost deducted, stat increases, HUD reflects new cap
-- [ ] Unlock a second drone slot — second drone appears in fleet; can assign to different asteroid
-- [ ] Tier 2 asteroid requires a Tier 2 drone — lower-tier drone is blocked with clear feedback
-- [ ] `MineralInventory` screen shows accumulated minerals by type
+- [ ] Known Issue #10 (drone catalog), #11 (seed Scout server-side), #12 (`getPlayerCurrencyBalance`)
+- [ ] Wrap the 6 M6 functions in the `try/catch { logger.error(...); throw }` pattern the other functions use; prune the dead `FLEET_KEY`/`DRONE_TIERS` constants in `AcquireDrone.js`
+- [ ] Deploy `ValidateMining`, `SellMinerals`, `AcquireDrone`, `UnlockDroneSlot`, `UpgradeDrone`, `SetActiveDrone`, `GetBootstrapState`; confirm `mineral_inventory` + `drone_fleet` round-trip
+- [ ] Add the M6 functions to `ServerCode/CLOUD_CODE_FUNCTIONS.md` (absent) and refresh its stale `ValidateMining` / `GetBootstrapState` blocks
 
-**Architecture Rules**
+**Manual Play Mode / device verification** — none performed
 
-- [ ] `DroneUpgradeService` routes through `UpgradeDrone` server function — no client-side stat grants
-- [ ] `DroneDefinition` + `UpgradeDefinition` SOs hold all tunable values
-- [ ] `MineralInventory` is server-backed — client is a cache
+- [ ] Drone Garage lists owned and acquirable drones with correct costs
+- [ ] Acquire a drone — coins deducted, card moves to owned, model swaps
+- [ ] Upgrade a stat — cost deducted, pips advance, stat applies in the next session
+- [ ] Tier gate: a T1 drone is blocked from a T2 asteroid and the HUD says why
+- [ ] Mine → minerals appear in the inventory → sell → coins arrive
+- [ ] Decide whether fleet-slot purchases are in scope for testing (button hidden today)
+
+**Architecture rules**
+
+- [x] Acquisitions and upgrades route through Cloud Code — no client-side grants
+- [x] `DroneDefinition` / `UpgradeDefinition` / `MineralDefinition` SOs hold the tunables
+- [x] `MineralInventory` and `DroneFleet` are client caches of server state
+- [ ] Constants duplicated in JS (`UNLOCK_COSTS`, `DRONE_TIERS`, starting slots) must be derived from — or tested against — the SO assets; this duplication caused Known Issue #10
+- [ ] `drone_fleet` / `mineral_inventory` are written to a player-writable Cloud Save access class (Known Issue #16)
 
 ---
 
@@ -1486,65 +1558,148 @@ A dedicated build scene reachable via "View Land" on `TileInfoModal`, replacing 
 | `TravelServiceTests.cs`       | EditMode | `TravelService.GetFuelCost` (home always free); `TravelToPlanetAsync` succeeds/fails on fuel spend, always succeeds for the home planet regardless of distance, and fails with `FailureReason = "OutOfRange"` for a target outside `TravelRangeMath.IsInRange` |
 | `TravelRangeMathTests.cs`     | EditMode | `TravelRangeMath.IsInRange` — true for adjacent or tied `OrbitOrder`, false for distant orbits or the same planet |
 | `SkyLockOnMathTests.cs`       | EditMode | `SkyLockOnMath.GetSkyDirection` returns unit-length vectors; `FindClosest` returns the nearest direction/angle, `-1` for an empty set |
+| `DroneUpgradeMathTests.cs`     | EditMode | `DroneUpgradeMath` effective-stat and cost curves per upgrade level |
+| `DroneRuntimeTests.cs`         | EditMode | `DroneRuntime` effective cargo/yield/speed from base stats + upgrade levels |
+| `DroneFleetTests.cs`           | EditMode | `DroneFleet` slots, owned drones, active-drone selection, snapshot round-trip |
+| `DroneServiceTests.cs`         | EditMode | `DroneService` acquire/upgrade/unlock-slot/set-active payloads and `DroneActionResult` handling against a fake `IBackendClient` |
+| `MineralInventoryTests.cs`     | EditMode | `MineralInventory` add/remove and `MineralInventoryChangedEvent` publication |
+| `MineralServiceTests.cs`       | EditMode | `MineralService` grant-on-claim and sell flows (`ValidateMining` / `SellMinerals`) |
+| `DroneGarageHandlerTests.cs`   | EditMode | Drone intent events resolve to the right `IDroneService` call |
+| `DatabaseRegistryM6Tests.cs`   | EditMode | `GetMineral`/`GetUpgrade`/`GetDrone` lookups across the M6 assets |
+| `DroneComparisonTests.cs`      | EditMode | `DroneComparison` stat rows — int/float formatting and deltas |
+| `ValidateMiningCapAlignmentTests.cs` | EditMode | Asserts `ServerCode/ValidateMining.js`'s session cap ≥ the client's max idle session. **Reads `ServerCode/` from the repo root**, so it fails if the project is run without it |
 | `PlanetSceneFlowTests.cs`      | PlayMode | ⚠️ Both tests **fail at `SetUp`** with `PlanetSceneScope.Container not initialized` — see Known Issue #7 (pre-existing, unrelated to the mining rework). Intended coverage: (1) idle-mining a claimed asteroid reaches `ReadyToClaim`, a single tap claims it via `MiningController.ClaimIdleSessionAsync`, grants `RemainingYield × CoinsPerUnit` coins, and schedules respawn — this test replaced the old cargo-based `CommitCargoAsync` flow test as part of the mining rework, but remains blocked by the same Known Issue #7 its predecessor was; (2) selecting an available tile fires `TileSelectedEvent` → `TilePurchaseHandler` → `LandPurchaseService`, debits the wallet, and transfers the tile to `OwnedByPlayer` |
 
 
-**EditMode total: ≈296 passing across 59 EditMode files** (up from 97/97 at M5). The growth is
-the Post-M5 feature work: Land Building (`LandBuildMathTests`, `LandBuildServiceTests`,
-`HexBoardMathTests`, `BuildFeedbackTests`, `HexCellVisualTests`, `LandSlotResolverTests`,
-`PointerGestureTests`, `LandBuildingHandoffTests`, `LandBuildingThemeResolverTests`), avatars
-(`AvatarAssignmentTests`, `PlayerStateAvatarTests`, `DatabaseRegistryAvatarTests`), social polish
-(`ChatDisplayNameResolverTests`, `DisplayNameValidatorTests`), audio/settings
-(`AudioManagerTests`, `AudioSettingsServiceTests`), onboarding (`ProfileOnboardingTests`),
-active-mining redesign (`ActiveMiningHandoffTests`, `ActiveMiningAsteroidStageTests`,
-`ActiveMiningTargetPointTests`), travel/resume (`TravelTripSystemTests`,
-`FuelRechargeEstimatorTests`, `PlanetResumeResolverTests`, `PlayerStateTravelTests`,
-`GyroAttitudeMathTests`), and yield/mining estimators (`YieldEstimateCalculatorTests`,
-`EconomyServiceMiningTests`, `ValidateMiningCapAlignmentTests`). *(≈ because `[TestCase]`-driven
-tests expand to multiple cases; run Test Runner for the exact figure.)* The 2 PlayMode
-`PlanetSceneFlowTests` still fail at `SetUp` (Known Issue #7).
+**EditMode total: 326/326 passing across 68 EditMode files** — measured 2026-09-17 by a headless
+`unity test --mode EditMode` run (Unity 6000.3.12f1) against a scratch copy of
+`feature/m6-drones-mining-depth`: 323 `[Test]` + 3 `[TestCase]` cases, 0 failures, 0 skipped.
+(Up from 97/97 at M5.) The growth is the Post-M5 feature work — Land Building
+(`LandBuildMathTests`, `LandBuildServiceTests`, `HexBoardMathTests`, `BuildFeedbackTests`,
+`HexCellVisualTests`, `LandSlotResolverTests`, `PointerGestureTests`, `LandBuildingHandoffTests`,
+`LandBuildingThemeResolverTests`), avatars (`AvatarAssignmentTests`, `PlayerStateAvatarTests`,
+`DatabaseRegistryAvatarTests`), social polish (`ChatDisplayNameResolverTests`,
+`DisplayNameValidatorTests`), audio/settings (`AudioManagerTests`, `AudioSettingsServiceTests`),
+onboarding (`ProfileOnboardingTests`), the active-mining redesign (`ActiveMiningHandoffTests`,
+`ActiveMiningAsteroidStageTests`, `ActiveMiningTargetPointTests`), travel/resume
+(`TravelTripSystemTests`, `FuelRechargeEstimatorTests`, `PlanetResumeResolverTests`,
+`PlayerStateTravelTests`, `GyroAttitudeMathTests`), yield/mining estimators
+(`YieldEstimateCalculatorTests`, `EconomyServiceMiningTests`, `ValidateMiningCapAlignmentTests`),
+and the 9 M6 suites above.
+
+**PlayMode total: 0/2** — both `PlanetSceneFlowTests` still fail at `SetUp` with
+`PlanetSceneScope.Container not initialized` (Known Issue #7, unchanged since M4).
+
+**Two things to know before running the suite:** EditMode tests write to the project's editor
+`PlayerPrefs` (music/SFX volume, idle-mining session, asteroid respawn timers) and reset them in
+`SetUp`/`TearDown`, and `ValidateMiningCapAlignmentTests` needs the repo's `ServerCode/` folder
+next to `Assets/`. A headless run also can't share a project folder with an open Editor — run it
+on a copy, or close the Editor first.
 
 **Missing tests (high priority):**
 
+- [ ] EditMode: a JS/SO drift guard — parse `AcquireDrone.js` and assert its drone catalog matches `DatabaseRegistry.AllDrones` (Known Issue #10 shipped because every M6 test uses in-memory assets)
 - [ ] EditMode: `LandmarkService` marks exactly 12 tiles as `IsLandmark = true`
-- [ ] EditMode: `DatabaseRegistry` lookups (`GetPlanet`, `GetAsteroid`, `GetDrone`)
-- [ ] Fix `PlanetSceneFlowTests` PlayMode regression (Known Issue #7) — currently 0/2 passing
+- [ ] EditMode: `DatabaseRegistry` planet/asteroid lookups (`GetPlanet`, `GetAsteroid`) — the M6 assets are covered by `DatabaseRegistryM6Tests`, the older ones are not
+- [ ] Fix `PlanetSceneFlowTests` PlayMode regression (Known Issue #7) — currently 0/2 passing. Test 1 also still asserts a **coin** payout, but idle claims now grant minerals, so it needs retargeting after #7 is fixed
 
 ---
 
 ## Future Tasks (what's left, in rough priority order)
 
-The bulk of remaining work on the completed milestones is **not new code** — it's backend
-configuration and on-device verification that can't be done from the editor tooling alone.
+The remaining work is mostly **server fixes, Cloud Code deploy, backend/dashboard configuration
+and on-device verification** — very little of it is new client code.
 
-**1. Backend bring-up — unblocks M2–M5 + Land Building (highest priority)**
+**0. Before any build leaves this machine (security)**
 
-- [ ] Create/link the UGS project (`Project Settings > Services`); set `AppConfig.Environment = Development`.
-- [ ] UGS Economy dashboard: define `COINS` + `STARDUST` currencies.
+- [ ] Rotate the release keystore — public since 2026-07-02 (Known Issue #14). Reset the upload
+      key in Play Console, then `git rm --cached zKeystore/user.keystore` and add `zKeystore/`
+      and `*.keystore` to `.gitignore`.
+- [ ] Decide whether `Christian-valari/social-universe` should stay public — `ServerCode/`
+      publishes the whole economy surface, including the grant functions in Known Issue #16.
+- [ ] Stop tracking `social-universe-build-1.0_BackUpThisFolder_ButDontShipItWithYourGame/`
+      (824 files) and the Burst `DoNotShip` output; `.gitignore` covers `Build/` and `*.apk`,
+      but not these.
+
+**1. Fix the three blockers — Known Issues #10, #11, #12**
+
+Small changes, all in `ServerCode/`, plus one new EditMode drift test. Until they land, the drone
+loop, land resale and upkeep cannot work no matter what is deployed.
+
+**2. Backend bring-up — unblocks M2–M6 + Land Building**
+
+- [ ] Pick the environment and make it deliberate: `Assets/AppConfig.asset` selects
+      **Production** (`_environment: 2`), while this file has always said to use `Development`
+      for testing.
+- [ ] Create/link the UGS project (`Project Settings > Services`).
+- [ ] UGS Economy dashboard: define and publish `COINS` + `STARDUST`.
 - [ ] UGS Dashboard: enable/configure **Vivox** (text chat) and **Friends**.
-- [ ] Configure **Firebase Auth** (email/password + Google provider) and the UGS OIDC link; keep `google-services.json` current.
-- [ ] Deploy **all** `ServerCode/*.js` to Cloud Code — M2 (`GetBootstrapState`, `PurchaseLand`, `ValidateMining`, `GrantOfflineIncome`, `GetServerTime`, `SpendCoins`/`GrantCoins`/`GrantStardust`), M3 (`GetLandRegistry`, `PlaceBuild`, `ClaimYield`, `RecordVisit`, `ApplyUpkeep`, `SellLand`), M4 (`SubmitReport`, `BlockUser`, `GetPlayerProfile`, `UpdateProfile`), M5 (`GetFuelState`, `SpendFuel`, `RefillFuel`), and Land Building (`PurchaseHexatile`, hex-keyed `PlaceBuild`/`RemoveBuild`/`MoveBuild`). Verify the `@unity-services/cloud-save-1.4` Custom Data API shapes against the live dashboard SDK (M3/M5 notes flag these as written-from-best-knowledge).
-- [ ] Decide the fate of `ServerCode/ModerateMessage.js` (wire it in server-side or delete as dead code — see M4 notes).
+- [ ] Configure **Firebase Auth** (email/password + Google) and the UGS OIDC provider
+      `oidc-firebase`. `Assets/google-services.json` currently has **no Android OAuth client and
+      no SHA-1 fingerprint**, so Google sign-in has to be verified on a device; if testers install
+      through Play, register Play's app-signing SHA-1 as well.
+- [ ] Deploy **all** `ServerCode/*.js` from source to that environment — M2, M3, M4, M5, Land
+      Building, and the 7 M6 functions. Redeploy everything rather than trusting what is live:
+      `FuelSystem.cs:20-27` records that the deployed `RefillFuel` already differs from the repo
+      copy, and no deploy has ever been ticked off in this file.
+- [ ] Do **not** deploy `GrantCoins.js` / `GrantStardust.js` — nothing in the game calls them and
+      any signed-in player could (Known Issue #16).
+- [ ] Re-check the six functions named in Known Issue #12 against the live SDK once fixed.
+- [ ] Decide the fate of `ServerCode/ModerateMessage.js` (wire it in server-side or delete it).
 
-**2. Fix Known Issue #7 — unblocks all PlayMode verification**
+**3. Fix Known Issue #7 — unblocks all PlayMode verification**
 
-- [ ] `PlanetSceneFlowTests` fail at `SetUp` (`PlanetSceneScope.Container not initialized`) because the scene's `PlanetSceneScope` has a production `parentReference` but the test loads `Planet.unity` standalone. Fix via a test-only bootstrap that creates `RootLifetimeScope` first, or the `parentReference == null` standalone-mock path (Known Issue #7 for options). Blocks PlayMode checks for M3/M4/M5 alike.
+- [ ] `PlanetSceneFlowTests` fail at `SetUp` (`PlanetSceneScope.Container not initialized`)
+      because the scene's `PlanetSceneScope` has a production `parentReference` but the test loads
+      `Planet.unity` standalone. Fix with a test-only bootstrap that creates `RootLifetimeScope`
+      first, or via the `parentReference == null` standalone-mock path. Test 1 also still asserts
+      a coin payout, but idle claims now grant minerals, so retarget it at the same time.
 
-**3. Editor/scene housekeeping (small, unblocks clean runs)**
+**4. Ship an M6 test build**
 
-- [ ] Create `Assets/Scenes/LoadingScreen.unity` + `LoadingScreenView` wiring and add to Build Settings (Post-M4 Infrastructure section).
-- [ ] Move `Assets/SocialConfig.asset` into `Assets/_Project/ScriptableObjects/` and re-point `RootLifetimeScope`/`PlanetSceneScope._socialConfig`.
-- [ ] Assign `_socialConfig` on `Planet.unity`'s `PlanetSceneScope` (field added in code, scene not re-saved).
-- [ ] Author ≥1 `ItemDefinition` per build level and add to `DatabaseRegistry._items` so `BuildPaletteService` has items to offer.
-- [ ] Author + wire the 11 non-Earth `LandBuildingTheme` assets.
+- [ ] Merge `feature/m6-drones-mining-depth` into `main` (29 commits ahead, 0 behind). Once the
+      new `ValidateMining` is deployed, every tester must be on an M6 build (Known Issue #13) —
+      retire the older APKs in `Build/` and the repo root.
+- [x] Bump `AndroidBundleVersionCode` — now **5** (v4 was used by the 2026-07-31 bundle).
+- [ ] Build an **`.aab`**, not an `.apk`: Play rejects APKs over 100 MB and the 2026-08-10 APK was
+      340 MB. An app bundle's base module may be up to 500 MB, so no Play Asset Delivery split is
+      needed yet (`androidSplitApplicationBinary: 0`).
+- [ ] Add a minimal failure toast (Known Issue #17) so rejected server calls stop looking like
+      dead buttons.
+- [ ] Decide what testers should see of the dev surfaces: the HUD chat button opens
+      `SocialDebugPanel` (a developer/QA panel) and `CloudTestHarness` is active in
+      `Bootstrap.unity`. `_devMode` is off, so builds use the real services.
 
-**4. On-device verification pass** — once (1)+(2) land, run each milestone's "Manual Play Mode Verification" checklist on a device (auth, persistence, two-client presence/chat, travel/fuel, gyro sky discovery, land building).
+**5. On-device verification pass** — nothing has been recorded as verified on a device for any
+milestone. Once (1)–(3) land, run each milestone's "Manual Play Mode Verification" checklist:
+auth (email + Google), persistence, two-client presence/chat, travel/fuel, gyro sky discovery,
+land building, and the full M6 mine → sell → upgrade → higher-tier loop.
 
-**5. Resolve Open Decisions still outstanding**
+**6. Editor/scene housekeeping**
 
-- [ ] **Age policy / content rating** — needed to layer per-age-band behavior over `SocialConfig`'s provisional `Strict` default (drives M10 `AgeGateService`).
+- [x] `Assets/Scenes/LoadingScreen.unity` exists and is in Build Settings.
+- [x] `ItemDefinition` assets authored and wired — `DatabaseRegistry._items` has 5 entries.
+- [x] All 10 `LandBuildingTheme` assets authored and referenced from their `PlanetDefinition`s.
+- [ ] Move `Assets/SocialConfig.asset` into `Assets/_Project/ScriptableObjects/` and re-point
+      `RootLifetimeScope` / `PlanetSceneScope._socialConfig`.
+- [ ] Delete the stale root `Planet_TerraPrime.asset` and `Asteroid_Iron.asset` (Known Issue #2).
+- [ ] Prune stale branches and the 11 `.claude/worktrees/` copies. The unmerged `worktree-*`
+      branches were all superseded by later work: pre-login email verification → Firebase-native
+      auth (`db028f19` retired the email Cloud Code), the ChooseName panel → `DisplayNameModal` +
+      `ProfileOnboarding`, and the planet-collider fix → smaller collider radii (0.45 or less) in
+      every planet prefab.
+- [ ] `docs/google-signin-setup-checklist.md` still describes the retired Play Games flow and a
+      lower-case package id; the real id is `com.ValariSolutions.SocialUniverse` (case matters).
+
+**7. Resolve Open Decisions still outstanding**
+
+- [ ] **Age policy / content rating** — needed to layer per-age-band behavior over `SocialConfig`'s
+      provisional `Strict` default (drives M10 `AgeGateService`).
 - [ ] **Land resale model** — confirm coins-only / no real-money cash-out before M8.
 
-**6. Next new-code milestone: M6 — Drones & Mining Depth** (drone upgrade tree, slots, mineral inventory, tier-gated asteroids). `DroneDefinition`/`AsteroidDefinition` SOs already exist; everything else in the M6 table is 🔲. M7–M11 remain not started.
+**8. Next new-code milestone: M7 — Space Stations & Guilds.** M6 is code-complete on its branch;
+M7–M11 remain not started. Worth clearing the M6 follow-ups first: Cargo and Speed upgrades do
+nothing (Known Issue #15), the T4/T5 drones have no tier-4/5 asteroids to mine, and fleet-slot
+purchases are hidden.
 
 **Note:** The temporary `PlayModeVerifier.cs` smoke-test script (and its component on the `PlanetSceneScope` GameObject in `Planet.unity`) has been removed — its checks are now covered by `PlanetSceneFlowTests` under `Assets/_Project/Tests/PlayMode/` (assembly `SocialUniverse.PlayModeTests`). As of M4, both tests fail at `SetUp` — see Known Issue #7.
