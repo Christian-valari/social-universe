@@ -60,6 +60,19 @@ namespace SocialUniverse.Tests
             Assert.AreEqual(1, fleet.Drones.Count);
         }
 
+        // The HUD's Garage button stays disabled until the fleet has server data, so the garage
+        // can't open onto an empty carousel while hydration is still in flight.
+        [Test]
+        public void IsHydrated_turns_true_only_after_the_first_Apply()
+        {
+            var fleet = new DroneFleet();
+            Assert.IsFalse(fleet.IsHydrated, "a fresh fleet has no server data yet");
+
+            fleet.Apply(DroneFleetSnapshot.SingleDrone("scout", 2), _registry);
+
+            Assert.IsTrue(fleet.IsHydrated);
+        }
+
         [Test]
         public void ToSnapshot_round_trips_through_Apply()
         {

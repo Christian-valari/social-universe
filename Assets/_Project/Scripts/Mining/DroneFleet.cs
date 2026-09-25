@@ -40,6 +40,11 @@ namespace SocialUniverse.Mining
         public string ActiveDroneId { get; private set; }
         public int    UnlockedSlots { get; private set; }
 
+        // False until the first Apply, i.e. until hydration (or a server call) has given us real
+        // fleet data. The HUD keeps the Garage button disabled while this is false so the garage
+        // can't be opened onto an empty carousel.
+        public bool IsHydrated { get; private set; }
+
         public DroneRuntime Active => Get(ActiveDroneId) ?? (_drones.Count > 0 ? _drones[0] : null);
 
         public DroneRuntime Get(string droneId) =>
@@ -69,6 +74,7 @@ namespace SocialUniverse.Mining
                 }
             }
 
+            IsHydrated = true;
             EventBus.Publish(new DroneFleetChangedEvent());
         }
 

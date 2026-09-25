@@ -62,6 +62,9 @@ namespace SocialUniverse.UI
         [SerializeField] private Sprite _pipOnSprite;   // an upgraded level
         [SerializeField] private Sprite _pipOffSprite;  // a not-yet-upgraded level
 
+        // Scratch list for the pips of the meter being bound; reused to keep binds allocation-free.
+        private readonly List<Image> _pips = new List<Image>();
+
         // Configure this card for an owned drone: icon + title + set-active + per-stat meters.
         public void BindOwned(Sprite icon, string title, bool isActive, Action onSetActive, IReadOnlyList<DroneStatVm> stats)
         {
@@ -160,25 +163,52 @@ namespace SocialUniverse.UI
             _icon.enabled = icon != null; // hide the Image when a drone has no icon assigned yet
         }
 
-        // Rebuild the level pips: `maxLevel` pips, the first `level` using the on-sprite, the rest off.
+        // Set the level pips: `maxLevel` pips, the first `level` using the on-sprite, the rest off.
+        // Pips are reused across binds — cards are re-bound on every fleet change now, and each
+        // owned card carries MaxLevel pips per stat (30 today), so destroying and re-instantiating
+        // them was the bulk of a refresh.
         private void BuildPips(Transform parent, int level, int maxLevel)
         {
             if (parent == null || _pipTemplate == null) return;
 
-            ClearPips(parent);
+            CollectPips(parent);
 
-            for (int i = 0; i < maxLevel; i++)
+            while (_pips.Count < maxLevel)
+                _pips.Add(Instantiate(_pipTemplate, parent));
+
+            for (int i = 0; i < _pips.Count; i++)
             {
-                var pip = Instantiate(_pipTemplate, parent);
-                pip.gameObject.SetActive(true);
-                pip.sprite = i < level ? _pipOnSprite : _pipOffSprite;
+                var pip = _pips[i];
+                if (pip == null) continue;
+
+                bool used = i < maxLevel;
+                pip.gameObject.SetActive(used);
+                if (used) pip.sprite = i < level ? _pipOnSprite : _pipOffSprite;
             }
         }
 
+        // Hide the pips without destroying them, so the next bind can reuse them.
         private void ClearPips(Transform parent)
         {
             if (parent == null) return;
-            for (int i = parent.childCount - 1; i >= 0; i--) Destroy(parent.GetChild(i).gameObject);
+
+            CollectPips(parent);
+            foreach (var pip in _pips)
+                if (pip != null) pip.gameObject.SetActive(false);
+        }
+
+        // The pips already under this meter, skipping the template if it happens to live there.
+        private void CollectPips(Transform parent)
+        {
+            _pips.Clear();
+            for (int i = 0; i < parent.childCount; i++)
+            {
+                var child = parent.GetChild(i);
+                if (_pipTemplate != null && child == _pipTemplate.transform) continue;
+
+                var pip = child.GetComponent<Image>();
+                if (pip != null) _pips.Add(pip);
+            }
         }
 
         private static DroneStatDeltaVm FindDelta(IReadOnlyList<DroneStatDeltaVm> deltas, DroneStat stat)

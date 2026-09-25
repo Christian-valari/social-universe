@@ -55,6 +55,7 @@ namespace SocialUniverse.UI
         [Inject] private IPresenceService _presence;
         [Inject] private PlanetDefinition _planet;
         [Inject] private DatabaseRegistry _registry;
+        [Inject] private DroneFleet _fleet;
 
         // Transient "requires a higher-tier drone" message shown when MiningController blocks a
         // too-high-tier mining attempt (published as MiningBlockedEvent). Overrides the idle
@@ -77,6 +78,11 @@ namespace SocialUniverse.UI
             _fuelButton?.onClick.AddListener(() => _fuelPanel?.Open());
             _garageButton?.onClick.AddListener(() => _droneGarageView?.Open());
             _mineralsButton?.onClick.AddListener(() => _mineralInventoryView?.Open());
+
+            // The fleet arrives from Cloud Save a moment after the planet loads. Keep the Garage
+            // shut until then, so it can't open onto a carousel with no owned drones in it.
+            RefreshGarageButton();
+            EventBus.Subscribe<DroneFleetChangedEvent>(OnDroneFleetChanged);
 
             if (_verifyEmailButton != null) _verifyEmailButton.onClick.AddListener(() => _emailVerificationModal?.Open());
             EventBus.Subscribe<ShowEmailVerificationPromptEvent>(OnShowEmailVerificationPrompt);
@@ -117,6 +123,14 @@ namespace SocialUniverse.UI
             EventBus.Unsubscribe<TileSelectedEvent>(OnTileSelectedForModal);
             EventBus.Unsubscribe<MiningBlockedEvent>(OnMiningBlocked);
             EventBus.Unsubscribe<IdleClaimCompletedEvent>(OnIdleClaimCompleted);
+            EventBus.Unsubscribe<DroneFleetChangedEvent>(OnDroneFleetChanged);
+        }
+
+        private void OnDroneFleetChanged(DroneFleetChangedEvent _) => RefreshGarageButton();
+
+        private void RefreshGarageButton()
+        {
+            if (_garageButton != null) _garageButton.interactable = _fleet != null && _fleet.IsHydrated;
         }
 
         private void OnMiningBlocked(MiningBlockedEvent e)
