@@ -40,6 +40,34 @@ namespace SocialUniverse.Tests
             Assert.AreEqual(2, inv.Get("platinum"));
         }
 
+        // The inventory panel heads its list with "N minerals" — the units held across every
+        // mineral, not the number of distinct minerals.
+        [Test]
+        public void TotalOwned_is_zero_for_an_empty_inventory()
+        {
+            Assert.AreEqual(0, new MineralInventory().TotalOwned());
+        }
+
+        [Test]
+        public void TotalOwned_sums_quantities_across_minerals()
+        {
+            var inv = new MineralInventory();
+            inv.SetAll(new Dictionary<string, int> { { "iron", 10 }, { "platinum", 3 } });
+
+            Assert.AreEqual(13, inv.TotalOwned());
+        }
+
+        [Test]
+        public void TotalOwned_follows_Add_including_a_mineral_spent_back_to_zero()
+        {
+            var inv = new MineralInventory();
+            inv.Add("iron", 4);
+            inv.Add("platinum", 2);
+            inv.Add("iron", -4); // sold the iron
+
+            Assert.AreEqual(2, inv.TotalOwned());
+        }
+
         [Test]
         public void TotalSellValue_sums_qty_times_sellValue_over_registry()
         {

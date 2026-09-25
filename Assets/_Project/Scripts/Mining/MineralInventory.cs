@@ -37,6 +37,14 @@ namespace SocialUniverse.Mining
             EventBus.Publish(new MineralInventoryChangedEvent());
         }
 
+        // Units held across every mineral — what the inventory panel counts in its header.
+        public int TotalOwned()
+        {
+            int total = 0;
+            foreach (var kv in _held) total += kv.Value;
+            return total;
+        }
+
         public int TotalSellValue(DatabaseRegistry registry)
         {
             int total = 0;

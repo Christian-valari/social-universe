@@ -14,7 +14,9 @@ namespace SocialUniverse.UI
         [SerializeField] private Button _sellButton;
 
         // Configure this row: icon (hidden when null), the composed label text, and the sell action.
-        public void Bind(Sprite icon, string label, Action onSell)
+        // `canSell` is false for a mineral the player holds none of — the button stays in place so
+        // the row doesn't change shape, but can't be pressed.
+        public void Bind(Sprite icon, string label, bool canSell, Action onSell)
         {
             SetIcon(icon);
             if (_label != null) _label.text = label;
@@ -22,6 +24,7 @@ namespace SocialUniverse.UI
             if (_sellButton != null)
             {
                 _sellButton.onClick.RemoveAllListeners();
+                _sellButton.interactable = canSell;
                 if (onSell != null) _sellButton.onClick.AddListener(() => onSell());
             }
         }
