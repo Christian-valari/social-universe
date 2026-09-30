@@ -13,11 +13,19 @@ namespace SocialUniverse.Tests
     {
         private class FakeBackendClient : IBackendClient
         {
-            public SellResult SellResponse;
+            public SellResult        SellResponse;
+            public MiningGrantResult GrantResponse;
+            public string                     LastFunction;
+            public Dictionary<string, object> LastArgs;
+
             public Task<T> CallAsync<T>(string function, Dictionary<string, object> args = null)
             {
+                LastFunction = function;
+                LastArgs     = args;
                 if (function == "SellMinerals" && typeof(T) == typeof(SellResult))
                     return Task.FromResult((T)(object)SellResponse);
+                if (function == "ValidateMining" && typeof(T) == typeof(MiningGrantResult))
+                    return Task.FromResult((T)(object)GrantResponse);
                 return Task.FromResult(default(T));
             }
             public Task CallAsync(string function, Dictionary<string, object> args = null) => Task.CompletedTask;
@@ -86,6 +94,59 @@ namespace SocialUniverse.Tests
             Assert.AreEqual(0, inv.Get("iron"));
 
             Object.DestroyImmediate(iron); Object.DestroyImmediate(reg);
+        }
+
+        [Test]
+        public async Task GrantMiningAsync_sends_planet_mineral_and_quantity_only()
+        {
+            var backend = new FakeBackendClient { GrantResponse = new MiningGrantResult { Granted = 12, MineralId = "iron" } };
+            var svc = new MineralService(backend, new MineralInventory(), new Wallet());
+
+            await svc.GrantMiningAsync("earth", "iron", 12);
+
+            Assert.AreEqual("ValidateMining", backend.LastFunction);
+            CollectionAssert.AreEquivalent(new[] { "planetId", "mineralId", "claimedQty" }, backend.LastArgs.Keys);
+            Assert.AreEqual("earth", backend.LastArgs["planetId"]);
+            Assert.AreEqual("iron",  backend.LastArgs["mineralId"]);
+            Assert.AreEqual(12,      backend.LastArgs["claimedQty"]);
+        }
+
+        [Test]
+        public async Task GrantMiningAsync_adds_the_granted_amount_to_the_inventory()
+        {
+            var backend = new FakeBackendClient { GrantResponse = new MiningGrantResult { Granted = 9, MineralId = "iron" } };
+            var inv = new MineralInventory();
+            var svc = new MineralService(backend, inv, new Wallet());
+
+            var result = await svc.GrantMiningAsync("earth", "iron", 12);
+
+            Assert.AreEqual(9, result.Granted);
+            Assert.AreEqual(9, inv.Get("iron"), "the server's clamped amount, not the claimed one");
+        }
+
+        [Test]
+        public async Task GrantMiningAsync_rejection_returns_the_reason_and_leaves_inventory_unchanged()
+        {
+            var backend = new FakeBackendClient { GrantResponse = new MiningGrantResult { Granted = 0, MineralId = "iron", Reason = "BUDGET_EXHAUSTED" } };
+            var inv = new MineralInventory();
+            var svc = new MineralService(backend, inv, new Wallet());
+
+            var result = await svc.GrantMiningAsync("earth", "iron", 12);
+
+            Assert.AreEqual(0, result.Granted);
+            Assert.AreEqual("BUDGET_EXHAUSTED", result.Reason);
+            Assert.AreEqual(0, inv.Get("iron"));
+        }
+
+        [Test]
+        public async Task GrantMiningAsync_null_response_is_an_empty_response_rejection()
+        {
+            var svc = new MineralService(new FakeBackendClient(), new MineralInventory(), new Wallet());
+
+            var result = await svc.GrantMiningAsync("earth", "iron", 12);
+
+            Assert.AreEqual(0, result.Granted);
+            Assert.AreEqual("Empty response", result.Reason);
         }
     }
 }

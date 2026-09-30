@@ -9,16 +9,14 @@ namespace SocialUniverse.Mining
         public readonly float IdleDurationSeconds;
         public readonly int   ActiveTapsRequired;
         public readonly float ActiveSessionDurationSeconds;
-        public readonly float UnitsPerSec;
 
         public MiningReward(int mineralQuantity, float idleDurationSeconds, int activeTapsRequired,
-            float activeSessionDurationSeconds, float unitsPerSec)
+            float activeSessionDurationSeconds)
         {
             MineralQuantity              = mineralQuantity;
             IdleDurationSeconds          = idleDurationSeconds;
             ActiveTapsRequired           = activeTapsRequired;
             ActiveSessionDurationSeconds = activeSessionDurationSeconds;
-            UnitsPerSec                  = unitsPerSec;
         }
     }
 
@@ -45,11 +43,7 @@ namespace SocialUniverse.Mining
             float rawActiveSeconds = taps * _config.ActiveSecondsPerTap;
             float activeSeconds    = Mathf.Clamp(rawActiveSeconds, _config.MinActiveSessionSeconds, _config.MaxActiveSessionSeconds);
 
-            // Per-claim rate so durationSec * unitsPerSec == quantity exactly even when duration
-            // was clamped — feeds the server anti-cheat cap in ValidateMining (mineral units).
-            float unitsPerSec = duration > 0f ? quantity / duration : 0f;
-
-            return new MiningReward(quantity, duration, taps, activeSeconds, unitsPerSec);
+            return new MiningReward(quantity, duration, taps, activeSeconds);
         }
     }
 }

@@ -11,7 +11,10 @@
         "SocialUniverse.Mining",
         "SocialUniverse.Economy",
         "SocialUniverse.Progression",
-        "SocialUniverse.App"
+        "SocialUniverse.App",
+        "SocialUniverse.Net",
+        "SocialUniverse.Social",
+        "SocialUniverse.Safety"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

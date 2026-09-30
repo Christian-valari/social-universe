@@ -17,19 +17,24 @@ namespace SocialUniverse.Tests
     // after the asteroid has already been mined-out and the session torn down).
     public class CapturingMineralService : IMineralService
     {
+        public string LastPlanetId;
         public string LastMineralId;
         public int    LastQty;
         public bool   Throw;
+        public string RejectReason; // when set, the grant is rejected with this reason
 
         public Task<SellResult> SellAsync(string mineralId, int qty) => Task.FromResult(new SellResult { Success = true });
         public Task<SellResult> SellAllAsync() => Task.FromResult(new SellResult { Success = true });
 
-        public Task<int> GrantMiningAsync(string mineralId, int qty, float sessionDurationSec, float unitsPerSec)
+        public Task<MiningGrantResult> GrantMiningAsync(string planetId, string mineralId, int qty)
         {
             if (Throw) throw new System.InvalidOperationException("simulated");
+            LastPlanetId  = planetId;
             LastMineralId = mineralId;
             LastQty       = qty;
-            return Task.FromResult(qty);
+            return Task.FromResult(RejectReason != null
+                ? new MiningGrantResult { Granted = 0, MineralId = mineralId, Reason = RejectReason }
+                : new MiningGrantResult { Granted = qty, MineralId = mineralId });
         }
     }
 
@@ -131,7 +136,7 @@ namespace SocialUniverse.Tests
         {
             var go = new GameObject("TestAsteroid");
             var asteroid = go.AddComponent<Asteroid>();
-            asteroid.Initialize(_asteroidDef, slotId);
+            asteroid.Initialize(_asteroidDef, slotId, 1f, 1f);
             typeof(Asteroid).GetField("<RemainingYield>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance)
                 .SetValue(asteroid, remainingYield);
 
@@ -387,6 +392,68 @@ namespace SocialUniverse.Tests
             Assert.IsNull(mining.CurrentIdleSession);
             Assert.IsNull(_spawner.FindBySlotId("slot_0"), "the claimed asteroid must no longer be active/findable by its old slot");
             Assert.IsTrue(_spawner.NextRespawnUtc.HasValue, "asteroid must still be scheduled for respawn even though the grant call failed");
+        }
+
+        [Test]
+        public async Task ClaimIdleSessionAsync_sends_the_scene_planet_id()
+        {
+            var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 20);
+            Assert.IsTrue(_mining.BeginIdleMining(asteroid));
+            await Task.Delay(100);
+            _mining.CurrentIdleSession.Tick(0f);
+
+            await _mining.ClaimIdleSessionAsync(asteroid);
+
+            Assert.AreEqual("test_planet", _minerals.LastPlanetId);
+        }
+
+        [Test]
+        public async Task ClaimIdleSessionAsync_rejection_publishes_rejected_event_not_claim_completed_and_still_respawns()
+        {
+            var rejecting = new CapturingMineralService { RejectReason = "BUDGET_EXHAUSTED" };
+            var mining = new MiningController(rejecting, _rewardCalc, _spawner, _config, _planet, _handoff, new FakeAudioManager(), _fleet);
+
+            var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 20);
+            Assert.IsTrue(mining.BeginIdleMining(asteroid));
+            await Task.Delay(100);
+            mining.CurrentIdleSession.Tick(0f);
+
+            IdleClaimCompletedEvent completed = null;
+            MiningClaimRejectedEvent rejected = null;
+            EventBus.Subscribe<IdleClaimCompletedEvent>(e => completed = e);
+            EventBus.Subscribe<MiningClaimRejectedEvent>(e => rejected = e);
+
+            await mining.ClaimIdleSessionAsync(asteroid);
+
+            Assert.IsNull(completed, "no reward modal for a rejected claim");
+            Assert.IsNotNull(rejected);
+            Assert.AreEqual("iron", rejected.MineralId);
+            Assert.AreEqual("BUDGET_EXHAUSTED", rejected.Reason);
+            Assert.IsTrue(_spawner.NextRespawnUtc.HasValue, "the asteroid is consumed and respawns as usual");
+
+            EventBus.Clear();
+        }
+
+        [Test]
+        public async Task Active_mining_rejection_publishes_rejected_event()
+        {
+            var rejecting = new CapturingMineralService { RejectReason = "TIER_TOO_LOW" };
+            var mining = new MiningController(rejecting, _rewardCalc, _spawner, _config, _planet, _handoff, new FakeAudioManager(), _fleet);
+
+            var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 10);
+            Assert.IsTrue(mining.BeginActiveMining(asteroid));
+            _handoff.SetResult(succeeded: true);
+
+            MiningClaimRejectedEvent rejected = null;
+            EventBus.Subscribe<MiningClaimRejectedEvent>(e => rejected = e);
+
+            mining.Initialize();
+            await Task.Yield();
+
+            Assert.IsNotNull(rejected);
+            Assert.AreEqual("TIER_TOO_LOW", rejected.Reason);
+
+            EventBus.Clear();
         }
 
         [Test]

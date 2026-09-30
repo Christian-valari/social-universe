@@ -6,9 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Social Universe is a Unity 6 social MMO where players explore a solar system, mine asteroids, own hexagonal land tiles on planets, and interact with other players. The full architecture, milestone roadmap, and script inventory live in `Social_Universe_Architecture.md` — read it before any task.
 
-**Current state (2026-09-25):** M0–M5 are code-complete and M6 (drones & mining depth) is code-complete on `feature/m6-drones-mining-depth` (29 commits ahead of `main`, unmerged). 221 runtime scripts across 12 assemblies, 326 passing EditMode tests, 0/2 PlayMode. The backend is UGS (Auth/Economy/Cloud Save/Cloud Code/Vivox/Friends) with Firebase Auth via OIDC.
+**Current state (2026-09-29):** M0–M5 are code-complete and M6 (drones & mining depth) is code-complete and merged into `main`. EditMode 351/351, PlayMode 2/2. The backend is UGS (Auth/Economy/Cloud Save/Cloud Code/Vivox/Friends) with Firebase Auth via OIDC.
 
-**The game is not ready for internal testing.** Three server-side blockers break the M6 loop and parts of the land economy, no `ServerCode/` deploy has ever been confirmed, and the release keystore is committed to a public repo. Read `PROGRESS.md` — Known Issues #10–#17 and "Future Tasks" — before planning work; it is the source of truth for status.
+**The game is not ready for internal testing.** The three server blockers (Known Issues #10–#12) are fixed in `ServerCode/` but no `ServerCode/` deploy has ever been confirmed, and the release keystore is committed to a public repo. Read `PROGRESS.md` — Known Issues and "Future Tasks" — before planning work; it is the source of truth for status.
 
 ## Pre-Task Protocol (mandatory)
 
@@ -37,7 +37,7 @@ Three things that will otherwise waste your time:
 - **`ValidateMiningCapAlignmentTests` reads `ServerCode/ValidateMining.js`** from the repo root, so a copy without `ServerCode/` fails that test.
 - **EditMode tests touch the project's editor `PlayerPrefs`** (music/SFX volume, idle-mining session, asteroid respawn timers). Running the suite resets those values for the Editor on this machine.
 
-Current results (2026-09-17, Unity 6000.3.12f1): EditMode **326/326**; PlayMode **0/2** — both `PlanetSceneFlowTests` fail at `SetUp` (Known Issue #7).
+Current results (2026-09-29, Unity 6000.3.12f1): EditMode **351/351**; PlayMode **2/2**. `PlanetSceneFlowTests` run the real Planet scene under `PlanetTestRootScope` with a scripted `FakeBackendClient` (Tests/PlayMode/).
 
 ## Architecture Rules (enforce on every task)
 

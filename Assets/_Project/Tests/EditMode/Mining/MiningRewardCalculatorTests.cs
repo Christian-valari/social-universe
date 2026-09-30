@@ -47,14 +47,14 @@ namespace SocialUniverse.Tests
                 .SetValue(target, value);
 
         // RemainingYield is a { get; private set; } auto-property set inside Initialize() from
-        // BaseYield * Random.Range(0.8f, 1.2f) — not directly settable. Tests need exact,
-        // reproducible values, so this reaches through the auto-property's backing field
+        // BaseYield × a random roll (Asteroid.RollYield) — not directly settable. Tests need
+        // exact, reproducible values, so this reaches through the auto-property's backing field
         // directly rather than trying to control the randomized Initialize() path.
         private Asteroid MakeAsteroid(int remainingYield)
         {
             var go = new GameObject("TestAsteroid");
             var asteroid = go.AddComponent<Asteroid>();
-            asteroid.Initialize(_def, "slot_0");
+            asteroid.Initialize(_def, "slot_0", 1f, 1f);
 
             typeof(Asteroid).GetField("<RemainingYield>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance)
                 .SetValue(asteroid, remainingYield);
@@ -63,7 +63,7 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
-        public void Mid_range_yield_is_not_clamped_and_unitsPerSec_reproduces_mineralQuantity_exactly()
+        public void Mid_range_yield_is_not_clamped()
         {
             var asteroid = MakeAsteroid(100); // duration = 100*3 = 300s, within [30,1800]
 
@@ -71,24 +71,20 @@ namespace SocialUniverse.Tests
 
             Assert.AreEqual(100, reward.MineralQuantity);          // 100 remaining yield * 1.0 mult
             Assert.AreEqual(300f, reward.IdleDurationSeconds, 0.001f);
-            Assert.AreEqual(100f / 300f, reward.UnitsPerSec, 0.0001f);
-            Assert.AreEqual(reward.MineralQuantity, reward.IdleDurationSeconds * reward.UnitsPerSec, 0.01f,
-                "sessionDurationSec * unitsPerSec must reproduce mineralQuantity exactly so the server cap never under-grants");
         }
 
         [Test]
-        public void Tiny_yield_clamps_duration_to_minimum_and_still_reproduces_mineralQuantity()
+        public void Tiny_yield_clamps_duration_to_minimum()
         {
             var asteroid = MakeAsteroid(1); // raw duration = 3s, clamped up to 30s
 
             var reward = _calc.Compute(asteroid, 1f);
 
             Assert.AreEqual(30f, reward.IdleDurationSeconds, 0.001f);
-            Assert.AreEqual(reward.MineralQuantity, reward.IdleDurationSeconds * reward.UnitsPerSec, 0.01f);
         }
 
         [Test]
-        public void Huge_yield_clamps_duration_to_maximum_and_still_reproduces_mineralQuantity()
+        public void Huge_yield_clamps_duration_to_maximum()
         {
             var asteroid = MakeAsteroid(10000); // raw duration = 30000s, clamped down to 1800s
 
@@ -96,8 +92,6 @@ namespace SocialUniverse.Tests
 
             Assert.AreEqual(1800f, reward.IdleDurationSeconds, 0.001f);
             Assert.AreEqual(10000, reward.MineralQuantity); // 10000 * 1.0
-            Assert.AreEqual(reward.MineralQuantity, reward.IdleDurationSeconds * reward.UnitsPerSec, 0.5f,
-                "even when duration is clamped down, unitsPerSec must be recomputed so the cap still equals mineralQuantity");
         }
 
         [Test]

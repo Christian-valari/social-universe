@@ -216,62 +216,39 @@ module.exports = async ({ params, context, logger }) => {
 
 ## ValidateMining
 
-Validates an idle mining session payout and grants coins. The client sends claimed coins and
-session parameters; the server caps the grant at `sessionDurationSec * coinsPerSec` to prevent
-inflated claims. Full anti-cheat with a server-stored session token is scheduled for M3.
+Grants **minerals** (not coins) for an idle or active mining claim (M6), server-authoritatively.
+**`ServerCode/ValidateMining.js` is the source of truth to deploy** — this section only summarizes
+its contract. Design: `docs/superpowers/specs/2026-09-29-mining-claim-budget-design.md`.
 
 **Parameters:**
 
 | Name | Type | Required | Description |
 |---|---|---|---|
-| `claimedCoins` | `number` (integer) | Yes | Coins the client claims to have mined this session. Must be a positive integer. |
-| `sessionDurationSec` | `number` | No | Session length in seconds. Defaults to `30`, capped at `300`. |
-| `coinsPerSec` | `number` | No | Coin yield rate per second. Defaults to `1`. |
+| `planetId` | `string` | Yes | Planet the claim was mined on (`PlanetDefinition._planetId`). |
+| `mineralId` | `string` | Yes | Mineral mined (`MineralDefinition._mineralId`). |
+| `claimedQty` | `number` (integer) | Yes | Units the client computed. Positive integer; clamped server-side. |
 
-```js
-// ValidateMining — validates an idle mining session payout and grants coins.
-// The client sends claimed coins and the session parameters; the server caps the
-// grant at (sessionDurationSec * coinsPerSec) to prevent inflated claims.
-// Full anti-cheat with a server-stored session token is scheduled for M3.
-const { CurrenciesApi } = require("@unity-services/economy-2.5");
+`sessionDurationSec`, `unitsPerSec` and `claimedCoins` are no longer read.
 
-const ABSOLUTE_SESSION_CAP_SECONDS = 300; // 5-minute hard cap per session
-const ABSOLUTE_COINS_CAP           = 10000; // hard upper bound per call
+**Response:** `{ granted: int, mineralId: string, reason?: string }`. A rejection returns
+`granted: 0` plus a `reason` (and logs one `logger.warn` line) instead of throwing:
 
-/**
- * @param {number} claimedCoins - Coins the client claims to have mined this session. Must be a positive integer.
- * @param {number} [sessionDurationSec] - Session length in seconds. Optional, defaults to 30 and is capped at 300.
- * @param {number} [coinsPerSec] - Coin yield rate per second for the session. Optional, defaults to 1.
- */
-module.exports = async ({ params, context, logger }) => {
-  const { claimedCoins, sessionDurationSec, coinsPerSec } = params;
+| Reason | When |
+|---|---|
+| `INVALID_PARAMS` | `planetId` / `mineralId` missing, or `claimedQty` not a positive integer |
+| `WRONG_PLANET` | `planetId` differs from the player's `current_planet` record (a missing record accepts the claimed planet) |
+| `MINERAL_NOT_ON_PLANET` | the mineral is not one of that planet's asteroid minerals (or the planet is unknown) |
+| `TIER_TOO_LOW` | the mineral's asteroid tier exceeds the saved fleet's active drone tier |
+| `BUDGET_EXHAUSTED` | the player already has 6 claims on this planet in the last 4 hours |
 
-  if (!Number.isInteger(claimedCoins) || claimedCoins <= 0) {
-    throw new Error(`Invalid claimedCoins: ${claimedCoins}`);
-  }
+An accepted claim grants `min(claimedQty, ceil(ceil(baseYield × 1.2) × effectiveYieldMult))` to the
+`mineral_inventory` Cloud Save record (read-modify-write under its `writeLock`).
 
-  const cappedDuration = Math.min(sessionDurationSec ?? 30, ABSOLUTE_SESSION_CAP_SECONDS);
-  const maxByRate      = Math.floor(cappedDuration * (coinsPerSec ?? 1));
-  const grantAmount    = Math.min(claimedCoins, maxByRate, ABSOLUTE_COINS_CAP);
-
-  if (grantAmount <= 0) {
-    return { granted: 0, newBalance: null };
-  }
-
-  const { projectId, playerId, accessToken } = context;
-  const econApi    = new CurrenciesApi({ accessToken });
-
-  const res = await econApi.incrementPlayerCurrencyBalance({
-    projectId,
-    playerId,
-    currencyId: "COINS",
-    currencyModifyBalanceRequest: { amount: grantAmount }
-  });
-
-  logger.info(`ValidateMining: player ${playerId} claimed ${claimedCoins}, granted ${grantAmount} → balance ${res.data.balance}`);
-  return { granted: grantAmount, newBalance: res.data.balance };
-};
-```
+**`mining_claim_log` record** (player Cloud Save): `{ [planetId]: number[] }` — claim timestamps in
+ms, pruned to the last 4 hours on each write. A slot is reserved (under the record's `writeLock`,
+409 → retry up to 3 attempts) before minerals are granted, and released if the grant fails.
+Like `current_planet` and `drone_fleet`, it is still in the player-writable access class (Known
+Issue #16).
 
 ---
 

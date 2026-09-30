@@ -67,7 +67,7 @@ module.exports = async ({ params, context, logger }) => {
       });
       newBalance = grantRes.data.balance;
     } else {
-      newBalance = (await econApi.getPlayerCurrencyBalance({ projectId, playerId, currencyId: CURRENCY_ID })).data.balance;
+      newBalance = await currentBalance(econApi, projectId, playerId);
     }
 
     // 3. Reset yield-accrual state and write the registry back.
@@ -83,3 +83,10 @@ module.exports = async ({ params, context, logger }) => {
     throw err;
   }
 };
+
+// CurrenciesApi has no getPlayerCurrencyBalance (Known Issue #12) — read all balances and pick one.
+async function currentBalance(econApi, projectId, playerId) {
+  const res = await econApi.getPlayerCurrencies({ projectId, playerId });
+  const c   = res.data.results.find(x => x.currencyId === "COINS");
+  return c ? c.balance : 0;
+}

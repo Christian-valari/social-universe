@@ -31,6 +31,8 @@ MonoBehaviour:
   _upkeepPollIntervalSec: 60
   _landResaleRate: 0.5
   _asteroidRespawnHours: 4
+  _asteroidYieldRollMin: 0.8
+  _asteroidYieldRollMax: 1.2
   _idleSecondsPerYieldUnit: 3
   _minIdleSessionSeconds: 30
   _maxIdleSessionSeconds: 1800

@@ -1,7 +1,8 @@
 const { CurrenciesApi } = require("@unity-services/economy-2.5");
 const { DataApi }       = require("@unity-services/cloud-save-1.4");
 
-const START_SLOTS = 2; // MUST MATCH EconomyConfig._startingFleetSlots
+const START_SLOTS      = 2;       // MUST MATCH EconomyConfig._startingFleetSlots
+const STARTER_DRONE_ID = "scout"; // MUST MATCH the Tier-1, zero-cost DroneDefinition
 
 module.exports = async ({ params, context, logger }) => {
   const { projectId, playerId, accessToken } = context;
@@ -26,7 +27,7 @@ module.exports = async ({ params, context, logger }) => {
 
   // Seed the starter fleet for a brand-new player so they own Scout by default.
   if (!droneFleet || !Array.isArray(droneFleet.drones) || droneFleet.drones.length === 0) {
-    droneFleet = { slots: START_SLOTS, activeDroneId: "scout", drones: [{ droneId: "scout", upgrades: { Cargo: 0, Yield: 0, Speed: 0 } }] };
+    droneFleet = { slots: START_SLOTS, activeDroneId: STARTER_DRONE_ID, drones: [{ droneId: STARTER_DRONE_ID, upgrades: { Cargo: 0, Yield: 0, Speed: 0 } }] };
     await cloudSaveApi.setItem(projectId, playerId, { key: "drone_fleet", value: droneFleet });
   }
 

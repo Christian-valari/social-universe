@@ -39,6 +39,8 @@ namespace SocialUniverse.Config
 
         [Header("Mining — Shared")]
         [SerializeField] private float _asteroidRespawnHours    = 4f;   // claimed asteroid is destroyed and respawns after this many real-world hours
+        [SerializeField] private float _asteroidYieldRollMin    = 0.8f; // spawned asteroid yield = BaseYield × a roll in [min, max]
+        [SerializeField] private float _asteroidYieldRollMax    = 1.2f; // MUST MATCH ServerCode/ValidateMining.js YIELD_ROLL_MAX
 
         [Header("Mining — Idle")]
         [SerializeField] private float _idleSecondsPerYieldUnit = 3f;    // idle duration scales with the asteroid's remaining yield
@@ -87,6 +89,8 @@ namespace SocialUniverse.Config
         public float UpkeepPollIntervalSec      => _upkeepPollIntervalSec;
         public float LandResaleRate             => _landResaleRate;
         public float AsteroidRespawnHours  => _asteroidRespawnHours;
+        public float AsteroidYieldRollMin  => _asteroidYieldRollMin;
+        public float AsteroidYieldRollMax  => _asteroidYieldRollMax;
 
         public float IdleSecondsPerYieldUnit => _idleSecondsPerYieldUnit;
         public float MinIdleSessionSeconds   => _minIdleSessionSeconds;

@@ -34,7 +34,7 @@ module.exports = async ({ params, context, logger }) => {
   const grantAmount      = Math.min(claimedAmount, maxGrantable);
 
   if (grantAmount <= 0) {
-    return { granted: 0, newBalance: (await econApi.getPlayerCurrencyBalance({ projectId, playerId, currencyId: "COINS" })).data.balance };
+    return { granted: 0, newBalance: await currentBalance(econApi, projectId, playerId) };
   }
 
   const res = await econApi.incrementPlayerCurrencyBalance({
@@ -48,3 +48,10 @@ module.exports = async ({ params, context, logger }) => {
   logger.info(`GrantOfflineIncome: player ${playerId} claimed ${claimedAmount}, granted ${grantAmount} → ${res.data.balance}`);
   return { granted: grantAmount, newBalance: res.data.balance };
 };
+
+// CurrenciesApi has no getPlayerCurrencyBalance (Known Issue #12) — read all balances and pick one.
+async function currentBalance(econApi, projectId, playerId) {
+  const res = await econApi.getPlayerCurrencies({ projectId, playerId });
+  const c   = res.data.results.find(x => x.currencyId === "COINS");
+  return c ? c.balance : 0;
+}

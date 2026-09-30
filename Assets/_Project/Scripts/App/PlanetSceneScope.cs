@@ -184,6 +184,7 @@ namespace SocialUniverse.App
             builder.RegisterEntryPoint<YieldClaimHandler>();
             builder.RegisterEntryPoint<PlanetPresenceController>();
             builder.RegisterEntryPoint<MineralSaleHandler>();
+            builder.RegisterEntryPoint<MiningClaimFeedbackHandler>();
         }
     }
 

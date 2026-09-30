@@ -40,10 +40,10 @@ namespace SocialUniverse.Mining
             return Task.FromResult(Snapshot());
         }
 
-        public Task<int> GrantMiningAsync(string mineralId, int qty, float sessionDurationSec, float unitsPerSec)
+        public Task<MiningGrantResult> GrantMiningAsync(string planetId, string mineralId, int qty)
         {
             if (!string.IsNullOrEmpty(mineralId) && qty > 0) _inventory.Add(mineralId, qty);
-            return Task.FromResult(qty);
+            return Task.FromResult(new MiningGrantResult { Granted = qty, MineralId = mineralId });
         }
 
         private SellResult Snapshot() => new SellResult

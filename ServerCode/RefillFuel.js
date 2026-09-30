@@ -41,8 +41,10 @@ function isConflict(err) {
 
 async function readBalance(econApi, projectId, playerId) {
   try {
-    const res = await econApi.getPlayerCurrencyBalance({ projectId, playerId, currencyId: CURRENCY_ID });
-    return res.data.balance;
+    // No getPlayerCurrencyBalance on CurrenciesApi (Known Issue #12).
+    const res = await econApi.getPlayerCurrencies({ projectId, playerId });
+    const c   = res.data.results.find(x => x.currencyId === CURRENCY_ID);
+    return c ? c.balance : 0;
   } catch (_) { return undefined; }
 }
 

@@ -16,8 +16,7 @@ module.exports = async ({ params, context, logger }) => {
   const api = new CurrenciesApi({ accessToken });
 
   // Fetch current balance to validate afford-ability server-side.
-  const balanceRes = await api.getPlayerCurrencyBalance({ projectId, playerId, currencyId: "COINS" });
-  const current    = balanceRes.data.balance;
+  const current = await currentBalance(api, projectId, playerId);
 
   if (current < amount) {
     logger.warn(`SpendCoins: insufficient balance (have ${current}, need ${amount})`);
@@ -34,3 +33,10 @@ module.exports = async ({ params, context, logger }) => {
   logger.info(`SpendCoins: player ${playerId} -${amount} → ${res.data.balance}`);
   return { success: true, newBalance: res.data.balance };
 };
+
+// CurrenciesApi has no getPlayerCurrencyBalance (Known Issue #12) — read all balances and pick one.
+async function currentBalance(econApi, projectId, playerId) {
+  const res = await econApi.getPlayerCurrencies({ projectId, playerId });
+  const c   = res.data.results.find(x => x.currencyId === "COINS");
+  return c ? c.balance : 0;
+}

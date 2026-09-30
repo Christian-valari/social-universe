@@ -46,28 +46,19 @@ namespace SocialUniverse.Mining
             return res ?? new SellResult { Success = false, Reason = "Empty response" };
         }
 
-        public async Task<int> GrantMiningAsync(string mineralId, int qty, float sessionDurationSec, float unitsPerSec)
+        public async Task<MiningGrantResult> GrantMiningAsync(string planetId, string mineralId, int qty)
         {
-            if (string.IsNullOrEmpty(mineralId) || qty <= 0) return 0;
+            if (string.IsNullOrEmpty(mineralId) || qty <= 0) return new MiningGrantResult { MineralId = mineralId };
 
-            var res = await _backend.CallAsync<GrantResponse>("ValidateMining", new Dictionary<string, object>
+            var res = await _backend.CallAsync<MiningGrantResult>("ValidateMining", new Dictionary<string, object>
             {
-                { "mineralId",          mineralId },
-                { "claimedQty",         qty },
-                { "sessionDurationSec", sessionDurationSec },
-                { "unitsPerSec",        unitsPerSec }
-            });
+                { "planetId",   planetId },
+                { "mineralId",  mineralId },
+                { "claimedQty", qty }
+            }) ?? new MiningGrantResult { MineralId = mineralId, Reason = "Empty response" };
 
-            int granted = res?.granted ?? 0;
-            if (granted > 0) _inventory.Add(mineralId, granted);
-            return granted;
-        }
-
-        // MUST MATCH the return shape of ServerCode/ValidateMining.js.
-        private class GrantResponse
-        {
-            public int granted;
-            public string mineralId;
+            if (res.Granted > 0) _inventory.Add(mineralId, res.Granted);
+            return res;
         }
     }
 }

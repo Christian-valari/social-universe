@@ -65,6 +65,7 @@ namespace SocialUniverse.UI
 
         private void Start()
         {
+            ToastView.EnsureExists();
             _topBar.Bind(_wallet, _playerState, _registry);
             _chatButton.onClick.AddListener(_socialPanel.Open);
             _topBar.UsernameButton?.onClick.AddListener(OnUsernameClicked);

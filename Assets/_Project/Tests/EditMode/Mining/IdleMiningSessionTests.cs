@@ -13,7 +13,7 @@ namespace SocialUniverse.Tests
             var def = ScriptableObject.CreateInstance<Config.AsteroidDefinition>();
             var go  = new GameObject("TestAsteroid");
             var a   = go.AddComponent<Asteroid>();
-            a.Initialize(def, "slot_0");
+            a.Initialize(def, "slot_0", 1f, 1f);
             return a;
         }
 

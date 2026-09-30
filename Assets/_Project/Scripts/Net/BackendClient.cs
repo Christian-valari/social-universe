@@ -22,7 +22,7 @@ namespace SocialUniverse.Net
                 {
                     return await CloudCodeService.Instance.CallEndpointAsync<T>(function, args);
                 }
-                catch (CloudCodeException ex) when (IsTransient(ex))
+                catch (CloudCodeException ex) when (IsTransient(ex, function))
                 {
                     lastEx = ex;
                     SULog.Warn($"BackendClient: transient error on '{function}' (attempt {attempt + 1}/{MaxRetries}): {ex.Message}", SULog.Channel.Net);
@@ -43,12 +43,18 @@ namespace SocialUniverse.Net
             await CallAsync<object>(function, args);
         }
 
-        private static bool IsTransient(CloudCodeException ex)
+        // NoInternetConnection / ServiceUnavailable mean the call was not accepted, so any function
+        // may retry. Unknown (e.g. a timeout) may have committed server-side, so only read-only
+        // functions retry it — see BackendRetryPolicy (Known Issue #16).
+        private static bool IsTransient(CloudCodeException ex, string function)
         {
-            return ex.Reason is
-                CloudCodeExceptionReason.NoInternetConnection or
-                CloudCodeExceptionReason.ServiceUnavailable or
-                CloudCodeExceptionReason.Unknown;
+            return ex.Reason switch
+            {
+                CloudCodeExceptionReason.NoInternetConnection => true,
+                CloudCodeExceptionReason.ServiceUnavailable   => true,
+                CloudCodeExceptionReason.Unknown              => BackendRetryPolicy.IsSafeToRetryAmbiguousFailure(function),
+                _                                             => false
+            };
         }
     }
 }

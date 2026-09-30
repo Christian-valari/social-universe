@@ -18,11 +18,11 @@ namespace SocialUniverse.Mining
         private Vector3 _rotationAxis;
         private float   _rotationSpeed;
 
-        public void Initialize(AsteroidDefinition definition, string slotId)
+        public void Initialize(AsteroidDefinition definition, string slotId, float yieldRollMin, float yieldRollMax)
         {
             Definition     = definition;
             SlotId         = slotId;
-            RemainingYield = Mathf.RoundToInt(definition.BaseYield * Random.Range(0.8f, 1.2f));
+            RemainingYield = RollYield(definition.BaseYield, yieldRollMin, yieldRollMax, Random.value);
 
             if (GetComponent<Collider>() == null)
             {
@@ -33,6 +33,11 @@ namespace SocialUniverse.Mining
             _rotationAxis  = Random.onUnitSphere;
             _rotationSpeed = Random.Range(_minRotationSpeed, _maxRotationSpeed);
         }
+
+        // Spawn yield: BaseYield scaled by a roll in [min, max]. random01 is injected so tests can
+        // pin it. ServerCode/ValidateMining.js caps grants assuming max is the ceiling.
+        public static int RollYield(int baseYield, float min, float max, float random01) =>
+            Mathf.RoundToInt(baseYield * Mathf.Lerp(min, max, random01));
 
         public int Mine(int amount)
         {

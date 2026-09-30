@@ -28,6 +28,9 @@ namespace SocialUniverse.Config
 
         public AudioClip GetSfxClip(SfxId id)
         {
+            // Null on an instance built with CreateInstance (RootLifetimeScope's fallback when no
+            // catalog is assigned), since Unity only initializes serialized arrays on loaded assets.
+            if (_sfxEntries == null) return null;
             foreach (var entry in _sfxEntries)
                 if (entry.Id == id) return entry.Clip;
             return null;

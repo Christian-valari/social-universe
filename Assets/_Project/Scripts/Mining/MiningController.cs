@@ -94,10 +94,18 @@ namespace SocialUniverse.Mining
             {
                 try
                 {
-                    int granted = await _minerals.GrantMiningAsync(mineral.MineralId, quantity, reward.IdleDurationSeconds, reward.UnitsPerSec);
-                    _audio.PlaySfx(SfxId.CoinsReward);
-                    EventBus.Publish(new IdleClaimCompletedEvent { MineralId = mineral.MineralId, Quantity = granted });
-                    SULog.Info($"Idle session claimed: +{granted} {mineral.MineralId}", SULog.Channel.Mining);
+                    var result = await _minerals.GrantMiningAsync(_planet.PlanetId, mineral.MineralId, quantity);
+                    if (result.Granted > 0)
+                    {
+                        _audio.PlaySfx(SfxId.CoinsReward);
+                        EventBus.Publish(new IdleClaimCompletedEvent { MineralId = mineral.MineralId, Quantity = result.Granted });
+                        SULog.Info($"Idle session claimed: +{result.Granted} {mineral.MineralId}", SULog.Channel.Mining);
+                    }
+                    else
+                    {
+                        SULog.Warn($"Idle claim rejected for {mineral.MineralId}: {result.Reason}", SULog.Channel.Mining);
+                        EventBus.Publish(new MiningClaimRejectedEvent { MineralId = mineral.MineralId, Reason = result.Reason });
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -176,8 +184,16 @@ namespace SocialUniverse.Mining
             {
                 try
                 {
-                    int granted = await _minerals.GrantMiningAsync(mineral.MineralId, quantity, reward.IdleDurationSeconds, reward.UnitsPerSec);
-                    SULog.Info($"Active mining success: +{granted} {mineral.MineralId}", SULog.Channel.Mining);
+                    var result = await _minerals.GrantMiningAsync(_planet.PlanetId, mineral.MineralId, quantity);
+                    if (result.Granted > 0)
+                    {
+                        SULog.Info($"Active mining success: +{result.Granted} {mineral.MineralId}", SULog.Channel.Mining);
+                    }
+                    else
+                    {
+                        SULog.Warn($"Active mining claim rejected for {mineral.MineralId}: {result.Reason}", SULog.Channel.Mining);
+                        EventBus.Publish(new MiningClaimRejectedEvent { MineralId = mineral.MineralId, Reason = result.Reason });
+                    }
                 }
                 catch (Exception ex)
                 {

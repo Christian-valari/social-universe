@@ -39,7 +39,7 @@ module.exports = async ({ params, context, logger }) => {
     } catch (_) { /* registry doesn't exist yet */ }
 
     const now = Date.now();
-    let balance = (await econApi.getPlayerCurrencyBalance({ projectId, playerId, currencyId: CURRENCY_ID })).data.balance;
+    let balance = await currentBalance(econApi, projectId, playerId);
 
     const chargedTiles  = [];
     const revertedTiles = [];
@@ -78,3 +78,10 @@ module.exports = async ({ params, context, logger }) => {
     throw err;
   }
 };
+
+// CurrenciesApi has no getPlayerCurrencyBalance (Known Issue #12) — read all balances and pick one.
+async function currentBalance(econApi, projectId, playerId) {
+  const res = await econApi.getPlayerCurrencies({ projectId, playerId });
+  const c   = res.data.results.find(x => x.currencyId === "COINS");
+  return c ? c.balance : 0;
+}

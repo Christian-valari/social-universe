@@ -29,16 +29,18 @@ namespace SocialUniverse.App
             EventBus.Unsubscribe<SetActiveDroneRequestedEvent>(OnSetActive);
         }
 
-        private async void OnAcquire(DroneAcquireRequestedEvent e)   { var r = await _drones.AcquireDroneAsync(e.DroneId); Warn("acquire", r); }
-        private async void OnUnlockSlot(DroneSlotUnlockRequestedEvent e) { var r = await _drones.UnlockSlotAsync();        Warn("unlock", r); }
-        private async void OnUpgrade(DroneUpgradeRequestedEvent e)   { var r = await _drones.UpgradeAsync(e.DroneId, e.Stat); Warn("upgrade", r); }
-        private async void OnSetActive(SetActiveDroneRequestedEvent e) { var r = await _drones.SetActiveAsync(e.DroneId);   Warn("setactive", r); }
+        private async void OnAcquire(DroneAcquireRequestedEvent e)   { var r = await _drones.AcquireDroneAsync(e.DroneId); Report("Purchase", r); }
+        private async void OnUnlockSlot(DroneSlotUnlockRequestedEvent e) { var r = await _drones.UnlockSlotAsync();        Report("Slot unlock", r); }
+        private async void OnUpgrade(DroneUpgradeRequestedEvent e)   { var r = await _drones.UpgradeAsync(e.DroneId, e.Stat); Report("Upgrade", r); }
+        private async void OnSetActive(SetActiveDroneRequestedEvent e) { var r = await _drones.SetActiveAsync(e.DroneId);   Report("Drone switch", r); }
 
-        private static void Warn(string action, DroneActionResult r)
+        // Fleet + Wallet changes are already applied + eventful (DroneFleetChangedEvent) by the
+        // service on success; a rejection is surfaced to the player as a toast (Known Issue #17).
+        private static void Report(string action, DroneActionResult r)
         {
-            if (r is { Success: false })
-                SULog.Warn($"Drone {action} failed: {r.Reason}", SULog.Channel.Economy);
-            // Fleet + Wallet changes already applied + eventful (DroneFleetChangedEvent) by the service on success.
+            if (r is not { Success: false }) return;
+            SULog.Warn($"Drone {action} failed: {r.Reason}", SULog.Channel.Economy);
+            EventBus.Publish(new ServerActionFailedEvent(ServerFailureMessages.For(action, r.Reason)));
         }
     }
 }
