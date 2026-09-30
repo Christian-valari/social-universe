@@ -59,7 +59,7 @@ namespace SocialUniverse.Mining
                 return false;
             }
 
-            var reward = _rewardCalc.Compute(asteroid, _fleet.Active.EffectiveYieldMult);
+            var reward = _rewardCalc.Compute(asteroid, _fleet.Active.EffectiveYieldMult, _fleet.Active.EffectiveTravelSpeed);
             CurrentIdleSession = new IdleMiningSession(asteroid, DateTime.UtcNow, reward.IdleDurationSeconds);
             CurrentIdleSession.OnStageChanged += _ => OnIdleSessionChanged?.Invoke(CurrentIdleSession);
 
@@ -76,7 +76,7 @@ namespace SocialUniverse.Mining
             if (session == null || session.Asteroid != asteroid || session.Stage != IdleMiningStage.ReadyToClaim)
                 return;
 
-            var reward = _rewardCalc.Compute(asteroid, _fleet.Active.EffectiveYieldMult);
+            var reward = _rewardCalc.Compute(asteroid, _fleet.Active.EffectiveYieldMult, _fleet.Active.EffectiveTravelSpeed);
             session.Claim();
             _audio.PlaySfx(SfxId.MiningComplete);
 
@@ -140,7 +140,7 @@ namespace SocialUniverse.Mining
                 return false;
             }
 
-            var reward = _rewardCalc.Compute(asteroid, _fleet.Active.EffectiveYieldMult);
+            var reward = _rewardCalc.Compute(asteroid, _fleet.Active.EffectiveYieldMult, _fleet.Active.EffectiveTravelSpeed);
             _handoff.Begin(_planet.PlanetId, asteroid.SlotId, asteroid.Definition, asteroid.RemainingYield,
                 reward.ActiveTapsRequired, _config.ActiveMaxErrors, reward.ActiveSessionDurationSeconds);
             return true;
@@ -174,7 +174,7 @@ namespace SocialUniverse.Mining
 
         private async Task CompleteActiveMiningAsync(Asteroid asteroid)
         {
-            var reward = _rewardCalc.Compute(asteroid, _fleet.Active.EffectiveYieldMult);
+            var reward = _rewardCalc.Compute(asteroid, _fleet.Active.EffectiveYieldMult, _fleet.Active.EffectiveTravelSpeed);
 
             int mined = asteroid.Mine(asteroid.RemainingYield);
             int quantity = reward.MineralQuantity;

@@ -29,12 +29,17 @@ namespace SocialUniverse.Mining
 
         public MiningRewardCalculator(EconomyConfig config) => _config = config;
 
-        public MiningReward Compute(Asteroid asteroid, float effectiveYieldMult)
+        // droneSpeed is the active drone's effective TravelSpeed (base + Speed upgrades): the idle
+        // session shortens in proportion to ReferenceDroneSpeed / droneSpeed, still clamped to the
+        // idle min/max. It never changes the quantity or the active minigame. The server doesn't
+        // check durations; ValidateMining's per-planet claim budget bounds mining pace.
+        public MiningReward Compute(Asteroid asteroid, float effectiveYieldMult, float droneSpeed)
         {
             int remainingYield = asteroid.RemainingYield;
             int quantity       = Mathf.RoundToInt(remainingYield * Mathf.Max(0f, effectiveYieldMult));
 
-            float rawDuration = remainingYield * _config.IdleSecondsPerYieldUnit;
+            float speedFactor = droneSpeed > 0f ? _config.ReferenceDroneSpeed / droneSpeed : 1f;
+            float rawDuration = remainingYield * _config.IdleSecondsPerYieldUnit * speedFactor;
             float duration    = Mathf.Clamp(rawDuration, _config.MinIdleSessionSeconds, _config.MaxIdleSessionSeconds);
 
             int rawTaps = Mathf.CeilToInt(remainingYield / _config.ActiveYieldPerTap);

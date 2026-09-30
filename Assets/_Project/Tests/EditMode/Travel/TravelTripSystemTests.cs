@@ -85,6 +85,46 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
+        public async Task StartTravelAsync_already_traveling_resyncs_the_trip_instead_of_clearing_it()
+        {
+            // The server still has a live trip (e.g. started on another device); its reply carries no
+            // trip fields, so applying it would wipe the client's trip view and resume hint.
+            var backend = new FakeBackendClient
+            {
+                StartTravelResponse    = new TravelTripResult { Success = false, Reason = "already_traveling" },
+                GetTravelStateResponse = new TravelTripResult { Success = true, Traveling = true, TargetPlanetId = "venus", ArrivalTs = 777L }
+            };
+            var playerState = new PlayerState();
+            var trips = new TravelTripSystem(backend, playerState, NewPlanet("current"));
+
+            var result = await trips.StartTravelAsync(NewPlanet("mars"));
+
+            Assert.AreEqual("already_traveling", result.Reason);
+            Assert.AreEqual("GetTravelState", backend.LastFunction, "should resync from the server");
+            Assert.IsTrue(playerState.IsTraveling);
+            Assert.AreEqual("venus", playerState.TravelTargetId);
+            Assert.AreEqual(777L, playerState.TravelArrivalTsMs);
+        }
+
+        [Test]
+        public async Task StartTravelAsync_failure_does_not_overwrite_an_existing_trip_view()
+        {
+            var backend = new FakeBackendClient
+            {
+                StartTravelResponse = new TravelTripResult { Success = false, Reason = "write_failed", Fuel = 60f, MaxFuel = 100f }
+            };
+            var playerState = new PlayerState();
+            playerState.SetTravelState(true, "venus", 777L);
+            var trips = new TravelTripSystem(backend, playerState, NewPlanet("current"));
+
+            await trips.StartTravelAsync(NewPlanet("mars"));
+
+            Assert.IsTrue(playerState.IsTraveling);
+            Assert.AreEqual("venus", playerState.TravelTargetId);
+            Assert.AreEqual(60f, playerState.Fuel, "fuel from a failure reply is still authoritative");
+        }
+
+        [Test]
         public async Task LandAsync_clears_traveling_state_on_success()
         {
             var backend = new FakeBackendClient

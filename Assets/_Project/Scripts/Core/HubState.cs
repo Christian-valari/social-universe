@@ -27,21 +27,26 @@ namespace SocialUniverse.Core
 
         private async Task EnterAsync()
         {
-            // A trip was already in progress last we heard (cached resume hint,
-            // see SaveKeys.TravelTargetId) — skip Hub and TravelLoading entirely
-            // (there's no fresh destination to show taking off, and the trip is
-            // already mid-flight) and go straight to the Travel scene, which
-            // re-validates against the server on entry.
-            if (PlayerPrefs.HasKey(SaveKeys.TravelTargetId))
-            {
-                SULog.Info("Hub: trip already in progress, entering Travel instead");
-                _fsm.TransitionTo(_resolver.Resolve<TravelState>());
-                return;
-            }
+            if (ResumeTravelIfInProgress()) return;
 
             SULog.Info("Hub: loading SolarSystem");
             await _sceneLoader.LoadAsync(Constants.SceneNames.LoadingScreen);
             await _sceneLoader.LoadAsync(Constants.SceneNames.SolarSystem);
+        }
+
+        // A trip was already in progress last we heard (cached resume hint,
+        // see SaveKeys.TravelTargetId) — skip Hub and TravelLoading entirely
+        // (there's no fresh destination to show taking off, and the trip is
+        // already mid-flight) and go straight to the Travel scene, which
+        // re-validates against the server on entry. Also called by
+        // TravelController when StartTravel reports a trip already in progress.
+        public bool ResumeTravelIfInProgress()
+        {
+            if (!PlayerPrefs.HasKey(SaveKeys.TravelTargetId)) return false;
+
+            SULog.Info("Hub: trip already in progress, entering Travel instead");
+            _fsm.TransitionTo(_resolver.Resolve<TravelState>());
+            return true;
         }
 
         // Called by TravelController once a trip has been successfully started

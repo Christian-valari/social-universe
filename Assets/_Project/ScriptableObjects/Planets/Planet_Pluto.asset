@@ -22,6 +22,8 @@ MonoBehaviour:
   _asteroidTypes:
   - {fileID: 11400000, guid: 18f73dc4d9a8d9d43a26744869206dba, type: 2}
   - {fileID: 11400000, guid: b37f1cb13e8c51b4da4d72b515020755, type: 2}
+  - {fileID: 11400000, guid: 88339cd6474640d391d07b740392670e, type: 2}
+  - {fileID: 11400000, guid: 037e407e7b334c219db9f26938023f40, type: 2}
   _travelFuelCost: 100
   _travelDurationSeconds: 120
   _orbitOrder: 9

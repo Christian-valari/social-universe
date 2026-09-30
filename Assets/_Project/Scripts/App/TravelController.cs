@@ -37,6 +37,10 @@ namespace SocialUniverse.App
             if (result == null || !result.Success)
             {
                 SULog.Warn($"TravelController: travel to {e.Planet.DisplayName} denied ({result?.Reason})", SULog.Channel.Travel);
+
+                // The server already has a trip in progress (e.g. started on another device);
+                // StartTravelAsync resynced it into the resume hint, so take the player into it.
+                if (result?.Reason == "already_traveling") _hub.ResumeTravelIfInProgress();
                 return;
             }
 

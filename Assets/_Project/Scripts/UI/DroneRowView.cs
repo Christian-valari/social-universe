@@ -86,7 +86,9 @@ namespace SocialUniverse.UI
                 foreach (var m in _statMeters)
                 {
                     if (m == null) continue;
-                    if (m.Root != null) m.Root.SetActive(true);
+                    bool offered = Contains(stats, m.Stat);
+                    if (m.Root != null) m.Root.SetActive(offered);
+                    if (!offered) continue;
 
                     var vm = Find(stats, m.Stat);
                     if (m.NameLabel != null)
@@ -109,7 +111,7 @@ namespace SocialUniverse.UI
 
         // Configure this card for an acquirable (not-yet-owned) drone: icon + title + a "why buy this?"
         // comparison against the active drone (per-stat "old → new" deltas + a tier callout) + acquire.
-        // The three stat-meter rows are reused in comparison mode: the CostLabel shows "from → to" and
+        // The stat-meter rows are reused in comparison mode: the CostLabel shows "from → to" and
         // the pips/upgrade button are suppressed. (Cards are freshly instantiated each rebuild, so no
         // owned-mode styling bleeds in.)
         public void BindAcquirable(Sprite icon, string title, bool interactable, Action onAcquire,
@@ -125,11 +127,13 @@ namespace SocialUniverse.UI
                 foreach (var m in _statMeters)
                 {
                     if (m == null) continue;
-                    if (m.Root != null) m.Root.SetActive(true);
+                    bool offered = ContainsDelta(comparison, m.Stat);
+                    if (m.Root != null) m.Root.SetActive(offered);
+                    if (!offered) continue;
 
                     var vm = FindDelta(comparison, m.Stat);
                     // The CostLabel lives *inside* the upgrade button (hidden below), so the delta goes
-                    // in the always-visible name label instead: e.g. "Cargo   50 → 120".
+                    // in the always-visible name label instead: e.g. "Yield   1.0x → 1.5x".
                     if (m.NameLabel != null)
                     {
                         m.NameLabel.text  = $"{m.Stat}   {vm.FromText} → {vm.ToText}";
@@ -229,6 +233,24 @@ namespace SocialUniverse.UI
                 case DeltaDirection.Down: return new Color(0.90f, 0.45f, 0.45f);
                 default:                  return new Color(0.78f, 0.78f, 0.78f);
             }
+        }
+
+        // A meter is shown only for stats the Garage offers (see DroneGarageView.OfferedUpgradeStats).
+        private static bool Contains(IReadOnlyList<DroneStatVm> stats, DroneStat stat)
+        {
+            if (stats != null)
+                for (int i = 0; i < stats.Count; i++)
+                    if (stats[i].Stat == stat) return true;
+            return false;
+        }
+
+        private static bool ContainsDelta(IReadOnlyList<DroneStatDeltaVm> deltas, DroneStat stat)
+        {
+            string key = stat.ToString();
+            if (deltas != null)
+                for (int i = 0; i < deltas.Count; i++)
+                    if (deltas[i].Label == key) return true;
+            return false;
         }
 
         private static DroneStatVm Find(IReadOnlyList<DroneStatVm> stats, DroneStat stat)

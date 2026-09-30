@@ -16,6 +16,7 @@ namespace SocialUniverse.Travel
         public float Fuel     = -1f;
         public float MaxFuel  = -1f;
         public int   NewBalance = -1; // only set by RefillFuel
+        public string Reason;         // RefillFuel failures: already_full / insufficient_funds / write_failed
 
         // Unity's Cloud Code SDK deserializes with MissingMemberHandling.Error (no
         // public way to relax it), so any field the live deployed function returns

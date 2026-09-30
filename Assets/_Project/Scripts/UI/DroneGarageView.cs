@@ -24,8 +24,10 @@ namespace SocialUniverse.UI
     // the player back to the first drone.
     public class DroneGarageView : MonoBehaviour
     {
-        // Stats shown per owned drone, in display order.
-        private static readonly DroneStat[] UpgradeStats = { DroneStat.Cargo, DroneStat.Yield, DroneStat.Speed };
+        // Upgrade tracks offered per drone, in display order. Cargo is left out on purpose (Known
+        // Issue #15): nothing in the mining loop caps a claim by cargo, so buying it did nothing.
+        // Meters for stats not listed here are hidden on the card (DroneRowView).
+        public static readonly IReadOnlyList<DroneStat> OfferedUpgradeStats = new[] { DroneStat.Yield, DroneStat.Speed };
 
         [SerializeField] private GameObject      _root;
         [SerializeField] private SimpleScrollSnap _scrollSnap;      // carousel that hosts the cards
@@ -76,10 +78,6 @@ namespace SocialUniverse.UI
         public void Open()
         {
             if (_root != null) _root.SetActive(true);
-            // Hidden for now: the fleet-slot purchase flow confuses users pre-launch. Re-enable when
-            // slot economy is surfaced. Owned/acquirable drone cards still drive select/unlock.
-            if (_unlockSlotButton != null) _unlockSlotButton.gameObject.SetActive(false);
-
             // Build straight away — the carousel resolves its ScrollRect lazily, so it accepts cards
             // before its own Start() runs, and on a re-open the cards are still there to re-bind.
             // The one case worth waiting for is a viewport the canvas hasn't laid out yet, because
@@ -239,13 +237,11 @@ namespace SocialUniverse.UI
         private List<DroneStatDeltaVm> BuildComparison(DroneDefinition def)
         {
             var active = _fleet.Active;
-            float fromCargo = active != null ? active.EffectiveCargoCap    : def.CargoCap;
             float fromYield = active != null ? active.EffectiveYieldMult   : def.YieldMultiplier;
             float fromSpeed = active != null ? active.EffectiveTravelSpeed : def.TravelSpeed;
 
-            return new List<DroneStatDeltaVm>(3)
+            return new List<DroneStatDeltaVm>(2)
             {
-                DroneComparison.IntStat (DroneStat.Cargo.ToString(), fromCargo, def.CargoCap),
                 DroneComparison.MultStat(DroneStat.Yield.ToString(), fromYield, def.YieldMultiplier),
                 DroneComparison.IntStat (DroneStat.Speed.ToString(), fromSpeed, def.TravelSpeed),
             };
@@ -259,8 +255,8 @@ namespace SocialUniverse.UI
 
         private List<DroneStatVm> BuildStatVms(DroneRuntime drone, string droneId)
         {
-            var list = new List<DroneStatVm>(UpgradeStats.Length);
-            foreach (var stat in UpgradeStats)
+            var list = new List<DroneStatVm>(OfferedUpgradeStats.Count);
+            foreach (var stat in OfferedUpgradeStats)
             {
                 var capturedStat = stat;
                 int level        = drone.Level(stat);

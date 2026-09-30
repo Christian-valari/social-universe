@@ -21,10 +21,9 @@ namespace SocialUniverse.Net
         [Header("GrantStardust")]
         [SerializeField] private int _stardustAmount = 10;
 
-        [Header("ValidateMining")]
-        [SerializeField] private int _claimedCoins       = 30;
-        [SerializeField] private int _sessionDurationSec = 30;
-        [SerializeField] private int _coinsPerSec        = 1;
+        [Header("ValidateMining (planet comes from _planetId below)")]
+        [SerializeField] private string _mineralId  = "iron";
+        [SerializeField] private int    _claimedQty = 10;
 
         [Header("PurchaseLand")]
         [SerializeField] private string _tileId   = "tile_0";
@@ -81,12 +80,12 @@ namespace SocialUniverse.Net
             new Dictionary<string, object> { ["amount"] = _coinsAmount });
 
         [Button("Call ValidateMining")]
-        private void CallValidateMining() => _ = RunAsync<MiningValidationResult>("ValidateMining",
+        private void CallValidateMining() => _ = RunAsync<MiningClaimResult>("ValidateMining",
             new Dictionary<string, object>
             {
-                ["claimedCoins"]       = _claimedCoins,
-                ["sessionDurationSec"] = _sessionDurationSec,
-                ["coinsPerSec"]        = _coinsPerSec
+                ["planetId"]   = _planetId,
+                ["mineralId"]  = _mineralId,
+                ["claimedQty"] = _claimedQty
             });
 
         [Button("Call GrantOfflineIncome")]
@@ -240,6 +239,14 @@ namespace SocialUniverse.Net
         }
 
         [Serializable]
+        private class MiningClaimResult
+        {
+            public long   granted;
+            public string mineralId;
+            public string reason;
+            public override string ToString() => $"granted={granted}, mineralId={mineralId}, reason={reason}";
+        }
+
         private class MiningValidationResult
         {
             public long granted;

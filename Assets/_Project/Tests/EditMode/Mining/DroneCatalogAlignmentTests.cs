@@ -12,7 +12,7 @@ namespace SocialUniverse.Tests
     // Guards the drone constants duplicated in ServerCode/*.js against the shipped SO assets.
     // Known Issue #10 shipped because AcquireDrone.js still listed scout/hauler/prospector after
     // the DroneDefinition assets were renamed, and every other M6 test builds drones in memory.
-    // Like ValidateMiningCapAlignmentTests, this reads the .js source as text (no Node harness).
+    // Like MiningCatalogAlignmentTests, this reads the .js source as text (no Node harness).
     public class DroneCatalogAlignmentTests
     {
         private const string RegistryPath = "Assets/_Project/ScriptableObjects/DatabaseRegistry.asset";

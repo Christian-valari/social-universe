@@ -9,8 +9,8 @@ const { DataApi }       = require("@unity-services/cloud-save-1.4");
 
 const CURRENCY_ID   = "COINS";
 const INVENTORY_KEY = "mineral_inventory";
-// MUST MATCH MineralDefinition assets (iron, carbon, silicon, nickel, platinum, iridium).
-const SELL_VALUES = { iron: 2, carbon: 3, silicon: 5, nickel: 8, platinum: 20, iridium: 40 };
+// MUST MATCH each MineralDefinition._sellValue (MineralContentAlignmentTests).
+const SELL_VALUES = { iron: 2, carbon: 3, silicon: 5, nickel: 8, platinum: 20, iridium: 40, palladium: 70, helium3: 150 };
 
 module.exports = async ({ params, context, logger }) => {
   const { mineralId, qty, all } = params;

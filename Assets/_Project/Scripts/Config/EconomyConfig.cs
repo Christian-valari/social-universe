@@ -46,6 +46,7 @@ namespace SocialUniverse.Config
         [SerializeField] private float _idleSecondsPerYieldUnit = 3f;    // idle duration scales with the asteroid's remaining yield
         [SerializeField] private float _minIdleSessionSeconds   = 30f;   // clamp: smallest asteroids still take at least this long
         [SerializeField] private float _maxIdleSessionSeconds   = 1800f; // clamp: largest asteroids cap out at this long (30 min)
+        [SerializeField] private float _referenceDroneSpeed     = 5f;    // drone speed at which idle durations are as above; faster drones (base TravelSpeed + Speed upgrades) mine proportionally faster
 
         [Header("Mining — Active")]
         [SerializeField] private float _activeYieldPerTap       = 8f;    // how much RemainingYield one successful tap represents
@@ -95,6 +96,7 @@ namespace SocialUniverse.Config
         public float IdleSecondsPerYieldUnit => _idleSecondsPerYieldUnit;
         public float MinIdleSessionSeconds   => _minIdleSessionSeconds;
         public float MaxIdleSessionSeconds   => _maxIdleSessionSeconds;
+        public float ReferenceDroneSpeed     => _referenceDroneSpeed;
 
         public float ActiveYieldPerTap        => _activeYieldPerTap;
         public int   MinActiveTaps            => _minActiveTaps;

@@ -55,7 +55,20 @@ namespace SocialUniverse.Travel
                     { "targetPlanetId", target.PlanetId },
                     { "originPlanetId", _currentPlanet.PlanetId },
                 });
-            Apply(result);
+            if (result == null) return null;
+
+            if (result.Success)
+            {
+                Apply(result);
+            }
+            else
+            {
+                // A failure reply carries no trip fields, so applying it would clear the client's
+                // trip view and resume hint. Keep the fuel it reports; if the server says a trip is
+                // already in progress (e.g. started on another device), resync that trip instead.
+                ApplyFuel(result);
+                if (result.Reason == "already_traveling") await RefreshAsync();
+            }
             return result;
         }
 
@@ -67,12 +80,17 @@ namespace SocialUniverse.Travel
             return result;
         }
 
+        private void ApplyFuel(TravelTripResult result)
+        {
+            if (result.Fuel    >= 0f) _playerState.SetFuel(result.Fuel);
+            if (result.MaxFuel >= 0f) _playerState.SetMaxFuel(result.MaxFuel);
+        }
+
         private void Apply(TravelTripResult result)
         {
             if (result == null) return;
             _playerState.SetTravelState(result.Traveling, result.TargetPlanetId, result.ArrivalTs);
-            if (result.Fuel    >= 0f) _playerState.SetFuel(result.Fuel);
-            if (result.MaxFuel >= 0f) _playerState.SetMaxFuel(result.MaxFuel);
+            ApplyFuel(result);
 
             // Client-cached resume hint (like SaveKeys.LastPlanetIdKey) so Boot/Hub know to
             // head straight for the Travel scene if the app was closed mid-trip — the

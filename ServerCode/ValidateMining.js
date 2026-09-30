@@ -33,10 +33,10 @@ const PLANET_MINERALS = {
   mars:    ["silicon", "nickel"],
   mercury: ["iron", "carbon"],
   moon:    ["iron", "carbon"],
-  neptune: ["platinum", "iridium"],
-  pluto:   ["platinum", "iridium"],
+  neptune: ["platinum", "iridium", "palladium"],
+  pluto:   ["platinum", "iridium", "palladium", "helium3"],
   saturn:  ["silicon", "nickel", "platinum"],
-  uranus:  ["platinum", "iridium"],
+  uranus:  ["platinum", "iridium", "palladium"],
   venus:   ["iron", "carbon"],
 };
 
@@ -48,6 +48,8 @@ const MINERALS = {
   nickel:   { baseYield: 40, tier: 2 },
   platinum: { baseYield: 25, tier: 3 },
   iridium:  { baseYield: 15, tier: 3 },
+  palladium: { baseYield: 12, tier: 4 },
+  helium3:  { baseYield: 8, tier: 5 },
 };
 
 // DroneDefinition._droneId -> _tier and _yieldMultiplier

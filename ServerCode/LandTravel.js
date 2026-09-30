@@ -38,19 +38,22 @@ module.exports = async ({ context, logger }) => {
   }
 
   const targetPlanetId = trip.targetPlanetId;
-  await saveApi.setItem(projectId, playerId, { key: TRAVEL_KEY, value: { targetPlanetId: null } });
 
-  // Cross-device resume hint (see GetCurrentPlanet.js) — best-effort. The trip
-  // itself already completed successfully above; a failure here only means
-  // GetCurrentPlanet keeps returning the previous value until this player's
-  // next real landing, so it must not fail the whole call.
+  // Record the new current planet BEFORE consuming the trip. current_planet is both the
+  // cross-device resume hint (GetCurrentPlanet.js) and what ValidateMining checks mining claims
+  // against, so landing without it would reject every claim on the new planet (WRONG_PLANET).
+  // On failure the trip stays intact and the call returns a plain failure (not a throw), so the
+  // client's Land button re-enables; landing again is idempotent.
   try {
     await saveApi.setItem(projectId, playerId, {
       key: PLANET_KEY, value: { planetId: targetPlanetId, updatedTs: Date.now() }
     });
   } catch (err) {
-    logger.warn(`LandTravel: current_planet write failed for ${playerId}: ${err?.message}`);
+    logger.error(`LandTravel: current_planet write failed for ${playerId}; trip kept: ${err?.message}`);
+    return { success: false, reason: "save_failed" };
   }
+
+  await saveApi.setItem(projectId, playerId, { key: TRAVEL_KEY, value: { targetPlanetId: null } });
 
   logger.info(`LandTravel: player ${playerId} landed on ${targetPlanetId}`);
   return { success: true, traveling: false, targetPlanetId };
