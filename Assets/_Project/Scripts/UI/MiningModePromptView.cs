@@ -9,14 +9,15 @@ using SocialUniverse.Core;
 namespace SocialUniverse.UI
 {
     // Shown when the player taps an asteroid: shows its tier and whether the active drone can mine
-    // it — or is busy on another asteroid (AsteroidTierPrompt) — and lets them choose how to mine it.
+    // it — or is busy on another asteroid (AsteroidTierPrompt) — and lets them choose how to mine it,
+    // with what idle and active mining pay.
     // Tapping the asteroid the drone is already mining shows a toast instead. Opens and closes with
     // PopupTransition's pop & fade.
     public class MiningModePromptView : MonoBehaviour
     {
         [SerializeField] private GameObject _root;
         [SerializeField] private TMP_Text   _titleText;
-        [SerializeField] private TMP_Text   _tierStatusText;   // whether the active drone can mine it
+        [SerializeField] private TMP_Text   _tierStatusText;   // whether the active drone can mine it, then what each mode pays
         [SerializeField] private Button     _idleMineButton;
         [SerializeField] private Button     _activeMineButton;
         [SerializeField] private RectTransform _window;        // the prompt panel that pops in and out
@@ -90,7 +91,10 @@ namespace SocialUniverse.UI
             if (_titleText != null) _titleText.text = verdict.Title;
             if (_tierStatusText != null)
             {
-                _tierStatusText.text  = verdict.Status;
+                // What each way of mining pays, only when the player can pick one.
+                _tierStatusText.text  = verdict.CanMine
+                    ? verdict.Status + "\n" + AsteroidTierPrompt.PayLines(_mining.IdleYieldFraction)
+                    : verdict.Status;
                 _tierStatusText.color = verdict.CanMine ? CanMineColor : CantMineColor;
             }
             if (_idleMineButton   != null) _idleMineButton.interactable   = verdict.CanMine;

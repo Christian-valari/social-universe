@@ -24,6 +24,8 @@ namespace SocialUniverse.Mining
         public Asteroid          ClaimingAsteroid    { get; private set; }
         // The asteroid whose StartIdleMining call is in flight (the drone is committed to it).
         public Asteroid          StartingAsteroid    { get; private set; }
+        // What an idle run pays, as a share of a perfect active run (the asteroid tap prompt shows it).
+        public float             IdleYieldFraction   => _config.IdleYieldFraction;
 
         public event Action<IdleMiningSession> OnIdleSessionChanged;
 

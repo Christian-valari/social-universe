@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace SocialUniverse.UI
 {
     // What the asteroid tap prompt says about tier: the title, the status line, and whether the
@@ -49,5 +51,11 @@ namespace SocialUniverse.UI
 
             return new AsteroidTierVerdict(title, $"Your {droneName} can mine this", true);
         }
+
+        // What each way of mining pays, as shares of a perfect active run: idle's is fixed, active's
+        // depends on how the player does, so neither is given as an amount. idleFraction is clamped
+        // the way MiningRewardCalculator applies it.
+        public static string PayLines(float idleFraction) =>
+            $"Idle: safe, pays {Mathf.RoundToInt(Mathf.Clamp01(idleFraction) * 100f)}%\nActive: up to 100%, depends on how you play";
     }
 }

@@ -101,5 +101,15 @@ namespace SocialUniverse.Tests
 
             Assert.AreEqual("Needs a Tier 2+ drone (your Scout Drone is Tier 1)", v.Status);
         }
+
+        // Idle pays a fixed share of a perfect run and active depends on the player, so the prompt
+        // gives percentages, never amounts.
+        [Test]
+        public void Pay_lines_give_percentages_not_amounts()
+        {
+            Assert.AreEqual("Idle: safe, pays 70%\nActive: up to 100%, depends on how you play",
+                AsteroidTierPrompt.PayLines(0.7f));
+            StringAssert.StartsWith("Idle: safe, pays 75%", AsteroidTierPrompt.PayLines(0.75f));
+        }
     }
 }
