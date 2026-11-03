@@ -109,7 +109,7 @@ namespace SocialUniverse.UI
             ShowResult(stage);
         }
 
-        private void Refresh(ActiveMiningSession session)
+        private void Refresh(LegacyActiveMiningSession session)
         {
             if (_progressText != null) _progressText.text = $"{session.SuccessfulTaps}/{session.TapsRequired}";
             if (_errorText    != null) _errorText.text    = $"Misses: {session.ErrorCount}/{session.MaxErrors}";

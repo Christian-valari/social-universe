@@ -13,14 +13,14 @@ namespace SocialUniverse.Mining
     {
         private readonly ActiveMiningHandoff _handoff;
 
-        public ActiveMiningSession Session   { get; private set; }
-        public bool                IsRunning { get; private set; }
+        public LegacyActiveMiningSession Session   { get; private set; }
+        public bool                      IsRunning { get; private set; }
 
         public ActiveMiningSessionRunner(ActiveMiningHandoff handoff) => _handoff = handoff;
 
         public void Start()
         {
-            Session = new ActiveMiningSession(_handoff.TapsRequired, _handoff.MaxErrors, _handoff.SessionDurationSeconds);
+            Session = new LegacyActiveMiningSession(_handoff.TapsRequired, _handoff.MaxErrors, _handoff.SessionDurationSeconds);
             Session.OnStageChanged += OnStageChanged;
         }
 
