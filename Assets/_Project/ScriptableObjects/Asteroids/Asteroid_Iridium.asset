@@ -16,6 +16,6 @@ MonoBehaviour:
   _mineralType: Iridium
   _tier: 3
   _baseYield: 15
-  _rarity: 0.08
+  _rarity: 0.75
   _coinsPerUnit: 40
   _modelPrefab: {fileID: 3834735827108266822, guid: c655d5bb0f31c654aa1f7e44c105d07c, type: 3}

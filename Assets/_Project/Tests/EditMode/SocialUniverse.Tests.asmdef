@@ -4,6 +4,8 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
+        "VContainer",
+        "Unity.TextMeshPro",
         "SocialUniverse.Core",
         "SocialUniverse.App",
         "SocialUniverse.Config",

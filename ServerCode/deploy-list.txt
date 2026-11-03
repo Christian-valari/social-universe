@@ -1,0 +1,43 @@
+# Cloud Code scripts that deploy.ps1 sends to UGS — one file per line, relative to ServerCode/.
+# ServerCodeDeployTests checks: every function the client calls is listed, every listed file
+# exists, and the functions below marked NEVER are absent.
+#
+# NEVER deploy (callable by any signed-in player, Known Issue #16):
+#   GrantCoins.js        — grants a client-chosen amount of COINS
+#   GrantStardust.js     — grants a client-chosen amount of STARDUST
+#   GrantOfflineIncome.js — trusts the player-writable last_session_end record
+AcquireDrone.js
+ApplyUpkeep.js
+BlockUser.js
+ClaimSession.js
+ClaimYield.js
+GetAsteroidRespawns.js
+GetBootstrapState.js
+GetCurrentPlanet.js
+GetFuelState.js
+GetIdleMining.js
+GetLandRegistry.js
+GetPlayerProfile.js
+GetServerTime.js
+GetTravelState.js
+LandTravel.js
+MoveBuild.js
+PlaceBuild.js
+PurchaseHexatile.js
+PurchaseLand.js
+RecordVisit.js
+RefillFuel.js
+ReleaseSession.js
+RemoveBuild.js
+SellLand.js
+SellMinerals.js
+SetActiveDrone.js
+SpendCoins.js
+SpendFuel.js
+StartIdleMining.js
+StartTravel.js
+SubmitReport.js
+UnlockDroneSlot.js
+UpdateProfile.js
+UpgradeDrone.js
+ValidateMining.js

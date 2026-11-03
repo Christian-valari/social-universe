@@ -24,17 +24,5 @@ namespace SocialUniverse.Economy
             _wallet.SetCoins(_wallet.Coins - amount);
             return Task.FromResult(true);
         }
-
-        public Task GrantCoinsAsync(int amount)
-        {
-            _wallet.SetCoins(_wallet.Coins + amount);
-            return Task.CompletedTask;
-        }
-
-        public Task GrantStardustAsync(int amount)
-        {
-            _wallet.SetStardust(_wallet.Stardust + amount);
-            return Task.CompletedTask;
-        }
     }
 }

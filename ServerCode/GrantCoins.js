@@ -28,3 +28,10 @@ module.exports = async ({ params, context, logger }) => {
   logger.info(`GrantCoins: player ${playerId} +${amount} → ${res.data.balance}`);
   return { newBalance: res.data.balance };
 };
+
+// Parameter declarations for the UGS CLI / Cloud Code (types only: each script validates its own
+// inputs and returns reasons the client understands). Must stay after `module.exports = ...`,
+// which would otherwise overwrite it. Pinned by ServerCodeDeployTests.
+module.exports.params = {
+  amount: "Numeric"
+};

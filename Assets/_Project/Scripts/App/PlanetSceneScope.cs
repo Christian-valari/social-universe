@@ -84,6 +84,11 @@ namespace SocialUniverse.App
                 builder.Register<ChatChannelController>(Lifetime.Singleton);
                 builder.Register<DirectMessageService>(Lifetime.Singleton);
                 builder.Register<ProfileService>(Lifetime.Singleton);
+                builder.Register<BlockListSync>(Lifetime.Singleton);
+
+                // Standalone runs against mocks (and an unauthenticated backend), so a failed data
+                // load opens the scene with defaults rather than waiting on a retry.
+                builder.RegisterInstance(new PlayerDataSyncPolicy(required: false));
 
                 // Audio settings — mirrors RootLifetimeScope's registration, needed here too
                 // since standalone mode has no parent scope to provide it.
@@ -153,6 +158,18 @@ namespace SocialUniverse.App
             else
                 builder.Register<DroneService>(Lifetime.Singleton).As<IDroneService>();
 
+            // Server-tracked idle mining runs (StartIdleMining / GetIdleMining).
+            if (standalone)
+                builder.Register<LocalMockIdleMiningService>(Lifetime.Singleton).As<IIdleMiningService>();
+            else
+                builder.Register<IdleMiningService>(Lifetime.Singleton).As<IIdleMiningService>();
+
+            // Asteroid respawn timers from the server's claim log (GetAsteroidRespawns).
+            if (standalone)
+                builder.Register<LocalMockAsteroidRespawnService>(Lifetime.Singleton).As<IAsteroidRespawnService>();
+            else
+                builder.Register<AsteroidRespawnService>(Lifetime.Singleton).As<IAsteroidRespawnService>();
+
             builder.RegisterEntryPoint<DroneGarageHandler>();
 
             // UI
@@ -169,14 +186,22 @@ namespace SocialUniverse.App
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.MineralInventoryView>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.MiningClaimRewardModal>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.DroneGarageView>();
+            // One TransactionModal per panel (Drone Garage, Mineral Inventory), so each is injected
+            // here: RegisterComponentInHierarchy would inject only the first one it finds.
+            builder.RegisterBuildCallback(container =>
+            {
+                foreach (var root in gameObject.scene.GetRootGameObjects())
+                    foreach (var modal in root.GetComponentsInChildren<SocialUniverse.UI.TransactionModal>(true))
+                        container.Inject(modal);
+            });
 
 
             builder.RegisterEntryPoint<PlanetSceneBootstrapper>();
             builder.RegisterEntryPoint<IdleMiningSessionController>();
             builder.RegisterEntryPoint<TilePurchaseHandler>();
             // AsSelf() alongside the entry-point registration: PlanetSceneBootstrapper
-            // injects the concrete type directly to await its initial refresh (see
-            // HydrateServerStateAsync), same pattern as ActiveMiningSessionRunner.
+            // injects the concrete type directly to load and apply the registry before the
+            // scene opens (see PullPlayerDataAsync), same pattern as ActiveMiningSessionRunner.
             builder.RegisterEntryPoint<LandRegistrySyncController>().AsSelf();
             builder.RegisterEntryPoint<VisitorTrackingController>();
             builder.RegisterEntryPoint<UpkeepController>();
@@ -211,6 +236,21 @@ namespace SocialUniverse.App
         private readonly DroneFleet        _fleet;
         private readonly MineralInventory  _inventory;
         private readonly EconomyConfig     _config;
+        private readonly IIdleMiningService _idleMining;
+        private readonly IAsteroidRespawnService _asteroidRespawns;
+        private readonly ReportService     _reports;
+        private readonly BlockListSync     _blockList;
+        private readonly PlayerDataSyncPolicy _syncPolicy;
+
+        // What PullPlayerDataAsync fetched; a step that failed (only possible when the sync isn't
+        // required) leaves its field at the default and its Apply* falls back.
+        private Dictionary<string, int>        _heldMinerals;
+        private DroneFleetSnapshot             _fleetSnapshot;
+        private PlayerProfile                  _profile;
+        private bool                           _profileLoaded;
+        private List<string>                   _ownedTileIds;
+        private IdleMiningSessionResult        _idleRun;
+        private IReadOnlyList<AsteroidRespawn> _respawns;
 
         public PlanetSceneBootstrapper(
             PlanetController  planetController,
@@ -233,7 +273,12 @@ namespace SocialUniverse.App
             IAudioManager     audio,
             DroneFleet        fleet,
             MineralInventory  inventory,
-            EconomyConfig     config)
+            EconomyConfig     config,
+            IIdleMiningService idleMining,
+            IAsteroidRespawnService asteroidRespawns,
+            ReportService     reports,
+            BlockListSync     blockList,
+            PlayerDataSyncPolicy syncPolicy)
         {
             _planetController = planetController;
             _asteroidSpawner  = asteroidSpawner;
@@ -256,6 +301,11 @@ namespace SocialUniverse.App
             _fleet            = fleet;
             _inventory        = inventory;
             _config           = config;
+            _idleMining       = idleMining;
+            _asteroidRespawns = asteroidRespawns;
+            _reports          = reports;
+            _blockList        = blockList;
+            _syncPolicy       = syncPolicy;
         }
 
         public async void Start()
@@ -275,211 +325,194 @@ namespace SocialUniverse.App
             EventBus.Publish(new LoadingStatusEvent(0.15f));
             _planetController.Load(_startPlanet);
             _audio.PlayBgmForPlanet(_startPlanet);
-            _asteroidSpawner.SpawnForPlanet(_startPlanet);
 
-            await HydrateServerStateAsync();
+            await PullPlayerDataAsync();
+
+            EventBus.Publish(new LoadingStatusEvent(0.80f));
+            if (_heldMinerals != null) _inventory.SetAll(_heldMinerals);
+            ApplyFleet();
+            await ApplyProfileAsync();
+            ApplyOwnedTiles();
+            _landRegistrySync.ApplyOwnership();
+
+            // The field is spawned only now, with the server's respawn timers, so a slot emptied on
+            // any device stays empty here too.
+            _asteroidSpawner.SpawnForPlanet(_startPlanet, _respawns);
 
             EventBus.Publish(new LoadingStatusEvent(0.90f));
-            _miningController.Initialize();
+            _miningController.Initialize(_idleRun);
 
             EventBus.Publish(new SceneReadyEvent());
         }
 
-        private async Task HydrateServerStateAsync()
+        // Everything the Planet scene shows from the server, fetched together before it opens
+        // (docs/superpowers/plans/2026-10-18-cloud-synced-planet-data.md). With the real backend a
+        // step that fails is retried behind the retry dialog until it loads, so the scene never
+        // opens with defaults standing in for the player's data. The block list is normally already
+        // loaded at sign-in (SocialServicesInitializer); it is fetched here only if that failed.
+        private Task PullPlayerDataAsync() =>
+            PlayerDataPull.RunAsync(new (string, Func<Task>)[]
+                {
+                    ("wallet",           () => _economy.GetWalletAsync()),
+                    ("fuel",             () => _fuel.RefreshAsync()),
+                    ("mineral inventory", async () => _heldMinerals = await _cloudSave.LoadProtectedAsync<Dictionary<string, int>>(SaveKeys.MineralInventory, null)),
+                    ("drone fleet",      async () => _fleetSnapshot = await _cloudSave.LoadProtectedAsync<DroneFleetSnapshot>(SaveKeys.DroneFleet, null)),
+                    ("profile",          LoadProfileAsync),
+                    ("owned tiles",      async () => _ownedTileIds = await _cloudSave.LoadProtectedAsync<List<string>>(SaveKeys.OwnedTilesKey(_startPlanet.name), null)),
+                    ("land registry",    () => _landRegistrySync.RefreshAsync()),
+                    ("idle mining run",  LoadIdleRunAsync),
+                    ("asteroid respawns", async () => _respawns = await _asteroidRespawns.GetAsync(_startPlanet.PlanetId)),
+                    ("block list",       () => _reports.HasBlockList ? Task.CompletedTask : _blockList.LoadAsync()),
+                },
+                _syncPolicy.Required, _syncPolicy.AskToRetry,
+                progress => EventBus.Publish(new LoadingStatusEvent(Mathf.Lerp(0.2f, 0.75f, progress))));
+
+        private async Task LoadProfileAsync()
         {
-            // Hydrate wallet — non-fatal; falls back to 0 balance if server is unreachable.
-            EventBus.Publish(new LoadingStatusEvent(0.35f));
-            try
-            {
-                await _economy.GetWalletAsync();
-                SULog.Info("PlanetSceneBootstrapper: wallet hydrated from server", SULog.Channel.Economy);
-            }
-            catch (Exception ex)
-            {
-                SULog.Warn($"PlanetSceneBootstrapper: wallet hydration failed ({ex.Message}), using local state", SULog.Channel.Economy);
-            }
+            _profile       = await _profileService.GetProfileAsync(_auth.PlayerId);
+            _profileLoaded = true;
+        }
 
-            // Hydrate fuel — non-fatal; falls back to PlayerState's default if the server is
-            // unreachable. Fuel is spent only in the SolarSystem scene (TravelService), so this
-            // is how the Planet scene picks up the post-travel balance.
-            try
-            {
-                await _fuel.RefreshAsync();
-                SULog.Info("PlanetSceneBootstrapper: fuel hydrated from server", SULog.Channel.Economy);
-            }
-            catch (Exception ex)
-            {
-                SULog.Warn($"PlanetSceneBootstrapper: fuel hydration failed ({ex.Message}), using local state", SULog.Channel.Economy);
-            }
+        // The player's idle mining run, wherever it was started. If it can't be read (only when the
+        // sync isn't required), MiningController shows only a legacy local session, and the next idle
+        // start takes over any run the server still has (ALREADY_MINING).
+        private async Task LoadIdleRunAsync()
+        {
+            var run = await _idleMining.GetAsync();
+            SULog.Info(run.HasSession
+                ? $"PlanetSceneBootstrapper: server idle run {run.SlotId} on {run.PlanetId} ({run.ElapsedSeconds:0}/{run.DurationSeconds:0}s)"
+                : "PlanetSceneBootstrapper: no server idle run", SULog.Channel.Mining);
+            _idleRun = run;
+        }
 
-            // Hydrate drone fleet + mineral inventory (planet-scoped, like wallet + owned tiles).
-            await HydrateDronesAndMineralsAsync();
+        // New player (no record): own the starter Scout (spec Q1). Also the fallback when the fleet
+        // couldn't be read, which only happens when the sync isn't required.
+        private void ApplyFleet()
+        {
+            var snapshot = _fleetSnapshot;
+            if (snapshot == null || snapshot.Drones == null || snapshot.Drones.Count == 0)
+            {
+                var scout = FirstStarterDrone();
+                snapshot = DroneFleetSnapshot.SingleDrone(scout?.DroneId ?? _registry.AllDrones.First().DroneId, _config.StartingFleetSlots);
+            }
+            _fleet.Apply(snapshot, _registry);
+        }
 
-            // Hydrate display name — prefer DisplayName (set during registration), fall
-            // back to Username, then "Player". The resolver also strips the UGS "#1234"
-            // suffix so it never reaches the HUD.
-            EventBus.Publish(new LoadingStatusEvent(0.55f));
+        private async Task ApplyProfileAsync()
+        {
+            // Display name — prefer DisplayName (set during registration), fall back to Username,
+            // then "Player". The resolver also strips the UGS "#1234" suffix so it never reaches the HUD.
             string authId = _auth.IsSignedIn
                 ? ChatDisplayNameResolver.Resolve(_auth.DisplayName, _auth.Username)
                 : ChatDisplayNameResolver.Fallback;
             _playerState.SetDisplayName(authId);
 
             string profileDisplayName = null;
-            try
+            if (_profileLoaded && _profile != null)
             {
-                var profile = await _profileService.GetProfileAsync(_auth.PlayerId);
-                if (profile != null)
+                var profile = _profile;
+                profileDisplayName = profile.DisplayName;
+
+                if (!string.IsNullOrEmpty(profile.DisplayName))
+                    _playerState.SetDisplayName(profile.DisplayName);
+
+                _playerState.SetEmailVerified(_auth.IsEmailVerified);
+
+                // Backfill the profile's display name from the UGS auth name when the
+                // profile record has none. Email-registered players set their name in
+                // UGS auth only (RegisterAsync → UpdatePlayerNameAsync), never in the
+                // Cloud Save profile — so a cross-player lookup (e.g. TileInfoModal
+                // reading another owner's profile) sees an empty name. authId is the
+                // clean, #suffix-stripped UGS name; persisting it here self-heals
+                // existing accounts on their next login. Mirrors the avatar backfill below.
+                if (string.IsNullOrEmpty(profile.DisplayName) && authId != ChatDisplayNameResolver.Fallback)
                 {
-                    profileDisplayName = profile.DisplayName;
-
-                    if (!string.IsNullOrEmpty(profile.DisplayName))
-                        _playerState.SetDisplayName(profile.DisplayName);
-
-                    _playerState.SetEmailVerified(_auth.IsEmailVerified);
-
-                    // Backfill the profile's display name from the UGS auth name when the
-                    // profile record has none. Email-registered players set their name in
-                    // UGS auth only (RegisterAsync → UpdatePlayerNameAsync), never in the
-                    // Cloud Save profile — so a cross-player lookup (e.g. TileInfoModal
-                    // reading another owner's profile) sees an empty name. authId is the
-                    // clean, #suffix-stripped UGS name; persisting it here self-heals
-                    // existing accounts on their next login. Mirrors the avatar backfill below.
-                    if (string.IsNullOrEmpty(profile.DisplayName) && authId != ChatDisplayNameResolver.Fallback)
+                    try
                     {
-                        try
-                        {
-                            await _profileService.UpdateDisplayNameAsync(authId);
-                        }
-                        catch (Exception ex)
-                        {
-                            SULog.Warn($"PlanetSceneBootstrapper: display-name backfill failed ({ex.Message})", SULog.Channel.Net);
-                        }
+                        await _profileService.UpdateDisplayNameAsync(authId);
                     }
-
-                    var catalogIds = _registry.AllAvatars.Select(a => a.AvatarId).ToList();
-                    string resolvedAvatarId = AvatarAssignment.ResolveAvatarId(profile.AvatarId, catalogIds, n => UnityEngine.Random.Range(0, n));
-                    _playerState.SetAvatarId(resolvedAvatarId);
-
-                    if (string.IsNullOrEmpty(profile.AvatarId) && !string.IsNullOrEmpty(resolvedAvatarId))
+                    catch (Exception ex)
                     {
-                        try
-                        {
-                            await _profileService.UpdateAvatarAsync(resolvedAvatarId);
-                        }
-                        catch (Exception ex)
-                        {
-                            SULog.Warn($"PlanetSceneBootstrapper: avatar assignment failed to persist ({ex.Message}), using local pick", SULog.Channel.Net);
-                        }
-                    }
-
-                    if (!_auth.IsEmailVerified)
-                    {
-                        string promptedKey = SaveKeys.EmailVerificationPromptedKey(_auth.PlayerId);
-                        if (!PlayerPrefs.HasKey(promptedKey))
-                        {
-                            PlayerPrefs.SetInt(promptedKey, 1);
-                            PlayerPrefs.Save();
-                            EventBus.Publish(new ShowEmailVerificationPromptEvent());
-                        }
+                        SULog.Warn($"PlanetSceneBootstrapper: display-name backfill failed ({ex.Message})", SULog.Channel.Net);
                     }
                 }
-                else
-                {
-                    // New player — no server profile yet (e.g. just registered via
-                    // Firebase). Assign a random avatar so AvatarId isn't null (the
-                    // avatar picker would null-ref), and persist it for next login.
-                    var catalogIds = _registry.AllAvatars.Select(a => a.AvatarId).ToList();
-                    string resolvedAvatarId = AvatarAssignment.ResolveAvatarId(null, catalogIds, n => UnityEngine.Random.Range(0, n));
-                    _playerState.SetAvatarId(resolvedAvatarId);
 
-                    if (!string.IsNullOrEmpty(resolvedAvatarId))
+                var catalogIds = _registry.AllAvatars.Select(a => a.AvatarId).ToList();
+                string resolvedAvatarId = AvatarAssignment.ResolveAvatarId(profile.AvatarId, catalogIds, n => UnityEngine.Random.Range(0, n));
+                _playerState.SetAvatarId(resolvedAvatarId);
+
+                if (string.IsNullOrEmpty(profile.AvatarId) && !string.IsNullOrEmpty(resolvedAvatarId))
+                {
+                    try
                     {
-                        try
-                        {
-                            await _profileService.UpdateAvatarAsync(resolvedAvatarId);
-                        }
-                        catch (Exception ex)
-                        {
-                            SULog.Warn($"PlanetSceneBootstrapper: avatar assignment failed to persist ({ex.Message}), using local pick", SULog.Channel.Net);
-                        }
+                        await _profileService.UpdateAvatarAsync(resolvedAvatarId);
+                    }
+                    catch (Exception ex)
+                    {
+                        SULog.Warn($"PlanetSceneBootstrapper: avatar assignment failed to persist ({ex.Message}), using local pick", SULog.Channel.Net);
+                    }
+                }
+
+                if (!_auth.IsEmailVerified)
+                {
+                    string promptedKey = SaveKeys.EmailVerificationPromptedKey(_auth.PlayerId);
+                    if (!PlayerPrefs.HasKey(promptedKey))
+                    {
+                        PlayerPrefs.SetInt(promptedKey, 1);
+                        PlayerPrefs.Save();
+                        EventBus.Publish(new ShowEmailVerificationPromptEvent());
                     }
                 }
             }
-            catch (Exception ex)
+            else if (_profileLoaded)
             {
-                SULog.Warn($"PlanetSceneBootstrapper: profile fetch failed ({ex.Message}), using auth id", SULog.Channel.Net);
+                // New player — no server profile yet (e.g. just registered via
+                // Firebase). Assign a random avatar so AvatarId isn't null (the
+                // avatar picker would null-ref), and persist it for next login.
+                var catalogIds = _registry.AllAvatars.Select(a => a.AvatarId).ToList();
+                string resolvedAvatarId = AvatarAssignment.ResolveAvatarId(null, catalogIds, n => UnityEngine.Random.Range(0, n));
+                _playerState.SetAvatarId(resolvedAvatarId);
+
+                if (!string.IsNullOrEmpty(resolvedAvatarId))
+                {
+                    try
+                    {
+                        await _profileService.UpdateAvatarAsync(resolvedAvatarId);
+                    }
+                    catch (Exception ex)
+                    {
+                        SULog.Warn($"PlanetSceneBootstrapper: avatar assignment failed to persist ({ex.Message}), using local pick", SULog.Channel.Net);
+                    }
+                }
             }
 
             // A first-time nameless account (e.g. Google/SSO, whose UGS PlayerName is
             // null) has never chosen an in-game name. Prompt them to before they play.
-            // Published in the same hydration phase as ShowEmailVerificationPromptEvent,
-            // so HUDController (subscribed in Start) receives it the same way.
+            // Published in the same phase as ShowEmailVerificationPromptEvent, so
+            // HUDController (subscribed in Start) receives it the same way.
             if (ProfileOnboarding.NeedsOnboarding(profileDisplayName, _auth.DisplayName, _auth.Username))
             {
                 EventBus.Publish(new ShowProfileOnboardingEvent());
             }
-
-            // Restore owned tiles for this planet from Cloud Save.
-            EventBus.Publish(new LoadingStatusEvent(0.75f));
-            try
-            {
-                string saveKey  = SaveKeys.OwnedTilesKey(_startPlanet.name);
-                var    ownedIds = await _cloudSave.LoadAsync<List<string>>(saveKey, null);
-
-                if (ownedIds is { Count: > 0 })
-                {
-                    _landRegistry.Hydrate(ownedIds);
-
-                    string playerId = _auth.IsSignedIn ? _auth.PlayerId : "player";
-                    foreach (var tileId in ownedIds)
-                    {
-                        var tile = _hexasphere.GetTile(tileId);
-                        if (tile == null) continue;
-                        tile.State   = TileState.OwnedByPlayer;
-                        tile.OwnerId = playerId;
-                        _colorizer.RefreshTile(tile);
-                    }
-                    SULog.Info($"PlanetSceneBootstrapper: restored {ownedIds.Count} owned tiles for {_startPlanet.name}", SULog.Channel.World);
-                }
-            }
-            catch (Exception ex)
-            {
-                SULog.Warn($"PlanetSceneBootstrapper: tile restore failed ({ex.Message})", SULog.Channel.World);
-            }
-
-            // Paint other players' owned tiles before the LoadingScreen unloads —
-            // LandRegistrySyncController's own poll loop runs independently of scene
-            // load and wouldn't otherwise resolve until its first interval elapses,
-            // which would show every other player's tiles as Available for a while.
-            // RefreshAndApplyAsync already catches and logs its own failures.
-            EventBus.Publish(new LoadingStatusEvent(0.85f));
-            await _landRegistrySync.RefreshAndApplyAsync();
         }
 
-        // Hydrate fleet + mineral inventory (planet-scoped, like wallet + owned tiles). Non-fatal:
-        // falls back to a local Scout-seeded fleet if the server/record is unavailable.
-        private async Task HydrateDronesAndMineralsAsync()
+        // The player's own tiles on this planet (owned_tiles_<planet>).
+        private void ApplyOwnedTiles()
         {
-            // Mineral inventory: load the mineral_inventory Cloud Save record directly (App-layer,
-            // same pattern as owned-tiles hydration — Mining must not reference ICloudSave/Net).
-            try
-            {
-                var held = await _cloudSave.LoadAsync<Dictionary<string, int>>(SaveKeys.MineralInventory, null);
-                if (held != null) _inventory.SetAll(held);
-            }
-            catch (Exception ex) { SULog.Warn($"Mineral inventory hydration failed ({ex.Message})", SULog.Channel.Economy); }
+            if (_ownedTileIds is not { Count: > 0 }) return;
 
-            DroneFleetSnapshot snapshot = null;
-            try { snapshot = await _cloudSave.LoadAsync<DroneFleetSnapshot>(SaveKeys.DroneFleet, null); }
-            catch (Exception ex) { SULog.Warn($"Drone fleet hydration failed ({ex.Message})", SULog.Channel.Economy); }
+            _landRegistry.Hydrate(_ownedTileIds);
 
-            if (snapshot == null || snapshot.Drones == null || snapshot.Drones.Count == 0)
+            string playerId = _auth.IsSignedIn ? _auth.PlayerId : "player";
+            foreach (var tileId in _ownedTileIds)
             {
-                // New player / server unavailable: own the starter Scout by default (spec Q1).
-                var scout = FirstStarterDrone();
-                snapshot = DroneFleetSnapshot.SingleDrone(scout?.DroneId ?? _registry.AllDrones.First().DroneId, _config.StartingFleetSlots);
+                var tile = _hexasphere.GetTile(tileId);
+                if (tile == null) continue;
+                tile.State   = TileState.OwnedByPlayer;
+                tile.OwnerId = playerId;
+                _colorizer.RefreshTile(tile);
             }
-            _fleet.Apply(snapshot, _registry);
+            SULog.Info($"PlanetSceneBootstrapper: restored {_ownedTileIds.Count} owned tiles for {_startPlanet.name}", SULog.Channel.World);
         }
 
         // The Tier-1, zero-cost starter drone (Scout); falls back to the first registered drone.

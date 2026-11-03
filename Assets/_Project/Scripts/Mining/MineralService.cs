@@ -46,16 +46,39 @@ namespace SocialUniverse.Mining
             return res ?? new SellResult { Success = false, Reason = "Empty response" };
         }
 
-        public async Task<MiningGrantResult> GrantMiningAsync(string planetId, string mineralId, int qty)
+        // Never adds minerals, whatever the reply says: a forfeit grants nothing.
+        public async Task<MiningGrantResult> ForfeitMiningAsync(string planetId, string mineralId, string slotId)
         {
-            if (string.IsNullOrEmpty(mineralId) || qty <= 0) return new MiningGrantResult { MineralId = mineralId };
+            var args = new Dictionary<string, object>
+            {
+                { "planetId",  planetId },
+                { "mineralId", mineralId },
+                { "slotId",    slotId },
+                { "forfeit",   true }
+            };
+            return await _backend.CallAsync<MiningGrantResult>("ValidateMining", args)
+                ?? new MiningGrantResult { MineralId = mineralId, Reason = "Empty response" };
+        }
 
-            var res = await _backend.CallAsync<MiningGrantResult>("ValidateMining", new Dictionary<string, object>
+        public async Task<MiningGrantResult> GrantMiningAsync(string planetId, string mineralId, int qty, string idleSlotId = null,
+            string slotId = null)
+        {
+            // Nothing to grant — unless the claim ends a server-tracked idle run, which only
+            // ValidateMining can end (it answers INVALID_PARAMS and still ends the run).
+            if ((string.IsNullOrEmpty(mineralId) || qty <= 0) && string.IsNullOrEmpty(idleSlotId))
+                return new MiningGrantResult { MineralId = mineralId };
+
+            var args = new Dictionary<string, object>
             {
                 { "planetId",   planetId },
                 { "mineralId",  mineralId },
                 { "claimedQty", qty }
-            }) ?? new MiningGrantResult { MineralId = mineralId, Reason = "Empty response" };
+            };
+            if (!string.IsNullOrEmpty(idleSlotId)) args["idleSlotId"] = idleSlotId;
+            if (!string.IsNullOrEmpty(slotId))     args["slotId"]     = slotId;
+
+            var res = await _backend.CallAsync<MiningGrantResult>("ValidateMining", args)
+                ?? new MiningGrantResult { MineralId = mineralId, Reason = "Empty response" };
 
             if (res.Granted > 0) _inventory.Add(mineralId, res.Granted);
             return res;

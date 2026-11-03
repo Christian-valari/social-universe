@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SocialUniverse.App;
@@ -15,7 +16,9 @@ namespace SocialUniverse.Tests
             public TaskCompletionSource<SellResult> Pending = new();
             public Task<SellResult> SellAsync(string mineralId, int qty) { Calls++; return Pending.Task; }
             public Task<SellResult> SellAllAsync() { Calls++; return Pending.Task; }
-            public Task<MiningGrantResult> GrantMiningAsync(string planetId, string mineralId, int qty) => Task.FromResult(new MiningGrantResult());
+            public Task<MiningGrantResult> GrantMiningAsync(string planetId, string mineralId, int qty, string idleSlotId = null,
+                string slotId = null) => Task.FromResult(new MiningGrantResult());
+            public Task<MiningGrantResult> ForfeitMiningAsync(string planetId, string mineralId, string slotId) => Task.FromResult(new MiningGrantResult());
         }
 
         [SetUp]    public void SetUp()    => EventBus.Clear();
@@ -50,6 +53,24 @@ namespace SocialUniverse.Tests
             Assert.AreEqual(2, svc.Calls);
 
             handler.Dispose();
+        }
+
+        [Test]
+        public void A_successful_sale_publishes_a_successful_completion()
+        {
+            var done = new List<MineralSaleCompletedEvent>();
+            EventBus.Subscribe<MineralSaleCompletedEvent>(done.Add);
+            var svc = new PendingMineralService();
+            var handler = new MineralSaleHandler(svc);
+            handler.Start();
+
+            EventBus.Publish(new SellMineralsRequestedEvent { MineralId = "iron", Qty = 12 });
+            svc.Pending.SetResult(new SellResult { Success = true });
+
+            handler.Dispose();
+            Assert.AreEqual(1, done.Count);
+            Assert.IsTrue(done[0].Success);
+            Assert.AreEqual("", done[0].Message);
         }
     }
 }

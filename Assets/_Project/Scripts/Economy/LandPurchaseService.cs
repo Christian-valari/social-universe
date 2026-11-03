@@ -36,6 +36,8 @@ namespace SocialUniverse.Economy
 
         public async Task<LandPurchaseResult> PurchaseAsync(LandPurchaseRequest request, PlanetDefinition planet)
         {
+            // Display price only: PurchaseLand.js charges its own LAND_PRICES (Known Issue #19) and just
+            // logs a mismatch. LandPriceAlignmentTests keeps the two equal.
             int price = (int)Math.Round(_config.BaseLandPrice * planet.LandPriceMultiplier);
 
             PurchaseLandResponse response;
@@ -60,6 +62,8 @@ namespace SocialUniverse.Economy
                 string reason = response.Reason switch
                 {
                     "ALREADY_OWNED"      => "Tile is already owned",
+                    "OWNED_BY_OTHER"     => "Tile is owned by another player",
+                    "CONFLICT"           => "Tile changed hands — try again",
                     "INSUFFICIENT_FUNDS" => "Insufficient coins",
                     _                    => response.Reason ?? "Server rejected"
                 };

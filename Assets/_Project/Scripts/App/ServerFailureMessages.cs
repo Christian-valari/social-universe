@@ -16,6 +16,7 @@ namespace SocialUniverse.App
             "BUDGET_EXHAUSTED"                   => "No more asteroids here for now. Try again later.",
             "TIER_TOO_LOW"                       => "Requires a higher-tier drone",
             "WRONG_PLANET" or "MINERAL_NOT_ON_PLANET" => "Mining isn't available here right now",
+            "ALREADY_MINING"                     => "Your drone is already mining here",
             "Network error" or "Empty response" => "Couldn't reach the server. Try again.",
             _                                    => $"{action} failed"
         };

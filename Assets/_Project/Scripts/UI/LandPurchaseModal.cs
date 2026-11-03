@@ -20,6 +20,7 @@ namespace SocialUniverse.UI
         [SerializeField] private TMP_Text _statusText;
         [SerializeField] private Button   _confirmButton;
         [SerializeField] private Button   _cancelButton;
+        [SerializeField] private RectTransform _window;   // the panel that pops in and out (PopupTransition)
 
         [Inject] private Wallet           _wallet;
         [Inject] private PlanetDefinition _planet;
@@ -27,6 +28,9 @@ namespace SocialUniverse.UI
         [Inject] private IAudioManager    _audio;
 
         private TileData _currentTile;
+
+        private PopupTransition _transition;
+        private PopupTransition Transition => _transition != null ? _transition : _transition = PopupTransition.On(gameObject, _window);
 
         private void Awake()
         {
@@ -52,14 +56,14 @@ namespace SocialUniverse.UI
             _confirmButton.interactable = canAfford;
 
             _audio.PlaySfx(SfxId.OpenPanel);
-            gameObject.SetActive(true);
+            Transition.Show();
         }
 
         public void Close()
         {
             _audio.PlaySfx(SfxId.Cancel);
             _currentTile = null;
-            gameObject.SetActive(false);
+            Transition.Hide();
         }
 
         private void OnConfirmClicked()

@@ -41,6 +41,7 @@ namespace SocialUniverse.Tests
             builder.Register<LocalMockFriendsService>(Lifetime.Singleton).As<IFriendsService>();
             builder.Register<LocalMockPresenceService>(Lifetime.Singleton).As<IPresenceService>();
             builder.Register<ServerTime>(Lifetime.Singleton);
+            builder.RegisterInstance(new PlayerDataSyncPolicy(required: false)); // the real EconomyService can't reach UGS here
 
             builder.RegisterInstance(ScriptableObject.CreateInstance<SocialConfig>());
             builder.Register<ChatModerationFilter>(Lifetime.Singleton);
@@ -48,6 +49,7 @@ namespace SocialUniverse.Tests
             builder.Register<ChatChannelController>(Lifetime.Singleton);
             builder.Register<DirectMessageService>(Lifetime.Singleton);
             builder.Register<ProfileService>(Lifetime.Singleton);
+            builder.Register<BlockListSync>(Lifetime.Singleton);
 
             builder.RegisterInstance(ScriptableObject.CreateInstance<AudioConfig>());
             builder.Register<AudioSettingsService>(Lifetime.Singleton).As<IAudioSettingsService>();

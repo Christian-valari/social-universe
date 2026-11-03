@@ -5,5 +5,6 @@ namespace SocialUniverse.Core
     public class CurrentPlanetResult
     {
         public string PlanetId;
+        public string TravelTargetId; // target of a trip not landed yet (any device); null if none
     }
 }

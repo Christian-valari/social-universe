@@ -10,7 +10,7 @@ namespace SocialUniverse.Config
         [SerializeField] private int        _tier          = 1;
         [SerializeField] private int        _baseYield     = 50;
         [SerializeField] [Range(0f, 1f)]
-                         private float      _rarity        = 0.5f;
+                         private float      _rarity        = 0.5f; // scarcity: 0 = common, 1 = rare — a planet's field gives each type (1 - rarity) weight; rises with tier (MineralContentAlignmentTests)
         [SerializeField] private int        _coinsPerUnit  = 2; // retained (legacy); dead after Task 8, harmless
         [SerializeField] private GameObject _modelPrefab;
 

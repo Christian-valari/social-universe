@@ -13,6 +13,7 @@ const INVENTORY_KEY = "mineral_inventory";
 const SELL_VALUES = { iron: 2, carbon: 3, silicon: 5, nickel: 8, platinum: 20, iridium: 40, palladium: 70, helium3: 150 };
 
 module.exports = async ({ params, context, logger }) => {
+  await requireActiveSession(context, params.sessionId);
   const { mineralId, qty, all } = params;
   const { projectId, playerId, accessToken } = context;
   const econApi = new CurrenciesApi({ accessToken });
@@ -21,7 +22,7 @@ module.exports = async ({ params, context, logger }) => {
   // Load inventory + its writeLock.
   let inventory = {}, writeLock;
   try {
-    const res  = await saveApi.getItems(projectId, playerId, [INVENTORY_KEY]);
+    const res  = await saveApi.getProtectedItems(projectId, playerId, [INVENTORY_KEY]);
     const item = res.data.results.find(r => r.key === INVENTORY_KEY);
     if (item && item.value && typeof item.value === "object") { inventory = item.value; writeLock = item.writeLock; }
   } catch (_) { /* none */ }
@@ -53,7 +54,7 @@ module.exports = async ({ params, context, logger }) => {
   let newLock;
   try {
     const body = writeLock ? { key: INVENTORY_KEY, value: inventory, writeLock } : { key: INVENTORY_KEY, value: inventory };
-    newLock = (await saveApi.setItem(projectId, playerId, body)).data?.writeLock;
+    newLock = (await saveApi.setProtectedItem(projectId, playerId, body)).data?.writeLock;
   } catch (err) {
     if (isConflict(err)) return { success: false, reason: "CONFLICT" };
     throw err;
@@ -69,7 +70,7 @@ module.exports = async ({ params, context, logger }) => {
     logger.error(`SellMinerals: grant failed for ${playerId}; restoring inventory. ${err?.message}`);
     try {
       const body = newLock ? { key: INVENTORY_KEY, value: previous, writeLock: newLock } : { key: INVENTORY_KEY, value: previous };
-      await saveApi.setItem(projectId, playerId, body);
+      await saveApi.setProtectedItem(projectId, playerId, body);
     } catch (restoreErr) {
       logger.error(`SellMinerals: RESTORE FAILED for ${playerId} — manual reconciliation needed: ${restoreErr?.message}`);
     }
@@ -84,3 +85,31 @@ function isConflict(err) {
   const status = err?.response?.status ?? err?.status;
   return status === 409;
 }
+
+// ---- active session check (copy verbatim into every deployed script; ActiveSessionGuardTests keeps the copies identical) ----
+// ClaimSession records the latest sign-in's session in the Protected active_session item. A call
+// naming any other session, or none, comes from a replaced or signed-out device. A failed read
+// throws rather than letting the call through.
+async function requireActiveSession(context, sessionId) {
+  const { DataApi } = require("@unity-services/cloud-save-1.4");
+  const { projectId, playerId } = context;
+  let current;
+  try {
+    const res = await new DataApi(context).getProtectedItems(projectId, playerId, ["active_session"]);
+    current = res.data.results.find(r => r.key === "active_session")?.value?.sessionId;
+  } catch (e) {
+    if (e?.response?.status !== 404) throw e;
+  }
+  if (!sessionId || sessionId !== current) throw Error("SESSION_REPLACED");
+}
+// ---- end active session check
+
+// Parameter declarations for the UGS CLI / Cloud Code (types only: each script validates its own
+// inputs and returns reasons the client understands). Must stay after `module.exports = ...`,
+// which would otherwise overwrite it. Pinned by ServerCodeDeployTests.
+module.exports.params = {
+  mineralId: "String",
+  qty: "Numeric",
+  all: "Boolean",
+  sessionId: "String"
+};

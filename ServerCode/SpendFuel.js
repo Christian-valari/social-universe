@@ -2,7 +2,7 @@
 // amount. Returns the post-spend state either way so the client can resync.
 //
 // FIX 1: DataApi's constructor doesn't read a { headers: ... } field, and
-// getItems/setItem take positional args, not an options object — same
+// getProtectedItems/setProtectedItem take positional args, not an options object — same
 // SDK-shape mismatch documented as Known Issue #6 for the old PurchaseLand.js.
 // DataApi(context) authenticates as the calling player via the service token.
 // FIX 2 (important): the old version did a plain read-modify-write, so two
@@ -38,6 +38,7 @@ function isConflict(err) {
  * @param {number} amount - Fuel units to spend. Must be a finite, non-negative number.
  */
 module.exports = async ({ params, context, logger }) => {
+  await requireActiveSession(context, params.sessionId);
   const { amount } = params;
   if (!Number.isFinite(amount) || amount < 0) {
     throw new Error(`Invalid amount: ${amount}`);
@@ -50,7 +51,7 @@ module.exports = async ({ params, context, logger }) => {
     // Read current record + its writeLock.
     let raw = null, writeLock;
     try {
-      const res    = await saveApi.getItems(projectId, playerId, [SAVE_KEY]);
+      const res    = await saveApi.getProtectedItems(projectId, playerId, [SAVE_KEY]);
       const record = res.data.results.find(r => r.key === SAVE_KEY);
       if (record?.value) { raw = record.value; writeLock = record.writeLock; }
     } catch (_) { /* no record yet */ }
@@ -65,7 +66,7 @@ module.exports = async ({ params, context, logger }) => {
     // double-spend guard but keep the rest of the logic).
     const body = writeLock ? { key: SAVE_KEY, value: state, writeLock } : { key: SAVE_KEY, value: state };
     try {
-      await saveApi.setItem(projectId, playerId, body);
+      await saveApi.setProtectedItem(projectId, playerId, body);
     } catch (err) {
       if (isConflict(err) && attempt < MAX_RETRIES - 1) continue; // someone else wrote; retry
       throw err;
@@ -78,4 +79,30 @@ module.exports = async ({ params, context, logger }) => {
 
   logger.error(`SpendFuel: write-lock retries exhausted for ${playerId}`);
   throw new Error("SpendFuel: concurrent update conflict, please retry.");
+};
+
+// ---- active session check (copy verbatim into every deployed script; ActiveSessionGuardTests keeps the copies identical) ----
+// ClaimSession records the latest sign-in's session in the Protected active_session item. A call
+// naming any other session, or none, comes from a replaced or signed-out device. A failed read
+// throws rather than letting the call through.
+async function requireActiveSession(context, sessionId) {
+  const { DataApi } = require("@unity-services/cloud-save-1.4");
+  const { projectId, playerId } = context;
+  let current;
+  try {
+    const res = await new DataApi(context).getProtectedItems(projectId, playerId, ["active_session"]);
+    current = res.data.results.find(r => r.key === "active_session")?.value?.sessionId;
+  } catch (e) {
+    if (e?.response?.status !== 404) throw e;
+  }
+  if (!sessionId || sessionId !== current) throw Error("SESSION_REPLACED");
+}
+// ---- end active session check
+
+// Parameter declarations for the UGS CLI / Cloud Code (types only: each script validates its own
+// inputs and returns reasons the client understands). Must stay after `module.exports = ...`,
+// which would otherwise overwrite it. Pinned by ServerCodeDeployTests.
+module.exports.params = {
+  amount: "Numeric",
+  sessionId: "String"
 };

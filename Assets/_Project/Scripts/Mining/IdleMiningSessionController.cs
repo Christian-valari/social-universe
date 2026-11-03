@@ -67,7 +67,7 @@ namespace SocialUniverse.Mining
         {
             var session = _mining.CurrentIdleSession;
             if (session != null && session.Asteroid == e.Asteroid && session.Stage == IdleMiningStage.ReadyToClaim)
-                _ = _mining.ClaimIdleSessionAsync(e.Asteroid);
+                _mining.ClaimIdleSessionAsync(e.Asteroid).Forget("Claiming idle mining", SULog.Channel.Mining);
         }
 
         // Fleet loaded or selection changed: refresh the drone resting at base (but never yank the

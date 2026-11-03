@@ -12,15 +12,17 @@ namespace SocialUniverse.Core
         private readonly SceneLoader      _sceneLoader;
         private readonly IObjectResolver  _resolver;
         private readonly IBackendClient   _backend;
+        private readonly PlayerDataSyncPolicy _syncPolicy;
 
         public AuthState(IAuthService auth, GameStateMachine fsm, SceneLoader sceneLoader, IObjectResolver resolver,
-            IBackendClient backend)
+            IBackendClient backend, PlayerDataSyncPolicy syncPolicy)
         {
             _auth        = auth;
             _fsm         = fsm;
             _sceneLoader = sceneLoader;
             _resolver    = resolver;
             _backend     = backend;
+            _syncPolicy  = syncPolicy;
         }
 
         public void Enter()
@@ -49,30 +51,46 @@ namespace SocialUniverse.Core
         {
             EventBus.Unsubscribe<PlayerReadyEvent>(OnPlayerReady);
             await _sceneLoader.UnloadAsync(Constants.SceneNames.Auth);
-            var planet = _resolver.Resolve<PlanetState>();
-            planet.TargetPlanetId = await ResolveTargetPlanetIdAsync();
-            _fsm.TransitionTo(planet);
+            await ResumeAsync();
         }
 
-        // Server record (cross-device source of truth) wins over the local
-        // PlayerPrefs resume hint, which wins over the hard Earth default —
-        // see PlanetResumeResolver. Non-fatal on failure, same hydration
-        // convention as PlanetSceneScope.HydrateServerStateAsync.
-        private async Task<string> ResolveTargetPlanetIdAsync()
+        // Where to resume, from the server's record (cross-device source of truth):
+        // a trip not landed yet — started on this device or any other — resumes
+        // into Travel (the Travel scene re-validates on entry), otherwise the
+        // server's current planet. The local PlayerPrefs hints are rewritten to
+        // mirror the server and are read only if GetCurrentPlanet fails, which
+        // only dev mode lets through (PlayerDataSyncPolicy) — see PlanetResumeResolver.
+        private async Task ResumeAsync()
         {
-            string serverPlanetId = null;
-            try
+            // With the real backend a failed read is retried behind the retry dialog until it loads
+            // (PlayerDataPull), so the hints below are only read by dev mode.
+            CurrentPlanetResult server = null;
+            await PlayerDataPull.RunAsync(new (string, Func<Task>)[]
+                {
+                    ("current planet", async () => server = await _backend.CallAsync<CurrentPlanetResult>("GetCurrentPlanet")),
+                },
+                _syncPolicy?.Required ?? false, _syncPolicy?.AskToRetry);
+
+            string trip = PlanetResumeResolver.ResolveTravelTarget(server != null, server?.TravelTargetId,
+                PlayerPrefs.GetString(SaveKeys.TravelTargetId, null));
+            if (trip != null) PlayerPrefs.SetString(SaveKeys.TravelTargetId, trip);
+            else              PlayerPrefs.DeleteKey(SaveKeys.TravelTargetId);
+            if (!string.IsNullOrEmpty(server?.PlanetId))
+                PlayerPrefs.SetString(SaveKeys.LastPlanetIdKey(_auth.PlayerId), server.PlanetId);
+            PlayerPrefs.Save();
+
+            if (trip != null)
             {
-                var result = await _backend.CallAsync<CurrentPlanetResult>("GetCurrentPlanet");
-                serverPlanetId = result?.PlanetId;
-            }
-            catch (Exception ex)
-            {
-                SULog.Warn($"AuthState: GetCurrentPlanet failed ({ex.Message}), using local state", SULog.Channel.Core);
+                SULog.Info($"Auth: trip to {trip} not landed yet, resuming into Travel");
+                _fsm.TransitionTo(_resolver.Resolve<TravelState>());
+                return;
             }
 
-            string localPlanetId = PlayerPrefs.GetString(SaveKeys.LastPlanetIdKey(_auth.PlayerId), null);
-            return PlanetResumeResolver.Resolve(serverPlanetId, localPlanetId, Constants.PlanetIds.Earth);
+            var planet = _resolver.Resolve<PlanetState>();
+            planet.TargetPlanetId = PlanetResumeResolver.Resolve(server?.PlanetId,
+                PlayerPrefs.GetString(SaveKeys.LastPlanetIdKey(_auth.PlayerId), null), Constants.PlanetIds.Earth);
+            SULog.Info($"Auth: resuming on {planet.TargetPlanetId} (server planet: {server?.PlanetId ?? "unavailable"})");
+            _fsm.TransitionTo(planet);
         }
     }
 }

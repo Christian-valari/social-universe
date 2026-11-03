@@ -10,6 +10,7 @@ namespace SocialUniverse.Tests
     {
         private class FakeBackendClient : IBackendClient
         {
+            public string SessionId { get; set; }
             public string CalledFunction;
             public Dictionary<string, object> CalledArgs;
             public RecordVisitResult RecordVisitResponse;

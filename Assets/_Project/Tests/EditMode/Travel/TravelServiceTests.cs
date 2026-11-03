@@ -15,6 +15,7 @@ namespace SocialUniverse.Tests
     {
         private class FakeBackendClient : IBackendClient
         {
+            public string SessionId { get; set; }
             public FuelStateResult SpendFuelResponse;
 
             public Task<T> CallAsync<T>(string function, Dictionary<string, object> args = null)

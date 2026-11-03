@@ -14,6 +14,7 @@ namespace SocialUniverse.Tests
     {
         private class FakeBackendClient : IBackendClient
         {
+            public string SessionId { get; set; }
             public TravelTripResult StartTravelResponse;
             public TravelTripResult GetTravelStateResponse;
             public TravelTripResult LandTravelResponse;

@@ -29,13 +29,18 @@ namespace SocialUniverse.App
                 _saleInFlight = false;
             }
 
-            if (result is { Success: false })
+            // The sale popup shows the result. On success the service has already fired the wallet
+            // and MineralInventoryChangedEvent updates. Always publishes, even for a missing reply,
+            // so the popup never waits forever.
+            bool   ok      = result is { Success: true };
+            string message = "";
+            if (!ok)
             {
-                SULog.Warn($"Sell minerals failed: {result.Reason}", SULog.Channel.Economy);
-                EventBus.Publish(new ServerActionFailedEvent(ServerFailureMessages.For("Sale", result.Reason)));
+                string reason = result?.Reason ?? "Empty response";
+                SULog.Warn($"Sell minerals failed: {reason}", SULog.Channel.Economy);
+                message = ServerFailureMessages.For("Sale", reason);
             }
-            // Wallet + MineralInventory events already fired by the service on success; the
-            // view refreshes via MineralInventoryChangedEvent.
+            EventBus.Publish(new MineralSaleCompletedEvent { Success = ok, Message = message });
         }
     }
 }

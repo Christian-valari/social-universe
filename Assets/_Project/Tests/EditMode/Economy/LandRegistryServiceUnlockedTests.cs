@@ -10,6 +10,7 @@ namespace SocialUniverse.Tests
     {
         private class FakeBackend : IBackendClient
         {
+            public string SessionId { get; set; }
             public object NextResult;
             public Task<T> CallAsync<T>(string function, Dictionary<string, object> args = null) =>
                 Task.FromResult((T)NextResult);

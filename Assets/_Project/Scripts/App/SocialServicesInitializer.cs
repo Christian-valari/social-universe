@@ -25,6 +25,8 @@ namespace SocialUniverse.App
         private readonly IAuthService    _auth;
         private readonly ServerTime      _serverTime;
         private readonly ProfileService  _profile;
+        private readonly ReportService   _reports;
+        private readonly BlockListSync   _blockList;
 
         // DirectMessageService subscribes to inbound DMs in its constructor;
         // depending on it here forces eager construction so DMs are captured
@@ -35,13 +37,17 @@ namespace SocialUniverse.App
             IAuthService          auth,
             ServerTime            serverTime,
             ProfileService        profile,
-            DirectMessageService  _)
+            DirectMessageService  _,
+            ReportService         reports,
+            BlockListSync         blockList)
         {
             _chat       = chat;
             _friends    = friends;
             _auth       = auth;
             _serverTime = serverTime;
             _profile    = profile;
+            _reports    = reports;
+            _blockList  = blockList;
         }
 
         public void Start()
@@ -58,6 +64,10 @@ namespace SocialUniverse.App
 
         private async void OnPlayerReady(PlayerReadyEvent _)
         {
+            // The player's server block list, so chat from players blocked on any device stays hidden.
+            // Started first and awaited last; if it fails, the Planet scene's data pull loads it.
+            var blockListLoad = LoadBlockListAsync();
+
             // This name is baked into the Vivox login and shown to every other
             // player as the chat sender name (ChatMessageItemView), so the
             // resolver never falls back further than "Player" — falling through
@@ -128,10 +138,25 @@ namespace SocialUniverse.App
             {
                 SULog.Warn($"SocialServicesInitializer: friends init failed ({ex.Message})", SULog.Channel.Social);
             }
+
+            await blockListLoad;
+        }
+
+        private async Task LoadBlockListAsync()
+        {
+            try
+            {
+                await _blockList.LoadAsync();
+            }
+            catch (Exception ex)
+            {
+                SULog.Warn($"SocialServicesInitializer: block list load failed ({ex.Message})", SULog.Channel.Social);
+            }
         }
 
         private async void OnPlayerLoggedOut(PlayerLoggedOutEvent _)
         {
+            _reports.Reset();
             try
             {
                 await _chat.DisconnectAsync();

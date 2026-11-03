@@ -25,6 +25,16 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
+        public void Forfeit_response_binds_to_the_dto()
+        {
+            var r = JsonConvert.DeserializeObject<MiningGrantResult>(
+                "{\"granted\":0,\"mineralId\":\"iron\",\"reason\":\"FORFEITED\"}", CloudCodeSettings);
+
+            Assert.AreEqual(0, r.Granted);
+            Assert.AreEqual("FORFEITED", r.Reason);
+        }
+
+        [Test]
         public void Rejection_response_binds_to_the_dto()
         {
             var r = JsonConvert.DeserializeObject<MiningGrantResult>(

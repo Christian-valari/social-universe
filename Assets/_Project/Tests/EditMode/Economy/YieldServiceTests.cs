@@ -12,6 +12,7 @@ namespace SocialUniverse.Tests
     {
         private class FakeBackendClient : IBackendClient
         {
+            public string SessionId { get; set; }
             public YieldClaimResult ClaimYieldResponse;
             public bool             ThrowOnCall;
 

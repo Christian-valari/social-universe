@@ -55,3 +55,10 @@ async function currentBalance(econApi, projectId, playerId) {
   const c   = res.data.results.find(x => x.currencyId === "COINS");
   return c ? c.balance : 0;
 }
+
+// Parameter declarations for the UGS CLI / Cloud Code (types only: each script validates its own
+// inputs and returns reasons the client understands). Must stay after `module.exports = ...`,
+// which would otherwise overwrite it. Pinned by ServerCodeDeployTests.
+module.exports.params = {
+  claimedAmount: "Numeric"
+};

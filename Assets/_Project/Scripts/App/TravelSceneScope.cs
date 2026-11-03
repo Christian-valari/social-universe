@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VContainer;
@@ -49,6 +51,7 @@ namespace SocialUniverse.App
                 builder.Register<SceneLoader>(Lifetime.Singleton);
                 builder.Register<LocalMockBackendClient>(Lifetime.Singleton).As<IBackendClient>();
                 builder.Register<ServerTime>(Lifetime.Singleton);
+                builder.RegisterInstance(new PlayerDataSyncPolicy(required: false)); // mock backend answers nothing
 
                 builder.RegisterInstance(_audioConfig != null ? _audioConfig : ScriptableObject.CreateInstance<AudioConfig>());
                 builder.Register<AudioSettingsService>(Lifetime.Singleton).As<IAudioSettingsService>();
@@ -75,13 +78,16 @@ namespace SocialUniverse.App
         private readonly SceneLoader      _sceneLoader;
         private readonly bool             _standalone;
         private readonly IAudioManager    _audio;
+        private readonly PlayerDataSyncPolicy _syncPolicy;
 
-        public TravelSceneBootstrapper(TravelTripSystem trips, SceneLoader sceneLoader, bool standalone, IAudioManager audio)
+        public TravelSceneBootstrapper(TravelTripSystem trips, SceneLoader sceneLoader, bool standalone, IAudioManager audio,
+            PlayerDataSyncPolicy syncPolicy)
         {
             _trips       = trips;
             _sceneLoader = sceneLoader;
             _standalone  = standalone;
             _audio       = audio;
+            _syncPolicy  = syncPolicy;
         }
 
         public async void Start()
@@ -100,15 +106,11 @@ namespace SocialUniverse.App
 
             _audio.PlayTravelBgm();
 
+            // The trip (and fuel) from the server, retried until it loads — a player resuming a trip
+            // after sign-in sees where it really is, wherever it was started (PlayerDataPull).
             EventBus.Publish(new LoadingStatusEvent(0.5f));
-            try
-            {
-                await _trips.RefreshAsync();
-            }
-            catch (System.Exception ex)
-            {
-                SULog.Warn($"TravelSceneBootstrapper: travel state hydration failed ({ex.Message}), using local state", SULog.Channel.Travel);
-            }
+            await PlayerDataPull.RunAsync(new (string, Func<Task>)[] { ("trip", () => _trips.RefreshAsync()) },
+                _syncPolicy.Required, _syncPolicy.AskToRetry);
 
             EventBus.Publish(new SceneReadyEvent());
         }

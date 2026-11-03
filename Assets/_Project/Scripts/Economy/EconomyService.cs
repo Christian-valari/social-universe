@@ -54,26 +54,7 @@ namespace SocialUniverse.Economy
             return result.Success;
         }
 
-        public async Task GrantCoinsAsync(int amount)
-        {
-            var result = await _backend.CallAsync<GrantResult>(
-                "GrantCoins",
-                new Dictionary<string, object> { { "amount", amount } });
-
-            _wallet.SetCoins(result.NewBalance);
-        }
-
-        public async Task GrantStardustAsync(int amount)
-        {
-            var result = await _backend.CallAsync<GrantResult>(
-                "GrantStardust",
-                new Dictionary<string, object> { { "amount", amount } });
-
-            _wallet.SetStardust(result.NewBalance);
-        }
-
         // Thin DTOs for Cloud Code responses.
         private struct SpendResult  { public bool Success; public int NewBalance; }
-        private struct GrantResult  { public int NewBalance; }
     }
 }

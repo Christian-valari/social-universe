@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SocialUniverse.Config;
@@ -43,6 +44,43 @@ namespace SocialUniverse.Tests
 
             handler.Dispose();
             EventBus.Clear();
+        }
+
+        [Test]
+        public void A_successful_drone_purchase_publishes_a_successful_completion()
+        {
+            EventBus.Clear();
+            var done = new List<DronePurchaseCompletedEvent>();
+            EventBus.Subscribe<DronePurchaseCompletedEvent>(done.Add);
+            var handler = new DroneGarageHandler(new CapturingDroneService());
+            handler.Start();
+
+            EventBus.Publish(new DroneAcquireRequestedEvent { DroneId = "extractor" });
+
+            handler.Dispose();
+            EventBus.Clear();
+            Assert.AreEqual(1, done.Count);
+            Assert.IsTrue(done[0].Success);
+            Assert.AreEqual("extractor", done[0].DroneId);
+            Assert.AreEqual("", done[0].Message);
+        }
+
+        [Test]
+        public void A_successful_slot_unlock_publishes_a_successful_completion()
+        {
+            EventBus.Clear();
+            var done = new List<DronePurchaseCompletedEvent>();
+            EventBus.Subscribe<DronePurchaseCompletedEvent>(done.Add);
+            var handler = new DroneGarageHandler(new CapturingDroneService());
+            handler.Start();
+
+            EventBus.Publish(new DroneSlotUnlockRequestedEvent());
+
+            handler.Dispose();
+            EventBus.Clear();
+            Assert.AreEqual(1, done.Count);
+            Assert.IsTrue(done[0].Success);
+            Assert.IsNull(done[0].DroneId, "A slot purchase has no drone id");
         }
     }
 }

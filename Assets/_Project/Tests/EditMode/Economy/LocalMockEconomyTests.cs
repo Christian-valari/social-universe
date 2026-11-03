@@ -45,19 +45,5 @@ namespace SocialUniverse.Tests
             Assert.IsFalse(ok);
             Assert.AreEqual(_config.StartingCoins, _wallet.Coins);
         }
-
-        [Test]
-        public async Task GrantCoinsAsync_adds_to_balance()
-        {
-            await _economy.GrantCoinsAsync(50);
-            Assert.AreEqual(_config.StartingCoins + 50, _wallet.Coins);
-        }
-
-        [Test]
-        public async Task GrantStardustAsync_adds_to_stardust()
-        {
-            await _economy.GrantStardustAsync(3);
-            Assert.AreEqual(_config.StartingStardust + 3, _wallet.Stardust);
-        }
     }
 }

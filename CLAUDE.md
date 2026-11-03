@@ -6,9 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Social Universe is a Unity 6 social MMO where players explore a solar system, mine asteroids, own hexagonal land tiles on planets, and interact with other players. The full architecture, milestone roadmap, and script inventory live in `Social_Universe_Architecture.md` — read it before any task.
 
-**Current state (2026-09-30):** M0–M5 are code-complete and M6 (drones & mining depth) is code-complete and merged into `main`. EditMode 405/405, PlayMode 2/2. The backend is UGS (Auth/Economy/Cloud Save/Cloud Code/Vivox/Friends) with Firebase Auth via OIDC.
+**Current state (2026-09-30):** M0–M5 are code-complete and M6 (drones & mining depth) is code-complete and merged into `main`. EditMode 481/481, PlayMode 12/12. The backend is UGS (Auth/Economy/Cloud Save/Cloud Code/Vivox/Friends) with Firebase Auth via OIDC.
 
-**The game is not ready for internal testing.** The three server blockers (Known Issues #10–#12) and server-side mining validation (#16, partly) are fixed in `ServerCode/` but no `ServerCode/` deploy has ever been confirmed, and the release keystore is committed to a public repo. Read `PROGRESS.md` — Known Issues and "Future Tasks" — before planning work; it is the source of truth for status.
+**The game is not ready for internal testing.** The three server blockers (Known Issues #10–#12) and server-side mining validation (#16, partly) are fixed in `ServerCode/` and were deployed to the `development` environment on 2026-10-01 and redeployed on 2026-10-13 with the land-price/registry-lock fix (#19) and the protected access class (#16) (Cloud Code only — Economy currencies, the `oidc-firebase` provider, Vivox and Friends are still dashboard steps; nothing has been smoke-tested yet), and the release keystore is committed to a public repo. Read `PROGRESS.md` — Known Issues and "Future Tasks" — before planning work; it is the source of truth for status.
 
 ## Pre-Task Protocol (mandatory)
 
@@ -37,7 +37,7 @@ Three things that will otherwise waste your time:
 - **The `ServerCode/` drift tests** (`MiningCatalogAlignmentTests`, `DroneCatalogAlignmentTests`, `ServerCodeEconomyApiTests`) read `ServerCode/*.js` from the repo root, so a copy without `ServerCode/` fails them.
 - **EditMode tests touch the project's editor `PlayerPrefs`** (music/SFX volume, idle-mining session, asteroid respawn timers). Running the suite resets those values for the Editor on this machine.
 
-Current results (2026-09-30, Unity 6000.3.12f1): EditMode **405/405**; PlayMode **2/2**. `PlanetSceneFlowTests` run the real Planet scene under `PlanetTestRootScope` with a scripted `FakeBackendClient` (Tests/PlayMode/).
+Current results (2026-10-23, Unity 6000.3.12f1, uncommitted working tree): EditMode **627/627**; PlayMode **16/16**. The `ServerCode/` scripts have no checked-in JS test harness; the C# drift tests read them as text. `PlanetSceneFlowTests`, `DroneGarageFlowTests` and `MineralSaleFlowTests` run the real Planet scene under `PlanetTestRootScope` with a scripted `FakeBackendClient` (Tests/PlayMode/).
 
 ## Architecture Rules (enforce on every task)
 
@@ -72,7 +72,7 @@ All game code lives under `Assets/_Project/Scripts/` in namespace-per-folder ass
 | `Safety/` | `SocialUniverse.Safety` | Age gate, moderation hooks, analytics |
 | `UI/` | `SocialUniverse.UI` | UIManager, screens (MVP pattern), HUD, juice |
 
-Server-side logic lives in `ServerCode/` at the repo root as UGS Cloud Code scripts (`*.js`) — this folder is **not** included in the Unity build. Deploying them is a manual dashboard step, and nothing in the repo records what is currently live, so treat `ServerCode/` as source-of-truth-to-be-deployed rather than as what the servers are running.
+Server-side logic lives in `ServerCode/` at the repo root as UGS Cloud Code scripts (`*.js`) — this folder is **not** included in the Unity build. Deploy them with `./ServerCode/deploy.ps1` (UGS CLI; allow-list in `ServerCode/deploy-list.txt`, currencies in `ServerCode/Economy/`) — see `docs/deploy-runbook.md`. Every script must declare its parameters in `module.exports.params` after `module.exports = ...`. Every deployed script except `ClaimSession`/`ReleaseSession` must start with `await requireActiveSession(context, params.sessionId);`, carry the shared block from `ClaimSession.js` and declare `sessionId` — one active device per account (`ActiveSessionGuardTests`). Any read-modify-write of a player record must pass the `writeLock` it read, re-apply its change on a 409, and throw (not default) on a failed read (`PlayerRecordLockTests`, Known Issue #21). Nothing in the repo records what is currently live, so treat `ServerCode/` as source-of-truth-to-be-deployed rather than as what the servers are running.
 
 ## Naming Conventions
 

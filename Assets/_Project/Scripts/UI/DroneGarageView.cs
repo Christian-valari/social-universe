@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using VContainer;
 using DanielLochner.Assets.SimpleScrollSnap;
@@ -13,9 +14,9 @@ using TMPro;
 namespace SocialUniverse.UI
 {
     // Functional Drone Garage: a Simple Scroll-Snap carousel of drone cards — owned drones (icon +
-    // per-stat upgrade meters) and acquirable drone types (icon + acquire) — plus an unlock-slot
-    // button. One card prefab (DroneRowView). Publishes intent events; DroneGarageHandler performs
-    // the service calls.
+    // per-stat upgrade meters) and acquirable drone types (icon + acquire) — plus a buy button that
+    // follows the centered card (DroneBuyButton) and a header with the balance and fleet size. One
+    // card prefab (DroneRowView). Publishes intent events; DroneGarageHandler performs the service calls.
     //
     // Carousel rule: panels are only added/removed when the SET of cards changes (a drone acquired,
     // a slot unlocked). Every other refresh — selecting a drone, buying an upgrade, a wallet change —
@@ -32,9 +33,15 @@ namespace SocialUniverse.UI
         [SerializeField] private GameObject      _root;
         [SerializeField] private SimpleScrollSnap _scrollSnap;      // carousel that hosts the cards
         [SerializeField] private DroneRowView    _rowPrefab;        // card prefab (AddToBack clones it)
-        [SerializeField] private Button          _unlockSlotButton;
-        [SerializeField] private TMP_Text        _unlockSlotLabel;
+        [FormerlySerializedAs("_unlockSlotButton")]
+        [SerializeField] private Button          _buyButton;        // buys the centered drone, or the next slot
+        [FormerlySerializedAs("_unlockSlotLabel")]
+        [SerializeField] private TMP_Text        _buyLabel;         // the price
+        [SerializeField] private TMP_Text        _buyCaption;       // "Buy" / "Unlock slot", before the coin and price
+        [SerializeField] private TMP_Text        _balanceLabel;     // the player's coins: the full-screen garage covers the HUD
+        [SerializeField] private TMP_Text        _fleetLabel;       // "Fleet 2/3"
         [SerializeField] private Button          _closeButton;
+        [SerializeField] private TransactionModal _purchaseModal;   // confirm + result popup for drone/slot purchases
 
         private DroneFleet       _fleet;
         private DatabaseRegistry _registry;
@@ -53,16 +60,32 @@ namespace SocialUniverse.UI
         // shift when a card is added or removed.
         private string _centeredDroneId;
 
+        // What the purchase popup is offering, for its success screen.
+        private DronePurchase _pendingPurchase;
+
         [Inject]
         public void Construct(DroneFleet fleet, DatabaseRegistry registry, EconomyConfig config, Wallet wallet)
         {
-            _fleet = fleet; _registry = registry; _config = config; _wallet = wallet;
+            _fleet = fleet; _registry = registry; _config = config;
+            BindWallet(wallet);
         }
+
+        // The wallet arrives by injection, which can land after OnEnable, so its subscription lives
+        // here (and in OnDestroy) rather than beside the EventBus one. Same shape as CurrencyView.Bind.
+        private void BindWallet(Wallet wallet)
+        {
+            if (_wallet != null) _wallet.OnCoinsChanged -= OnCoinsChanged;
+            _wallet = wallet;
+            if (_wallet != null) _wallet.OnCoinsChanged += OnCoinsChanged;
+        }
+
+        private void OnDestroy() => BindWallet(null);
 
         private void OnEnable()
         {
             EventBus.Subscribe<DroneFleetChangedEvent>(OnFleetChanged);
-            if (_unlockSlotButton != null) _unlockSlotButton.onClick.AddListener(OnUnlockSlot);
+            EventBus.Subscribe<DronePurchaseCompletedEvent>(OnPurchaseCompleted);
+            if (_buyButton         != null) _buyButton.onClick.AddListener(OnBuy);
             if (_closeButton       != null) _closeButton.onClick.AddListener(Close);
             if (_scrollSnap        != null) _scrollSnap.OnPanelCentered.AddListener(OnPanelCentered);
         }
@@ -70,7 +93,8 @@ namespace SocialUniverse.UI
         private void OnDisable()
         {
             EventBus.Unsubscribe<DroneFleetChangedEvent>(OnFleetChanged);
-            if (_unlockSlotButton != null) _unlockSlotButton.onClick.RemoveListener(OnUnlockSlot);
+            EventBus.Unsubscribe<DronePurchaseCompletedEvent>(OnPurchaseCompleted);
+            if (_buyButton         != null) _buyButton.onClick.RemoveListener(OnBuy);
             if (_closeButton       != null) _closeButton.onClick.RemoveListener(Close);
             if (_scrollSnap        != null) _scrollSnap.OnPanelCentered.RemoveListener(OnPanelCentered);
         }
@@ -100,7 +124,13 @@ namespace SocialUniverse.UI
             return viewport != null && viewport.rect.width > 0f && viewport.rect.height > 0f;
         }
 
-        private void OnFleetChanged(DroneFleetChangedEvent _)
+        private void OnFleetChanged(DroneFleetChangedEvent _) => RefreshIfOpen();
+
+        // Re-price every button. DroneService applies a server reply's fleet before its balance, so
+        // the fleet-changed refresh still sees the old coins; this one corrects it.
+        private void OnCoinsChanged(int _) => RefreshIfOpen();
+
+        private void RefreshIfOpen()
         {
             if (_root != null && _root.activeInHierarchy) Refresh();
         }
@@ -113,9 +143,56 @@ namespace SocialUniverse.UI
             if (centeredPanel < 0 || centeredPanel >= _cards.Count) return;
             _centeredDroneId = _cards[centeredPanel].DroneId;
             if (_scrollSnap != null) _scrollSnap.StartingPanel = centeredPanel;
+            UpdateArrows(centeredPanel);
+            UpdateBuyButton();
         }
 
-        private void OnUnlockSlot() => EventBus.Publish(new DroneSlotUnlockRequestedEvent());
+        // An arrow with nowhere to go reads as a broken button: none before the first card, none
+        // after the last.
+        private void UpdateArrows(int centeredPanel)
+        {
+            if (_scrollSnap == null) return;
+            if (_scrollSnap.PreviousButton != null) _scrollSnap.PreviousButton.gameObject.SetActive(centeredPanel > 0);
+            if (_scrollSnap.NextButton     != null) _scrollSnap.NextButton.gameObject.SetActive(centeredPanel < _cards.Count - 1);
+        }
+
+        // Re-derived at click time so it acts on the card centered now, not when the label was drawn.
+        // Drone and slot purchases are confirmed in the popup; its Confirm sends the request.
+        private void OnBuy()
+        {
+            var state = CenteredBuyState(out string droneId);
+            if (!state.Visible || _purchaseModal == null) return;
+
+            DronePurchase purchase;
+            if (state.UnlocksSlot)
+            {
+                purchase = DronePurchase.ForSlot(state.Cost, _fleet.UnlockedSlots);
+            }
+            else
+            {
+                var def = _registry.GetDrone(droneId);
+                purchase = DronePurchase.ForDrone(def.DroneId, def.DisplayName, def.Tier, def.Icon, state.Cost);
+            }
+
+            _pendingPurchase = purchase;
+            _purchaseModal.Open(DronePurchasePrompt.Confirm(purchase, _wallet?.Coins ?? 0), purchase.Icon,
+                DronePurchasePrompt.Busy, () => RequestPurchase(purchase));
+        }
+
+        private static void RequestPurchase(DronePurchase purchase)
+        {
+            if (purchase.IsSlot) EventBus.Publish(new DroneSlotUnlockRequestedEvent());
+            else                 EventBus.Publish(new DroneAcquireRequestedEvent { DroneId = purchase.DroneId });
+        }
+
+        // The popup is busy only between its Confirm and this result, so any other result is ignored.
+        private void OnPurchaseCompleted(DronePurchaseCompletedEvent e)
+        {
+            if (_purchaseModal == null || !_purchaseModal.IsBusy || e.DroneId != _pendingPurchase.DroneId) return;
+
+            if (e.Success) _purchaseModal.ShowSuccess(DronePurchasePrompt.Success(_pendingPurchase));
+            else           _purchaseModal.ShowFailure(e.Message);
+        }
 
         private void Refresh()
         {
@@ -127,7 +204,14 @@ namespace SocialUniverse.UI
             if (!DroneCardPlan.SameCards(_cards, plan)) RebuildCards(plan);
 
             BindCards();
-            UpdateSlotLabel();
+            UpdateHeader();
+            UpdateBuyButton();
+        }
+
+        private void UpdateHeader()
+        {
+            if (_balanceLabel != null) _balanceLabel.text = $"{(_wallet != null ? _wallet.Coins : 0)}";
+            if (_fleetLabel   != null) _fleetLabel.text   = $"Fleet {_fleet.Drones.Count}/{_fleet.UnlockedSlots}";
         }
 
         // Only when the card set changed: tear the carousel down, re-add it, and put the player back
@@ -164,12 +248,11 @@ namespace SocialUniverse.UI
             _scrollSnap.StartingPanel = index;
             _scrollSnap.GoToPanel(index);
             _centeredDroneId = _cards[index].DroneId;
+            UpdateArrows(index);
         }
 
         private void BindCards()
         {
-            bool slotsAvailable = _fleet.Drones.Count < _fleet.UnlockedSlots;
-
             for (int i = 0; i < _cards.Count && i < _cardViews.Count; i++)
             {
                 var card = _cardViews[i];
@@ -183,7 +266,7 @@ namespace SocialUniverse.UI
                     if (drone == null) continue;
 
                     var def = drone.Definition;
-                    card.BindOwned(def.Icon, $"{def.DisplayName} (T{def.Tier})", droneId == _fleet.ActiveDroneId,
+                    card.BindOwned(def.Icon, def.DisplayName, def.Tier, droneId == _fleet.ActiveDroneId,
                         () => EventBus.Publish(new SetActiveDroneRequestedEvent { DroneId = droneId }),
                         BuildStatVms(drone, droneId));
                 }
@@ -192,20 +275,42 @@ namespace SocialUniverse.UI
                     var def = _registry.GetDrone(droneId);
                     if (def == null) continue;
 
-                    bool canBuy = slotsAvailable && _wallet != null && _wallet.CanAfford(def.UnlockCost);
-                    card.BindAcquirable(def.Icon, $"{def.DisplayName} (T{def.Tier}) — {def.UnlockCost}", canBuy,
-                        () => EventBus.Publish(new DroneAcquireRequestedEvent { DroneId = droneId }),
+                    // No price on the card: the buy button below shows it, or the slot it needs first.
+                    card.BindAcquirable(def.Icon, def.DisplayName, def.Tier,
                         BuildComparison(def), DroneComparison.TierLine(def.Tier), TierDirection(def));
                 }
             }
         }
 
-        private void UpdateSlotLabel()
+        private void UpdateBuyButton()
         {
-            if (_unlockSlotLabel == null) return;
+            if (_buyButton == null) return;
 
-            int cost = DroneUpgradeMath.SlotUnlockCost(_config.SlotUnlockBaseCost, _config.SlotUnlockCostGrowth, _fleet.UnlockedSlots, _config.StartingFleetSlots);
-            _unlockSlotLabel.text = $"{cost}";
+            var state = CenteredBuyState(out _);
+            _buyButton.gameObject.SetActive(state.Visible);
+            if (!state.Visible) return;
+
+            _buyButton.interactable = state.Interactable;
+            if (_buyCaption != null) _buyCaption.text = DroneBuyButton.Caption(state);
+            if (_buyLabel   != null) _buyLabel.text   = $"{state.Cost}";
+        }
+
+        // Hidden (default) until a card is centered, e.g. before the first build.
+        private DroneBuyButtonState CenteredBuyState(out string droneId)
+        {
+            droneId = null;
+            if (_registry == null || _fleet == null || _config == null) return default;
+
+            int index = DroneCardPlan.IndexOf(_cards, _centeredDroneId);
+            if (index < 0) return default;
+
+            var def = _registry.GetDrone(_cards[index].DroneId);
+            if (def == null) return default;
+
+            droneId = def.DroneId;
+            int slotCost = DroneUpgradeMath.SlotUnlockCost(_config.SlotUnlockBaseCost, _config.SlotUnlockCostGrowth, _fleet.UnlockedSlots, _config.StartingFleetSlots);
+            return DroneBuyButton.For(_cards[index].Owned, def.UnlockCost, _fleet.Drones.Count, _fleet.UnlockedSlots, slotCost,
+                _wallet != null ? _wallet.Coins : 0);
         }
 
         private List<string> OwnedDroneIds()

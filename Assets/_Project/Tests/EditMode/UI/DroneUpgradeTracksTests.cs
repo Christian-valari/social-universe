@@ -32,7 +32,7 @@ namespace SocialUniverse.Tests
         {
             var (row, roots) = MakeRow();
 
-            row.BindOwned(null, "Scout", true, null, new List<DroneStatVm>
+            row.BindOwned(null, "Scout", 1, true, null, new List<DroneStatVm>
             {
                 new DroneStatVm(DroneStat.Yield, 1, 10, 100, false, true, null),
                 new DroneStatVm(DroneStat.Speed, 0, 10, 40,  false, true, null),
@@ -48,7 +48,7 @@ namespace SocialUniverse.Tests
         {
             var (row, roots) = MakeRow();
 
-            row.BindAcquirable(null, "Titan", true, null, new List<DroneStatDeltaVm>
+            row.BindAcquirable(null, "Titan", 5, new List<DroneStatDeltaVm>
             {
                 new DroneStatDeltaVm("Yield", "1.0x", "3.0x", DeltaDirection.Up),
                 new DroneStatDeltaVm("Speed", "5", "6", DeltaDirection.Up),

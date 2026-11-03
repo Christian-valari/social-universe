@@ -41,8 +41,8 @@ namespace SocialUniverse.App
             _config        = config;
         }
 
-        // PlanetSceneBootstrapper awaits one RefreshAndApplyAsync() call directly
-        // (see HydrateServerStateAsync) before publishing SceneReadyEvent, so
+        // PlanetSceneBootstrapper loads the registry (RefreshAsync, retried until it
+        // loads) and paints it (ApplyOwnership) before publishing SceneReadyEvent, so
         // other players' tile ownership is painted before the LoadingScreen
         // unloads — without this, tiles owned by other players briefly show as
         // Available. The poll loop below waits a full interval before its own
@@ -68,11 +68,15 @@ namespace SocialUniverse.App
             }
         }
 
+        // Reads the planet's registry; a failed read throws.
+        public Task RefreshAsync() => _registry.RefreshAsync(_planet.name);
+
+        // One poll: a failed read is logged and the tiles keep their last known owners.
         public async Task RefreshAndApplyAsync()
         {
             try
             {
-                await _registry.RefreshAsync(_planet.name);
+                await RefreshAsync();
                 ApplyOwnership();
             }
             catch (Exception ex)
@@ -81,7 +85,7 @@ namespace SocialUniverse.App
             }
         }
 
-        private void ApplyOwnership()
+        public void ApplyOwnership()
         {
             string localPlayerId = _auth.IsSignedIn ? _auth.PlayerId : null;
 

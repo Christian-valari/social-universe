@@ -25,6 +25,7 @@ namespace SocialUniverse.UI
         [SerializeField] private TMP_Text _refillLabel;
         [SerializeField] private TMP_Text _statusText;
         [SerializeField] private Button   _closeButton;
+        [SerializeField] private RectTransform _window;   // the panel that pops in and out (PopupTransition)
 
         [Inject] private FuelSystem    _fuelSystem;
         [Inject] private PlayerState   _playerState;
@@ -36,6 +37,9 @@ namespace SocialUniverse.UI
         private float  _syncedFuel;
         private double _syncRealtime;
         private bool   _refilling;
+
+        private PopupTransition _transition;
+        private PopupTransition Transition => _transition != null ? _transition : _transition = PopupTransition.On(gameObject, _window);
 
         private void Awake()
         {
@@ -64,7 +68,7 @@ namespace SocialUniverse.UI
             _refillLabel.text = $"Refill ({_config.FuelRefillCost} coins)";
             _rechargeRateText.text = $"+{_config.FuelRechargePerHour:0.#} fuel / hour";
             _audio.PlaySfx(SfxId.OpenPanel);
-            gameObject.SetActive(true);
+            Transition.Show();
             Refresh();
             SyncFromServer();
         }
@@ -72,7 +76,7 @@ namespace SocialUniverse.UI
         public void Close()
         {
             _audio.PlaySfx(SfxId.Cancel);
-            gameObject.SetActive(false);
+            Transition.Hide();
         }
 
         // Countdown and predicted fuel drift each frame; wallet affordability has

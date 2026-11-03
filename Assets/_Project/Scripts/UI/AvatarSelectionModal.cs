@@ -24,6 +24,7 @@ namespace SocialUniverse.UI
         [SerializeField] private Button    _avatarButtonPrefab;  // Button + Image, one avatar tile; starts inactive
         [SerializeField] private TMP_Text  _statusText;
         [SerializeField] private Button    _closeButton;          // optional; hidden during onboarding
+        [SerializeField] private RectTransform _window;   // the panel that pops in and out (PopupTransition)
 
         [Inject] private PlayerState      _playerState;
         [Inject] private ProfileService   _profiles;
@@ -35,6 +36,9 @@ namespace SocialUniverse.UI
 
         private readonly List<(Button Button, string AvatarId)> _entries = new();
         private bool _built;
+
+        private PopupTransition _transition;
+        private PopupTransition Transition => _transition != null ? _transition : _transition = PopupTransition.On(gameObject, _window);
 
         private void Awake()
         {
@@ -56,7 +60,7 @@ namespace SocialUniverse.UI
                 _avatarPreview.sprite = currentAvatar.Sprite;
             
             _audio.PlaySfx(SfxId.OpenPanel);
-            gameObject.SetActive(true);
+            Transition.Show();
         }
 
         public void OpenForOnboarding()
@@ -77,7 +81,7 @@ namespace SocialUniverse.UI
         public void Close()
         {
             if (_onboarding) return;
-            gameObject.SetActive(false);
+            Transition.Hide();
         }
 
         private void BuildGrid()

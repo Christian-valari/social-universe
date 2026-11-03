@@ -38,6 +38,30 @@ namespace SocialUniverse.Social
             _chat    = chat;
         }
 
+        // True once the server's block list has been pulled for the signed-in player (SetBlockList,
+        // or any BlockUser reply, which carries the whole list).
+        public bool HasBlockList { get; private set; }
+
+        // Replaces the cached block list with the server's (Cloud Save "blocked_users", pulled after
+        // sign-in by App.BlockListSync), so blocks made on another device apply here too.
+        public void SetBlockList(IEnumerable<string> blockedIds)
+        {
+            _blocked.Clear();
+            if (blockedIds != null)
+                foreach (var id in blockedIds)
+                    if (!string.IsNullOrEmpty(id)) _blocked.Add(id);
+            HasBlockList = true;
+        }
+
+        // This service is app-wide and outlives a sign-out: forget the signed-out player's blocks
+        // and mutes so the next account on this device starts clean.
+        public void Reset()
+        {
+            _blocked.Clear();
+            _muted.Clear();
+            HasBlockList = false;
+        }
+
         public bool IsBlocked(string playerId) => playerId != null && _blocked.Contains(playerId);
         public bool IsMuted(string playerId)   => playerId != null && _muted.Contains(playerId);
 
@@ -95,6 +119,7 @@ namespace SocialUniverse.Social
             {
                 _blocked.Clear();
                 foreach (var id in serverList) _blocked.Add(id);
+                HasBlockList = true;
             }
             if (ensure != null) _blocked.Add(ensure);
         }

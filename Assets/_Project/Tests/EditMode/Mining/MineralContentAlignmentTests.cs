@@ -69,6 +69,20 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
+        public void Rarity_means_scarcity_and_rises_with_tier()
+        {
+            // AsteroidSpawner.DistributeFieldSize gives each type (1 - Rarity) weight, so a higher
+            // rarity must mean a scarcer asteroid: every asteroid of a higher tier is rarer than
+            // every asteroid of a lower tier.
+            var asteroids = _registry.AllAsteroids.ToList();
+            foreach (var low in asteroids)
+            foreach (var high in asteroids)
+                if (low.Tier < high.Tier)
+                    Assert.Less(low.Rarity, high.Rarity,
+                        $"{low.name} (T{low.Tier}, rarity {low.Rarity}) should be more common than {high.name} (T{high.Tier}, rarity {high.Rarity})");
+        }
+
+        [Test]
         public void Tier_four_and_five_drones_have_something_to_mine()
         {
             int maxAsteroidTier = _registry.AllAsteroids.Max(a => a.Tier);

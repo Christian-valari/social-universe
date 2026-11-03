@@ -15,12 +15,15 @@ namespace SocialUniverse.Core
         public const string DailyStreak   = "daily_streak";
         public const string Inventory     = "inventory";
         public const string IdleMiningSession = "idle_mining_session";
+        // Legacy PlayerPrefs key: respawn timers now come from the server's claim log
+        // (GetAsteroidRespawns); AsteroidSpawner deletes what older builds left here.
         public const string AsteroidRespawns = "asteroid_respawns";
         public const string AuthSession    = "auth_session_player_id";
         public const string MusicVolume    = "settings_music_volume";
         public const string SfxVolume      = "settings_sfx_volume";
         public const string MineralInventory = "mineral_inventory";
         public const string DroneFleet        = "drone_fleet";
+        public const string BlockedUsers      = "blocked_users";
 
         // Returns the Cloud Save key for a planet's owned-tile list.
         public static string OwnedTilesKey(string planetId) => $"owned_tiles_{planetId.ToLowerInvariant()}";

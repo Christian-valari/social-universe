@@ -82,5 +82,45 @@ namespace SocialUniverse.Tests
             _reports.MutePlayer("loud_guy", false);
             Assert.IsFalse(_reports.IsMuted("loud_guy"));
         }
+
+        // The server's block list (Cloud Save "blocked_users") is pulled after sign-in, so a block made
+        // on another device — or before the app restarted — filters chat here too.
+        [Test]
+        public void SetBlockList_replaces_the_cached_list_with_the_servers()
+        {
+            _reports.SetBlockList(new[] { "old_block" });
+
+            _reports.SetBlockList(new[] { "griefer_42", "spammer_7" });
+
+            Assert.IsTrue(_reports.HasBlockList);
+            Assert.IsTrue(_reports.IsBlocked("griefer_42"));
+            Assert.IsTrue(_reports.IsBlocked("spammer_7"));
+            Assert.IsFalse(_reports.IsBlocked("old_block"));
+        }
+
+        [Test]
+        public void HasBlockList_is_false_until_the_servers_list_is_pulled()
+        {
+            Assert.IsFalse(_reports.HasBlockList);
+
+            _reports.SetBlockList(new string[0]);
+
+            Assert.IsTrue(_reports.HasBlockList);
+        }
+
+        // ReportService outlives a sign-out (it is app-wide), so the next account on this device must
+        // not inherit the previous one's blocks or mutes.
+        [Test]
+        public void Reset_forgets_the_signed_out_players_blocks_and_mutes()
+        {
+            _reports.SetBlockList(new[] { "griefer_42" });
+            _reports.MutePlayer("loud_guy", true);
+
+            _reports.Reset();
+
+            Assert.IsFalse(_reports.IsBlocked("griefer_42"));
+            Assert.IsFalse(_reports.IsMuted("loud_guy"));
+            Assert.IsFalse(_reports.HasBlockList);
+        }
     }
 }

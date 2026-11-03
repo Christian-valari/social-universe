@@ -17,17 +17,17 @@ namespace SocialUniverse.Mining
         [SerializeField] private GameObject _destroyVfxPrefab;
         [SerializeField] private float      _destroyVfxLifetime = 2f;
 
-        [Inject] private DatabaseRegistry _registry;
         [Inject] private EconomyConfig    _config;
 
         private readonly List<Asteroid>       _active  = new();
-        // Pending respawns for ALL planets. Timers are per planet: only the current planet's
-        // entries reduce/reserve its field or respawn into it; other planets' entries are kept
-        // (and persisted) until that planet is loaded again.
+        // The current planet's emptied slots waiting to respawn: what the server's claim log reported
+        // when the field was spawned (GetAsteroidRespawns — claims made on any device), plus this
+        // session's own claims. Nothing is kept on the device; the next load asks the server again
+        // (docs/superpowers/plans/2026-10-18-cloud-synced-planet-data.md).
         private readonly List<PendingRespawn> _pending = new();
 
-        // Planet the field was last spawned for (SpawnForPlanet); stamped on new claims.
-        private string _currentPlanetId;
+        // The current planet's asteroid types: EnsureSlot only ever spawns one of these.
+        private AsteroidDefinition[] _currentTypes = Array.Empty<AsteroidDefinition>();
 
         public IReadOnlyList<Asteroid> ActiveAsteroids => _active;
 
@@ -39,7 +39,7 @@ namespace SocialUniverse.Mining
             {
                 DateTime? next = null;
                 foreach (var p in _pending)
-                    if (IsCurrentPlanet(p) && (next == null || p.RespawnAtUtc < next.Value))
+                    if (next == null || p.RespawnAtUtc < next.Value)
                         next = p.RespawnAtUtc;
                 return next;
             }
@@ -47,7 +47,6 @@ namespace SocialUniverse.Mining
 
         private struct PendingRespawn
         {
-            public string             PlanetId;
             public AsteroidDefinition Definition;
             public string             SlotId;
             public DateTime           RespawnAtUtc;
@@ -107,17 +106,15 @@ namespace SocialUniverse.Mining
             return counts;
         }
 
-        public void SpawnForPlanet(PlanetDefinition planet)
+        // respawns: the planet's slots the server says are still waiting to respawn (GetAsteroidRespawns);
+        // null or empty spawns the whole field.
+        public void SpawnForPlanet(PlanetDefinition planet, IReadOnlyList<AsteroidRespawn> respawns = null)
         {
             ClearAll();
-            _currentPlanetId = planet.PlanetId;
-            LoadPendingRespawns();
-
-            // The current planet's EXPIRED entries are no longer pending: drop them and let the
-            // normal fill below spawn them, so the field size stays exact.
-            var now = DateTime.UtcNow;
-            if (_pending.RemoveAll(p => IsCurrentPlanet(p) && now >= p.RespawnAtUtc) > 0)
-                SavePendingRespawns();
+            _pending.Clear();
+            _currentTypes = planet.AsteroidTypes ?? Array.Empty<AsteroidDefinition>();
+            ForgetDeviceRespawnTimers();
+            AddServerRespawns(respawns);
 
             if (planet.AsteroidTypes == null || planet.AsteroidTypes.Length == 0)
             {
@@ -131,7 +128,7 @@ namespace SocialUniverse.Mining
             {
                 var def          = planet.AsteroidTypes[t];
                 int targetCount  = counts[t];
-                int pendingCount = _pending.Count(p => IsCurrentPlanet(p) && p.Definition == def);
+                int pendingCount = _pending.Count(p => p.Definition == def);
                 int toSpawn      = Mathf.Max(0, targetCount - pendingCount);
 
                 // Pending (claimed, awaiting-respawn) asteroids can occupy ANY index, not just
@@ -141,7 +138,7 @@ namespace SocialUniverse.Mining
                 // already reserved, so a new spawn never collides with — or displaces — a
                 // pending entry's eventual respawn slot.
                 var reservedIndices = new HashSet<int>(
-                    _pending.Where(p => IsCurrentPlanet(p) && p.Definition == def)
+                    _pending.Where(p => p.Definition == def)
                             .Select(p => ParseSlotIndex(p.SlotId))
                             .Where(idx => idx >= 0));
 
@@ -155,7 +152,7 @@ namespace SocialUniverse.Mining
                 }
             }
 
-            SULog.Info($"AsteroidSpawner: spawned {_active.Count} asteroids ({_pending.Count(IsCurrentPlanet)} pending respawn)", SULog.Channel.Mining);
+            SULog.Info($"AsteroidSpawner: spawned {_active.Count} asteroids ({_pending.Count} pending respawn)", SULog.Channel.Mining);
         }
 
         public void ClearAll()
@@ -188,14 +185,14 @@ namespace SocialUniverse.Mining
 
             SpawnDestroyVfx(position);
 
+            // The server's claim log already has this claim (if it was granted), so a reload brings
+            // the same timer back from GetAsteroidRespawns; nothing is saved here.
             _pending.Add(new PendingRespawn
             {
-                PlanetId     = _currentPlanetId,
                 Definition   = definition,
                 SlotId       = slotId,
                 RespawnAtUtc = DateTime.UtcNow.AddHours(respawnHours)
             });
-            SavePendingRespawns();
 
             SULog.Info($"Asteroid '{definition.MineralType}' claimed — respawns in {respawnHours:0.#}h", SULog.Channel.Mining);
         }
@@ -210,28 +207,40 @@ namespace SocialUniverse.Mining
             return null;
         }
 
+        // A server-tracked idle run (started on any device) names its asteroid by slot. The slot may
+        // still be waiting to respawn here (a claim this session made, or a server timer that clock
+        // skew left running): drop that timer and spawn the slot now. Returns the slot's asteroid, or
+        // null when its type isn't one of the current planet's (or the id is malformed).
+        public Asteroid EnsureSlot(string slotId)
+        {
+            var live = FindBySlotId(slotId);
+            if (live != null) return live;
+
+            var definition = TypeOfSlot(slotId);
+            if (definition == null) return null;
+
+            _pending.RemoveAll(p => p.SlotId == slotId);
+
+            SULog.Info($"AsteroidSpawner: spawned {slotId} now for an idle run in progress", SULog.Channel.Mining);
+            return SpawnOne(definition, slotId);
+        }
+
         private void Update()
         {
             if (_pending.Count == 0) return;
 
-            var now     = DateTime.UtcNow;
-            bool changed = false;
+            var now = DateTime.UtcNow;
 
             for (int i = _pending.Count - 1; i >= 0; i--)
             {
-                // Other planets' expired entries stay persisted; they are resolved when that
-                // planet is loaded (SpawnForPlanet).
-                if (!IsCurrentPlanet(_pending[i]) || now < _pending[i].RespawnAtUtc) continue;
+                if (now < _pending[i].RespawnAtUtc) continue;
 
                 SpawnOne(_pending[i].Definition, _pending[i].SlotId);
                 _pending.RemoveAt(i);
-                changed = true;
             }
-
-            if (changed) SavePendingRespawns();
         }
 
-        private void SpawnOne(AsteroidDefinition def, string slotId)
+        private Asteroid SpawnOne(AsteroidDefinition def, string slotId)
         {
             GameObject go;
             if (def.ModelPrefab != null)
@@ -251,6 +260,7 @@ namespace SocialUniverse.Mining
             var asteroid = go.AddComponent<Asteroid>();
             asteroid.Initialize(def, slotId, _config.AsteroidYieldRollMin, _config.AsteroidYieldRollMax);
             _active.Add(asteroid);
+            return asteroid;
         }
 
         private Vector3 RandomOrbitPoint() => UnityEngine.Random.onUnitSphere * _orbitRadius;
@@ -263,8 +273,6 @@ namespace SocialUniverse.Mining
             Destroy(vfx, _destroyVfxLifetime);
         }
 
-        private bool IsCurrentPlanet(PendingRespawn p) => p.PlanetId == _currentPlanetId;
-
         // Extracts the numeric index from a "{mineral}#{index}" SlotId. Returns -1 if the
         // slot ID is null/malformed rather than throwing, so a corrupt persisted entry just
         // fails to reserve an index instead of breaking the whole spawn pass.
@@ -275,41 +283,47 @@ namespace SocialUniverse.Mining
             return int.TryParse(slotId.Substring(hashIdx + 1), out int idx) ? idx : -1;
         }
 
-        private void LoadPendingRespawns()
+        // The current planet's asteroid type a "{mineralType}#{index}" slot id names, or null if the
+        // id is malformed or names a type this planet doesn't have.
+        private AsteroidDefinition TypeOfSlot(string slotId)
         {
-            _pending.Clear();
+            int hashIdx = slotId?.LastIndexOf('#') ?? -1;
+            if (hashIdx <= 0 || ParseSlotIndex(slotId) < 0) return null;
 
-            var raw = PlayerPrefs.GetString(SaveKeys.AsteroidRespawns, "");
-            if (string.IsNullOrEmpty(raw)) return;
+            string mineralType = slotId.Substring(0, hashIdx);
+            return Array.Find(_currentTypes, t => t != null && t.MineralType == mineralType);
+        }
 
-            // Format: "{planetId}|{mineralType}|{slotId}|{unixSeconds}" joined by ';'. Legacy
-            // 3-part entries (no planet id, pre-claim-budget) are dropped — they can't be
-            // attributed to a planet, and no build writing them has shipped.
-            foreach (var entry in raw.Split(';', StringSplitOptions.RemoveEmptyEntries))
+        // A slot this planet can't hold is skipped, and one already due is left to the normal fill. A
+        // slot reported twice (claimed, brought back for an idle run, claimed again) is one empty
+        // slot, back when its later timer ends.
+        private void AddServerRespawns(IReadOnlyList<AsteroidRespawn> respawns)
+        {
+            if (respawns == null) return;
+
+            var now = DateTime.UtcNow;
+            foreach (var r in respawns)
             {
-                var parts = entry.Split('|');
-                if (parts.Length != 4 || string.IsNullOrEmpty(parts[0])
-                    || !long.TryParse(parts[3], out var unixSeconds)) continue;
-
-                var definition = _registry.GetAsteroid(parts[1]);
+                if (r == null || r.SecondsLeft <= 0f) continue;
+                var definition = TypeOfSlot(r.SlotId);
                 if (definition == null) continue;
 
-                _pending.Add(new PendingRespawn
-                {
-                    PlanetId     = parts[0],
-                    Definition   = definition,
-                    SlotId       = parts[2],
-                    RespawnAtUtc = DateTimeOffset.FromUnixTimeSeconds(unixSeconds).UtcDateTime
-                });
+                var respawnAt = now.AddSeconds(r.SecondsLeft);
+                int existing  = _pending.FindIndex(p => p.SlotId == r.SlotId);
+                if (existing >= 0 && _pending[existing].RespawnAtUtc >= respawnAt) continue;
+
+                var entry = new PendingRespawn { Definition = definition, SlotId = r.SlotId, RespawnAtUtc = respawnAt };
+                if (existing >= 0) _pending[existing] = entry;
+                else               _pending.Add(entry);
             }
         }
 
-        private void SavePendingRespawns()
+        // Builds before cloud-synced respawns kept the timers in this device's PlayerPrefs, shared by
+        // every account on it. The server's claim log replaced them, so the leftover is deleted.
+        private static void ForgetDeviceRespawnTimers()
         {
-            var serialized = string.Join(";", _pending.Select(p =>
-                $"{p.PlanetId}|{p.Definition.MineralType}|{p.SlotId}|{new DateTimeOffset(p.RespawnAtUtc).ToUnixTimeSeconds()}"));
-
-            PlayerPrefs.SetString(SaveKeys.AsteroidRespawns, serialized);
+            if (!PlayerPrefs.HasKey(SaveKeys.AsteroidRespawns)) return;
+            PlayerPrefs.DeleteKey(SaveKeys.AsteroidRespawns);
             PlayerPrefs.Save();
         }
     }

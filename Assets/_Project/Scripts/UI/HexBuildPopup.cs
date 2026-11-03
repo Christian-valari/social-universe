@@ -13,8 +13,12 @@ namespace SocialUniverse.UI
         [SerializeField] private TMP_Text   _message;
         [SerializeField] private Button      _confirm;
         [SerializeField] private Button      _cancel;
+        [SerializeField] private RectTransform _window;   // the panel that pops in and out (PopupTransition)
 
         private Action _onConfirm;
+
+        private PopupTransition _transition;
+        private PopupTransition Transition => _transition != null ? _transition : _transition = PopupTransition.On(_root, _window);
 
         private void Awake()
         {
@@ -27,13 +31,13 @@ namespace SocialUniverse.UI
         {
             if (_message != null) _message.text = message;
             _onConfirm = onConfirm;
-            if (_root != null) _root.SetActive(true);
+            if (_root != null) Transition.Show();
         }
 
         public void Hide()
         {
             _onConfirm = null;
-            if (_root != null) _root.SetActive(false);
+            if (_root != null) Transition.Hide();
         }
     }
 }

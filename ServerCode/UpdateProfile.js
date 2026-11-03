@@ -6,7 +6,7 @@
 // ChatModerationFilter check is only fast feedback.
 // BLOCKED_WORDS / CHAR_MAP / MAX_DISPLAY_NAME_LENGTH must match
 // SocialConfig.BlockedWords / ChatModerationFilter / MaxDisplayNameLength —
-// same "must match" pattern as ModerateMessage.js (Cloud Code modules deploy
+// same "must match" pattern as the other ServerCode catalogs (Cloud Code modules deploy
 // as standalone files, so the filter is duplicated rather than required).
 // AVATAR_IDS must match the 25 AvatarDefinition assets registered on
 // DatabaseRegistry (see docs/superpowers/plans/2026-07-06-avatar-selection.md).
@@ -48,6 +48,7 @@ function isClean(text) {
  * @param {string} [params.avatarId] - New avatar id, must be one of AVATAR_IDS.
  */
 module.exports = async ({ params, context, logger }) => {
+  await requireActiveSession(context, params.sessionId);
   const hasDisplayName = params.displayName !== undefined && params.displayName !== null;
   const hasAvatarId    = params.avatarId    !== undefined && params.avatarId    !== null;
 
@@ -79,18 +80,38 @@ module.exports = async ({ params, context, logger }) => {
   const { projectId, playerId } = context;
   const saveApi = new DataApi(context);
 
-  let profile = {};
-  try {
-    const res  = await saveApi.getItems(projectId, playerId, [PROFILE_KEY]);
-    const item = res.data.results.find(r => r.key === PROFILE_KEY);
-    if (item?.value) profile = typeof item.value === "string" ? JSON.parse(item.value) : item.value;
-  } catch (_) { /* no profile yet */ }
+  // Only the fields sent change, on a fresh read, under the record's writeLock: a name change and an
+  // avatar change racing each other (two devices, or two quick saves) both survive. A failed read
+  // throws — a profile rebuilt from nothing would wipe the fields not sent.
+  let profile = null;
+  for (let attempt = 0; attempt < 3 && !profile; attempt++) {
+    let current = {}, writeLock;
+    try {
+      const res  = await saveApi.getItems(projectId, playerId, [PROFILE_KEY]);
+      const item = res.data.results.find(r => r.key === PROFILE_KEY);
+      if (item) writeLock = item.writeLock;
+      if (item?.value) current = typeof item.value === "string" ? JSON.parse(item.value) : item.value;
+    } catch (err) {
+      if ((err?.response?.status ?? err?.status) !== 404) throw err;
+    }
 
-  if (hasDisplayName) profile.displayName = displayName;
-  if (hasAvatarId)    profile.avatarId    = avatarId;
-  profile.updatedMs = Date.now();
+    if (hasDisplayName) current.displayName = displayName;
+    if (hasAvatarId)    current.avatarId    = avatarId;
+    current.updatedMs = Date.now();
 
-  await saveApi.setItem(projectId, playerId, { key: PROFILE_KEY, value: profile });
+    try {
+      await saveApi.setItem(projectId, playerId,
+        writeLock ? { key: PROFILE_KEY, value: current, writeLock } : { key: PROFILE_KEY, value: current });
+      profile = current;
+    } catch (err) {
+      if ((err?.response?.status ?? err?.status) !== 409) throw err;
+      logger.warn(`UpdateProfile: write conflict for ${playerId} (attempt ${attempt + 1}), re-reading`);
+    }
+  }
+  if (!profile) {
+    logger.warn(`UpdateProfile: gave up for ${playerId} after 3 write conflicts`);
+    return { success: false, reason: "CONFLICT", displayName: null, avatarId: null };
+  }
 
   logger.info(`UpdateProfile: ${playerId} → displayName=${profile.displayName ?? "(unchanged)"} avatarId=${profile.avatarId ?? "(unchanged)"}`);
   return {
@@ -99,4 +120,31 @@ module.exports = async ({ params, context, logger }) => {
     displayName: profile.displayName ?? null,
     avatarId: profile.avatarId ?? null
   };
+};
+
+// ---- active session check (copy verbatim into every deployed script; ActiveSessionGuardTests keeps the copies identical) ----
+// ClaimSession records the latest sign-in's session in the Protected active_session item. A call
+// naming any other session, or none, comes from a replaced or signed-out device. A failed read
+// throws rather than letting the call through.
+async function requireActiveSession(context, sessionId) {
+  const { DataApi } = require("@unity-services/cloud-save-1.4");
+  const { projectId, playerId } = context;
+  let current;
+  try {
+    const res = await new DataApi(context).getProtectedItems(projectId, playerId, ["active_session"]);
+    current = res.data.results.find(r => r.key === "active_session")?.value?.sessionId;
+  } catch (e) {
+    if (e?.response?.status !== 404) throw e;
+  }
+  if (!sessionId || sessionId !== current) throw Error("SESSION_REPLACED");
+}
+// ---- end active session check
+
+// Parameter declarations for the UGS CLI / Cloud Code (types only: each script validates its own
+// inputs and returns reasons the client understands). Must stay after `module.exports = ...`,
+// which would otherwise overwrite it. Pinned by ServerCodeDeployTests.
+module.exports.params = {
+  displayName: "String",
+  avatarId: "String",
+  sessionId: "String"
 };

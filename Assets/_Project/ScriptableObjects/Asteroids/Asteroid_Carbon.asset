@@ -16,6 +16,6 @@ MonoBehaviour:
   _mineralType: Carbon
   _tier: 1
   _baseYield: 65
-  _rarity: 0.65
+  _rarity: 0.2
   _coinsPerUnit: 3
   _modelPrefab: {fileID: 3928328115301425343, guid: 87d45b88039f23045a3ed5e9b8efb454, type: 3}

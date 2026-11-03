@@ -1,0 +1,6 @@
+{
+  "$schema": "https://ugs-config-schemas.unity3d.com/v1/economy/economy-currency.schema.json",
+  "name": "Stardust",
+  "initial": 10,
+  "max": 999999999
+}

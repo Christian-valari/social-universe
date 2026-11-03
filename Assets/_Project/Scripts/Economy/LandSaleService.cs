@@ -36,6 +36,8 @@ namespace SocialUniverse.Economy
 
         public async Task<LandSaleResult> SellAsync(string tileId, PlanetDefinition planet)
         {
+            // Informational only: SellLand.js grants its own round(LAND_PRICES × RESALE_RATE) (Known
+            // Issue #19) and just logs a mismatch. LandPriceAlignmentTests keeps the two equal.
             int refund = (int)Math.Round(_config.BaseLandPrice * planet.LandPriceMultiplier * _config.LandResaleRate);
 
             LandSaleResult result;

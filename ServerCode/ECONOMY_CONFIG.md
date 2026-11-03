@@ -16,6 +16,13 @@ called for that player — no Cloud Code grant is needed for starting funds.
 | `COINS` | Coins | Currency | **500** | 999,999,999 | Soft currency. Matches `EconomyConfig.StartingCoins`. Earned via mining, spent on land/upgrades. |
 | `STARDUST` | Stardust | Currency | **10** | 999,999,999 | Premium currency. Matches `EconomyConfig.StartingStardust`. Granted via `GrantStardust`, spent on premium purchases. |
 
+## Deploying
+
+The values are mirrored in `ServerCode/Economy/COINS.ecc` and `STARDUST.ecc`, which
+`ServerCodeDeployTests` checks against `EconomyConfig`. **They are not deployed automatically:**
+UGS CLI 2.0.0 has no Economy support (its `deploy` skips `.ecc` files), so create the currencies
+with the steps below.
+
 ## Dashboard setup steps
 
 1. Open the project in [Unity Cloud Dashboard](https://cloud.unity.com) → **Economy** → **Currencies**.

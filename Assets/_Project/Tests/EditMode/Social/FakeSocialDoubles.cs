@@ -53,6 +53,7 @@ namespace SocialUniverse.Tests
         public string CalledFunction;
         public Dictionary<string, object> CalledArgs;
         public readonly List<string> AllCalledFunctions = new();
+        public string SessionId { get; set; }
 
         public ReportResult        ReportResponse;
         public BlockResult         BlockResponse;

@@ -16,6 +16,6 @@ MonoBehaviour:
   _mineralType: Nickel
   _tier: 2
   _baseYield: 40
-  _rarity: 0.35
+  _rarity: 0.45
   _coinsPerUnit: 10
   _modelPrefab: {fileID: 6799882452520803160, guid: 0e293dda4c9adbc419f7b54bc09aa3f4, type: 3}

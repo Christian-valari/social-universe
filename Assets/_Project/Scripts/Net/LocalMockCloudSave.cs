@@ -23,6 +23,10 @@ namespace SocialUniverse.Net
             return defaultValue;
         }
 
+        // The mock has no access classes: server-written records live in the same store.
+        public Task<T> LoadProtectedAsync<T>(string key, T defaultValue = default) =>
+            LoadAsync(key, defaultValue);
+
         public async Task DeleteAsync(string key)
         {
             await Task.Delay(50);

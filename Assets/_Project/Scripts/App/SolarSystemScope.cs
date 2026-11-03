@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VContainer;
@@ -52,6 +54,7 @@ namespace SocialUniverse.App
                 builder.Register<SceneLoader>(Lifetime.Singleton);
                 builder.Register<LocalMockBackendClient>(Lifetime.Singleton).As<IBackendClient>();
                 builder.Register<ServerTime>(Lifetime.Singleton);
+                builder.RegisterInstance(new PlayerDataSyncPolicy(required: false)); // mock backend answers nothing
 
                 builder.RegisterInstance(_audioConfig != null ? _audioConfig : ScriptableObject.CreateInstance<AudioConfig>());
                 builder.Register<AudioSettingsService>(Lifetime.Singleton).As<IAudioSettingsService>();
@@ -87,13 +90,16 @@ namespace SocialUniverse.App
         private readonly IEconomyService _economy;
         private readonly SceneLoader     _sceneLoader;
         private readonly IAudioManager   _audio;
+        private readonly PlayerDataSyncPolicy _syncPolicy;
 
-        public SolarSystemBootstrapper(FuelSystem fuel, IEconomyService economy, SceneLoader sceneLoader, IAudioManager audio)
+        public SolarSystemBootstrapper(FuelSystem fuel, IEconomyService economy, SceneLoader sceneLoader, IAudioManager audio,
+            PlayerDataSyncPolicy syncPolicy)
         {
             _fuel        = fuel;
             _economy     = economy;
             _sceneLoader = sceneLoader;
             _audio       = audio;
+            _syncPolicy  = syncPolicy;
         }
 
         public async void Start()
@@ -106,25 +112,15 @@ namespace SocialUniverse.App
 
             _audio.PlaySolarSystemBgm();
 
+            // Fuel and wallet from the server, retried until they load (PlayerDataPull).
             EventBus.Publish(new LoadingStatusEvent(0.3f));
-            try
-            {
-                await _fuel.RefreshAsync();
-            }
-            catch (System.Exception ex)
-            {
-                SULog.Warn($"SolarSystemBootstrapper: fuel hydration failed ({ex.Message}), using local state", SULog.Channel.Travel);
-            }
-
-            EventBus.Publish(new LoadingStatusEvent(0.7f));
-            try
-            {
-                await _economy.GetWalletAsync();
-            }
-            catch (System.Exception ex)
-            {
-                SULog.Warn($"SolarSystemBootstrapper: wallet hydration failed ({ex.Message}), using local state", SULog.Channel.Travel);
-            }
+            await PlayerDataPull.RunAsync(new (string, Func<Task>)[]
+                {
+                    ("fuel",   () => _fuel.RefreshAsync()),
+                    ("wallet", () => _economy.GetWalletAsync()),
+                },
+                _syncPolicy.Required, _syncPolicy.AskToRetry,
+                progress => EventBus.Publish(new LoadingStatusEvent(Mathf.Lerp(0.3f, 0.9f, progress))));
 
             EventBus.Publish(new SceneReadyEvent());
         }

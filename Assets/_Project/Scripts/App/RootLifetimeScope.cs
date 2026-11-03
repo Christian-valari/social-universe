@@ -48,6 +48,11 @@ namespace SocialUniverse.App
 
             builder.Register<ServerTime>(Lifetime.Singleton);
 
+            // With the real backend the game goes on only once the player's server data has loaded
+            // (PlayerDataPull retries a failed read behind SyncRetryDialogView); dev-mode mocks answer
+            // with nothing, so there a scene opens with defaults as before.
+            builder.RegisterInstance(new PlayerDataSyncPolicy(required: !_devMode, SocialUniverse.UI.SyncRetryDialogView.ShowAsync));
+
             // M4 social layer (app-wide: chat, friends, DMs, profiles span scenes).
             builder.RegisterInstance(_socialConfig);
             builder.Register<ChatModerationFilter>(Lifetime.Singleton);
@@ -55,6 +60,7 @@ namespace SocialUniverse.App
             builder.Register<ChatChannelController>(Lifetime.Singleton);
             builder.Register<DirectMessageService>(Lifetime.Singleton);
             builder.Register<ProfileService>(Lifetime.Singleton);
+            builder.Register<BlockListSync>(Lifetime.Singleton);
 
             // Audio settings: local device preference, spans scenes like the
             // other app-wide singletons above.
@@ -71,6 +77,7 @@ namespace SocialUniverse.App
 
             builder.RegisterEntryPoint<SocialServicesInitializer>();
             builder.RegisterEntryPoint<AudioEventBridge>();
+            builder.RegisterEntryPoint<ActiveSessionController>();
 
             // Dev-only: optional, present only if a CloudCodeTestHarness is in the scene hierarchy.
             builder.RegisterComponentInHierarchy<CloudCodeTestHarness>();

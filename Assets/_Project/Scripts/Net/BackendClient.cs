@@ -11,9 +11,12 @@ namespace SocialUniverse.Net
         private const int MaxRetries   = 3;
         private const int RetryDelayMs = 1000;
 
+        public string SessionId { get; set; }
+
         public async Task<T> CallAsync<T>(string function, Dictionary<string, object> args = null)
         {
-            args ??= new Dictionary<string, object>();
+            args = args == null ? new Dictionary<string, object>() : new Dictionary<string, object>(args);
+            if (SessionId != null) args["sessionId"] = SessionId;
             Exception lastEx = null;
 
             for (int attempt = 0; attempt < MaxRetries; attempt++)
@@ -27,6 +30,15 @@ namespace SocialUniverse.Net
                     lastEx = ex;
                     SULog.Warn($"BackendClient: transient error on '{function}' (attempt {attempt + 1}/{MaxRetries}): {ex.Message}", SULog.Channel.Net);
                     await Task.Delay(RetryDelayMs * (attempt + 1));
+                }
+                // Every deployed function rejects a call whose session is not the account's active
+                // one (requireActiveSession): this account signed in on another device.
+                catch (CloudCodeException ex) when (ex.Reason == CloudCodeExceptionReason.ScriptError && ex.Message.Contains("SESSION_REPLACED"))
+                {
+                    SULog.Warn($"BackendClient: '{function}' rejected — this account is now active on another device", SULog.Channel.Net);
+                    SessionId = null;
+                    EventBus.Publish(new SessionReplacedEvent());
+                    throw;
                 }
                 catch (CloudCodeException ex)
                 {

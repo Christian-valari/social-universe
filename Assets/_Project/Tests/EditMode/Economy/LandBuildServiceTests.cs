@@ -14,6 +14,7 @@ namespace SocialUniverse.Tests
         // Set ThrowThis to simulate a network/backend failure instead of returning a result.
         private class FakeBackendClient : IBackendClient
         {
+            public string SessionId { get; set; }
             public string LastFunction;
             public Dictionary<string, object> LastArgs;
             public object NextResult;

@@ -22,6 +22,7 @@ namespace SocialUniverse.UI
         [SerializeField] private Button         _confirmButton;
         [SerializeField] private Button         _cancelButton;
         [SerializeField] private TMP_Text       _statusText;
+        [SerializeField] private RectTransform _window;   // the panel that pops in and out (PopupTransition)
 
         [Inject] private IAuthService   _auth;
         [Inject] private PlayerState    _playerState;
@@ -30,6 +31,9 @@ namespace SocialUniverse.UI
         [Inject] private IAudioManager  _audio;
 
         private bool _onboarding;
+
+        private PopupTransition _transition;
+        private PopupTransition Transition => _transition != null ? _transition : _transition = PopupTransition.On(gameObject, _window);
 
         private void Awake()
         {
@@ -49,7 +53,7 @@ namespace SocialUniverse.UI
         {
             _onboarding = true;
             if (_cancelButton != null) _cancelButton.gameObject.SetActive(false);
-            gameObject.SetActive(true);
+            Transition.Show();
             _audio.PlaySfx(SfxId.OpenPanel);
             _nameInput.text  = "";   // force the player to choose a name
             _statusText.text = "Choose a display name to get started";
@@ -59,7 +63,7 @@ namespace SocialUniverse.UI
         {
             if (_onboarding) return;
             _audio.PlaySfx(SfxId.Cancel);
-            gameObject.SetActive(false);
+            Transition.Hide();
         }
 
         private async void OnConfirmClicked()

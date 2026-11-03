@@ -9,6 +9,11 @@ namespace SocialUniverse.Core
     // implementation stays in Net.
     public interface IBackendClient
     {
+        // The account's active session on this device (ClaimSession.js), sent with every call;
+        // set by AuthService on sign-in, cleared on sign-out or when the server reports
+        // SESSION_REPLACED (see SessionReplacedEvent).
+        string SessionId { get; set; }
+
         Task<T> CallAsync<T>(string function, Dictionary<string, object> args = null);
         Task    CallAsync(string function, Dictionary<string, object> args = null);
     }

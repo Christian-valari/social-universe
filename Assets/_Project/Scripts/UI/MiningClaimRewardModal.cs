@@ -17,9 +17,13 @@ namespace SocialUniverse.UI
         [SerializeField] private Image    _mineralIcon;
         [SerializeField] private TMP_Text _rewardText;
         [SerializeField] private Button   _collectButton;
+        [SerializeField] private RectTransform _window;   // the panel that pops in and out (PopupTransition)
 
         [Inject] private DatabaseRegistry _registry;
         [Inject] private IAudioManager    _audio;
+
+        private PopupTransition _transition;
+        private PopupTransition Transition => _transition != null ? _transition : _transition = PopupTransition.On(gameObject, _window);
 
         private void Awake()
         {
@@ -35,13 +39,13 @@ namespace SocialUniverse.UI
             _rewardText.text = $"{def?.DisplayName ?? mineralId}  +{quantity}";
 
             _audio?.PlaySfx(SfxId.CoinsReward);
-            gameObject.SetActive(true);
+            Transition.Show();
         }
 
         public void Close()
         {
             _audio?.PlaySfx(SfxId.Confirm);
-            gameObject.SetActive(false);
+            Transition.Hide();
         }
     }
 }

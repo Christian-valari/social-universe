@@ -103,5 +103,18 @@ namespace SocialUniverse.Tests
             foreach (var p in _registry.AllPlanets)
                 Assert.LessOrEqual(p.AsteroidFieldSize, fieldSize, $"{p.PlanetId} field is larger than FIELD_SIZE");
         }
+
+        // GetAsteroidRespawns turns ValidateMining's claim log into respawn timers, so both must agree
+        // with the client on how long an emptied slot stays empty.
+        [Test]
+        public void GetAsteroidRespawns_respawn_hours_match_config()
+        {
+            string path = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "ServerCode", "GetAsteroidRespawns.js"));
+            Assert.IsTrue(File.Exists(path), $"Expected to find GetAsteroidRespawns.js at {path}");
+            var m = Regex.Match(File.ReadAllText(path), @"const\s+RESPAWN_HOURS\s*=\s*(?<v>[0-9]+(\.[0-9]+)?)");
+            Assert.IsTrue(m.Success, "Could not find RESPAWN_HOURS in GetAsteroidRespawns.js");
+
+            Assert.AreEqual(_config.AsteroidRespawnHours, float.Parse(m.Groups["v"].Value, CultureInfo.InvariantCulture), 1e-6f);
+        }
     }
 }

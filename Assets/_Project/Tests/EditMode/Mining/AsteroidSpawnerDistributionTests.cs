@@ -61,13 +61,9 @@ namespace SocialUniverse.Tests
             Assert.AreEqual(new[] { 7 }, counts);
         }
 
-        // ── SpawnForPlanet fixture (respawn timers are persisted in the editor PlayerPrefs) ──
-
-        private const string CurrentPlanetId = "earth";
-        private const string OtherPlanetId   = "jupiter";
+        // ── SpawnForPlanet fixture (respawn timers come from the server: GetAsteroidRespawns) ──
 
         private AsteroidDefinition _ironDef;
-        private DatabaseRegistry   _registry;
         private PlanetDefinition   _planet;
         private EconomyConfig      _config;
         private GameObject         _spawnerGo;
@@ -82,11 +78,9 @@ namespace SocialUniverse.Tests
             SetField(_ironDef, "_mineralType", "Iron");
             SetField(_ironDef, "_baseYield", 10);
 
-            _registry = ScriptableObject.CreateInstance<DatabaseRegistry>();
-            SetField(_registry, "_asteroids", new[] { _ironDef });
 
             _planet = ScriptableObject.CreateInstance<PlanetDefinition>();
-            SetField(_planet, "_planetId", CurrentPlanetId);
+            SetField(_planet, "_planetId", "earth");
             SetField(_planet, "_asteroidTypes", new[] { _ironDef });
             SetField(_planet, "_asteroidFieldSize", 3);
 
@@ -94,7 +88,6 @@ namespace SocialUniverse.Tests
 
             _spawnerGo = new GameObject("TestSpawner");
             _spawner   = _spawnerGo.AddComponent<AsteroidSpawner>();
-            SetField(_spawner, "_registry", _registry);
             SetField(_spawner, "_config", _config);
         }
 
@@ -104,32 +97,39 @@ namespace SocialUniverse.Tests
             PlayerPrefs.DeleteKey(SaveKeys.AsteroidRespawns);
             Object.DestroyImmediate(_spawnerGo);
             Object.DestroyImmediate(_planet);
-            Object.DestroyImmediate(_registry);
             Object.DestroyImmediate(_ironDef);
             Object.DestroyImmediate(_config);
         }
 
-        // A future RespawnAtUtc keeps an entry pending for the duration of a test —
-        // AsteroidSpawner.Update() (which would eventually respawn it) never runs in an
-        // EditMode test since there's no play-mode frame loop.
-        private static long FarFutureUnixSeconds() => System.DateTimeOffset.UtcNow.AddHours(4).ToUnixTimeSeconds();
+        // What GetAsteroidRespawns reports for a slot claimed in the last few hours. A positive
+        // SecondsLeft keeps the entry pending for the whole test — AsteroidSpawner.Update() (which
+        // would eventually respawn it) never runs in an EditMode test.
+        private static AsteroidRespawn Respawn(string slotId, float secondsLeft = 3600f) =>
+            new AsteroidRespawn { SlotId = slotId, MineralId = "iron", SecondsLeft = secondsLeft };
 
         private List<string> ActiveSlotIds() => _spawner.ActiveAsteroids.Select(a => a.SlotId).ToList();
 
-        // Regression test for a SlotId collision bug: SpawnForPlanet used to assume pending
-        // (claimed, awaiting-respawn) asteroids always occupy the lowest contiguous indices
-        // [0, pendingCount). In reality a player can claim ANY asteroid of a type. Repro:
-        // field has Iron#0, Iron#1, Iron#2; the player claims Iron#2 (not the lowest index),
-        // leaving it pending. On the next SpawnForPlanet (e.g. after an app restart), the new
-        // spawns must land on Iron#0 and Iron#1 — never re-using Iron#2 (which would collide
-        // with the pending entry's eventual respawn) and never skipping Iron#0 (which would
-        // silently orphan anything keyed to that slot, e.g. a persisted idle-mining session).
+        // A slot the server says was claimed (on this device or any other) stays empty until it
+        // respawns, so every device shows the same field.
+        [Test]
+        public void SpawnForPlanet_leaves_the_slots_the_server_reports_as_respawning_empty()
+        {
+            _spawner.SpawnForPlanet(_planet, new[] { Respawn("Iron#1", secondsLeft: 600f) });
+
+            CollectionAssert.AreEquivalent(new[] { "Iron#0", "Iron#2" }, ActiveSlotIds());
+            Assert.IsTrue(_spawner.NextRespawnUtc.HasValue, "the server's timer drives the HUD countdown");
+            Assert.AreEqual(600, (_spawner.NextRespawnUtc.Value - System.DateTime.UtcNow).TotalSeconds, 5,
+                "the countdown is the server's time left, not a device-side estimate");
+        }
+
+        // Regression test for a SlotId collision bug: pending (claimed, awaiting-respawn) asteroids
+        // can occupy ANY index — a player can claim any asteroid of a type, not only the lowest one.
+        // New spawns must land on the free indices, never on the pending slot (which would collide
+        // with its eventual respawn) and never skipping a lower free index.
         [Test]
         public void SpawnForPlanet_does_not_collide_with_a_pending_respawn_at_a_non_lowest_index()
         {
-            PlayerPrefs.SetString(SaveKeys.AsteroidRespawns, $"{CurrentPlanetId}|Iron|Iron#2|{FarFutureUnixSeconds()}");
-
-            _spawner.SpawnForPlanet(_planet);
+            _spawner.SpawnForPlanet(_planet, new[] { Respawn("Iron#2") });
 
             var activeSlotIds = ActiveSlotIds();
             Assert.AreEqual(2, activeSlotIds.Count, "field size 3 minus 1 pending should spawn 2 live asteroids");
@@ -138,70 +138,66 @@ namespace SocialUniverse.Tests
             CollectionAssert.Contains(activeSlotIds, "Iron#0",
                 "the lower, unclaimed index must not be silently skipped");
             CollectionAssert.Contains(activeSlotIds, "Iron#1");
-            Assert.IsTrue(_spawner.NextRespawnUtc.HasValue, "the current planet's pending entry drives the HUD countdown");
-        }
-
-        // Respawn timers are per planet: an asteroid claimed on Jupiter must not reduce — or
-        // later respawn into — Earth's field, or the server rejects the resulting claims
-        // (MINERAL_NOT_ON_PLANET / BUDGET_EXHAUSTED).
-        [Test]
-        public void SpawnForPlanet_ignores_a_pending_respawn_belonging_to_another_planet()
-        {
-            PlayerPrefs.SetString(SaveKeys.AsteroidRespawns, $"{OtherPlanetId}|Iron|Iron#2|{FarFutureUnixSeconds()}");
-
-            _spawner.SpawnForPlanet(_planet);
-
-            CollectionAssert.AreEquivalent(new[] { "Iron#0", "Iron#1", "Iron#2" }, ActiveSlotIds(),
-                "the current field must be exactly AsteroidFieldSize, unaffected by another planet's timer");
-            Assert.IsNull(_spawner.NextRespawnUtc, "another planet's timer must not drive this planet's HUD countdown");
         }
 
         [Test]
-        public void Another_planets_pending_respawn_survives_a_spawn_and_a_save()
+        public void SpawnForPlanet_fills_a_slot_whose_respawn_is_already_due()
         {
-            long other = FarFutureUnixSeconds();
-            PlayerPrefs.SetString(SaveKeys.AsteroidRespawns, $"{OtherPlanetId}|Iron|Iron#2|{other}");
+            _spawner.SpawnForPlanet(_planet, new[] { Respawn("Iron#2", secondsLeft: 0f) });
 
-            _spawner.SpawnForPlanet(_planet);
-            _spawner.ScheduleRespawn(_spawner.FindBySlotId("Iron#0"), 4f); // triggers a save
-
-            var saved = PlayerPrefs.GetString(SaveKeys.AsteroidRespawns, "");
-            StringAssert.Contains($"{OtherPlanetId}|Iron|Iron#2|{other}", saved,
-                "other planets' timers must be persisted untouched");
-            StringAssert.Contains($"{CurrentPlanetId}|Iron|Iron#0|", saved,
-                "a new claim is stamped with the current planet id");
-        }
-
-        [Test]
-        public void Legacy_three_part_entry_is_dropped()
-        {
-            PlayerPrefs.SetString(SaveKeys.AsteroidRespawns, $"Iron|Iron#2|{FarFutureUnixSeconds()}");
-
-            _spawner.SpawnForPlanet(_planet);
-
-            CollectionAssert.AreEquivalent(new[] { "Iron#0", "Iron#1", "Iron#2" }, ActiveSlotIds(),
-                "a legacy entry (no planet id) must not reserve a slot");
+            CollectionAssert.AreEquivalent(new[] { "Iron#0", "Iron#1", "Iron#2" }, ActiveSlotIds());
             Assert.IsNull(_spawner.NextRespawnUtc);
-
-            _spawner.ScheduleRespawn(_spawner.FindBySlotId("Iron#1"), 4f); // triggers a save
-            var entries = PlayerPrefs.GetString(SaveKeys.AsteroidRespawns, "").Split(';');
-            Assert.AreEqual(1, entries.Length, "the legacy entry must not be re-persisted");
-            StringAssert.StartsWith($"{CurrentPlanetId}|Iron|Iron#1|", entries[0]);
         }
 
-        [Test]
-        public void Current_planets_expired_entry_is_no_longer_pending()
+        // A slot whose asteroid type isn't on this planet (or a malformed id) can't be placed, so it
+        // must not shrink the field.
+        [TestCase("Gold#0")]
+        [TestCase("Iron")]
+        [TestCase(null)]
+        public void SpawnForPlanet_ignores_a_respawn_it_cannot_place_on_this_planet(string slotId)
         {
-            long past = System.DateTimeOffset.UtcNow.AddHours(-1).ToUnixTimeSeconds();
-            PlayerPrefs.SetString(SaveKeys.AsteroidRespawns, $"{CurrentPlanetId}|Iron|Iron#2|{past}");
+            _spawner.SpawnForPlanet(_planet, new[] { Respawn(slotId) });
+
+            CollectionAssert.AreEquivalent(new[] { "Iron#0", "Iron#1", "Iron#2" }, ActiveSlotIds());
+            Assert.IsNull(_spawner.NextRespawnUtc);
+        }
+
+        // A slot can appear twice in the server's log (claimed, brought back for an idle run, claimed
+        // again): it is one empty slot, ready when the later claim's timer ends.
+        [Test]
+        public void SpawnForPlanet_counts_a_slot_reported_twice_once_using_the_later_respawn()
+        {
+            _spawner.SpawnForPlanet(_planet, new[] { Respawn("Iron#1", 300f), Respawn("Iron#1", 900f) });
+
+            CollectionAssert.AreEquivalent(new[] { "Iron#0", "Iron#2" }, ActiveSlotIds());
+            Assert.AreEqual(900, (_spawner.NextRespawnUtc.Value - System.DateTime.UtcNow).TotalSeconds, 5);
+        }
+
+        // Respawn timers used to live in this device's PlayerPrefs (shared by every account on it).
+        // They are neither read nor kept: the server's claim log is the only source.
+        [Test]
+        public void SpawnForPlanet_ignores_and_deletes_the_old_device_respawn_timers()
+        {
+            long future = System.DateTimeOffset.UtcNow.AddHours(4).ToUnixTimeSeconds();
+            PlayerPrefs.SetString(SaveKeys.AsteroidRespawns, $"earth|Iron|Iron#2|{future}");
 
             _spawner.SpawnForPlanet(_planet);
 
-            CollectionAssert.AreEquivalent(new[] { "Iron#0", "Iron#1", "Iron#2" }, ActiveSlotIds(),
-                "an expired entry is resolved by the normal fill, keeping the field size exact");
+            CollectionAssert.AreEquivalent(new[] { "Iron#0", "Iron#1", "Iron#2" }, ActiveSlotIds());
             Assert.IsNull(_spawner.NextRespawnUtc);
-            Assert.AreEqual("", PlayerPrefs.GetString(SaveKeys.AsteroidRespawns, ""),
-                "the resolved entry must be removed from persistence");
+            Assert.IsFalse(PlayerPrefs.HasKey(SaveKeys.AsteroidRespawns));
+        }
+
+        [Test]
+        public void ScheduleRespawn_keeps_the_slot_empty_without_saving_anything_on_the_device()
+        {
+            _spawner.SpawnForPlanet(_planet);
+
+            _spawner.ScheduleRespawn(_spawner.FindBySlotId("Iron#0"), 4f);
+
+            CollectionAssert.AreEquivalent(new[] { "Iron#1", "Iron#2" }, ActiveSlotIds());
+            Assert.IsTrue(_spawner.NextRespawnUtc.HasValue);
+            Assert.IsFalse(PlayerPrefs.HasKey(SaveKeys.AsteroidRespawns), "the server's claim log records the claim");
         }
     }
 }

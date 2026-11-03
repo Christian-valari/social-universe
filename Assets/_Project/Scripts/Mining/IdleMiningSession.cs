@@ -22,17 +22,24 @@ namespace SocialUniverse.Mining
         // traveling there, since the travel already conceptually happened off-screen.
         public bool WasRestored { get; }
 
+        // True when the run lives on the server (StartIdleMining), so any device can show and claim
+        // it and its claim names the slot so the server ends it. False for a legacy session restored
+        // from an older build's PlayerPrefs, which stays on this device.
+        public bool IsServerTracked { get; }
+
         public float MiningProgress01 =>
             Mathf.Clamp01((float)(DateTime.UtcNow - StartUtc).TotalSeconds / DurationSeconds);
 
         public event Action<IdleMiningStage> OnStageChanged;
 
-        public IdleMiningSession(Asteroid asteroid, DateTime startUtc, float durationSeconds, bool restored = false)
+        public IdleMiningSession(Asteroid asteroid, DateTime startUtc, float durationSeconds, bool restored = false,
+            bool serverTracked = false)
         {
             Asteroid        = asteroid;
             StartUtc        = startUtc;
             DurationSeconds = Mathf.Max(0.01f, durationSeconds);
             WasRestored     = restored;
+            IsServerTracked = serverTracked;
             Stage           = HasDurationElapsed() ? IdleMiningStage.ReadyToClaim : IdleMiningStage.Traveling;
         }
 

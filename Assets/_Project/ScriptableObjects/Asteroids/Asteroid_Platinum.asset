@@ -16,6 +16,6 @@ MonoBehaviour:
   _mineralType: Platinum
   _tier: 3
   _baseYield: 25
-  _rarity: 0.18
+  _rarity: 0.65
   _coinsPerUnit: 22
   _modelPrefab: {fileID: 3834735827108266822, guid: 7c2a78fa23eee4d47930e469f414925a, type: 3}

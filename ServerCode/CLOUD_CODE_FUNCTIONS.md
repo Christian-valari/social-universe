@@ -2,9 +2,144 @@
 
 Combined reference of all `ServerCode/` functions for review. Each function is deployed to
 Unity Gaming Services Cloud Code as its own module (filename = function name). This document
-is **not** a deployment artifact — see the individual `.js` files for that.
+is **not** a deployment artifact — see the individual `.js` files for that (deploy them with
+`./ServerCode/deploy.ps1`, see `docs/deploy-runbook.md`). The code blocks below omit the
+`module.exports.params` declarations each `.js` now ends with.
 
 Modules used: `@unity-services/economy-2.5`, `@unity-services/cloud-save-1.4`.
+
+**Cloud Save access classes (Known Issue #16).** Records the server trusts are in the
+**Protected** class — the player can read them, only Cloud Code can write them — and are accessed
+with `getProtectedItems` / `setProtectedItem` (same positional args as `getItems` / `setItem`):
+`drone_fleet`, `mineral_inventory`, `current_planet`, `mining_claim_log`, `fuel_state`,
+`travel_state` and `owned_tiles_<planet>`. The client reads them with
+`ICloudSave.LoadProtectedAsync`. Player-written records (`player_profile`, `blocked_users`) stay in
+the Default class. `ServerCodeAccessClassTests` fails if a protected key goes through
+`getItems`/`setItem`. Some code blocks below predate this; the `.js` files are authoritative.
+
+**Land registry writes (Known Issue #19).** `land_registry` is one Custom Data item per planet
+holding every tile, so every writer (`PurchaseLand`, `SellLand`, `ClaimYield`, `RecordVisit`,
+`ApplyUpkeep`, `PlaceBuild`, `MoveBuild`, `RemoveBuild`, `PurchaseHexatile`) reads and writes it
+only through the shared `loadRegistry`/`updateRegistry` helper block: the write carries the
+`writeLock` it read, a 409 re-runs the validation on a fresh read (up to 3 attempts, then
+`CONFLICT`), and any registry change is written *before* coins move, with a rollback if the coin
+call fails. `LandRegistryLockTests` keeps the copies identical and fails on any registry access
+outside them.
+
+**Single active session (Known Issue #20).** One account is in active use on one device at a
+time; the newest sign-in wins. The Protected item `active_session` = `{ sessionId, claimedAt }`
+holds the current device's session. `ClaimSession` writes it on every fresh sign-in and
+`ReleaseSession` clears it on logout. Every other deployed script starts with
+`await requireActiveSession(context, params.sessionId);` (a shared block, copied verbatim): a
+missing or non-current `sessionId` throws `SESSION_REPLACED`, and a failed read throws. The client
+(`BackendClient`) sends `sessionId` with every call and signs the device out on that error.
+`ActiveSessionGuardTests` keeps the block identical in every deployed script and checks that it is
+the handler's first `await`. **New scripts must include it**, and declare `sessionId: "String"`.
+Design: `docs/superpowers/plans/2026-10-15-single-active-session.md`.
+
+**Cross-device consistency (Known Issue #21).** Every read-modify-write of a player record works the
+same way:
+- **The write passes the `writeLock` it read** — the record's revision.
+- **A 409 means another request wrote first** (another device, or a second call from the same one).
+  The change is re-applied to a fresh read, up to 3 times, then the call returns `CONFLICT`.
+- **A failed read throws** rather than reading as "no record". An empty profile, block list or
+  fleet built from a read error would otherwise overwrite the real one, and a failed fuel read
+  would refill the tank.
+
+Where it applies:
+- **`drone_fleet`:** written only through the shared `drone_fleet access` block in the four drone
+  functions. Coins are charged first and refunded if the change doesn't land.
+- **`owned_tiles_<planet>`:** written only through the `owned_tiles access` block in
+  `PurchaseLand` / `SellLand`. `PlayerRecordLockTests` keeps both blocks identical.
+- **Inline in `UpdateProfile`, `BlockUser` and `StartTravel`.** `StartTravel` also refuses while
+  any trip is unlanded — in flight or arrived, from any device — and takes its origin from
+  `current_planet`.
+- **`GetCurrentPlanet`** also returns `travelTargetId`, so signing in on any device resumes an
+  unlanded trip.
+
+**Limit:** Cloud Save has no create-only write, so a record's very first write carries no lock.
+Design: `docs/superpowers/plans/2026-10-15-cross-device-data-consistency.md`.
+
+---
+
+## ClaimSession
+
+Claims or confirms the account's single active session. `AuthService` calls it on every sign-in,
+before any other function, and `ActiveSessionController` calls it every 60 s in game.
+
+- **No `sessionId`** (a fresh sign-in): writes `active_session` with a new id
+  (`context.correlationId`) and returns that id as a string. This one unconditional write replaces
+  any other device's session. With two simultaneous sign-ins the last write wins, so exactly one
+  stays valid.
+- **With `sessionId`** (the client's periodic check): read-only. It
+  returns the same id if that session is still current, and throws `SESSION_REPLACED` otherwise.
+
+**Parameters:** `sessionId` (`String`, optional). Code: `ClaimSession.js`.
+
+---
+
+## ReleaseSession
+
+Explicit logout (`AuthService.SignOutAsync`). If `active_session` still holds the caller's
+`sessionId`, it is overwritten with `{ sessionId: null, releasedAt }` under the record's
+`writeLock`. If another device claimed in between, the write gets a 409 and the newer session
+stays. A stale or missing id is a no-op. Returns nothing.
+
+**Parameters:** `sessionId` (`String`). Code: `ReleaseSession.js`.
+
+---
+
+## StartIdleMining
+
+Records the caller's idle mining run on the server, so any device the player signs in on can show
+and claim it. `MiningController.BeginIdleMiningAsync` awaits it before the drone leaves. Design:
+`docs/superpowers/plans/2026-10-15-server-tracked-idle-mining.md`.
+
+**Parameters:** `planetId`, `slotId` (the asteroid slot, `"{MineralType}#{index}"`), `mineralId`
+(`String`), `durationSec` (`Numeric`, the client's run length, in (0, 86400]), optional
+`replaceSlotId` (`String`), `sessionId`.
+
+**Record:** Protected `idle_mining_session`, one per player:
+`{ planetId, slotId, mineralId, startTs, durationSec }` (server clock), or `{ slotId: null, endedTs }`
+once ended. Written only by this function and `ValidateMining`, through a shared helper block whose
+write carries the record's `writeLock` (409 → re-decide on a fresh read, 3 attempts).
+
+**Response:** `{ success, reason?, planetId, slotId, mineralId, elapsedSeconds, durationSeconds }`
+(`IdleMiningSessionResult`).
+
+| Outcome | When |
+|---|---|
+| `success: true` | No run, or a run on another planet (which this one replaces) |
+| `ALREADY_MINING` + that run's fields | A run is already in progress on this planet — the client takes it over |
+| `success: true` (replace) | …unless `replaceSlotId` names that run: a client that can't place its asteroid replaces it instead of being locked out |
+| `WRONG_PLANET` | `current_planet` is recorded and differs. With no record the start is accepted and the planet is **not** pinned |
+| `INVALID_PARAMS` | a missing/oversized name or a bad duration |
+| `CONFLICT` | 3 write conflicts in a row |
+
+Readiness is not enforced: the claim budget in `ValidateMining` is the reward bound.
+
+---
+
+## GetIdleMining
+
+The caller's run in progress, read at every Planet load (`PlanetSceneBootstrapper`). Pure read, so
+`BackendRetryPolicy` retries it. **Parameters:** `sessionId`. **Response:** `{ success: true,
+planetId, slotId, mineralId, elapsedSeconds, durationSeconds }`, or `{ success: true }` for none.
+`elapsedSeconds` is on the server clock. A 404 means none; any other read failure throws.
+
+---
+
+## GetAsteroidRespawns
+
+Which of a planet's asteroid slots the caller emptied in the last `RESPAWN_HOURS` (4), on any
+device, read at every Planet load so every device shows the same field
+(`docs/superpowers/plans/2026-10-18-cloud-synced-planet-data.md`). Pure read of the Protected
+`mining_claim_log` that `ValidateMining` writes (one `{ ts, slotId, mineralId }` entry per granted
+claim; `ValidateMining` takes the slot from its optional `slotId`, else `idleSlotId`). **Parameters:**
+`planetId`, `sessionId`. **Response:** `{ success: true, respawns: [{ slotId, mineralId, secondsLeft
+}] }` — `secondsLeft` is an integer on the server clock. Entries with no slot (malformed, or bare
+timestamps logged before slots were recorded) still count toward the claim budget but are left out.
+A 404 means none; any other read failure throws.
 
 ---
 
@@ -227,6 +362,9 @@ its contract. Design: `docs/superpowers/specs/2026-09-29-mining-claim-budget-des
 | `planetId` | `string` | Yes | Planet the claim was mined on (`PlanetDefinition._planetId`). |
 | `mineralId` | `string` | Yes | Mineral mined (`MineralDefinition._mineralId`). |
 | `claimedQty` | `number` (integer) | Yes | Units the client computed. Positive integer; clamped server-side. |
+| `slotId` | `string` | No | Asteroid slot the claim emptied (`"Iron#1"`). Stored in the claim's `mining_claim_log` entry (`{ ts, slotId, mineralId }`) so `GetAsteroidRespawns` can report it to every device; `idleSlotId` is used when absent, and a malformed slot is stored as `null`. |
+| `forfeit` | `boolean` | No | `true` for a failed active-mining minigame: `planetId`, `mineralId` and a valid `slotId` are checked (planet, mineral on planet — not the drone tier), one budget entry is logged for the slot, nothing is granted and the planet is never pinned. Answers `{ granted: 0, mineralId, reason: "FORFEITED" }`; no usable slot → `INVALID_PARAMS`. `claimedQty` is not needed. |
+| `idleSlotId` | `string` | No | Slot of the server-tracked idle run this claim collects (see `StartIdleMining`). Once the claim has an answer (grant or rejection) the run is ended if it still names this planet and slot; a claim that throws leaves it. Ending is best effort (logged, never fails the claim). |
 
 `sessionDurationSec`, `unitsPerSec` and `claimedCoins` are no longer read.
 
@@ -236,7 +374,7 @@ its contract. Design: `docs/superpowers/specs/2026-09-29-mining-claim-budget-des
 | Reason | When |
 |---|---|
 | `INVALID_PARAMS` | `planetId` / `mineralId` missing, or `claimedQty` not a positive integer |
-| `WRONG_PLANET` | `planetId` differs from the player's `current_planet` record (a missing record accepts the claimed planet) |
+| `WRONG_PLANET` | `planetId` differs from the player's `current_planet` record. A player with no record has never landed via `LandTravel`, so the first valid claim pins `current_planet` to its planet |
 | `MINERAL_NOT_ON_PLANET` | the mineral is not one of that planet's asteroid minerals (or the planet is unknown) |
 | `TIER_TOO_LOW` | the mineral's asteroid tier exceeds the saved fleet's active drone tier |
 | `BUDGET_EXHAUSTED` | the player already has 6 claims on this planet in the last 4 hours |
@@ -247,8 +385,8 @@ An accepted claim grants `min(claimedQty, ceil(ceil(baseYield × 1.2) × effecti
 **`mining_claim_log` record** (player Cloud Save): `{ [planetId]: number[] }` — claim timestamps in
 ms, pruned to the last 4 hours on each write. A slot is reserved (under the record's `writeLock`,
 409 → retry up to 3 attempts) before minerals are granted, and released if the grant fails.
-Like `current_planet` and `drone_fleet`, it is still in the player-writable access class (Known
-Issue #16).
+Like `current_planet`, `drone_fleet` and `mineral_inventory`, it is in the Protected access class, so
+the client cannot reset it (Known Issue #16).
 
 ---
 
@@ -321,11 +459,17 @@ module.exports = async ({ params, context, logger }) => {
 
 ## PurchaseLand
 
-Atomically validates ownership, deducts coins, records the purchase in the per-tile key,
-appends to the player's owned-tiles list so the client can restore state on next login, and
-updates the planet's global land registry (Custom Data) so other players see the new owner.
+Prices the tile **server-side** from `LAND_PRICES` (Known Issue #19), refuses any tile the planet's
+land registry already assigns (`OWNED_BY_OTHER`, or `ALREADY_OWNED` when it names the caller),
+claims the registry entry under its `writeLock` (a concurrent write re-reads; a concurrent buyer
+of the same tile makes this one `OWNED_BY_OTHER`), deducts coins (releasing the claim if that fails), records the purchase in the per-tile key and appends to the
+player's owned-tiles list so the client can restore state on next login.
 
-The registry entry written in step 5 is the schema v2 shape:
+`LAND_PRICES` is keyed by `PlanetDefinition.name` lowercased (the `planetId` every land function
+receives) and MUST MATCH `round(EconomyConfig.BaseLandPrice × PlanetDefinition.LandPriceMultiplier)`
+— `LandPriceAlignmentTests` checks every planet asset. Unknown planets return `UNKNOWN_PLANET`.
+
+The registry entry is the schema v2 shape:
 `{ ownerId, buildLevel, lastYieldClaimTs, lastUpkeepTs, visitCount }`. See `GetLandRegistry`,
 `PlaceBuild`, `ClaimYield`, `RecordVisit`, `ApplyUpkeep`, and `SellLand` for the other
 readers/writers of this entry.
@@ -335,117 +479,160 @@ readers/writers of this entry.
 | Name | Type | Required | Description |
 |---|---|---|---|
 | `tileId` | `string` | Yes | ID of the hex tile being purchased. |
-| `planetId` | `string` | Yes | ID of the planet the tile belongs to. |
-| `price` | `number` (integer) | Yes | Price of the tile in coins. Must be a positive integer. |
+| `planetId` | `string` | Yes | `PlanetDefinition.name` of the planet the tile belongs to. |
+| `price` | `number` (integer) | No | The client's displayed price. Never charged — a mismatch is only logged. |
+
+**Returns:** `{ success: true, newBalance }` or `{ success: false, reason }` — `PurchaseLandResponse`
+in `LandPurchaseService` has exactly `Success`, `Reason`, `NewBalance` (Known Issue #18).
 
 ```js
-// PurchaseLand — validates ownership, deducts coins, records per-tile ownership,
-// appends to the player's owned-tiles list so the client can restore state on login,
-// and updates the planet's global land registry so other players see the new owner.
+// PurchaseLand — prices the tile server-side (LAND_PRICES), refuses a tile the planet's land
+// registry already assigns to anyone, claims the registry entry under its writeLock, deducts
+// coins, records per-tile ownership and appends to the player's owned-tiles list so the client
+// can restore state on login. The registry is what other players see as the owner.
 // The registry entry is { ownerId, buildLevel, lastYieldClaimTs, lastUpkeepTs, visitCount } —
 // see GetLandRegistry, PlaceBuild, ClaimYield, RecordVisit, ApplyUpkeep, SellLand for readers/writers.
-// NOTE: the deduct -> record -> registry sequence is not transactional; see the
-// design caveat above.
+//
+// Known Issue #19: the price used to come from the client (`price`, any positive integer), so a
+// modified client bought land for 1 coin and SellLand refunded it at full rate. The client may
+// still send `price`; it is only compared against LAND_PRICES and logged when they differ.
+// The registry is claimed under its writeLock before coins move, so two buyers racing for one
+// tile can't both pay: the second write gets a 409, re-reads and answers OWNED_BY_OTHER. If the
+// deduction then fails the claim is released. Every registry writer uses the same locked
+// read-modify-write (updateRegistry below).
+//
+// FIX (Known Issue #6): constructors don't accept { headers: { Authorization: ... } }.
+// Economy: { accessToken } authenticates as the calling player. Cloud Save:
+// DataApi(context) uses the service token (required for both player-scoped
+// writes and custom/game data writes). getItems/setItem take positional args
+// (projectId, playerId, ...), not an options object. getPlayerCurrencyBalance
+// does not exist on CurrenciesApi — the read method is getPlayerCurrencies.
+// decrementPlayerCurrencyBalance requires a configAssignmentHash fetched via
+// ConfigurationApi before the write.
 const { CurrenciesApi, ConfigurationApi } = require("@unity-services/economy-2.5");
 const { DataApi: PlayerDataApi }          = require("@unity-services/cloud-save-1.4");
 
 const CURRENCY_ID  = "COINS";
 const REGISTRY_KEY = "land_registry";
 
+// MUST MATCH round(EconomyConfig._baseLandPrice × PlanetDefinition._landPriceMultiplier) for every
+// PlanetDefinition (LandPriceAlignmentTests). Keyed by the planet asset's name lowercased — the
+// client sends PlanetDefinition.name as `planetId` to every land function, and the registry's
+// customId is that same lowercased name. SellLand.js keeps an identical copy.
+const LAND_PRICES = {
+  planet_earth:   150,
+  planet_jupiter: 200,
+  planet_mars:    100,
+  planet_mercury: 80,
+  planet_moon:    120,
+  planet_neptune: 300,
+  planet_pluto:   500,
+  planet_saturn:  180,
+  planet_uranus:  250,
+  planet_venus:   100,
+};
+
 /**
  * @param {string} tileId - ID of the hex tile being purchased.
- * @param {string} planetId - ID of the planet the tile belongs to.
- * @param {number} price - Price of the tile in coins. Must be a positive integer.
+ * @param {string} planetId - PlanetDefinition.name of the planet the tile belongs to.
+ * @param {number} [price] - The client's displayed price. Informational only: never charged.
  */
 module.exports = async ({ params, context, logger }) => {
-  const { tileId, planetId, price } = params;
+  const { tileId, planetId, price: clientPrice } = params;
 
-  if (!tileId || !planetId || !Number.isInteger(price) || price <= 0) {
-    throw new Error("Invalid params: tileId, planetId, and price are required");
+  if (!tileId || !planetId) {
+    throw new Error("Invalid params: tileId and planetId are required");
+  }
+
+  const customId = planetId.toLowerCase();
+  const price    = LAND_PRICES[customId];
+  if (price === undefined) {
+    logger.warn(`PurchaseLand: no land price for planet ${planetId}`);
+    return { success: false, reason: "UNKNOWN_PLANET" };
+  }
+  if (clientPrice !== undefined && clientPrice !== price) {
+    logger.warn(`PurchaseLand: client price ${clientPrice} for ${planetId} differs from server price ${price}`);
   }
 
   const { projectId, playerId, accessToken } = context;
-
-  // FIX 1: constructors don't accept { headers: { Authorization: ... } }.
-  // Economy: { accessToken } authenticates as the calling player.
-  // Cloud Save: DataApi(context) uses the service token (required for both
-  // player-scoped writes and custom/game data writes).
   const econApi       = new CurrenciesApi({ accessToken });
   const config        = new ConfigurationApi({ accessToken });
   const saveApi       = new PlayerDataApi(context);
   const customDataApi = new PlayerDataApi(context); // same instance is fine; kept separate for clarity
 
   try {
-    const ownedKey = `owned_tiles_${planetId.toLowerCase()}`;
+    const ownedKey = `owned_tiles_${customId}`;
 
     // 1. Load the player's current owned-tiles list for this planet.
     let ownedTiles = [];
     try {
-      // FIX 2: getItems takes positional args (projectId, playerId, keys[]),
-      // not an options object.
-      const saveRes = await saveApi.getItems(projectId, playerId, [ownedKey]);
+      const saveRes = await saveApi.getProtectedItems(projectId, playerId, [ownedKey]);
       const item    = saveRes.data.results.find(r => r.key === ownedKey);
-      if (item && Array.isArray(item.value)) ownedTiles = item.value;
+      if (item && Array.isArray(item.value)) ownedTiles = item.value; // already parsed by Cloud Save
     } catch (_) { /* key doesn't exist yet */ }
 
     if (ownedTiles.includes(tileId)) {
       return { success: false, reason: "ALREADY_OWNED" };
     }
 
-    // 2. Validate balance.
-    // FIX 3: getPlayerCurrencyBalance does not exist on CurrenciesApi.
-    // The only read method is getPlayerCurrencies (returns all balances).
-    const balancesRes = await econApi.getPlayerCurrencies({ projectId, playerId });
-    const coins       = balancesRes.data.results.find(c => c.currencyId === CURRENCY_ID);
-    const balance     = coins ? coins.balance : 0;
+    // 2. Claim the tile in the planet's registry (Custom Data, shared across all players) so other
+    //    clients render it as "owned by other". The registry is the authority on who owns a tile:
+    //    any entry means it is taken — including one naming this player (e.g. an owned-tiles list
+    //    reset by the access-class migration), since buying it again would charge twice and wipe
+    //    its buildLevel. Balance is checked against the same read, before anything is written.
+    const now  = Date.now();
+    const step = await updateRegistry(customDataApi, projectId, customId, async registry => {
+      const existing = registry[tileId];
+      if (existing) {
+        return { write: false, reason: existing.ownerId === playerId ? "ALREADY_OWNED" : "OWNED_BY_OTHER" };
+      }
 
-    if (balance < price) {
-      return { success: false, reason: "INSUFFICIENT_FUNDS" };
+      const balancesRes = await econApi.getPlayerCurrencies({ projectId, playerId });
+      const coins       = balancesRes.data.results.find(c => c.currencyId === CURRENCY_ID);
+      if ((coins ? coins.balance : 0) < price) {
+        return { write: false, reason: "INSUFFICIENT_FUNDS" };
+      }
+
+      registry[tileId] = {
+        ownerId: playerId,
+        buildLevel: 0,
+        lastYieldClaimTs: now,
+        lastUpkeepTs: now,
+        visitCount: 0
+      };
+      return { write: true };
+    });
+    if (step.conflict) return { success: false, reason: "CONFLICT" };
+    if (!step.write)   return { success: false, reason: step.reason };
+
+    // 3. Deduct coins. configAssignmentHash is required by decrementPlayerCurrencyBalance.
+    //    If it fails (e.g. the balance dropped since step 2), release the claim.
+    let newBalance;
+    try {
+      const cfg = await config.getPlayerConfiguration({ projectId, playerId });
+      const configAssignmentHash = cfg.data.metadata.configAssignmentHash;
+
+      const deductRes = await econApi.decrementPlayerCurrencyBalance({
+        projectId,
+        playerId,
+        currencyId: CURRENCY_ID,
+        configAssignmentHash,
+        currencyModifyBalanceRequest: { currencyId: CURRENCY_ID, amount: price }
+      });
+      newBalance = deductRes.data.balance;
+    } catch (err) {
+      logger.error(`PurchaseLand: charge failed for ${playerId}; releasing tile ${tileId} on ${planetId}. ${err?.message}`);
+      await releaseClaim(customDataApi, projectId, customId, tileId, playerId, logger);
+      throw err;
     }
 
-    // 3. Deduct coins.
-    // FIX 4: fetch configAssignmentHash before any currency write (documented requirement).
-    // FIX 5: currencyModifyBalanceRequest must include currencyId in the body.
-    const cfg = await config.getPlayerConfiguration({ projectId, playerId });
-    const configAssignmentHash = cfg.data.metadata.configAssignmentHash;
-
-    const deductRes = await econApi.decrementPlayerCurrencyBalance({
-      projectId,
-      playerId,
-      currencyId: CURRENCY_ID,
-      configAssignmentHash,
-      currencyModifyBalanceRequest: { currencyId: CURRENCY_ID, amount: price }
-    });
-    const newBalance = deductRes.data.balance;
-
     // 4. Record per-tile ownership (for cross-player lookup in M3+).
-    // FIX 6: setItem takes positional args (projectId, playerId, { key, value }),
-    // not an options object with a nested `body` field.
     await saveApi.setItem(projectId, playerId, { key: `tile_${tileId}_owner`, value: playerId });
 
-    // 5. Append to the player's owned-tiles list so it can be restored on login.
+    // 5. Append to the player's owned-tiles list so it can be restored on login. Protected class:
+    //    the client reads it but can't write it (GetPlayerProfile counts it — Known Issue #16).
     ownedTiles.push(tileId);
-    await saveApi.setItem(projectId, playerId, { key: ownedKey, value: ownedTiles });
-
-    // 6. Update the planet's global land registry (Custom Data, shared across all
-    //    players) so other clients render this tile as "owned by other".
-    const customId = planetId.toLowerCase();
-    let registry = {};
-    try {
-      const regRes = await customDataApi.getCustomItems(projectId, customId, [REGISTRY_KEY]);
-      const item   = regRes.data.results.find(r => r.key === REGISTRY_KEY);
-      if (item?.value) registry = item.value;
-    } catch (_) { /* registry doesn't exist yet */ }
-
-    const now = Date.now();
-    registry[tileId] = {
-      ownerId:          playerId,
-      buildLevel:       0,
-      lastYieldClaimTs: now,
-      lastUpkeepTs:     now,
-      visitCount:       0
-    };
-    await customDataApi.setCustomItem(projectId, customId, { key: REGISTRY_KEY, value: registry });
+    await saveApi.setProtectedItem(projectId, playerId, { key: ownedKey, value: ownedTiles });
 
     logger.info(`PurchaseLand: player ${playerId} purchased tile ${tileId} on ${planetId} for ${price} → ${newBalance}`);
     return { success: true, newBalance };
@@ -454,6 +641,64 @@ module.exports = async ({ params, context, logger }) => {
     throw err;
   }
 };
+
+// Removes this player's claim on tileId (re-read under the lock: other tiles may have changed).
+async function releaseClaim(api, projectId, customId, tileId, playerId, logger) {
+  try {
+    const step = await updateRegistry(api, projectId, customId, registry => {
+      if (registry[tileId]?.ownerId !== playerId) return { write: false };
+      delete registry[tileId];
+      return { write: true };
+    });
+    if (step.conflict) throw new Error(`${MAX_ATTEMPTS} write conflicts`);
+  } catch (err) {
+    logger.error(`PurchaseLand: RELEASE FAILED for tile ${tileId} on ${customId} (player ${playerId}) — manual cleanup needed: ${err?.message}`);
+  }
+}
+
+// ---- land_registry access (Known Issue #19) — identical in every script that writes the registry,
+// pinned by LandRegistryLockTests. The registry is one Custom Data item holding every tile on the
+// planet, so each write is a read-modify-write of the whole map: it must carry the writeLock it
+// read, or it silently undoes a concurrent write (e.g. puts back a tile SellLand just sold).
+const MAX_ATTEMPTS = 3;
+
+// Reads the registry and its writeLock. Only a missing registry reads as {}: any other failure
+// throws, so a transient read error can never turn into a write that wipes every tile.
+async function loadRegistry(api, projectId, customId) {
+  try {
+    const res  = await api.getCustomItems(projectId, customId, [REGISTRY_KEY]);
+    const item = res.data.results.find(r => r.key === REGISTRY_KEY);
+    return item?.value ? { registry: item.value, writeLock: item.writeLock } : { registry: {}, writeLock: undefined };
+  } catch (err) {
+    if (statusOf(err) === 404) return { registry: {}, writeLock: undefined };
+    throw err;
+  }
+}
+
+// Read-modify-write under the writeLock. `mutate(registry)` validates against a fresh read and
+// either edits the registry and returns { write: true, ... } or returns { write: false, ... } to stop.
+// A 409 (someone wrote since the read) re-runs mutate on a fresh read, up to MAX_ATTEMPTS; after
+// that the result is { write: false, conflict: true }. Returns whatever mutate returned.
+async function updateRegistry(api, projectId, customId, mutate) {
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    const { registry, writeLock } = await loadRegistry(api, projectId, customId);
+    const step = await mutate(registry);
+    if (!step.write) return step;
+    try {
+      await api.setCustomItem(projectId, customId,
+        writeLock ? { key: REGISTRY_KEY, value: registry, writeLock } : { key: REGISTRY_KEY, value: registry });
+      return step;
+    } catch (err) {
+      if (statusOf(err) !== 409) throw err;
+    }
+  }
+  return { write: false, conflict: true };
+}
+
+function statusOf(err) {
+  return err?.response?.status ?? err?.status;
+}
+// ---- end land_registry access
 ```
 
 ---
@@ -463,7 +708,9 @@ module.exports = async ({ params, context, logger }) => {
 Returns the global tile-ownership map for a planet, so a client can render other players' tiles
 as "owned by other". Reads from the same Cloud Save Custom Data item that `PurchaseLand` writes
 to (`customId = planetId.toLowerCase()`, `key = "land_registry"`). Returns an empty map if the
-registry doesn't exist yet (e.g. no tiles purchased on this planet so far).
+registry doesn't exist yet (e.g. no tiles purchased on this planet so far — a 404 or no item). Any
+other read failure throws (2026-10-18): answering `{}` would show every tile as unowned, and the
+client retries a failed Planet load instead.
 
 This is a generic passthrough — each entry in `tiles` is the schema v2
 `{ ownerId, buildLevel, lastYieldClaimTs, lastUpkeepTs, visitCount }` object written by
@@ -515,9 +762,10 @@ module.exports = async ({ params, context, logger }) => {
 
 ## PlaceBuild
 
-Validates tile ownership, deducts the item's coin cost, and increments the tile's `buildLevel`
-in the planet's global land registry (Custom Data) so `TileExtrusionView` reflects the new
-build level for everyone.
+Validates tile ownership, writes the item into its slot and updates the tile's `buildLevel` in
+the planet's global land registry (Custom Data) under its `writeLock`, then deducts the item's
+coin cost (clearing the slot again if that fails), so `TileExtrusionView` reflects the new build
+level for everyone. **Still trusts the client's `cost`** — see Known Issue #19.
 
 **Parameters:**
 
@@ -529,85 +777,183 @@ build level for everyone.
 | `cost` | `number` (integer) | Yes | Coin cost of the item. Must be a positive integer. |
 
 ```js
-// PlaceBuild — validates tile ownership, deducts the item's coin cost, and
-// increments the tile's buildLevel in the planet's global land registry
-// (Custom Data, shared across all players) so TileExtrusionView reflects the
-// new build level for everyone.
-// NOTE: the validate -> deduct -> registry-write sequence is not transactional;
-// same caveat as PurchaseLand.
-const { CurrenciesApi }           = require("@unity-services/economy-2.5");
-const { DataApi } = require("@unity-services/cloud-save-1.4");
+// PlaceBuild — validates tile ownership, that the target slot is empty, and the
+// player's balance, then writes itemId into slots[hexIndex] in the planet's shared
+// land registry, sets buildLevel to the number of filled slots, and deducts the
+// item's coin cost.
+// Known Issue #19: the slot is written under the registry's writeLock *before* coins are deducted,
+// so two concurrent placements into one slot can't both charge (the second re-reads and gets
+// SLOT_OCCUPIED). If the deduction fails, the slot is cleared again.
+// NOTE (same as PurchaseLand): CurrenciesApi has no getPlayerCurrencyBalance — read via
+// getPlayerCurrencies and find the currency. decrementPlayerCurrencyBalance requires a
+// configAssignmentHash fetched from ConfigurationApi and a request body carrying currencyId.
+const { CurrenciesApi, ConfigurationApi } = require("@unity-services/economy-2.5");
+const { DataApi }                         = require("@unity-services/cloud-save-1.4");
 
 const CURRENCY_ID  = "COINS";
 const REGISTRY_KEY = "land_registry";
+const HEX_COUNT    = 19; // must match HexBoardMath.HexCount(2) / EconomyConfig.HexCount
+const FREE_COUNT   = 5;  // free hexatiles default unlocked
+
+function filledCount(slots) {
+  if (!Array.isArray(slots)) return 0;
+  return slots.filter(s => s !== null && s !== undefined && s !== "").length;
+}
 
 /**
- * @param {string} tileId - ID of the hex tile being built on.
- * @param {string} planetId - ID of the planet the tile belongs to.
- * @param {string} itemId - ID of the ItemDefinition being placed.
- * @param {number} cost - Coin cost of the item. Must be a positive integer.
+ * @param {string} tileId
+ * @param {string} planetId
+ * @param {number} hexIndex - target hexatile, integer in [0, HEX_COUNT).
+ * @param {string} itemId - ItemDefinition id being placed.
+ * @param {number} cost - coin cost, positive integer.
  */
 module.exports = async ({ params, context, logger }) => {
-  const { tileId, planetId, itemId, cost } = params;
+  const { tileId, planetId, hexIndex, itemId, cost } = params;
 
-  if (!tileId || !planetId || !itemId || !Number.isInteger(cost) || cost <= 0) {
-    throw new Error("Invalid params: tileId, planetId, itemId, and cost are required");
+  if (!tileId || !planetId || !itemId ||
+      !Number.isInteger(hexIndex) || hexIndex < 0 || hexIndex >= HEX_COUNT ||
+      !Number.isInteger(cost) || cost <= 0) {
+    throw new Error("Invalid params: tileId, planetId, hexIndex, itemId, cost required");
   }
 
   const { projectId, playerId, accessToken } = context;
   const econApi       = new CurrenciesApi({ accessToken });
+  const config        = new ConfigurationApi({ accessToken });
   const customDataApi = new DataApi(context);
   const customId      = planetId.toLowerCase();
 
   try {
-    // 1. Load the planet's land registry and validate ownership.
-    let registry = {};
-    try {
-      const regRes = await customDataApi.getCustomItems(projectId, customId, [REGISTRY_KEY]);
-      const item    = regRes.data.results.find(r => r.key === REGISTRY_KEY);
-      if (item?.value) registry = item.value;
-    } catch (_) { /* registry doesn't exist yet */ }
+    // 1. Validate and fill the slot — one locked write.
+    const step = await updateRegistry(customDataApi, projectId, customId, async registry => {
+      const entry = registry[tileId];
+      if (!entry || entry.ownerId !== playerId) {
+        return { write: false, reason: "NOT_OWNER" };
+      }
 
-    const entry = registry[tileId];
-    if (!entry || entry.ownerId !== playerId) {
-      return { success: false, reason: "NOT_OWNER" };
-    }
+      // Normalize unlocked mask (free indices default true) and require the hex unlocked.
+      let unlocked = Array.isArray(entry.unlocked) ? entry.unlocked.slice(0, HEX_COUNT) : [];
+      while (unlocked.length < HEX_COUNT) unlocked.push(false);
+      if (!Array.isArray(entry.unlocked)) for (let i = 0; i < FREE_COUNT; i++) unlocked[i] = true;
+      if (!unlocked[hexIndex]) {
+        return { write: false, reason: "TILE_LOCKED" };
+      }
 
-    // 2. Validate balance and deduct the item's cost.
-    const balanceRes = await econApi.getPlayerCurrencyBalance({ projectId, playerId, currencyId: CURRENCY_ID });
-    if (balanceRes.data.balance < cost) {
-      return { success: false, reason: "INSUFFICIENT_FUNDS" };
-    }
+      const slots = Array.isArray(entry.slots) ? entry.slots : new Array(HEX_COUNT).fill(null);
+      if (slots[hexIndex]) {
+        return { write: false, reason: "SLOT_OCCUPIED" };
+      }
 
-    const deductRes = await econApi.decrementPlayerCurrencyBalance({
-      projectId,
-      playerId,
-      currencyId: CURRENCY_ID,
-      currencyModifyBalanceRequest: { amount: cost }
+      const balancesRes = await econApi.getPlayerCurrencies({ projectId, playerId });
+      const coins       = balancesRes.data.results.find(c => c.currencyId === CURRENCY_ID);
+      if ((coins ? coins.balance : 0) < cost) {
+        return { write: false, reason: "INSUFFICIENT_FUNDS" };
+      }
+
+      entry.unlocked = unlocked;
+      entry.slots    = slots;
+      entry.slots[hexIndex] = itemId;
+      entry.buildLevel = filledCount(entry.slots);
+      return { write: true, buildLevel: entry.buildLevel };
     });
-    const newBalance = deductRes.data.balance;
 
-    // 3. Increment the tile's build level and write the registry back.
-    entry.buildLevel = (entry.buildLevel ?? 0) + 1;
-    registry[tileId] = entry;
-    await customDataApi.setCustomItem(projectId, customId, { key: REGISTRY_KEY, value: registry });
+    if (step.conflict) return { success: false, reason: "CONFLICT" };
+    if (!step.write)   return { success: false, reason: step.reason };
 
-    logger.info(`PlaceBuild: player ${playerId} placed ${itemId} on tile ${tileId} (${planetId}) for ${cost} → ${newBalance}, buildLevel ${entry.buildLevel}`);
-    return { success: true, newBalance, buildLevel: entry.buildLevel };
+    // 2. Deduct. decrementPlayerCurrencyBalance requires a configAssignmentHash fetched via
+    //    ConfigurationApi. If it fails (e.g. the balance dropped since step 1), clear the slot.
+    let newBalance;
+    try {
+      const cfg = await config.getPlayerConfiguration({ projectId, playerId });
+      const configAssignmentHash = cfg.data.metadata.configAssignmentHash;
+
+      const deductRes = await econApi.decrementPlayerCurrencyBalance({
+        projectId, playerId, currencyId: CURRENCY_ID, configAssignmentHash,
+        currencyModifyBalanceRequest: { currencyId: CURRENCY_ID, amount: cost }
+      });
+      newBalance = deductRes.data.balance;
+    } catch (err) {
+      logger.error(`PlaceBuild: charge failed for ${playerId}; clearing hex ${hexIndex} of ${tileId} (${planetId}). ${err?.message}`);
+      await clearSlot(customDataApi, projectId, customId, tileId, playerId, hexIndex, itemId, logger);
+      throw err;
+    }
+
+    logger.info(`PlaceBuild: ${playerId} placed ${itemId} in hex ${hexIndex} of ${tileId} (${planetId}) for ${cost} -> ${newBalance}, buildLevel ${step.buildLevel}`);
+    return { success: true, newBalance, buildLevel: step.buildLevel };
   } catch (err) {
     logger.error("PlaceBuild failed", { "error.message": err.message });
     throw err;
   }
 };
+
+// Undoes step 1 if the slot still holds this item on this player's tile.
+async function clearSlot(api, projectId, customId, tileId, playerId, hexIndex, itemId, logger) {
+  try {
+    const step = await updateRegistry(api, projectId, customId, registry => {
+      const entry = registry[tileId];
+      if (!entry || entry.ownerId !== playerId || !Array.isArray(entry.slots) || entry.slots[hexIndex] !== itemId) return { write: false };
+      entry.slots[hexIndex] = null;
+      entry.buildLevel = filledCount(entry.slots);
+      return { write: true };
+    });
+    if (step.conflict) throw new Error(`${MAX_ATTEMPTS} write conflicts`);
+  } catch (err) {
+    logger.error(`PlaceBuild: CLEAR FAILED for hex ${hexIndex} of ${tileId} on ${customId} (player ${playerId}) — item placed unpaid: ${err?.message}`);
+  }
+}
+
+// ---- land_registry access (Known Issue #19) — identical in every script that writes the registry,
+// pinned by LandRegistryLockTests. The registry is one Custom Data item holding every tile on the
+// planet, so each write is a read-modify-write of the whole map: it must carry the writeLock it
+// read, or it silently undoes a concurrent write (e.g. puts back a tile SellLand just sold).
+const MAX_ATTEMPTS = 3;
+
+// Reads the registry and its writeLock. Only a missing registry reads as {}: any other failure
+// throws, so a transient read error can never turn into a write that wipes every tile.
+async function loadRegistry(api, projectId, customId) {
+  try {
+    const res  = await api.getCustomItems(projectId, customId, [REGISTRY_KEY]);
+    const item = res.data.results.find(r => r.key === REGISTRY_KEY);
+    return item?.value ? { registry: item.value, writeLock: item.writeLock } : { registry: {}, writeLock: undefined };
+  } catch (err) {
+    if (statusOf(err) === 404) return { registry: {}, writeLock: undefined };
+    throw err;
+  }
+}
+
+// Read-modify-write under the writeLock. `mutate(registry)` validates against a fresh read and
+// either edits the registry and returns { write: true, ... } or returns { write: false, ... } to stop.
+// A 409 (someone wrote since the read) re-runs mutate on a fresh read, up to MAX_ATTEMPTS; after
+// that the result is { write: false, conflict: true }. Returns whatever mutate returned.
+async function updateRegistry(api, projectId, customId, mutate) {
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    const { registry, writeLock } = await loadRegistry(api, projectId, customId);
+    const step = await mutate(registry);
+    if (!step.write) return step;
+    try {
+      await api.setCustomItem(projectId, customId,
+        writeLock ? { key: REGISTRY_KEY, value: registry, writeLock } : { key: REGISTRY_KEY, value: registry });
+      return step;
+    } catch (err) {
+      if (statusOf(err) !== 409) throw err;
+    }
+  }
+  return { write: false, conflict: true };
+}
+
+function statusOf(err) {
+  return err?.response?.status ?? err?.status;
+}
+// ---- end land_registry access
 ```
 
 ---
 
 ## ClaimYield
 
-Computes accrued visitor-driven land income for an owned tile and grants it, then resets the
-tile's yield-accrual state (`lastYieldClaimTs`, `visitCount`) in the planet's global land
-registry (Custom Data).
+Computes accrued visitor-driven land income for an owned tile, resets the tile's yield-accrual
+state (`lastYieldClaimTs`, `visitCount`) in the planet's global land registry (Custom Data) under
+its `writeLock`, then grants the income — restoring the accrual state if the grant fails. Two
+concurrent claims can't both pay, and a claim racing `SellLand` re-reads and gets `NOT_OWNER`.
 
 **Formula** (constants below must match `EconomyConfig`'s `[Header("Yield")]` values):
 
@@ -634,8 +980,10 @@ granted      = floor(BASE_YIELD_PER_TILE_PER_HOUR * (1 + buildBonus + visitBonus
 //   buildBonus   = entry.buildLevel * BUILD_LEVEL_YIELD_MULTIPLIER
 //   visitBonus   = min(entry.visitCount, MAX_VISIT_COUNT) * VISIT_YIELD_BONUS
 //   granted      = floor(BASE_YIELD_PER_TILE_PER_HOUR * (1 + buildBonus + visitBonus) * elapsedHours)
-// NOTE: the validate -> grant -> registry-write sequence is not transactional;
-// same caveat as PurchaseLand.
+// Known Issue #19: the accrual reset is written under the registry's writeLock *before* coins are
+// granted, so two concurrent claims can't both pay, and this write can no longer put back a tile
+// SellLand removed in between (the retry re-reads and answers NOT_OWNER). If the grant fails the
+// accrual state is restored.
 const { CurrenciesApi }           = require("@unity-services/economy-2.5");
 const { DataApi } = require("@unity-services/cloud-save-1.4");
 
@@ -667,42 +1015,46 @@ module.exports = async ({ params, context, logger }) => {
   const customId      = planetId.toLowerCase();
 
   try {
-    // 1. Load the planet's land registry and validate ownership.
-    let registry = {};
-    try {
-      const regRes = await customDataApi.getCustomItems(projectId, customId, [REGISTRY_KEY]);
-      const item    = regRes.data.results.find(r => r.key === REGISTRY_KEY);
-      if (item?.value) registry = item.value;
-    } catch (_) { /* registry doesn't exist yet */ }
+    // 1. Validate ownership, compute accrued yield and reset the accrual state — one locked write.
+    const now = Date.now();
+    const step = await updateRegistry(customDataApi, projectId, customId, registry => {
+      const entry = registry[tileId];
+      if (!entry || entry.ownerId !== playerId) {
+        return { write: false, reason: "NOT_OWNER" };
+      }
 
-    const entry = registry[tileId];
-    if (!entry || entry.ownerId !== playerId) {
-      return { success: false, reason: "NOT_OWNER" };
-    }
+      const elapsedHours = Math.min((now - (entry.lastYieldClaimTs ?? now)) / MS_PER_HOUR, MAX_YIELD_ACCRUAL_HOURS);
+      const buildBonus   = (entry.buildLevel ?? 0) * BUILD_LEVEL_YIELD_MULTIPLIER;
+      const visitBonus   = Math.min(entry.visitCount ?? 0, MAX_VISIT_COUNT) * VISIT_YIELD_BONUS;
+      const granted      = Math.floor(BASE_YIELD_PER_TILE_PER_HOUR * (1 + buildBonus + visitBonus) * elapsedHours);
+      const previous     = { lastYieldClaimTs: entry.lastYieldClaimTs, visitCount: entry.visitCount ?? 0 };
 
-    // 2. Compute accrued yield since the last claim.
-    const now          = Date.now();
-    const elapsedHours = Math.min((now - (entry.lastYieldClaimTs ?? now)) / MS_PER_HOUR, MAX_YIELD_ACCRUAL_HOURS);
-    const buildBonus   = (entry.buildLevel ?? 0) * BUILD_LEVEL_YIELD_MULTIPLIER;
-    const visitBonus   = Math.min(entry.visitCount ?? 0, MAX_VISIT_COUNT) * VISIT_YIELD_BONUS;
-    const granted      = Math.floor(BASE_YIELD_PER_TILE_PER_HOUR * (1 + buildBonus + visitBonus) * elapsedHours);
+      entry.lastYieldClaimTs = now;
+      entry.visitCount       = 0;
+      return { write: true, granted, previous };
+    });
 
+    if (step.conflict) return { success: false, reason: "CONFLICT" };
+    if (!step.write)   return { success: false, reason: step.reason };
+    const { granted, previous } = step;
+
+    // 2. Grant. If it fails, restore the accrual state this claim reset.
     let newBalance;
-    if (granted > 0) {
-      const grantRes = await econApi.incrementPlayerCurrencyBalance({
-        projectId, playerId, currencyId: CURRENCY_ID,
-        currencyModifyBalanceRequest: { amount: granted }
-      });
-      newBalance = grantRes.data.balance;
-    } else {
-      newBalance = (await econApi.getPlayerCurrencyBalance({ projectId, playerId, currencyId: CURRENCY_ID })).data.balance;
+    try {
+      if (granted > 0) {
+        const grantRes = await econApi.incrementPlayerCurrencyBalance({
+          projectId, playerId, currencyId: CURRENCY_ID,
+          currencyModifyBalanceRequest: { amount: granted }
+        });
+        newBalance = grantRes.data.balance;
+      } else {
+        newBalance = await currentBalance(econApi, projectId, playerId);
+      }
+    } catch (err) {
+      logger.error(`ClaimYield: grant failed for ${playerId}; restoring accrual on ${tileId} (${planetId}). ${err?.message}`);
+      await restoreAccrual(customDataApi, projectId, customId, tileId, playerId, now, previous, logger);
+      throw err;
     }
-
-    // 3. Reset yield-accrual state and write the registry back.
-    entry.lastYieldClaimTs = now;
-    entry.visitCount       = 0;
-    registry[tileId]       = entry;
-    await customDataApi.setCustomItem(projectId, customId, { key: REGISTRY_KEY, value: registry });
 
     logger.info(`ClaimYield: player ${playerId} claimed tile ${tileId} (${planetId}) — granted ${granted} → ${newBalance}`);
     return { success: true, granted, newBalance };
@@ -711,6 +1063,74 @@ module.exports = async ({ params, context, logger }) => {
     throw err;
   }
 };
+
+// CurrenciesApi has no getPlayerCurrencyBalance (Known Issue #12) — read all balances and pick one.
+async function currentBalance(econApi, projectId, playerId) {
+  const res = await econApi.getPlayerCurrencies({ projectId, playerId });
+  const c   = res.data.results.find(x => x.currencyId === "COINS");
+  return c ? c.balance : 0;
+}
+
+// Puts back lastYieldClaimTs and the visits this claim consumed, unless the tile has changed
+// hands or been claimed again since. Visits recorded meanwhile are kept.
+async function restoreAccrual(api, projectId, customId, tileId, playerId, claimTs, previous, logger) {
+  try {
+    const step = await updateRegistry(api, projectId, customId, registry => {
+      const entry = registry[tileId];
+      if (!entry || entry.ownerId !== playerId || entry.lastYieldClaimTs !== claimTs) return { write: false };
+      entry.lastYieldClaimTs = previous.lastYieldClaimTs;
+      entry.visitCount       = Math.min((entry.visitCount ?? 0) + previous.visitCount, MAX_VISIT_COUNT);
+      return { write: true };
+    });
+    if (step.conflict) throw new Error(`${MAX_ATTEMPTS} write conflicts`);
+  } catch (err) {
+    logger.error(`ClaimYield: RESTORE FAILED for tile ${tileId} on ${customId} (player ${playerId}) — accrual lost: ${err?.message}`);
+  }
+}
+
+// ---- land_registry access (Known Issue #19) — identical in every script that writes the registry,
+// pinned by LandRegistryLockTests. The registry is one Custom Data item holding every tile on the
+// planet, so each write is a read-modify-write of the whole map: it must carry the writeLock it
+// read, or it silently undoes a concurrent write (e.g. puts back a tile SellLand just sold).
+const MAX_ATTEMPTS = 3;
+
+// Reads the registry and its writeLock. Only a missing registry reads as {}: any other failure
+// throws, so a transient read error can never turn into a write that wipes every tile.
+async function loadRegistry(api, projectId, customId) {
+  try {
+    const res  = await api.getCustomItems(projectId, customId, [REGISTRY_KEY]);
+    const item = res.data.results.find(r => r.key === REGISTRY_KEY);
+    return item?.value ? { registry: item.value, writeLock: item.writeLock } : { registry: {}, writeLock: undefined };
+  } catch (err) {
+    if (statusOf(err) === 404) return { registry: {}, writeLock: undefined };
+    throw err;
+  }
+}
+
+// Read-modify-write under the writeLock. `mutate(registry)` validates against a fresh read and
+// either edits the registry and returns { write: true, ... } or returns { write: false, ... } to stop.
+// A 409 (someone wrote since the read) re-runs mutate on a fresh read, up to MAX_ATTEMPTS; after
+// that the result is { write: false, conflict: true }. Returns whatever mutate returned.
+async function updateRegistry(api, projectId, customId, mutate) {
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    const { registry, writeLock } = await loadRegistry(api, projectId, customId);
+    const step = await mutate(registry);
+    if (!step.write) return step;
+    try {
+      await api.setCustomItem(projectId, customId,
+        writeLock ? { key: REGISTRY_KEY, value: registry, writeLock } : { key: REGISTRY_KEY, value: registry });
+      return step;
+    } catch (err) {
+      if (statusOf(err) !== 409) throw err;
+    }
+  }
+  return { write: false, conflict: true };
+}
+
+function statusOf(err) {
+  return err?.response?.status ?? err?.status;
+}
+// ---- end land_registry access
 ```
 
 ---
@@ -735,7 +1155,7 @@ another player visits it. This is the **M3 stand-in for real presence-based visi
 // This is the M3 stand-in for real presence-based visit detection — the
 // client calls this when a player selects a tile they don't own (see
 // VisitorTrackingController). Feeds into ClaimYield's visit bonus. No economy
-// mutation.
+// mutation. The registry write carries its writeLock and retries on a conflict (Known Issue #19).
 const { DataApi } = require("@unity-services/cloud-save-1.4");
 
 const REGISTRY_KEY    = "land_registry";
@@ -757,28 +1177,68 @@ module.exports = async ({ params, context, logger }) => {
   const customId      = planetId.toLowerCase();
 
   try {
-    let registry = {};
-    try {
-      const regRes = await customDataApi.getCustomItems(projectId, customId, [REGISTRY_KEY]);
-      const item    = regRes.data.results.find(r => r.key === REGISTRY_KEY);
-      if (item?.value) registry = item.value;
-    } catch (_) { /* registry doesn't exist yet */ }
+    const step = await updateRegistry(customDataApi, projectId, customId, registry => {
+      const entry = registry[tileId];
+      if (!entry || entry.ownerId === playerId) return { write: false, visitCount: entry?.visitCount ?? 0 };
+      // Already capped: report the visit without a write (every write bumps the shared lock).
+      if ((entry.visitCount ?? 0) >= MAX_VISIT_COUNT) return { write: false, recorded: true, visitCount: MAX_VISIT_COUNT };
 
-    const entry = registry[tileId];
-    if (!entry || entry.ownerId === playerId) {
-      return { success: false, visitCount: entry?.visitCount ?? 0 };
-    }
+      entry.visitCount = (entry.visitCount ?? 0) + 1;
+      return { write: true, visitCount: entry.visitCount };
+    });
+    if (step.conflict) logger.warn(`RecordVisit: gave up on tile ${tileId} (${planetId}) after ${MAX_ATTEMPTS} write conflicts`);
 
-    entry.visitCount = Math.min((entry.visitCount ?? 0) + 1, MAX_VISIT_COUNT);
-    registry[tileId] = entry;
-    await customDataApi.setCustomItem(projectId, customId, { key: REGISTRY_KEY, value: registry });
-
-    return { success: true, visitCount: entry.visitCount };
+    // RecordVisitResult has only Success and VisitCount (Known Issue #18) — no reason field.
+    return { success: Boolean(step.write || step.recorded), visitCount: step.visitCount ?? 0 };
   } catch (err) {
     logger.error("RecordVisit failed", { "error.message": err.message });
     throw err;
   }
 };
+
+// ---- land_registry access (Known Issue #19) — identical in every script that writes the registry,
+// pinned by LandRegistryLockTests. The registry is one Custom Data item holding every tile on the
+// planet, so each write is a read-modify-write of the whole map: it must carry the writeLock it
+// read, or it silently undoes a concurrent write (e.g. puts back a tile SellLand just sold).
+const MAX_ATTEMPTS = 3;
+
+// Reads the registry and its writeLock. Only a missing registry reads as {}: any other failure
+// throws, so a transient read error can never turn into a write that wipes every tile.
+async function loadRegistry(api, projectId, customId) {
+  try {
+    const res  = await api.getCustomItems(projectId, customId, [REGISTRY_KEY]);
+    const item = res.data.results.find(r => r.key === REGISTRY_KEY);
+    return item?.value ? { registry: item.value, writeLock: item.writeLock } : { registry: {}, writeLock: undefined };
+  } catch (err) {
+    if (statusOf(err) === 404) return { registry: {}, writeLock: undefined };
+    throw err;
+  }
+}
+
+// Read-modify-write under the writeLock. `mutate(registry)` validates against a fresh read and
+// either edits the registry and returns { write: true, ... } or returns { write: false, ... } to stop.
+// A 409 (someone wrote since the read) re-runs mutate on a fresh read, up to MAX_ATTEMPTS; after
+// that the result is { write: false, conflict: true }. Returns whatever mutate returned.
+async function updateRegistry(api, projectId, customId, mutate) {
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    const { registry, writeLock } = await loadRegistry(api, projectId, customId);
+    const step = await mutate(registry);
+    if (!step.write) return step;
+    try {
+      await api.setCustomItem(projectId, customId,
+        writeLock ? { key: REGISTRY_KEY, value: registry, writeLock } : { key: REGISTRY_KEY, value: registry });
+      return step;
+    } catch (err) {
+      if (statusOf(err) !== 409) throw err;
+    }
+  }
+  return { write: false, conflict: true };
+}
+
+function statusOf(err) {
+  return err?.response?.status ?? err?.status;
+}
+// ---- end land_registry access
 ```
 
 ---
@@ -789,7 +1249,10 @@ Charges recurring per-tile upkeep for all of the caller's tiles on a planet. For
 tile where at least one full day has elapsed since `lastUpkeepTs`: if the player can afford
 `UPKEEP_PER_TILE_PER_DAY * daysElapsed`, the cost is deducted and `lastUpkeepTs` advances by
 that many days (`chargedTiles`); otherwise the tile's registry entry is deleted and it reverts
-to `Available` for everyone (`revertedTiles`).
+to `Available` for everyone (`revertedTiles`). The registry changes are written under its
+`writeLock` first and the total is deducted in one call (advances are undone if it fails), so two
+concurrent calls can't charge the same days twice. After 3 write conflicts it charges nothing and
+returns empty lists; the client's poll retries.
 
 **Parameters:**
 
@@ -804,8 +1267,10 @@ to `Available` for everyone (`revertedTiles`).
 //   cost = UPKEEP_PER_TILE_PER_DAY * daysElapsed
 //   if balance >= cost: deduct cost, advance lastUpkeepTs by daysElapsed days (chargedTiles)
 //   else: remove the tile from the registry — it reverts to Available for everyone (revertedTiles)
-// NOTE: the read -> deduct -> registry-write sequence is not transactional;
-// same caveat as PurchaseLand.
+// Known Issue #19: the registry changes are written under its writeLock *before* the coins are
+// deducted (as one charge), so two concurrent calls can't both charge the same days — the second
+// re-reads and finds nothing due. If the charge fails, the advanced lastUpkeepTs values are put
+// back (reverted tiles stay reverted: the player could not afford them at the time).
 const { CurrenciesApi }           = require("@unity-services/economy-2.5");
 const { DataApi } = require("@unity-services/cloud-save-1.4");
 
@@ -831,146 +1296,268 @@ module.exports = async ({ params, context, logger }) => {
   const customId      = planetId.toLowerCase();
 
   try {
-    let registry = {};
-    try {
-      const regRes = await customDataApi.getCustomItems(projectId, customId, [REGISTRY_KEY]);
-      const item    = regRes.data.results.find(r => r.key === REGISTRY_KEY);
-      if (item?.value) registry = item.value;
-    } catch (_) { /* registry doesn't exist yet */ }
-
     const now = Date.now();
-    let balance = (await econApi.getPlayerCurrencyBalance({ projectId, playerId, currencyId: CURRENCY_ID })).data.balance;
 
-    const chargedTiles  = [];
-    const revertedTiles = [];
-    let registryDirty   = false;
+    // 1. Plan against a fresh read of the registry and balance, then write it under the lock.
+    const step = await updateRegistry(customDataApi, projectId, customId, async registry => {
+      let balance = await currentBalance(econApi, projectId, playerId);
+      const plan  = { write: false, balance, cost: 0, chargedTiles: [], revertedTiles: [], advanced: {} };
 
-    for (const [tileId, entry] of Object.entries(registry)) {
-      if (entry.ownerId !== playerId) continue;
+      for (const [tileId, entry] of Object.entries(registry)) {
+        if (entry.ownerId !== playerId) continue;
 
-      const daysElapsed = Math.floor((now - (entry.lastUpkeepTs ?? now)) / MS_PER_DAY);
-      if (daysElapsed < 1) continue;
+        const daysElapsed = Math.floor((now - (entry.lastUpkeepTs ?? now)) / MS_PER_DAY);
+        if (daysElapsed < 1) continue;
 
-      const cost = UPKEEP_PER_TILE_PER_DAY * daysElapsed;
-      if (balance >= cost) {
+        const cost = UPKEEP_PER_TILE_PER_DAY * daysElapsed;
+        if (balance >= cost) {
+          balance   -= cost;
+          plan.cost += cost;
+          // daysElapsed >= 1 implies lastUpkeepTs is set.
+          const from = entry.lastUpkeepTs;
+          entry.lastUpkeepTs = from + daysElapsed * MS_PER_DAY;
+          plan.advanced[tileId] = { from, to: entry.lastUpkeepTs };
+          plan.chargedTiles.push(tileId);
+        } else {
+          delete registry[tileId];
+          plan.revertedTiles.push(tileId);
+        }
+        plan.write = true;
+      }
+      return plan;
+    });
+
+    if (step.conflict) {
+      // Busy planet: charge nothing now; the client polls again (EconomyConfig.UpkeepPollIntervalSec).
+      logger.warn(`ApplyUpkeep: gave up on ${planetId} for ${playerId} after ${MAX_ATTEMPTS} write conflicts`);
+      const balance = await currentBalance(econApi, projectId, playerId);
+      return { newBalance: balance, chargedTiles: [], revertedTiles: [] };
+    }
+
+    // 2. One deduction for every charged tile. If it fails, undo the lastUpkeepTs advances.
+    let newBalance = step.balance;
+    if (step.cost > 0) {
+      try {
         const deductRes = await econApi.decrementPlayerCurrencyBalance({
           projectId, playerId, currencyId: CURRENCY_ID,
-          currencyModifyBalanceRequest: { amount: cost }
+          currencyModifyBalanceRequest: { amount: step.cost }
         });
-        balance = deductRes.data.balance;
-        entry.lastUpkeepTs = (entry.lastUpkeepTs ?? now) + daysElapsed * MS_PER_DAY;
-        chargedTiles.push(tileId);
-      } else {
-        delete registry[tileId];
-        revertedTiles.push(tileId);
+        newBalance = deductRes.data.balance;
+      } catch (err) {
+        logger.error(`ApplyUpkeep: charge of ${step.cost} failed for ${playerId} on ${planetId}; undoing ${step.chargedTiles.length} advances. ${err?.message}`);
+        await undoAdvances(customDataApi, projectId, customId, playerId, step.advanced, logger);
+        throw err;
       }
-      registryDirty = true;
     }
 
-    if (registryDirty) {
-      await customDataApi.setCustomItem(projectId, customId, { key: REGISTRY_KEY, value: registry });
-    }
-
-    logger.info(`ApplyUpkeep: player ${playerId} on ${planetId} — charged ${chargedTiles.length}, reverted ${revertedTiles.length} → balance ${balance}`);
-    return { newBalance: balance, chargedTiles, revertedTiles };
+    logger.info(`ApplyUpkeep: player ${playerId} on ${planetId} — charged ${step.chargedTiles.length}, reverted ${step.revertedTiles.length} → balance ${newBalance}`);
+    return { newBalance, chargedTiles: step.chargedTiles, revertedTiles: step.revertedTiles };
   } catch (err) {
     logger.error("ApplyUpkeep failed", { "error.message": err.message });
     throw err;
   }
 };
+
+// CurrenciesApi has no getPlayerCurrencyBalance (Known Issue #12) — read all balances and pick one.
+async function currentBalance(econApi, projectId, playerId) {
+  const res = await econApi.getPlayerCurrencies({ projectId, playerId });
+  const c   = res.data.results.find(x => x.currencyId === "COINS");
+  return c ? c.balance : 0;
+}
+
+// Puts each charged tile's lastUpkeepTs back where this call found it, if nothing has moved it since.
+async function undoAdvances(api, projectId, customId, playerId, advanced, logger) {
+  try {
+    const step = await updateRegistry(api, projectId, customId, registry => {
+      let write = false;
+      for (const [tileId, { from, to }] of Object.entries(advanced)) {
+        const entry = registry[tileId];
+        if (!entry || entry.ownerId !== playerId || entry.lastUpkeepTs !== to) continue;
+        entry.lastUpkeepTs = from;
+        write = true;
+      }
+      return { write };
+    });
+    if (step.conflict) throw new Error(`${MAX_ATTEMPTS} write conflicts`);
+  } catch (err) {
+    logger.error(`ApplyUpkeep: UNDO FAILED on ${customId} (player ${playerId}) — upkeep days given away: ${err?.message}`);
+  }
+}
+
+// ---- land_registry access (Known Issue #19) — identical in every script that writes the registry,
+// pinned by LandRegistryLockTests. The registry is one Custom Data item holding every tile on the
+// planet, so each write is a read-modify-write of the whole map: it must carry the writeLock it
+// read, or it silently undoes a concurrent write (e.g. puts back a tile SellLand just sold).
+const MAX_ATTEMPTS = 3;
+
+// Reads the registry and its writeLock. Only a missing registry reads as {}: any other failure
+// throws, so a transient read error can never turn into a write that wipes every tile.
+async function loadRegistry(api, projectId, customId) {
+  try {
+    const res  = await api.getCustomItems(projectId, customId, [REGISTRY_KEY]);
+    const item = res.data.results.find(r => r.key === REGISTRY_KEY);
+    return item?.value ? { registry: item.value, writeLock: item.writeLock } : { registry: {}, writeLock: undefined };
+  } catch (err) {
+    if (statusOf(err) === 404) return { registry: {}, writeLock: undefined };
+    throw err;
+  }
+}
+
+// Read-modify-write under the writeLock. `mutate(registry)` validates against a fresh read and
+// either edits the registry and returns { write: true, ... } or returns { write: false, ... } to stop.
+// A 409 (someone wrote since the read) re-runs mutate on a fresh read, up to MAX_ATTEMPTS; after
+// that the result is { write: false, conflict: true }. Returns whatever mutate returned.
+async function updateRegistry(api, projectId, customId, mutate) {
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    const { registry, writeLock } = await loadRegistry(api, projectId, customId);
+    const step = await mutate(registry);
+    if (!step.write) return step;
+    try {
+      await api.setCustomItem(projectId, customId,
+        writeLock ? { key: REGISTRY_KEY, value: registry, writeLock } : { key: REGISTRY_KEY, value: registry });
+      return step;
+    } catch (err) {
+      if (statusOf(err) !== 409) throw err;
+    }
+  }
+  return { write: false, conflict: true };
+}
+
+function statusOf(err) {
+  return err?.response?.status ?? err?.status;
+}
+// ---- end land_registry access
 ```
 
 ---
 
 ## SellLand
 
-Validates ownership, grants the (client-computed) refund, removes the tile from the player's
-owned-tiles list, and removes the tile from the planet's global land registry so it reverts to
-`Available` for everyone. `refund` is computed client-side from `EconomyConfig.BaseLandPrice *
-PlanetDefinition.LandPriceMultiplier * EconomyConfig.LandResaleRate` — the server doesn't have
-planet pricing data, but still gates the payout on ownership, same trust model as
-`PurchaseLand`'s `price` param.
+Validates ownership, removes the tile from the planet's land registry under its `writeLock`
+(a concurrent sale re-reads and gets `NOT_OWNER`, so a tile is paid out at most once), grants the
+refund (putting the entry back if the grant fails), and removes the tile from the player's
+owned-tiles list. The refund is computed **server-side** (Known Issue #19) as
+`Math.round(LAND_PRICES[planet] × RESALE_RATE)` — `LAND_PRICES` is the same map as
+`PurchaseLand`'s, `RESALE_RATE` MUST MATCH `EconomyConfig.LandResaleRate` (coins-only resale is
+an Open Decision), and `LandPriceAlignmentTests` checks the result equals what `LandSaleService`
+shows.
 
 **Parameters:**
 
 | Name | Type | Required | Description |
 |---|---|---|---|
 | `tileId` | `string` | Yes | ID of the hex tile being sold. |
-| `planetId` | `string` | Yes | ID of the planet the tile belongs to. |
-| `refund` | `number` (integer) | Yes | Coins to refund the seller. Must be a non-negative integer. |
+| `planetId` | `string` | Yes | `PlanetDefinition.name` of the planet the tile belongs to. |
+| `refund` | `number` (integer) | No | The client's displayed refund. Never granted — a mismatch is only logged. |
+
+**Returns:** `{ success: true, newBalance }` or `{ success: false, reason }` (`NOT_OWNER`,
+`CONFLICT`, `UNKNOWN_PLANET`) — matches `LandSaleResult` (Known Issue #18).
 
 ```js
-// SellLand — validates ownership, grants the (client-computed) refund, removes
-// the tile from the player's owned-tiles list, and removes the tile from the
-// planet's global land registry so it reverts to Available for everyone.
-// `refund` is computed client-side from EconomyConfig.BaseLandPrice *
-// PlanetDefinition.LandPriceMultiplier * EconomyConfig.LandResaleRate — the
-// server doesn't have planet pricing data, but still gates the payout on
-// ownership, same trust model as PurchaseLand's `price` param.
-// NOTE: the validate -> grant -> cleanup sequence is not transactional; same
-// caveat as PurchaseLand.
+// SellLand — validates ownership, removes the tile from the planet's global land registry (so it
+// reverts to Available for everyone) under the registry's writeLock, grants the refund, and
+// removes the tile from the player's owned-tiles list.
+//
+// Known Issue #19: the refund used to come from the client (`refund`, any non-negative integer),
+// which minted unlimited COINS. It is now computed here as round(LAND_PRICES × RESALE_RATE) —
+// half the planet's current purchase price, the same formula LandSaleService shows the player.
+// The client may still send `refund`; it is only compared and logged when it differs.
+// The registry entry is removed under its writeLock before the refund is granted, so two
+// concurrent sales of one tile can't both pay: the second write gets a 409, re-reads and answers
+// NOT_OWNER. If the grant fails the entry is put back. Every registry writer uses the same locked
+// read-modify-write (updateRegistry below), so none of them can re-add a sold tile.
 const { CurrenciesApi }            = require("@unity-services/economy-2.5");
 const { DataApi: PlayerDataApi }   = require("@unity-services/cloud-save-1.4");
 
 const CURRENCY_ID  = "COINS";
 const REGISTRY_KEY = "land_registry";
 
+// MUST MATCH PurchaseLand.js LAND_PRICES, i.e. round(EconomyConfig._baseLandPrice ×
+// PlanetDefinition._landPriceMultiplier), keyed by the planet asset's name lowercased
+// (LandPriceAlignmentTests).
+const LAND_PRICES = {
+  planet_earth:   150,
+  planet_jupiter: 200,
+  planet_mars:    100,
+  planet_mercury: 80,
+  planet_moon:    120,
+  planet_neptune: 300,
+  planet_pluto:   500,
+  planet_saturn:  180,
+  planet_uranus:  250,
+  planet_venus:   100,
+};
+const RESALE_RATE = 0.5; // MUST MATCH EconomyConfig._landResaleRate (Open Decision: coins-only resale)
+
 /**
  * @param {string} tileId - ID of the hex tile being sold.
- * @param {string} planetId - ID of the planet the tile belongs to.
- * @param {number} refund - Coins to refund the seller. Must be a non-negative integer.
+ * @param {string} planetId - PlanetDefinition.name of the planet the tile belongs to.
+ * @param {number} [refund] - The client's displayed refund. Informational only: never granted.
  */
 module.exports = async ({ params, context, logger }) => {
-  const { tileId, planetId, refund } = params;
+  const { tileId, planetId, refund: clientRefund } = params;
 
-  if (!tileId || !planetId || !Number.isInteger(refund) || refund < 0) {
-    throw new Error("Invalid params: tileId, planetId, and refund are required");
+  if (!tileId || !planetId) {
+    throw new Error("Invalid params: tileId and planetId are required");
+  }
+
+  const customId = planetId.toLowerCase();
+  const price    = LAND_PRICES[customId];
+  if (price === undefined) {
+    logger.warn(`SellLand: no land price for planet ${planetId}`);
+    return { success: false, reason: "UNKNOWN_PLANET" };
+  }
+  const refund = Math.round(price * RESALE_RATE);
+  if (clientRefund !== undefined && clientRefund !== refund) {
+    logger.warn(`SellLand: client refund ${clientRefund} for ${planetId} differs from server refund ${refund}`);
   }
 
   const { projectId, playerId, accessToken } = context;
   const econApi       = new CurrenciesApi({ accessToken });
   const saveApi       = new PlayerDataApi(context);
   const customDataApi = new PlayerDataApi(context);
-  const customId      = planetId.toLowerCase();
 
   try {
-    // 1. Load the planet's land registry and validate ownership.
-    let registry = {};
+    // 1. Validate ownership and remove the tile from the global registry — one locked write. A
+    //    concurrent sale (or any write) since the read is a 409 and a fresh read, so the tile is
+    //    paid out at most once.
+    const step = await updateRegistry(customDataApi, projectId, customId, registry => {
+      const entry = registry[tileId];
+      if (!entry || entry.ownerId !== playerId) return { write: false, reason: "NOT_OWNER" };
+      delete registry[tileId];
+      return { write: true, entry };
+    });
+    if (step.conflict) return { success: false, reason: "CONFLICT" };
+    if (!step.write)   return { success: false, reason: step.reason };
+    const { entry } = step;
+
+    // 2. Grant the refund. If it fails, put the tile back.
+    let newBalance;
     try {
-      const regRes = await customDataApi.getCustomItems(projectId, customId, [REGISTRY_KEY]);
-      const item    = regRes.data.results.find(r => r.key === REGISTRY_KEY);
-      if (item?.value) registry = item.value;
-    } catch (_) { /* registry doesn't exist yet */ }
-
-    const entry = registry[tileId];
-    if (!entry || entry.ownerId !== playerId) {
-      return { success: false, reason: "NOT_OWNER" };
-    }
-
-    // 2. Grant the refund.
-    let newBalance = (await econApi.getPlayerCurrencyBalance({ projectId, playerId, currencyId: CURRENCY_ID })).data.balance;
-    if (refund > 0) {
-      const grantRes = await econApi.incrementPlayerCurrencyBalance({
-        projectId, playerId, currencyId: CURRENCY_ID,
-        currencyModifyBalanceRequest: { amount: refund }
-      });
-      newBalance = grantRes.data.balance;
+      newBalance = await currentBalance(econApi, projectId, playerId);
+      if (refund > 0) {
+        const grantRes = await econApi.incrementPlayerCurrencyBalance({
+          projectId, playerId, currencyId: CURRENCY_ID,
+          currencyModifyBalanceRequest: { amount: refund }
+        });
+        newBalance = grantRes.data.balance;
+      }
+    } catch (err) {
+      logger.error(`SellLand: grant failed for ${playerId}; restoring tile ${tileId} on ${planetId}. ${err?.message}`);
+      await restoreEntry(customDataApi, projectId, customId, tileId, entry, logger);
+      throw err;
     }
 
     // 3. Remove the tile from the player's owned-tiles list.
-    const ownedKey = `owned_tiles_${planetId.toLowerCase()}`;
+    const ownedKey = `owned_tiles_${customId}`;
     try {
-      const saveRes = await saveApi.getItems(projectId, playerId, [ownedKey]);
+      const saveRes = await saveApi.getProtectedItems(projectId, playerId, [ownedKey]);
       const item    = saveRes.data.results.find(r => r.key === ownedKey);
       if (item && Array.isArray(item.value)) {
         const ownedTiles = item.value.filter(id => id !== tileId);
-        await saveApi.setItem(projectId, playerId, { key: ownedKey, value: ownedTiles });
+        await saveApi.setProtectedItem(projectId, playerId, { key: ownedKey, value: ownedTiles });
       }
     } catch (_) { /* key doesn't exist yet */ }
-
-    // 4. Remove the tile from the global land registry.
-    delete registry[tileId];
-    await customDataApi.setCustomItem(projectId, customId, { key: REGISTRY_KEY, value: registry });
 
     logger.info(`SellLand: player ${playerId} sold tile ${tileId} on ${planetId} for ${refund} → ${newBalance}`);
     return { success: true, newBalance };
@@ -979,6 +1566,73 @@ module.exports = async ({ params, context, logger }) => {
     throw err;
   }
 };
+
+// CurrenciesApi has no getPlayerCurrencyBalance (Known Issue #12) — read all balances and pick one.
+async function currentBalance(econApi, projectId, playerId) {
+  const res = await econApi.getPlayerCurrencies({ projectId, playerId });
+  const c   = res.data.results.find(x => x.currencyId === "COINS");
+  return c ? c.balance : 0;
+}
+
+// Puts the seller's entry back (re-read under the lock: other tiles may have changed), unless
+// someone has claimed the tile meanwhile.
+async function restoreEntry(api, projectId, customId, tileId, entry, logger) {
+  try {
+    const step = await updateRegistry(api, projectId, customId, registry => {
+      if (registry[tileId]) return { write: false, claimed: true };
+      registry[tileId] = entry;
+      return { write: true };
+    });
+    if (step.conflict) throw new Error(`${MAX_ATTEMPTS} write conflicts`);
+    if (step.claimed)  throw new Error("the tile was claimed meanwhile");
+  } catch (err) {
+    logger.error(`SellLand: RESTORE FAILED for tile ${tileId} on ${customId} (player ${entry.ownerId}) — manual reconciliation needed: ${err?.message}`);
+  }
+}
+
+// ---- land_registry access (Known Issue #19) — identical in every script that writes the registry,
+// pinned by LandRegistryLockTests. The registry is one Custom Data item holding every tile on the
+// planet, so each write is a read-modify-write of the whole map: it must carry the writeLock it
+// read, or it silently undoes a concurrent write (e.g. puts back a tile SellLand just sold).
+const MAX_ATTEMPTS = 3;
+
+// Reads the registry and its writeLock. Only a missing registry reads as {}: any other failure
+// throws, so a transient read error can never turn into a write that wipes every tile.
+async function loadRegistry(api, projectId, customId) {
+  try {
+    const res  = await api.getCustomItems(projectId, customId, [REGISTRY_KEY]);
+    const item = res.data.results.find(r => r.key === REGISTRY_KEY);
+    return item?.value ? { registry: item.value, writeLock: item.writeLock } : { registry: {}, writeLock: undefined };
+  } catch (err) {
+    if (statusOf(err) === 404) return { registry: {}, writeLock: undefined };
+    throw err;
+  }
+}
+
+// Read-modify-write under the writeLock. `mutate(registry)` validates against a fresh read and
+// either edits the registry and returns { write: true, ... } or returns { write: false, ... } to stop.
+// A 409 (someone wrote since the read) re-runs mutate on a fresh read, up to MAX_ATTEMPTS; after
+// that the result is { write: false, conflict: true }. Returns whatever mutate returned.
+async function updateRegistry(api, projectId, customId, mutate) {
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    const { registry, writeLock } = await loadRegistry(api, projectId, customId);
+    const step = await mutate(registry);
+    if (!step.write) return step;
+    try {
+      await api.setCustomItem(projectId, customId,
+        writeLock ? { key: REGISTRY_KEY, value: registry, writeLock } : { key: REGISTRY_KEY, value: registry });
+      return step;
+    } catch (err) {
+      if (statusOf(err) !== 409) throw err;
+    }
+  }
+  return { write: false, conflict: true };
+}
+
+function statusOf(err) {
+  return err?.response?.status ?? err?.status;
+}
+// ---- end land_registry access
 ```
 
 ---
@@ -1031,7 +1685,7 @@ module.exports = async ({ context, logger }) => {
 
   let state = null;
   try {
-    const res    = await saveApi.getItems(projectId, playerId, [SAVE_KEY]);
+    const res    = await saveApi.getProtectedItems(projectId, playerId, [SAVE_KEY]);
     const record = res.data.results.find(r => r.key === SAVE_KEY);
     if (record?.value) state = record.value;
   } catch (_) { /* no record yet */ }
@@ -1111,7 +1765,7 @@ module.exports = async ({ params, context, logger }) => {
     // Read current record + its writeLock.
     let raw = null, writeLock;
     try {
-      const res    = await saveApi.getItems(projectId, playerId, [SAVE_KEY]);
+      const res    = await saveApi.getProtectedItems(projectId, playerId, [SAVE_KEY]);
       const record = res.data.results.find(r => r.key === SAVE_KEY);
       if (record?.value) { raw = record.value; writeLock = record.writeLock; }
     } catch (_) { /* no record yet */ }
@@ -1126,7 +1780,7 @@ module.exports = async ({ params, context, logger }) => {
     // double-spend guard but keep the rest of the logic).
     const body = writeLock ? { key: SAVE_KEY, value: state, writeLock } : { key: SAVE_KEY, value: state };
     try {
-      await saveApi.setItem(projectId, playerId, body);
+      await saveApi.setProtectedItem(projectId, playerId, body);
     } catch (err) {
       if (isConflict(err) && attempt < MAX_RETRIES - 1) continue; // someone else wrote; retry
       throw err;
@@ -1212,7 +1866,7 @@ module.exports = async ({ context, logger }) => {
   // 1. Read current fuel (recharged) + writeLock.
   let raw = null, writeLock;
   try {
-    const res    = await saveApi.getItems(projectId, playerId, [SAVE_KEY]);
+    const res    = await saveApi.getProtectedItems(projectId, playerId, [SAVE_KEY]);
     const record = res.data.results.find(r => r.key === SAVE_KEY);
     if (record?.value) { raw = record.value; writeLock = record.writeLock; }
   } catch (_) { /* no record yet */ }
@@ -1252,14 +1906,14 @@ module.exports = async ({ context, logger }) => {
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
     const body = lock ? { key: SAVE_KEY, value: full, writeLock: lock } : { key: SAVE_KEY, value: full };
     try {
-      await saveApi.setItem(projectId, playerId, body);
+      await saveApi.setProtectedItem(projectId, playerId, body);
       logger.info(`RefillFuel: player ${playerId} refilled to ${full.fuel}/${full.maxFuel} for ${REFILL_COST} → ${newBalance}`);
       return { success: true, fuel: full.fuel, maxFuel: full.maxFuel, newBalance };
     } catch (err) {
       if (isConflict(err) && attempt < MAX_RETRIES - 1) {
         // Re-read the latest writeLock and retry (value is always a full tank).
         try {
-          const res    = await saveApi.getItems(projectId, playerId, [SAVE_KEY]);
+          const res    = await saveApi.getProtectedItems(projectId, playerId, [SAVE_KEY]);
           const record = res.data.results.find(r => r.key === SAVE_KEY);
           lock = record?.writeLock;
         } catch (_) { lock = undefined; }
@@ -1292,7 +1946,7 @@ module.exports = async ({ context, logger }) => {
 // ChatModerationFilter check is only fast feedback.
 // BLOCKED_WORDS / CHAR_MAP / MAX_DISPLAY_NAME_LENGTH must match
 // SocialConfig.BlockedWords / ChatModerationFilter / MaxDisplayNameLength —
-// same "must match" pattern as ModerateMessage.js (Cloud Code modules deploy
+// same "must match" pattern as the other ServerCode catalogs (Cloud Code modules deploy
 // as standalone files, so the filter is duplicated rather than required).
 // AVATAR_IDS must match the 25 AvatarDefinition assets registered on
 // DatabaseRegistry (see docs/superpowers/plans/2026-07-06-avatar-selection.md).
@@ -1412,7 +2066,9 @@ module.exports = async ({ params, context, logger }) => {
 // hadn't explicitly customized their name.
 const { DataApi } = require("@unity-services/cloud-save-1.4");
 
-const PROFILE_KEY = "player_profile";
+const PROFILE_KEY        = "player_profile";
+const OWNED_TILES_PREFIX = "owned_tiles_";
+const MAX_PAGES          = 5; // Cloud Save pages hold 20 keys; a player has well under 100
 
 /**
  * @param {string} playerId - Player ID whose public profile to fetch.
@@ -1432,13 +2088,21 @@ module.exports = async ({ params, context, logger }) => {
   try {
     // Cloud Code's service auth may read another player's data by passing
     // their playerId explicitly.
-    const res = await saveApi.getItems(projectId, targetId);
-    for (const item of res.data.results) {
-      if (item.key === PROFILE_KEY) {
-        profile = typeof item.value === "string" ? JSON.parse(item.value) : item.value;
-      } else if (item.key.startsWith("owned_tiles_") && Array.isArray(item.value)) {
-        tilesOwned += item.value.length;
+    const res  = await saveApi.getItems(projectId, targetId, [PROFILE_KEY]);
+    const item = res.data.results.find(r => r.key === PROFILE_KEY);
+    if (item) profile = typeof item.value === "string" ? JSON.parse(item.value) : item.value;
+
+    // owned_tiles_* lists are server-written (Protected class, Known Issue #16). There is one per
+    // planet and the planet ids aren't known here, so page through every protected key.
+    let after;
+    for (let page = 0; page < MAX_PAGES; page++) {
+      const pres  = await saveApi.getProtectedItems(projectId, targetId, undefined, after);
+      const items = pres.data.results;
+      for (const it of items) {
+        if (it.key.startsWith(OWNED_TILES_PREFIX) && Array.isArray(it.value)) tilesOwned += it.value.length;
       }
+      if (!pres.data.links?.next || items.length === 0) break;
+      after = items[items.length - 1].key;
     }
   } catch (err) {
     logger.warn(`GetPlayerProfile: read failed for ${targetId} (${err.message})`);
@@ -1585,80 +2249,3 @@ module.exports = async ({ params, context, logger }) => {
 };
 ```
 
-
-### ModerateMessage
-
-```js
-// ModerateMessage — server-side text moderation. Returns whether the text is
-// allowed and a masked version. Used by UpdateProfile for display names, and
-// available to any future server-mediated message path. (Vivox channel chat is
-// filtered client-side by ChatModerationFilter and by Vivox's own moderation
-// tooling — this function is the in-house enforcement point.)
-// BLOCKED_WORDS and the normalization map must match SocialConfig.BlockedWords
-// / ChatModerationFilter.NormalizeChar — same "must match" pattern as
-// ClaimYield.js's yield constants.
-
-const BLOCKED_WORDS = [
-  "fuck", "shit", "bitch", "asshole", "cunt", "dick", "faggot",
-  "nigger", "nigga", "whore", "slut", "retard", "kys"
-];
-
-const MAX_MESSAGE_LENGTH = 200; // must match SocialConfig.MaxMessageLength
-
-const CHAR_MAP = { "@": "a", "4": "a", "1": "i", "!": "i", "0": "o", "3": "e", "$": "s", "5": "s", "7": "t" };
-
-function normalize(text) {
-  let out = "";
-  for (const ch of text.toLowerCase()) out += CHAR_MAP[ch] ?? ch;
-  return out;
-}
-
-function moderate(text) {
-  const normalized = normalize(text);
-  let masked = text;
-  let clean  = true;
-
-  for (const word of BLOCKED_WORDS) {
-    let index = 0;
-    while ((index = normalized.indexOf(word, index)) >= 0) {
-      clean  = false;
-      masked = masked.slice(0, index) + "*".repeat(word.length) + masked.slice(index + word.length);
-      index += word.length;
-    }
-  }
-  return { clean, masked };
-}
-
-/**
- * @param {string} text - The text to moderate. Must be non-empty and at most 200 characters.
- */
-module.exports = async ({ params, context, logger }) => {
-  const { text } = params;
-
-  if (typeof text !== "string" || text.length === 0 || text.length > MAX_MESSAGE_LENGTH) {
-    throw new Error("Invalid params: text is required and must be at most 200 characters");
-  }
-
-  const { clean, masked } = moderate(text);
-
-  if (!clean) {
-    logger.info(`ModerateMessage: blocked content from ${context.playerId}`);
-  }
-  return { allowed: clean, filteredText: masked };
-};
-
-```
-
----
-
-## Email verification, password reset, and email availability
-
-These are now handled entirely by Firebase Authentication on the client
-(`FirebaseAuthHandler`, behind `IAuthService`) — not by Cloud Code. The
-functions formerly listed here (`SaveEmail`, `CheckEmailAvailable`,
-`RequestPasswordReset`, `ConfirmPasswordReset`, `RequestEmailVerificationCode`,
-`ConfirmEmailVerificationCode`, `ClearPlayerEmail`, and the diagnostic
-`TestFindPlayerByEmail`) have been deleted along with the cross-player
-`email_lookup` Cloud Save index/query they depended on. `GetPlayerProfile`'s
-`emailVerified` field was removed for the same reason — the client now reads
-`IAuthService.IsEmailVerified` directly.

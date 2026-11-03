@@ -14,7 +14,10 @@
         "SocialUniverse.App",
         "SocialUniverse.Net",
         "SocialUniverse.Social",
-        "SocialUniverse.Safety"
+        "SocialUniverse.Safety",
+        "SocialUniverse.UI",
+        "SimpleScrollSnap",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

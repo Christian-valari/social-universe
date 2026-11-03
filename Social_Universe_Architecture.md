@@ -217,7 +217,7 @@ Priority tags follow the PRD: **P0** = core/MVP, **P1** = launch, **P2** = later
 | `FriendsService` | Social | Add/remove/list + presence | P1 |
 | `DirectMessageService` | Social | Cross-planet DMs between friends | P1 |
 | `ProfileService` + `PlayerProfile` | Social | Fetch/update profile, badges, stats | P1 |
-| **Server functions** | ServerCode | `SubmitReport`, `BlockUser`, `ModerateMessage` | P0 |
+| **Server functions** | ServerCode | `SubmitReport`, `BlockUser` (`ModerateMessage` dropped 2026-09-30 — `UpdateProfile` moderates names server-side) | P0 |
 
 ### M5 — Travel & Solar System  *(exit: star map travel, fuel as a recharging gauge, gyro Sky Discovery with Star Map fallback)*
 

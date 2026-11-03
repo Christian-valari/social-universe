@@ -20,17 +20,25 @@ namespace SocialUniverse.UI
         [SerializeField] private Button _logoutConfirmNo;
         [SerializeField] private Button _closeButton;
         [SerializeField] private TMP_Text _versionText;
+        [SerializeField] private RectTransform _window;   // the panel that pops in and out (PopupTransition)
+        [SerializeField] private RectTransform _logoutConfirmWindow;   // the logout confirm's own panel
 
         [Inject] private IAudioSettingsService _audioSettings;
         [Inject] private GameStateMachine      _fsm;
         [Inject] private IObjectResolver       _resolver;
         [Inject] private IAudioManager         _audio;
 
+        private PopupTransition _transition;
+        private PopupTransition Transition => _transition != null ? _transition : _transition = PopupTransition.On(gameObject, _window);
+
+        private PopupTransition _logoutTransition;
+        private PopupTransition LogoutTransition => _logoutTransition != null ? _logoutTransition : _logoutTransition = PopupTransition.On(_logoutConfirmPanel, _logoutConfirmWindow);
+
         private void Awake()
         {
-            _logoutButton.onClick.AddListener(() => _logoutConfirmPanel.SetActive(true));
+            _logoutButton.onClick.AddListener(() => LogoutTransition.Show());
             _logoutConfirmYes.onClick.AddListener(OnLogoutConfirmed);
-            _logoutConfirmNo.onClick.AddListener(() => { _audio.PlaySfx(SfxId.Cancel); _logoutConfirmPanel.SetActive(false); });
+            _logoutConfirmNo.onClick.AddListener(() => { _audio.PlaySfx(SfxId.Cancel); LogoutTransition.Hide(); });
             _closeButton.onClick.AddListener(Close);
             gameObject.SetActive(false);
         }
@@ -48,13 +56,13 @@ namespace SocialUniverse.UI
             _logoutConfirmPanel.SetActive(false);
             _versionText.text = $"v{Application.version}";
             _audio.PlaySfx(SfxId.OpenPanel);
-            gameObject.SetActive(true);
+            Transition.Show();
         }
 
         public void Close()
         {
             _audio.PlaySfx(SfxId.Cancel);
-            gameObject.SetActive(false);
+            Transition.Hide();
         }
 
         private void OnLogoutConfirmed()

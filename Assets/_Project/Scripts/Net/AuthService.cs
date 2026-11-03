@@ -7,12 +7,15 @@ namespace SocialUniverse.Net
 {
     // Firebase is the identity provider; UGS is bridged in via OpenID Connect.
     // Every sign-in path acquires a fresh Firebase ID token, then exchanges it
-    // for a UGS session through SignInWithOpenIdConnectAsync.
+    // for a UGS session through SignInWithOpenIdConnectAsync, then claims the
+    // account's single active session (ServerCode/ClaimSession.js).
     public class AuthService : IAuthService
     {
         private const string OidcProvider = "oidc-firebase";
 
-        private Task _playerNameFetch;
+        private readonly IBackendClient _backend;
+
+        public AuthService(IBackendClient backend) => _backend = backend;
 
         public bool   IsSignedIn         => AuthenticationService.Instance.IsSignedIn;
         public bool   SessionTokenExists => AuthenticationService.Instance.SessionTokenExists;
@@ -27,16 +30,6 @@ namespace SocialUniverse.Net
 
         public Task InitializeAsync()
         {
-            // Hydrate the player name BEFORE raising OnSignedIn: AuthScreen
-            // publishes PlayerReadyEvent from that callback, and
-            // SocialServicesInitializer immediately bakes DisplayName into the
-            // Vivox login, which is session-locked — a name that arrives late
-            // can never be applied.
-            AuthenticationService.Instance.SignedIn += async () =>
-            {
-                await HydratePlayerNameAsync();
-                OnSignedIn?.Invoke();
-            };
             AuthenticationService.Instance.SignInFailed += e => OnSignInFailed?.Invoke(e);
             return Task.CompletedTask;
         }
@@ -48,14 +41,7 @@ namespace SocialUniverse.Net
         // chose a name on the "Player" placeholder instead of a random
         // UGS-generated one (the API returns null on 404 in that case).
         // Non-fatal: on failure the existing fallback chain still applies.
-        private Task HydratePlayerNameAsync()
-        {
-            if (_playerNameFetch == null || _playerNameFetch.IsCompleted)
-                _playerNameFetch = FetchPlayerNameAsync();
-            return _playerNameFetch;
-        }
-
-        private async Task FetchPlayerNameAsync()
+        private async Task HydratePlayerNameAsync()
         {
             try
             {
@@ -67,10 +53,38 @@ namespace SocialUniverse.Net
             }
         }
 
+        // OnSignedIn is raised only once the name is hydrated and the session
+        // claimed: AuthScreen publishes PlayerReadyEvent from that callback, which
+        // starts Cloud Code calls (all of which need the session), and
+        // SocialServicesInitializer immediately bakes DisplayName into the Vivox
+        // login, which is session-locked — a name that arrives late can never be
+        // applied.
         private async Task BridgeToUgsAsync(string firebaseIdToken)
         {
             await AuthenticationService.Instance.SignInWithOpenIdConnectAsync(OidcProvider, firebaseIdToken);
             await HydratePlayerNameAsync();
+            await ClaimSessionAsync();
+            OnSignedIn?.Invoke();
+        }
+
+        // One active device per account. Every sign-in — explicit or a relaunch —
+        // takes the session over from any other device (newest launch wins); the
+        // replaced device finds out on its next call (ActiveSessionController).
+        // On any failure UGS is signed out again, so no game call can run without
+        // a session.
+        private async Task ClaimSessionAsync()
+        {
+            _backend.SessionId = null;
+            try
+            {
+                _backend.SessionId = await _backend.CallAsync<string>("ClaimSession");
+            }
+            catch
+            {
+                _backend.SessionId = null;
+                AuthenticationService.Instance.SignOut();
+                throw;
+            }
         }
 
         public async Task SignInWithEmailAsync(string email, string password)
@@ -149,16 +163,27 @@ namespace SocialUniverse.Net
                 FirebaseAuthHandler.SignOut();
             }
             await AuthenticationService.Instance.DeleteAccountAsync();
+            _backend.SessionId = null;
             AuthenticationService.Instance.SignOut(clearCredentials: true);
             SULog.Info("Account deleted (Firebase + UGS)", SULog.Channel.Net);
         }
 
-        public Task SignOutAsync()
+        // Releases this device's active session (ReleaseSession.js) so its id can
+        // never be used again — best effort: if it fails, the next sign-in on any
+        // device replaces it anyway. Firebase signs out before that await, so a
+        // quit mid-release (AuthScreen.OnApplicationQuit) still can't resume this
+        // account next launch.
+        public async Task SignOutAsync()
         {
             FirebaseAuthHandler.SignOut();
+            if (_backend.SessionId != null)
+            {
+                try { await _backend.CallAsync("ReleaseSession"); }
+                catch (Exception ex) { SULog.Warn($"AuthService: session release failed ({ex.Message})", SULog.Channel.Net); }
+            }
+            _backend.SessionId = null;
             AuthenticationService.Instance.SignOut(clearCredentials: true);
             SULog.Info("Signed out (Firebase + UGS)", SULog.Channel.Net);
-            return Task.CompletedTask;
         }
     }
 }

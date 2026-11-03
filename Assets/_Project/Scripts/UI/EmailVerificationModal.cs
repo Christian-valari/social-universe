@@ -21,10 +21,14 @@ namespace SocialUniverse.UI
         [SerializeField] private Button         _verifyButton;
         [SerializeField] private Button         _closeButton;
         [SerializeField] private TMP_Text       _statusText;
+        [SerializeField] private RectTransform _window;   // the panel that pops in and out (PopupTransition)
 
         [Inject] private IAuthService _auth;
         [Inject] private PlayerState  _playerState;
         [Inject] private IAudioManager _audio;
+
+        private PopupTransition _transition;
+        private PopupTransition Transition => _transition != null ? _transition : _transition = PopupTransition.On(gameObject, _window);
 
         private void Awake()
         {
@@ -45,13 +49,13 @@ namespace SocialUniverse.UI
             if (_codeInput != null) _codeInput.gameObject.SetActive(false);
             _statusText.text = verified ? "Your email is verified." : "";
             _audio.PlaySfx(SfxId.OpenPanel);
-            gameObject.SetActive(true);
+            Transition.Show();
         }
 
         public void Close()
         {
             _audio.PlaySfx(SfxId.Cancel);
-            gameObject.SetActive(false);
+            Transition.Hide();
         }
 
         private async void OnSendCodeClicked()

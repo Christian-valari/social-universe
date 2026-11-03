@@ -8,10 +8,18 @@
 // writes (fuel_state, then travel_state) happen in sequence; if the second
 // write fails after the first succeeded, the fuel is refunded (same
 // compensating-action pattern as RefillFuel.js).
+//
+// One unlanded trip at a time, whichever device started it: a trip that has
+// arrived but not landed still blocks a new one (GetTravelState reports it as
+// traveling too), and the trip is written under the writeLock read with it, so
+// two simultaneous departures commit one trip. The origin is the server's
+// current_planet — a device that missed a landing elsewhere still shows the old
+// planet. Reads that fail throw rather than reading as "no record".
 const { DataApi } = require("@unity-services/cloud-save-1.4");
 
 const FUEL_KEY               = "fuel_state";
 const TRAVEL_KEY              = "travel_state";
+const PLANET_KEY             = "current_planet";
 const MAX_FUEL               = 100; // keep in sync with EconomyConfig.MaxFuel
 const FUEL_RECHARGE_PER_HOUR = 10;  // keep in sync with EconomyConfig.FuelRechargePerHour
 const MS_PER_HOUR            = 3600000;
@@ -60,22 +68,43 @@ function isConflict(err) {
 
 async function readRecord(saveApi, projectId, playerId, key) {
   try {
-    const res    = await saveApi.getItems(projectId, playerId, [key]);
+    const res    = await saveApi.getProtectedItems(projectId, playerId, [key]);
     const record = res.data.results.find(r => r.key === key);
-    return record?.value ? { value: record.value, writeLock: record.writeLock } : { value: null, writeLock: undefined };
-  } catch (_) {
-    return { value: null, writeLock: undefined };
+    return { value: record?.value ?? null, writeLock: record?.writeLock };
+  } catch (err) {
+    if ((err?.response?.status ?? err?.status) === 404) return { value: null, writeLock: undefined };
+    throw err; // read as "no record", a failed fuel read would refill the tank
   }
+}
+
+// Gives back fuel spent on a trip that was not committed: re-read under the lock and add it, so
+// any fuel change since the spend is kept. Returns the refunded state, or null if it failed.
+async function refundFuel(saveApi, projectId, playerId, cost, logger) {
+  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+    try {
+      const raw   = await readRecord(saveApi, projectId, playerId, FUEL_KEY);
+      const state = rechargeFuel(raw.value, Date.now());
+      state.fuel  = Math.min(state.maxFuel, state.fuel + cost);
+      const body  = raw.writeLock ? { key: FUEL_KEY, value: state, writeLock: raw.writeLock } : { key: FUEL_KEY, value: state };
+      await saveApi.setProtectedItem(projectId, playerId, body);
+      return state;
+    } catch (err) {
+      if (isConflict(err) && attempt < MAX_RETRIES - 1) continue;
+      logger.error(`StartTravel: REFUND FAILED for ${playerId} (${cost} fuel) — manual reconciliation needed: ${err?.message}`);
+      return null;
+    }
+  }
+  return null;
 }
 
 /**
  * @param {string} targetPlanetId - Planet id to travel to. Must be a known id.
- * @param {string} originPlanetId - Planet id the player is traveling from. The
- *   server has no other notion of "where the player currently is", so this
- *   drives the origin/destination-specific duration lookup (TRAVEL_SECONDS)
- *   the same way the client's TravelService.GetTravelDuration does.
+ * @param {string} originPlanetId - Planet id the client thinks it is traveling
+ *   from. Used for the duration lookup (TRAVEL_SECONDS) only when the server has
+ *   no current_planet record for the player yet.
  */
 module.exports = async ({ params, context, logger }) => {
+  await requireActiveSession(context, params.sessionId);
   const { targetPlanetId, originPlanetId } = params;
   if (typeof targetPlanetId !== "string" || !(targetPlanetId in TRAVEL_FUEL_COST)) {
     throw new Error(`Invalid targetPlanetId: ${targetPlanetId}`);
@@ -88,15 +117,20 @@ module.exports = async ({ params, context, logger }) => {
   const saveApi = new DataApi(context);
   const now     = Date.now();
 
-  // 1. Reject if a trip is already in progress (must Land first).
+  // 1. Reject if any trip is not landed yet — in flight or arrived, started on any device. The
+  //    client resyncs on already_traveling and goes to the Travel scene to land it.
   const existingTrip = await readRecord(saveApi, projectId, playerId, TRAVEL_KEY);
-  if (existingTrip.value && existingTrip.value.arrivalTs > now) {
-    logger.warn(`StartTravel: player ${playerId} already traveling to ${existingTrip.value.targetPlanetId}`);
+  if (existingTrip.value?.targetPlanetId != null) {
+    logger.warn(`StartTravel: player ${playerId} already has an unlanded trip to ${existingTrip.value.targetPlanetId}`);
     return { success: false, reason: "already_traveling" };
   }
 
+  const serverOrigin = (await readRecord(saveApi, projectId, playerId, PLANET_KEY)).value?.planetId;
+  if (serverOrigin && serverOrigin !== originPlanetId) {
+    logger.warn(`StartTravel: client origin ${originPlanetId} differs from current_planet ${serverOrigin} for ${playerId}; using the server's`);
+  }
   const cost     = TRAVEL_FUEL_COST[targetPlanetId];
-  const duration = travelSecondsFor(originPlanetId, targetPlanetId);
+  const duration = travelSecondsFor(serverOrigin ?? originPlanetId, targetPlanetId);
 
   // 2. Recharge + spend fuel under write-lock, retrying on conflict.
   let fuelState, fuelWriteLock;
@@ -112,7 +146,7 @@ module.exports = async ({ params, context, logger }) => {
 
     const body = raw.writeLock ? { key: FUEL_KEY, value: state, writeLock: raw.writeLock } : { key: FUEL_KEY, value: state };
     try {
-      await saveApi.setItem(projectId, playerId, body);
+      await saveApi.setProtectedItem(projectId, playerId, body);
       fuelState = state;
       break;
     } catch (err) {
@@ -125,20 +159,19 @@ module.exports = async ({ params, context, logger }) => {
     throw new Error("StartTravel: concurrent update conflict, please retry.");
   }
 
-  // 3. Commit the trip. If this write fails, refund the fuel we just spent.
-  const trip = { targetPlanetId, startTs: now, arrivalTs: now + duration * 1000, fuelSpent: cost };
+  // 3. Commit the trip under the writeLock read in step 1: a departure committed since then (another
+  //    device, or a double tap) makes this a 409, so only one trip is ever committed. A trip that
+  //    isn't committed gets its fuel back.
+  const trip     = { targetPlanetId, startTs: now, arrivalTs: now + duration * 1000, fuelSpent: cost };
+  const tripBody = existingTrip.writeLock ? { key: TRAVEL_KEY, value: trip, writeLock: existingTrip.writeLock } : { key: TRAVEL_KEY, value: trip };
   try {
-    await saveApi.setItem(projectId, playerId, { key: TRAVEL_KEY, value: trip });
+    await saveApi.setProtectedItem(projectId, playerId, tripBody);
   } catch (err) {
-    logger.error(`StartTravel: travel_state write failed for ${playerId}; refunding ${cost} fuel. ${err?.message}`);
-    try {
-      const refunded = { ...fuelState, fuel: Math.min(fuelState.maxFuel, fuelState.fuel + cost) };
-      await saveApi.setItem(projectId, playerId, { key: FUEL_KEY, value: refunded });
-      fuelState = refunded;
-    } catch (refundErr) {
-      logger.error(`StartTravel: REFUND FAILED for ${playerId} — manual reconciliation needed: ${refundErr?.message}`);
-    }
-    return { success: false, reason: "write_failed", fuel: fuelState.fuel, maxFuel: fuelState.maxFuel };
+    const conflict = isConflict(err);
+    if (conflict) logger.warn(`StartTravel: another departure committed first for ${playerId}; refunding ${cost} fuel`);
+    else          logger.error(`StartTravel: travel_state write failed for ${playerId}; refunding ${cost} fuel. ${err?.message}`);
+    fuelState = (await refundFuel(saveApi, projectId, playerId, cost, logger)) ?? fuelState;
+    return { success: false, reason: conflict ? "already_traveling" : "write_failed", fuel: fuelState.fuel, maxFuel: fuelState.maxFuel };
   }
 
   logger.info(`StartTravel: player ${playerId} -> ${targetPlanetId}, arrives ${new Date(trip.arrivalTs).toISOString()}, spent ${cost} fuel`);
@@ -150,4 +183,31 @@ module.exports = async ({ params, context, logger }) => {
     fuel: fuelState.fuel,
     maxFuel: fuelState.maxFuel,
   };
+};
+
+// ---- active session check (copy verbatim into every deployed script; ActiveSessionGuardTests keeps the copies identical) ----
+// ClaimSession records the latest sign-in's session in the Protected active_session item. A call
+// naming any other session, or none, comes from a replaced or signed-out device. A failed read
+// throws rather than letting the call through.
+async function requireActiveSession(context, sessionId) {
+  const { DataApi } = require("@unity-services/cloud-save-1.4");
+  const { projectId, playerId } = context;
+  let current;
+  try {
+    const res = await new DataApi(context).getProtectedItems(projectId, playerId, ["active_session"]);
+    current = res.data.results.find(r => r.key === "active_session")?.value?.sessionId;
+  } catch (e) {
+    if (e?.response?.status !== 404) throw e;
+  }
+  if (!sessionId || sessionId !== current) throw Error("SESSION_REPLACED");
+}
+// ---- end active session check
+
+// Parameter declarations for the UGS CLI / Cloud Code (types only: each script validates its own
+// inputs and returns reasons the client understands). Must stay after `module.exports = ...`,
+// which would otherwise overwrite it. Pinned by ServerCodeDeployTests.
+module.exports.params = {
+  targetPlanetId: "String",
+  originPlanetId: "String",
+  sessionId: "String"
 };

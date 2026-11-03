@@ -14,6 +14,7 @@ namespace SocialUniverse.Tests
     {
         private class FakeBackendClient : IBackendClient
         {
+            public string SessionId { get; set; }
             public FuelStateResult GetFuelStateResponse;
             public FuelStateResult SpendFuelResponse;
             public FuelStateResult RefillFuelResponse;

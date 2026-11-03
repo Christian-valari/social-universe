@@ -16,6 +16,8 @@ namespace SocialUniverse.Tests
 
         public readonly List<(string Function, Dictionary<string, object> Args)> Calls = new();
 
+        public string SessionId { get; set; }
+
         public void On(string function, Func<Dictionary<string, object>, string> jsonResponder) =>
             _responders[function] = jsonResponder;
 

@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using NUnit.Framework;
+using SocialUniverse.Core;
 using SocialUniverse.Travel;
 
 namespace SocialUniverse.Tests
@@ -54,6 +55,24 @@ namespace SocialUniverse.Tests
             var r = Parse<TravelTripResult>("{\"success\":false,\"reason\":\"insufficient_fuel\",\"fuel\":5,\"maxFuel\":100}");
             Assert.AreEqual("insufficient_fuel", r.Reason);
             Assert.AreEqual(5f, r.Fuel);
+        }
+
+        // ---- GetCurrentPlanet (ServerCode/GetCurrentPlanet.js) ----
+
+        [Test]
+        public void GetCurrentPlanet_with_an_unlanded_trip_binds()
+        {
+            var r = Parse<CurrentPlanetResult>("{\"planetId\":\"earth\",\"travelTargetId\":\"mars\"}");
+            Assert.AreEqual("earth", r.PlanetId);
+            Assert.AreEqual("mars", r.TravelTargetId);
+        }
+
+        [Test]
+        public void GetCurrentPlanet_for_a_new_player_binds()
+        {
+            var r = Parse<CurrentPlanetResult>("{\"planetId\":null,\"travelTargetId\":null}");
+            Assert.IsNull(r.PlanetId);
+            Assert.IsNull(r.TravelTargetId);
         }
     }
 }

@@ -11,9 +11,9 @@ namespace SocialUniverse.Social
         Rejected   // message must not be sent (Strict level)
     }
 
-    // Client-side profanity filter (the server also enforces — see
-    // ServerCode/ModerateMessage.js, whose word list must match
-    // SocialConfig.BlockedWords). Pure C#, no Unity dependency beyond the
+    // Client-side profanity filter. The server re-checks display names in
+    // ServerCode/UpdateProfile.js, whose word list must match
+    // SocialConfig.BlockedWords; chat is filtered here and by Vivox. Pure C#, no Unity dependency beyond the
     // config SO, so it is fully EditMode-testable.
     //
     // Matching is case-insensitive and normalizes common letter-for-symbol

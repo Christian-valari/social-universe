@@ -2,7 +2,7 @@
 // coins.
 //
 // FIX 1: DataApi's constructor doesn't read a { headers: ... } field, and
-// getItems/setItem take positional args, not an options object — same
+// getProtectedItems/setProtectedItem take positional args, not an options object — same
 // SDK-shape mismatch documented as Known Issue #6 for the old PurchaseLand.js.
 // DataApi(context) authenticates as the calling player via the service token.
 // FIX 2: rejects with no charge if the tank is already full (old version
@@ -51,7 +51,8 @@ async function readBalance(econApi, projectId, playerId) {
 /**
  * No parameters.
  */
-module.exports = async ({ context, logger }) => {
+module.exports = async ({ params, context, logger }) => {
+  await requireActiveSession(context, params.sessionId);
   const { projectId, playerId, accessToken } = context;
   const econApi = new CurrenciesApi({ accessToken });
   const saveApi = new DataApi(context);
@@ -59,7 +60,7 @@ module.exports = async ({ context, logger }) => {
   // 1. Read current fuel (recharged) + writeLock.
   let raw = null, writeLock;
   try {
-    const res    = await saveApi.getItems(projectId, playerId, [SAVE_KEY]);
+    const res    = await saveApi.getProtectedItems(projectId, playerId, [SAVE_KEY]);
     const record = res.data.results.find(r => r.key === SAVE_KEY);
     if (record?.value) { raw = record.value; writeLock = record.writeLock; }
   } catch (_) { /* no record yet */ }
@@ -99,14 +100,14 @@ module.exports = async ({ context, logger }) => {
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
     const body = lock ? { key: SAVE_KEY, value: full, writeLock: lock } : { key: SAVE_KEY, value: full };
     try {
-      await saveApi.setItem(projectId, playerId, body);
+      await saveApi.setProtectedItem(projectId, playerId, body);
       logger.info(`RefillFuel: player ${playerId} refilled to ${full.fuel}/${full.maxFuel} for ${REFILL_COST} → ${newBalance}`);
       return { success: true, fuel: full.fuel, maxFuel: full.maxFuel, newBalance };
     } catch (err) {
       if (isConflict(err) && attempt < MAX_RETRIES - 1) {
         // Re-read the latest writeLock and retry (value is always a full tank).
         try {
-          const res    = await saveApi.getItems(projectId, playerId, [SAVE_KEY]);
+          const res    = await saveApi.getProtectedItems(projectId, playerId, [SAVE_KEY]);
           const record = res.data.results.find(r => r.key === SAVE_KEY);
           lock = record?.writeLock;
         } catch (_) { lock = undefined; }
@@ -126,4 +127,29 @@ module.exports = async ({ context, logger }) => {
       return { success: false, reason: "write_failed", fuel: current.fuel, maxFuel: current.maxFuel, newBalance };
     }
   }
+};
+
+// ---- active session check (copy verbatim into every deployed script; ActiveSessionGuardTests keeps the copies identical) ----
+// ClaimSession records the latest sign-in's session in the Protected active_session item. A call
+// naming any other session, or none, comes from a replaced or signed-out device. A failed read
+// throws rather than letting the call through.
+async function requireActiveSession(context, sessionId) {
+  const { DataApi } = require("@unity-services/cloud-save-1.4");
+  const { projectId, playerId } = context;
+  let current;
+  try {
+    const res = await new DataApi(context).getProtectedItems(projectId, playerId, ["active_session"]);
+    current = res.data.results.find(r => r.key === "active_session")?.value?.sessionId;
+  } catch (e) {
+    if (e?.response?.status !== 404) throw e;
+  }
+  if (!sessionId || sessionId !== current) throw Error("SESSION_REPLACED");
+}
+// ---- end active session check
+
+// Parameter declarations for the UGS CLI / Cloud Code (types only: each script validates its own
+// inputs and returns reasons the client understands). Must stay after `module.exports = ...`,
+// which would otherwise overwrite it. Pinned by ServerCodeDeployTests.
+module.exports.params = {
+  sessionId: "String"
 };

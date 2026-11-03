@@ -18,15 +18,18 @@ namespace SocialUniverse.Mining
         private readonly ActiveMiningHandoff     _handoff;
         private readonly IAudioManager           _audio;
         private readonly DroneFleet              _fleet;
+        private readonly IIdleMiningService      _idle;
 
         public IdleMiningSession CurrentIdleSession { get; private set; }
         public Asteroid          ClaimingAsteroid    { get; private set; }
+        // The asteroid whose StartIdleMining call is in flight (the drone is committed to it).
+        public Asteroid          StartingAsteroid    { get; private set; }
 
         public event Action<IdleMiningSession> OnIdleSessionChanged;
 
         public MiningController(IMineralService minerals, MiningRewardCalculator rewardCalc,
             AsteroidSpawner spawner, EconomyConfig config, PlanetDefinition planet, ActiveMiningHandoff handoff,
-            IAudioManager audio, DroneFleet fleet)
+            IAudioManager audio, DroneFleet fleet, IIdleMiningService idle)
         {
             _minerals   = minerals;
             _rewardCalc = rewardCalc;
@@ -36,19 +39,32 @@ namespace SocialUniverse.Mining
             _handoff    = handoff;
             _audio      = audio;
             _fleet      = fleet;
+            _idle       = idle;
         }
 
-        public void Initialize()
+        // serverRun: the player's idle run as GetIdleMining reported it (null if the read failed).
+        // A pending active-mining result is finalized first: it may have consumed the asteroid the
+        // idle run is on (possible after a failed GetIdleMining), which EnsureSlot then brings back.
+        public void Initialize(IdleMiningSessionResult serverRun = null)
         {
-            TryRestoreIdleSession();
             TryFinalizePendingActiveMining();
+            if (!TryRestoreServerRun(serverRun))
+                TryRestoreIdleSession();
         }
 
         // ---- Idle mining ----
+        // A run lives on the server (StartIdleMining), so any device the player signs in on can show
+        // and claim it: docs/superpowers/plans/2026-10-15-server-tracked-idle-mining.md.
 
-        public bool BeginIdleMining(Asteroid asteroid)
+        // Starts an idle run on the asteroid once the server has recorded it. False if the run can't
+        // start here (a refusal is published as MiningClaimRejectedEvent), including when the server
+        // already has a run on this planet, which is then taken over instead.
+        public async Task<bool> BeginIdleMiningAsync(Asteroid asteroid)
         {
-            if (asteroid == null || asteroid.IsDepleted || CurrentIdleSession != null ||
+            // While a claim is in flight the server still holds the run being claimed (ValidateMining
+            // ends it before answering), so a start now would collide with it.
+            if (asteroid == null || asteroid.IsDepleted || CurrentIdleSession != null || StartingAsteroid != null ||
+                ClaimingAsteroid != null ||
                 (_handoff.AsteroidSlotId != null && _handoff.AsteroidSlotId == asteroid.SlotId))
                 return false;
 
@@ -59,14 +75,48 @@ namespace SocialUniverse.Mining
                 return false;
             }
 
-            var reward = _rewardCalc.Compute(asteroid, _fleet.Active.EffectiveYieldMult, _fleet.Active.EffectiveTravelSpeed);
-            CurrentIdleSession = new IdleMiningSession(asteroid, DateTime.UtcNow, reward.IdleDurationSeconds);
-            CurrentIdleSession.OnStageChanged += _ => OnIdleSessionChanged?.Invoke(CurrentIdleSession);
+            var reward    = _rewardCalc.Compute(asteroid, active.EffectiveYieldMult, active.EffectiveTravelSpeed);
+            var mineralId = MineralIdOf(asteroid);
 
-            PersistIdleSession(CurrentIdleSession);
-            SULog.Info($"Idle session started on {asteroid.name} ({reward.IdleDurationSeconds:0}s)", SULog.Channel.Mining);
-            OnIdleSessionChanged?.Invoke(CurrentIdleSession);
-            return true;
+            // The drone is committed until the server answers: no second start, no active mining.
+            StartingAsteroid = asteroid;
+            IdleMiningSessionResult res;
+            try
+            {
+                res = await _idle.StartAsync(_planet.PlanetId, asteroid.SlotId, mineralId, reward.IdleDurationSeconds);
+                if (asteroid == null) return false; // the Planet scene went away while the server answered
+
+                if (res.Reason == "ALREADY_MINING" && res.HasSession && res.PlanetId == _planet.PlanetId)
+                {
+                    if (AdoptServerRun(res, restored: false))
+                    {
+                        SULog.Info($"Idle start on {asteroid.SlotId} refused: the server's run on {res.SlotId} is taken over", SULog.Channel.Mining);
+                        return false;
+                    }
+
+                    // That run's asteroid can't be on this planet (e.g. its type was removed), so it
+                    // would block idle mining here for good: replace it with this run.
+                    SULog.Warn($"Idle run on {res.SlotId} can't be placed on {_planet.PlanetId}; replacing it", SULog.Channel.Mining);
+                    res = await _idle.StartAsync(_planet.PlanetId, asteroid.SlotId, mineralId, reward.IdleDurationSeconds, res.SlotId);
+                    if (asteroid == null) return false;
+                }
+            }
+            finally
+            {
+                StartingAsteroid = null;
+            }
+
+            if (res.Success)
+            {
+                float duration = res.DurationSeconds > 0f ? res.DurationSeconds : reward.IdleDurationSeconds;
+                SetSession(new IdleMiningSession(asteroid, StartUtcFor(res), duration, serverTracked: true));
+                SULog.Info($"Idle session started on {asteroid.SlotId} ({duration:0}s)", SULog.Channel.Mining);
+                return true;
+            }
+
+            SULog.Warn($"Idle start on {asteroid.SlotId} refused: {res.Reason}", SULog.Channel.Mining);
+            EventBus.Publish(new MiningClaimRejectedEvent { MineralId = mineralId, Reason = res.Reason });
+            return false;
         }
 
         // Player tapped the asteroid while it's ready to claim. Completes and pays out.
@@ -82,37 +132,44 @@ namespace SocialUniverse.Mining
 
             int mined = asteroid.Mine(asteroid.RemainingYield);
             if (asteroid.IsDepleted) _audio.PlaySfx(SfxId.AsteroidDestroyed);
-            int quantity = reward.MineralQuantity;
-            var mineral  = asteroid.Definition.Mineral;
+            int quantity  = reward.MineralQuantity;
+            var mineral   = asteroid.Definition.Mineral;
+            var mineralId = MineralIdOf(asteroid);
+
+            // A server-tracked run is ended by this claim, so it must reach the server even when it is
+            // worth nothing (ValidateMining then answers INVALID_PARAMS and still ends the run); a
+            // legacy local session has no server run to end.
+            string idleSlotId = session.IsServerTracked ? asteroid.SlotId : null;
 
             CurrentIdleSession = null;
             ClaimingAsteroid   = asteroid;
             ClearPersistedIdleSession();
             OnIdleSessionChanged?.Invoke(null);
 
-            if (quantity > 0 && mineral != null)
+            if ((quantity > 0 && mineral != null) || idleSlotId != null)
             {
                 try
                 {
-                    var result = await _minerals.GrantMiningAsync(_planet.PlanetId, mineral.MineralId, quantity);
+                    var result = await _minerals.GrantMiningAsync(_planet.PlanetId, mineralId, quantity, idleSlotId, asteroid.SlotId);
                     if (result.Granted > 0)
                     {
                         _audio.PlaySfx(SfxId.CoinsReward);
-                        EventBus.Publish(new IdleClaimCompletedEvent { MineralId = mineral.MineralId, Quantity = result.Granted });
-                        SULog.Info($"Idle session claimed: +{result.Granted} {mineral.MineralId}", SULog.Channel.Mining);
+                        EventBus.Publish(new IdleClaimCompletedEvent { MineralId = mineralId, Quantity = result.Granted });
+                        SULog.Info($"Idle session claimed: +{result.Granted} {mineralId}", SULog.Channel.Mining);
                     }
                     else
                     {
-                        SULog.Warn($"Idle claim rejected for {mineral.MineralId}: {result.Reason}", SULog.Channel.Mining);
-                        EventBus.Publish(new MiningClaimRejectedEvent { MineralId = mineral.MineralId, Reason = result.Reason });
+                        SULog.Warn($"Idle claim rejected for {mineralId}: {result.Reason}", SULog.Channel.Mining);
+                        EventBus.Publish(new MiningClaimRejectedEvent { MineralId = mineralId, Reason = result.Reason });
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Asteroid is already mined-out and the session already torn down (intentional,
-                    // for re-entrancy) — if the grant throws, the player loses the minerals, but the
-                    // asteroid must still respawn below instead of being stranded forever.
-                    SULog.Error($"GrantMiningAsync failed for idle claim on {mineral.MineralId} ({quantity}): {ex.Message}", SULog.Channel.Mining);
+                    // The asteroid is already mined-out and the session torn down (intentional, for
+                    // re-entrancy). If the grant throws, a legacy session's minerals are lost, while a
+                    // server-tracked run stays on the server and comes back ready on the next load.
+                    // Either way the asteroid must still respawn below instead of being stranded.
+                    SULog.Error($"GrantMiningAsync failed for idle claim on {mineralId} ({quantity}): {ex.Message}", SULog.Channel.Mining);
                 }
             }
 
@@ -130,7 +187,8 @@ namespace SocialUniverse.Mining
         public bool BeginActiveMining(Asteroid asteroid)
         {
             if (asteroid == null || asteroid.IsDepleted) return false;
-            if (CurrentIdleSession != null && CurrentIdleSession.Asteroid == asteroid) return false;
+            if (CurrentIdleSession != null) return false; // the drone is out on an idle session (on any asteroid)
+            if (StartingAsteroid != null) return false;  // ...or about to leave on one
             if (_handoff.AsteroidSlotId != null) return false; // a previous result is still pending finalize
 
             var active = _fleet.Active;
@@ -184,7 +242,7 @@ namespace SocialUniverse.Mining
             {
                 try
                 {
-                    var result = await _minerals.GrantMiningAsync(_planet.PlanetId, mineral.MineralId, quantity);
+                    var result = await _minerals.GrantMiningAsync(_planet.PlanetId, mineral.MineralId, quantity, slotId: asteroid.SlotId);
                     if (result.Granted > 0)
                     {
                         SULog.Info($"Active mining success: +{result.Granted} {mineral.MineralId}", SULog.Channel.Mining);
@@ -207,16 +265,81 @@ namespace SocialUniverse.Mining
             _spawner.ScheduleRespawn(asteroid, _config.AsteroidRespawnHours);
         }
 
+        // A failed minigame loses the asteroid. The slot empties here at once, and the server records it
+        // (ForfeitMiningAsync: it uses one of the planet's claims and grants nothing) so it stays empty on
+        // every device until it respawns.
         private void FailActiveMining(Asteroid asteroid)
         {
+            string slotId    = asteroid.SlotId;
+            string mineralId = MineralIdOf(asteroid);
             asteroid.Mine(asteroid.RemainingYield);
 
             SULog.Info($"Active mining failed on {asteroid.name} — asteroid lost", SULog.Channel.Mining);
             _spawner.ScheduleRespawn(asteroid, _config.AsteroidRespawnHours);
+            _ = ForfeitAsync(mineralId, slotId);
         }
 
-        // ---- Idle session persistence (survives the app being closed) ----
+        // Never throws. The player already saw the run fail, so a forfeit the server doesn't record (an
+        // old server, a full claim budget, no connection) is only logged: the slot is then empty on this
+        // device until the next Planet load.
+        private async Task ForfeitAsync(string mineralId, string slotId)
+        {
+            try
+            {
+                var result = await _minerals.ForfeitMiningAsync(_planet.PlanetId, mineralId, slotId);
+                if (result.Reason != "FORFEITED")
+                    SULog.Warn($"Forfeit of {slotId} not recorded: {result.Reason}", SULog.Channel.Mining);
+            }
+            catch (Exception ex)
+            {
+                SULog.Warn($"Forfeit of {slotId} failed ({ex.Message}); it is empty on this device only", SULog.Channel.Mining);
+            }
+        }
 
+        // ---- Idle session restore ----
+
+        // The server's run on this planet (from any device) wins over anything this device kept.
+        // Returns false when there is none here, so Initialize falls back to a legacy session.
+        private bool TryRestoreServerRun(IdleMiningSessionResult run)
+        {
+            if (run == null || !run.HasSession || run.PlanetId != _planet.PlanetId) return false;
+
+            ClearPersistedIdleSession();
+            if (!AdoptServerRun(run, restored: true))
+                SULog.Warn($"Idle run on {run.SlotId} can't be placed on {_planet.PlanetId}; not shown", SULog.Channel.Mining);
+            return true;
+        }
+
+        // Attaches a server run to its asteroid (spawning the slot if this device has it waiting to
+        // respawn). False if the slot can't be on this planet.
+        private bool AdoptServerRun(IdleMiningSessionResult run, bool restored)
+        {
+            var asteroid = _spawner.EnsureSlot(run.SlotId);
+            if (asteroid == null || asteroid.IsDepleted) return false;
+
+            SetSession(new IdleMiningSession(asteroid, StartUtcFor(run), run.DurationSeconds, restored, serverTracked: true));
+            SULog.Info($"Idle session on {run.SlotId} taken from the server ({run.ElapsedSeconds:0}/{run.DurationSeconds:0}s, stage={CurrentIdleSession.Stage})", SULog.Channel.Mining);
+            return true;
+        }
+
+        // The run's start on this device's clock: the server reports how long ago it started on its
+        // own clock, so a device whose clock is off still shows the right progress.
+        private static DateTime StartUtcFor(IdleMiningSessionResult run) =>
+            DateTime.UtcNow - TimeSpan.FromSeconds(Math.Max(0f, run.ElapsedSeconds));
+
+        private void SetSession(IdleMiningSession session)
+        {
+            CurrentIdleSession = session;
+            session.OnStageChanged += _ => OnIdleSessionChanged?.Invoke(CurrentIdleSession);
+            OnIdleSessionChanged?.Invoke(CurrentIdleSession);
+        }
+
+        private static string MineralIdOf(Asteroid asteroid) =>
+            asteroid.Definition.Mineral != null ? asteroid.Definition.Mineral.MineralId : asteroid.Definition.MineralType;
+
+        // Legacy: builds before server-tracked runs kept the session only in PlayerPrefs. Such a
+        // session is restored on this device as before and claimed without a server run; new builds
+        // never write the key, only read and delete it.
         private void TryRestoreIdleSession()
         {
             var raw = PlayerPrefs.GetString(SaveKeys.IdleMiningSession, "");
@@ -248,19 +371,8 @@ namespace SocialUniverse.Mining
                 return;
             }
 
-            CurrentIdleSession = new IdleMiningSession(asteroid, startUtc, duration, restored: true);
-            CurrentIdleSession.OnStageChanged += _ => OnIdleSessionChanged?.Invoke(CurrentIdleSession);
-
-            SULog.Info($"Idle session restored on {asteroid.name} (stage={CurrentIdleSession.Stage})", SULog.Channel.Mining);
-            OnIdleSessionChanged?.Invoke(CurrentIdleSession);
-        }
-
-        private void PersistIdleSession(IdleMiningSession session)
-        {
-            string duration = session.DurationSeconds.ToString(CultureInfo.InvariantCulture);
-            string value    = $"{_planet.PlanetId}|{session.Asteroid.SlotId}|{session.StartUtc:O}|{duration}";
-            PlayerPrefs.SetString(SaveKeys.IdleMiningSession, value);
-            PlayerPrefs.Save();
+            SetSession(new IdleMiningSession(asteroid, startUtc, duration, restored: true));
+            SULog.Info($"Legacy idle session restored on {asteroid.name} (stage={CurrentIdleSession.Stage})", SULog.Channel.Mining);
         }
 
         private static void ClearPersistedIdleSession()

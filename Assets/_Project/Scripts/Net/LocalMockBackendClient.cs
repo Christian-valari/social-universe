@@ -6,6 +6,8 @@ namespace SocialUniverse.Net
 {
     public class LocalMockBackendClient : IBackendClient
     {
+        public string SessionId { get; set; }
+
         public async Task<T> CallAsync<T>(string function, Dictionary<string, object> args = null)
         {
             await Task.Delay(100);

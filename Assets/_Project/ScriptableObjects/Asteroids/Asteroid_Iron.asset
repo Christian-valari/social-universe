@@ -16,6 +16,6 @@ MonoBehaviour:
   _mineralType: Iron
   _tier: 1
   _baseYield: 80
-  _rarity: 0.7
+  _rarity: 0.1
   _coinsPerUnit: 2
   _modelPrefab: {fileID: 8060945332349719143, guid: 4b721cd4c1f0e414797518138a05e70b, type: 3}

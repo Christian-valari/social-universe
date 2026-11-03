@@ -26,7 +26,7 @@ namespace SocialUniverse.Config
         [SerializeField] private string[] _blockedWords =
         {
             // Designer-extendable starter list; must match BLOCKED_WORDS in
-            // ServerCode/ModerateMessage.js. Matching is case-insensitive and
+            // ServerCode/UpdateProfile.js (display names). Matching is case-insensitive and
             // catches simple letter-for-symbol substitutions (a→@, i→1, …).
             "fuck", "shit", "bitch", "asshole", "cunt", "dick", "faggot",
             "nigger", "nigga", "whore", "slut", "retard", "kys"

@@ -29,6 +29,7 @@ namespace SocialUniverse.UI
         [SerializeField] private TMP_Text _statusText;
         [SerializeField] private TMP_Text _readyToClaimText;
         [SerializeField] private Button   _viewLandButton;
+        [SerializeField] private RectTransform _window;   // the panel that pops in and out (PopupTransition)
 
         [Inject] private ProfileService          _profileService;
         [Inject] private DatabaseRegistry        _registry;
@@ -40,6 +41,9 @@ namespace SocialUniverse.UI
         [Inject] private SocialUniverse.Progression.PlayerState _playerState;
 
         private TileData _currentTile;
+
+        private PopupTransition _transition;
+        private PopupTransition Transition => _transition != null ? _transition : _transition = PopupTransition.On(gameObject, _window);
 
         private void Awake()
         {
@@ -81,7 +85,7 @@ namespace SocialUniverse.UI
             _viewLandButton.gameObject.SetActive(owned);
 
             _audio.PlaySfx(SfxId.OpenPanel);
-            gameObject.SetActive(true);
+            Transition.Show();
 
             if (ownedByPlayer)
             {
@@ -176,7 +180,7 @@ namespace SocialUniverse.UI
             _audio.PlaySfx(SfxId.Cancel);
             _currentTile = null;
             CancelInvoke(nameof(RefreshYieldEstimate));
-            gameObject.SetActive(false);
+            Transition.Hide();
         }
 
         private void OnViewLandClicked()
