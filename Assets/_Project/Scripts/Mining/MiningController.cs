@@ -210,6 +210,9 @@ namespace SocialUniverse.Mining
             var reward = _rewardCalc.Compute(asteroid, _fleet.Active.EffectiveYieldMult, _fleet.Active.EffectiveTravelSpeed);
             _handoff.Begin(_planet.PlanetId, asteroid.SlotId, asteroid.Definition, reward.MineralQuantity,
                 _config.ActiveRunSettings(asteroid.Definition.Tier));
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _handoff.DevSettingsForTier = _config.ActiveRunSettings;
+#endif
             return true;
         }
 

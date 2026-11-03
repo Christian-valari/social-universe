@@ -81,6 +81,9 @@ namespace SocialUniverse.UI
         private float               _gradeSecondsLeft;
         private ActiveMiningSession _session;
         private Canvas              _canvas;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private ActiveMiningDevTierPicker _tierPicker;
+#endif
 
         private void Awake()
         {
@@ -101,6 +104,10 @@ namespace SocialUniverse.UI
             if (_preGamePanel    != null) _preGamePanel.SetActive(true);
             if (_mineralTypeText != null) _mineralTypeText.text = _handoff.Definition != null ? _handoff.Definition.MineralType : "";
             if (_rulesText       != null) _rulesText.text       = ActiveMiningRulesText.For(_handoff.Settings);
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            ShowTierPicker();
+#endif
         }
 
         private void OnDestroy()
@@ -148,6 +155,12 @@ namespace SocialUniverse.UI
         {
             if (_session != null) return;
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            // A tap on the picker also lands on this full-screen button, and isn't a request to start.
+            if (_tierPicker != null && _tierPicker.IsPressed) return;
+            HideTierPicker();
+#endif
+
             if (_preGamePanel != null) _preGamePanel.SetActive(false);
             SetInProgressUiActive(true);
 
@@ -159,6 +172,34 @@ namespace SocialUniverse.UI
             _session.OnWrongTap       += OnWrongTap;
             Refresh();
         }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        // Offered only when a run began through Planet, which is what supplies the tier lookup. A
+        // pick changes how the minigame plays for this run: the asteroid and its payout stay as they were.
+        private void ShowTierPicker()
+        {
+            if (_handoff.DevSettingsForTier == null) return;
+
+            _tierPicker = gameObject.AddComponent<ActiveMiningDevTierPicker>();
+            _tierPicker.SelectedTier = _handoff.Settings?.TierNumber ?? 1;
+            _tierPicker.OnTierPicked += OnTierPicked;
+        }
+
+        private void OnTierPicked(int tier)
+        {
+            var settings = _handoff.DevSettingsForTier(tier);
+            _handoff.UseSettings(settings);
+            if (_rulesText != null) _rulesText.text = ActiveMiningRulesText.For(settings);
+        }
+
+        private void HideTierPicker()
+        {
+            if (_tierPicker == null) return;
+
+            Destroy(_tierPicker);
+            _tierPicker = null;
+        }
+#endif
 
         private void OnStageChanged(ActiveMiningStage stage)
         {

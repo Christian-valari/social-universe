@@ -12,6 +12,9 @@ namespace SocialUniverse.Mining
     // once Planet reloads, and keeps the run's local marker up to date in case the app closes first.
     public class ActiveMiningSessionRunner : ITickable
     {
+        // A standalone ActiveMining scene has no run begun, so it plays this tier's settings.
+        private const int StandaloneTier = 1;
+
         private readonly ActiveMiningHandoff  _handoff;
         private readonly ActiveMiningRunStore _store;
 
@@ -51,6 +54,9 @@ namespace SocialUniverse.Mining
 
             SaveMarker(Session.BankedFraction);
             _handoff.SetResult(stage == ActiveMiningStage.Success, Session.BankedFraction);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            SULog.Info(ActiveMiningRunLog.Format(_handoff.Settings?.TierNumber ?? StandaloneTier, Session), SULog.Channel.Mining);
+#endif
         }
 
         // No slot means no asteroid to settle later: a standalone scene, or Planet has already taken
@@ -62,11 +68,10 @@ namespace SocialUniverse.Mining
             _store.Save(_handoff.PlanetId, _handoff.AsteroidSlotId, _handoff.MineralId, _handoff.FullQuantity, bankedFraction);
         }
 
-        // A standalone ActiveMining scene has no run begun, so it plays the default (Tier 1) settings.
         private static ActiveMiningRunSettings DefaultSettings()
         {
             var config   = ScriptableObject.CreateInstance<EconomyConfig>();
-            var settings = config.ActiveRunSettings(1);
+            var settings = config.ActiveRunSettings(StandaloneTier);
             Object.Destroy(config);
             return settings;
         }

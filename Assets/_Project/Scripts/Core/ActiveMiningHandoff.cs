@@ -1,3 +1,6 @@
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+using System;
+#endif
 using SocialUniverse.Config;
 
 namespace SocialUniverse.Core
@@ -24,6 +27,12 @@ namespace SocialUniverse.Core
 
         public int BankedQuantity => ActiveMiningPayout.Quantity(FullQuantity, BankedFraction);
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        // Set by MiningController when it begins a run, so the dev tier picker can look up any
+        // tier's settings.
+        public Func<int, ActiveMiningRunSettings> DevSettingsForTier { get; set; }
+#endif
+
         // The mineral this run pays out: the definition's mineral, else the asteroid's type label.
         public string MineralId =>
             Definition == null ? null
@@ -43,6 +52,12 @@ namespace SocialUniverse.Core
             BankedFraction = 0f;
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        // Swaps the run's difficulty before it starts. Only the minigame's rules change: the asteroid
+        // and the quantity it pays are the ones the run began with.
+        public void UseSettings(ActiveMiningRunSettings settings) => Settings = settings;
+#endif
+
         public void SetResult(bool succeeded, float bankedFraction)
         {
             HasResult      = true;
@@ -59,6 +74,9 @@ namespace SocialUniverse.Core
             Settings       = null;
             HasResult      = false;
             BankedFraction = 0f;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            DevSettingsForTier = null;
+#endif
         }
     }
 }

@@ -52,6 +52,19 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
+        public void UseSettings_replaces_the_runs_settings()
+        {
+            var other = new ActiveMiningRunSettings(3, new ActiveMiningTierSettings(), null, 1f, 0.8f, 0.6f, 0.25f, 0.2f);
+            _handoff.Begin("earth", "slot_3", _def, fullQuantity: 16, _settings);
+
+            _handoff.UseSettings(other);
+
+            Assert.AreSame(other, _handoff.Settings);
+            Assert.AreEqual("slot_3", _handoff.AsteroidSlotId, "The asteroid is untouched");
+            Assert.AreEqual(16, _handoff.FullQuantity, "So is what it pays");
+        }
+
+        [Test]
         public void SetResult_records_the_outcome_and_the_banked_share()
         {
             _handoff.Begin("earth", "slot_0", _def, 10, _settings);
@@ -109,9 +122,11 @@ namespace SocialUniverse.Tests
         {
             _handoff.Begin("earth", "slot_0", _def, 10, _settings);
             _handoff.SetResult(succeeded: false, bankedFraction: 0.5f);
+            _handoff.DevSettingsForTier = tier => _settings;
 
             _handoff.Clear();
 
+            Assert.IsNull(_handoff.DevSettingsForTier);
             Assert.IsFalse(_handoff.HasResult);
             Assert.IsNull(_handoff.AsteroidSlotId);
             Assert.AreEqual(0, _handoff.FullQuantity);

@@ -5,6 +5,7 @@ using SocialUniverse.Core;
 using SocialUniverse.Mining;
 using SocialUniverse.Net;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace SocialUniverse.Tests
 {
@@ -20,8 +21,8 @@ namespace SocialUniverse.Tests
             target.GetType().GetField(field, BindingFlags.NonPublic | BindingFlags.Instance).SetValue(target, value);
 
         // No spawn gap or grace, and a tap on a fresh ring grades Perfect, which banks a full share.
-        private static ActiveMiningRunSettings Settings() =>
-            new ActiveMiningRunSettings(1, new ActiveMiningTierSettings(2, 1.6f, 0.8f, 1.2f, 3), null, 1f, 0.8f, 0.6f, 0f, 0f);
+        private static ActiveMiningRunSettings Settings(int tierNumber = 1) =>
+            new ActiveMiningRunSettings(tierNumber, new ActiveMiningTierSettings(2, 1.6f, 0.8f, 1.2f, 3), null, 1f, 0.8f, 0.6f, 0f, 0f);
 
         private static void HitNextTarget(ActiveMiningSession session)
         {
@@ -131,6 +132,17 @@ namespace SocialUniverse.Tests
             Assert.IsTrue(_handoff.Succeeded);
             Assert.AreEqual(1f, _handoff.BankedFraction);
             Assert.AreEqual(_handoff.BankedFraction, _store.Load().BankedFraction);
+        }
+
+        [Test]
+        public void The_end_of_a_run_logs_the_tier_it_played()
+        {
+            _handoff.Begin("earth", "Iron#1", _definition, 80, Settings(tierNumber: 4));
+            var session = _runner.BeginRun();
+            HitNextTarget(session);
+
+            LogAssert.Expect(LogType.Log, "[SU:Mining] ActiveMining run: tier=4 perfect=2 good=0 late=0 misses=0 banked=1.00 result=Success");
+            HitNextTarget(session);
         }
 
         // Planet clears the handoff when it settles the run, and a pause then must not bring the marker back.

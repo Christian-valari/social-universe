@@ -380,6 +380,20 @@ namespace SocialUniverse.Tests
             Assert.AreEqual("Misses: 0/3", ErrorText());
         }
 
+        // No settings in the handoff to read the tier from, so the run's log line must not depend on them.
+        [UnityTest]
+        public IEnumerator A_run_without_settings_logs_as_the_default_tier()
+        {
+            _handoff.Begin("earth", "Iron#1", _definition, 80, settings: null);
+            PressStart();
+            yield return WaitForLiveTarget();
+            TapMissArea();
+            TapMissArea();
+
+            LogAssert.Expect(LogType.Log, "[SU:Mining] ActiveMining run: tier=1 perfect=0 good=0 late=0 misses=3 banked=0.00 result=Failed");
+            TapMissArea();
+        }
+
         [UnityTest]
         public IEnumerator Target_clones_stay_below_the_hud()
         {
@@ -593,6 +607,63 @@ namespace SocialUniverse.Tests
             yield return null;
         }
 
+        // The dev tier picker is for runs that began in Planet, which is what supplies its tier lookup. A
+        // tier N run here has N targets, so a run's length shows which tier it played.
+        [UnityTest]
+        public IEnumerator A_picked_tier_sets_the_difficulty_of_the_run_that_starts_next()
+        {
+            OfferTierPicker();
+            Assert.IsNotNull(_view.GetComponent<ActiveMiningDevTierPicker>(), "The picker is on offer before the run starts");
+
+            PickTier(3);
+            PressStart();
+            yield return WaitForLiveTarget();
+
+            Assert.AreEqual("0/3", ProgressText());
+            Assert.AreEqual(3, _handoff.Settings.TierNumber);
+            Assert.AreEqual(80, _handoff.FullQuantity, "The asteroid and what it pays are unchanged");
+            Assert.IsTrue(_view.GetComponent<ActiveMiningDevTierPicker>() == null, "The picker goes once the run starts");
+        }
+
+        // IMGUI doesn't block uGUI, so a tap on a tier button reaches the Start button too.
+        [UnityTest]
+        public IEnumerator A_press_on_the_tier_picker_does_not_start_the_run()
+        {
+            OfferTierPicker();
+            var picker = _view.GetComponent<ActiveMiningDevTierPicker>();
+            typeof(ActiveMiningDevTierPicker).GetProperty("IsPressed").SetValue(picker, true);
+
+            PressStart();
+            yield return null;
+
+            Assert.IsNull(Session(), "No run began");
+            Assert.IsTrue(Private<GameObject>(_view, "_preGamePanel").activeSelf);
+
+            typeof(ActiveMiningDevTierPicker).GetProperty("IsPressed").SetValue(picker, false);
+            PressStart();
+            yield return null;
+
+            Assert.IsNotNull(Session(), "Once the pointer is up, Start works again");
+        }
+
+        [UnityTest]
+        public IEnumerator A_run_that_did_not_begin_in_planet_has_no_tier_picker()
+        {
+            yield return null;
+
+            Assert.IsTrue(_view.GetComponent<ActiveMiningDevTierPicker>() == null);
+        }
+
+        private void OfferTierPicker()
+        {
+            _handoff.DevSettingsForTier = tier => new ActiveMiningRunSettings(tier,
+                new ActiveMiningTierSettings(tier, 5f, 4f, 4.5f, 3), previousTier: null,
+                perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: 0f, missGraceSeconds: 0f);
+            InvokePrivate(_view, "ShowTierPicker");
+        }
+
+        private void PickTier(int tier) => InvokePrivate(_view, "OnTierPicked", tier);
+
         private void BeginRun(int targets, int maxMisses, float ringSeconds = 5f, float perfectBySeconds = 4f, float goodBySeconds = 4.5f)
         {
             var tier = new ActiveMiningTierSettings(targets, ringSeconds, perfectBySeconds, goodBySeconds, maxMisses);
@@ -684,6 +755,13 @@ namespace SocialUniverse.Tests
             var value = target.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(target) as T;
             Assert.IsNotNull(value, $"{target.GetType().Name}.{name} is not set");
             return value;
+        }
+
+        private static void InvokePrivate(object target, string name, params object[] args)
+        {
+            var method = target.GetType().GetMethod(name, BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.IsNotNull(method, $"{target.GetType().Name} has no {name}");
+            method.Invoke(target, args);
         }
 
         private static void SetPrivate(object target, string name, object value)

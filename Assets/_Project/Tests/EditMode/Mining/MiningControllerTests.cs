@@ -345,6 +345,17 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
+        public void BeginActiveMining_offers_the_dev_picker_the_configs_tier_settings()
+        {
+            var asteroid = MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+
+            Assert.IsTrue(_mining.BeginActiveMining(asteroid));
+
+            Assert.IsNotNull(_handoff.DevSettingsForTier);
+            Assert.IsNotNull(_handoff.DevSettingsForTier(3));
+        }
+
+        [Test]
         public async Task An_idle_claim_pays_the_idle_fraction()
         {
             SetField(_config, "_idleYieldFraction", 0.7f);
