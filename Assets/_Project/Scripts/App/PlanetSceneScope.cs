@@ -145,7 +145,12 @@ namespace SocialUniverse.App
             // Mining — M6: mineral inventory + drone fleet + mineral service
             builder.Register<MineralInventory>(Lifetime.Singleton);
             builder.Register<DroneFleet>(Lifetime.Singleton);
-            if (standalone)
+
+            // Dev mode's mock backend answers every call with nothing, so mining stays on the device
+            // there too. It asks the root scope rather than PlayerDataSyncPolicy, which PlanetTestRootScope
+            // also leaves optional while its tests run the real services over a scripted backend.
+            bool localMining = standalone || (Parent as RootLifetimeScope)?.UsesDevMode == true;
+            if (localMining)
             {
                 builder.Register<LocalMockMineralService>(Lifetime.Singleton).As<IMineralService>();
             }
@@ -154,19 +159,19 @@ namespace SocialUniverse.App
                 builder.Register<MineralService>(Lifetime.Singleton).As<IMineralService>();
             }
 
-            if (standalone)
+            if (localMining)
                 builder.Register<LocalMockDroneService>(Lifetime.Singleton).As<IDroneService>();
             else
                 builder.Register<DroneService>(Lifetime.Singleton).As<IDroneService>();
 
             // Server-tracked idle mining runs (StartIdleMining / GetIdleMining).
-            if (standalone)
+            if (localMining)
                 builder.Register<LocalMockIdleMiningService>(Lifetime.Singleton).As<IIdleMiningService>();
             else
                 builder.Register<IdleMiningService>(Lifetime.Singleton).As<IIdleMiningService>();
 
             // Asteroid respawn timers from the server's claim log (GetAsteroidRespawns).
-            if (standalone)
+            if (localMining)
                 builder.Register<LocalMockAsteroidRespawnService>(Lifetime.Singleton).As<IAsteroidRespawnService>();
             else
                 builder.Register<AsteroidRespawnService>(Lifetime.Singleton).As<IAsteroidRespawnService>();

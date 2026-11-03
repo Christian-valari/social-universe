@@ -36,6 +36,11 @@ namespace SocialUniverse.Tests
             Assert.AreEqual(0.7f, Real().IdleYieldFraction, 0.001f);
         }
 
+        [Test] public void Real_asset_holds_the_first_target_lead_in()
+        {
+            Assert.AreEqual(0.6f, Real().ActiveRunSettings(1).FirstTargetDelaySeconds, 0.001f);
+        }
+
         [Test] public void Previous_tier_is_null_at_tier_1_and_set_above_it()
         {
             Assert.IsNull(Real().ActiveRunSettings(1).PreviousTier);

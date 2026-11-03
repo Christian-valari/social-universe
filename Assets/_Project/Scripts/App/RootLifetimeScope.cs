@@ -21,6 +21,8 @@ namespace SocialUniverse.App
         [SerializeField] private AudioConfig  _audioConfig;
         [SerializeField] private AudioCatalog _audioCatalog;
 
+        public virtual bool UsesDevMode => _devMode;
+
         protected override void Configure(IContainerBuilder builder)
         {
             base.Configure(builder);

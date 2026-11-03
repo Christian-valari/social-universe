@@ -164,7 +164,7 @@ namespace SocialUniverse.UI
             if (_preGamePanel != null) _preGamePanel.SetActive(false);
             SetInProgressUiActive(true);
 
-            // The session's first Tick spawns its first target, so subscribing here misses nothing.
+            // Nothing spawns before the session's first Tick, so subscribing here misses nothing.
             _session = _runner.BeginRun();
             _session.OnStageChanged   += OnStageChanged;
             _session.OnTargetSpawned  += OnTargetSpawned;

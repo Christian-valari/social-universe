@@ -55,6 +55,23 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
+        public void The_first_target_waits_for_the_lead_in()
+        {
+            var s = new ActiveMiningSession(new ActiveMiningRunSettings(1,
+                new ActiveMiningTierSettings(8, 1.6f, 0.8f, 1.2f, 3), null,
+                1f, 0.8f, 0.6f, 0.25f, 0.2f, firstTargetDelaySeconds: 0.6f));
+
+            Advance(s, 0.5f);
+            Assert.AreEqual(0, s.LiveTargets.Count, "Nothing is live during the lead-in");
+
+            s.TapOffTarget();
+            Assert.AreEqual(0, s.ErrorCount, "A stray tap during the lead-in is not a miss");
+
+            Advance(s, 0.15f);
+            Assert.AreEqual(1, s.LiveTargets.Count);
+        }
+
+        [Test]
         public void A_target_spawned_on_a_tick_starts_with_its_ring_open()
         {
             var s = New();

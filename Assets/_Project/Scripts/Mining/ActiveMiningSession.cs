@@ -49,6 +49,9 @@ namespace SocialUniverse.Mining
             _settings = settings;
             Targets   = Mathf.Max(1, settings.Tier.Targets);
             MaxErrors = Mathf.Max(1, settings.Tier.MaxMisses);
+
+            // The player's thumb is still on Start, so the first ring waits out a lead-in.
+            _spawnGapRemaining = settings.FirstTargetDelaySeconds;
         }
 
         // Call every frame while Stage == InProgress. Rings age first and the next target spawns

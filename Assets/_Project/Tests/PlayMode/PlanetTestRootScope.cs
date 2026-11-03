@@ -22,6 +22,12 @@ namespace SocialUniverse.Tests
         // Set before AddComponent: the scope builds its container inside Awake.
         public static FakeBackendClient Backend;
 
+        // Set before loading a scene: PlanetSceneScope reads it when its container is built. A test
+        // that sets it resets it in teardown, so the other tests keep the real services.
+        public static bool DevMode;
+
+        public override bool UsesDevMode => DevMode;
+
         protected override void Configure(IContainerBuilder builder)
         {
             // From ProjectLifetimeScope — only what the scenes under test and their handlers need.

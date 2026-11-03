@@ -69,6 +69,7 @@ MonoBehaviour:
   _activeLateShare: 0.6
   _activeSpawnGapSeconds: 0.25
   _activeMissGraceSeconds: 0.2
+  _activeFirstTargetDelaySeconds: 0.6
   _maxFuel: 100
   _fuelRechargePerHour: 10
   _fuelRefillCost: 50
