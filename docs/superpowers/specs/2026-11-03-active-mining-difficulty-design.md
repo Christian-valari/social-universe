@@ -198,9 +198,10 @@ there. Failure is rare today, but with graded payouts this becomes a free retry.
 **Why keep it until the server answers:** clearing it earlier would either lose the reward or bring the
 asteroid back after a dropped connection, which is a free retry. If a response is lost after the server
 committed, the slot comes back from `GetAsteroidRespawns` as waiting to respawn, so its asteroid isn't
-there on the next load and the marker clears without a second claim. If that read is ever wrong, the
-retry grants twice. That is acceptable because each grant uses a claim from the planet's budget, so it
-can't raise a player's income above the limit.
+there on the next load and the marker clears without a second claim. That read only covers the 4-hour
+respawn window. If the player returns later than that, the slot is back on the field, so the retry claims
+again and uses up the fresh asteroid. That is acceptable because each grant uses a claim from the planet's
+budget, so it can't raise a player's income above the limit, and a rare double grant beats losing a reward.
 
 A crash loses only what was banked since the last save. This stops normal players from retrying, but
 it isn't a security measure and doesn't need to be.
