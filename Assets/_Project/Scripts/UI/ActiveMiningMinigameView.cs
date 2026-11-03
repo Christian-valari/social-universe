@@ -21,7 +21,8 @@ namespace SocialUniverse.UI
     // keeps them below the HUD.
     public class ActiveMiningMinigameView : MonoBehaviour
     {
-        private const int MaxHitVfx = 4;
+        private const int MaxHitVfx            = 4;
+        private const int MaxPlacementAttempts = 32;
 
         [SerializeField] private Camera                    _sceneCamera;
         [SerializeField] private ActiveMiningAsteroidStage  _stage;
@@ -64,9 +65,12 @@ namespace SocialUniverse.UI
 
         private int                 _oldestHitVfx;
         private ActiveMiningSession _session;
+        private Canvas              _canvas;
 
         private void Awake()
         {
+            _canvas = GetComponentInParent<Canvas>();
+
             if (_missAreaButton != null) _missAreaButton.onClick.AddListener(OnMissAreaTapped);
             if (_startButton    != null) _startButton.onClick.AddListener(OnStartClicked);
             if (_continueButton != null) _continueButton.onClick.AddListener(OnContinueClicked);
@@ -141,15 +145,7 @@ namespace SocialUniverse.UI
         {
             var slot = TakeFreeSlot();
 
-            if (_stage != null && _stage.StageClone != null)
-            {
-                Vector3 towardViewer = _sceneCamera != null
-                    ? _sceneCamera.transform.position - _stage.StageClone.transform.position
-                    : Vector3.back;
-
-                slot.Anchor.PlaceOnAsteroid(_stage.StageClone.transform, _stage.ColliderRadius, towardViewer);
-            }
-
+            PlaceAnchor(slot.Anchor, target);
             slot.View.Show(target, OnTargetTapped);
             ProjectToScreen(slot);
         }
@@ -246,6 +242,36 @@ namespace SocialUniverse.UI
             };
             _slots.Add(slot);
             return slot;
+        }
+
+        // A ring the player can't reach costs a miss they could do nothing about, and the bigger
+        // asteroids overflow the screen, so a target's whole tap area has to be on screen both now
+        // and when its ring closes.
+        private void PlaceAnchor(ActiveMiningTargetPoint anchor, ActiveMiningTarget target)
+        {
+            if (_stage == null || _stage.StageClone == null || _sceneCamera == null) return;
+
+            var     asteroid     = _stage.StageClone.transform;
+            Vector3 towardViewer = _sceneCamera.transform.position - asteroid.position;
+            float   margin       = ((RectTransform)_targetTemplate.transform).rect.width / 2f * _canvas.scaleFactor;
+
+            for (int attempt = 0; attempt < MaxPlacementAttempts; attempt++)
+            {
+                anchor.PlaceOnAsteroid(asteroid, _stage.ColliderRadius, towardViewer);
+
+                Vector3 point = anchor.transform.position;
+                if (IsOnScreen(point, margin) && IsOnScreen(_stage.PredictPoint(point, target.RingSeconds), margin))
+                    return;
+            }
+
+            anchor.transform.position = asteroid.position + towardViewer.normalized * _stage.ColliderRadius;
+        }
+
+        private bool IsOnScreen(Vector3 worldPoint, float margin)
+        {
+            Vector3 screenPoint = _sceneCamera.WorldToScreenPoint(worldPoint);
+            return screenPoint.z > 0f && ActiveMiningTargetPoint.IsOnScreen(screenPoint,
+                new Vector2(_sceneCamera.pixelWidth, _sceneCamera.pixelHeight), margin);
         }
 
         private void ProjectToScreen(TargetSlot slot)

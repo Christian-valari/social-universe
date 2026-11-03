@@ -23,6 +23,7 @@ namespace SocialUniverse.Tests
     public class ActiveMiningSceneFlowTests
     {
         private const string ActiveMiningScenePath = "Assets/Scenes/ActiveMining.unity";
+        private const float  ScreenEdgeTolerance   = 0.01f; // pixels of float error when a tap area exactly fills the margin
 
         private GameObject               _rootScopeObject;
         private ActiveMiningHandoff      _handoff;
@@ -170,8 +171,7 @@ namespace SocialUniverse.Tests
         }
 
         // A real raycast, not onClick: the transparent target must take the tap ahead of the full-screen
-        // miss area, over a hit area that reaches past the marker. This test's stand-in asteroid is too
-        // big for the camera to keep its targets on screen, so the target is moved to the middle.
+        // miss area, over a hit area that reaches past the marker.
         [UnityTest]
         public IEnumerator A_tap_hits_the_target_within_its_hit_area_and_the_miss_area_outside_it()
         {
@@ -180,13 +180,96 @@ namespace SocialUniverse.Tests
             yield return null; // raycasts only see what the canvas has drawn
 
             var view   = LiveTarget();
-            var center = new Vector3(Screen.width / 2f, Screen.height / 2f);
-            view.SetScreenPosition(center);
+            var center = view.transform.position;
+            var inward = Vector3.right * Mathf.Sign(Screen.width / 2f - center.x);
             float markerRadius = Private<Image>(view, "_marker").rectTransform.rect.width / 2f * view.transform.lossyScale.x;
 
             Assert.AreSame(view.gameObject, TopRaycastAt(center));
-            Assert.AreSame(view.gameObject, TopRaycastAt(center + Vector3.right * markerRadius * 1.5f));
-            Assert.AreSame(Private<Button>(_view, "_missAreaButton").gameObject, TopRaycastAt(center + Vector3.right * markerRadius * 2f));
+            Assert.AreSame(view.gameObject, TopRaycastAt(center + inward * markerRadius * 1.5f));
+            Assert.AreSame(Private<Button>(_view, "_missAreaButton").gameObject, TopRaycastAt(center + inward * markerRadius * 2f));
+        }
+
+        // The stand-in primitive is far too big for this camera: nearly all of its surface is off screen.
+        [UnityTest]
+        public IEnumerator Every_target_on_an_asteroid_too_big_for_the_camera_has_its_tap_area_on_screen()
+        {
+            BeginRun(targets: 12, maxMisses: 3);
+            PressStart();
+
+            int spawned = 0;
+            var offScreen = new List<string>();
+            var screen = new Rect(-ScreenEdgeTolerance, -ScreenEdgeTolerance,
+                Screen.width + 2f * ScreenEdgeTolerance, Screen.height + 2f * ScreenEdgeTolerance);
+            Session().OnTargetSpawned += _ => // after the view's handler, so the target has just been placed
+            {
+                spawned++;
+                var corners = new Vector3[4];
+                ((RectTransform)LiveTarget().transform).GetWorldCorners(corners);
+                if (!corners.All(corner => screen.Contains(corner)))
+                    offScreen.Add($"Target {spawned}: {corners[0]} to {corners[2]}");
+            };
+
+            for (int i = 0; i < 12; i++)
+                yield return TapNextTarget();
+
+            Assert.AreEqual(12, spawned);
+            CollectionAssert.IsEmpty(offScreen, $"Screen is {Screen.width}x{Screen.height}");
+        }
+
+        // Spawning on screen isn't enough: the spin mustn't carry the target off before its ring closes.
+        // Some of this asteroid's surface is off screen, and it turns a sixth of the way round per ring.
+        [UnityTest]
+        public IEnumerator A_target_is_placed_where_it_stays_on_screen_until_its_ring_closes()
+        {
+            var stage = Private<ActiveMiningAsteroidStage>(_view, "_stage");
+            var model = new GameObject("StandInModel");
+            model.AddComponent<SphereCollider>().radius = 0.12f;
+            SetPrivate(_definition, "_modelPrefab", model);
+            stage.SpawnClone(_definition);
+            SpinAsteroid(new Vector3(1f, 1f, 0f).normalized, degreesPerSecond: 60f);
+
+            BeginRun(targets: 24, maxMisses: 3, ringSeconds: 1f);
+            PressStart();
+
+            int qualified = 0;
+            var offScreen = new List<string>();
+            float margin = 70f * _view.GetComponent<Canvas>().scaleFactor;
+            Session().OnTargetSpawned += target =>
+            {
+                Vector3 placed = UnityEngine.Object.FindFirstObjectByType<ActiveMiningTargetPoint>().transform.position;
+                if (Vector3.Distance(placed, PointFacingTheCamera()) < 0.0001f) return; // nothing qualified
+
+                qualified++;
+                if (!ProjectsOnScreen(placed, margin) || !ProjectsOnScreen(stage.PredictPoint(placed, target.RingSeconds), margin))
+                    offScreen.Add($"Target {target.Id} placed at {placed}");
+            };
+
+            for (int i = 0; i < 24; i++)
+                yield return TapNextTarget();
+
+            Assert.Greater(qualified, 0, "This asteroid is meant to have places that qualify");
+            CollectionAssert.IsEmpty(offScreen, $"Screen is {Screen.width}x{Screen.height}, margin {margin}");
+        }
+
+        // Too big for anything near the middle to stay on screen through 75 degrees of spin, so no
+        // random placement can qualify.
+        [UnityTest]
+        public IEnumerator A_target_with_nowhere_that_stays_on_screen_directly_faces_the_camera()
+        {
+            SpinAsteroid(Vector3.up, degreesPerSecond: 15f);
+            PressStart();
+
+            Vector3 placed = Vector3.zero, onScreen = Vector3.zero;
+            Session().OnTargetSpawned += _ =>
+            {
+                placed   = UnityEngine.Object.FindFirstObjectByType<ActiveMiningTargetPoint>().transform.position;
+                onScreen = LiveTarget().transform.position;
+            };
+
+            yield return WaitForLiveTarget();
+
+            Assert.Less(Vector3.Distance(PointFacingTheCamera(), placed), 0.0001f, $"Placed at {placed}");
+            Assert.Less(Vector2.Distance(new Vector2(Screen.width / 2f, Screen.height / 2f), onScreen), 1f, $"On screen at {onScreen}");
         }
 
         // One ring is live at a time, so a whole run needs one view and one anchor, and hit effects stop
@@ -242,6 +325,29 @@ namespace SocialUniverse.Tests
         private void PressStart()   => Private<Button>(_view, "_startButton").onClick.Invoke();
         private void TapMissArea()  => Private<Button>(_view, "_missAreaButton").onClick.Invoke();
 
+        private ActiveMiningSession Session() => Private<ActiveMiningSessionRunner>(_view, "_runner").Session;
+
+        private void SpinAsteroid(Vector3 axis, float degreesPerSecond)
+        {
+            var stage = Private<ActiveMiningAsteroidStage>(_view, "_stage");
+            SetPrivate(stage, "_rotationAxis", axis);
+            SetPrivate(stage, "_rotationSpeed", degreesPerSecond);
+        }
+
+        private Vector3 PointFacingTheCamera()
+        {
+            var stage  = Private<ActiveMiningAsteroidStage>(_view, "_stage");
+            var center = stage.StageClone.transform.position;
+            return center + (Private<Camera>(_view, "_sceneCamera").transform.position - center).normalized * stage.ColliderRadius;
+        }
+
+        private bool ProjectsOnScreen(Vector3 worldPoint, float margin)
+        {
+            var camera = Private<Camera>(_view, "_sceneCamera");
+            return ActiveMiningTargetPoint.IsOnScreen(camera.WorldToScreenPoint(worldPoint),
+                new Vector2(camera.pixelWidth, camera.pixelHeight), margin);
+        }
+
         private IEnumerator TapNextTarget()
         {
             yield return WaitForLiveTarget();
@@ -281,6 +387,13 @@ namespace SocialUniverse.Tests
             var value = target.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(target) as T;
             Assert.IsNotNull(value, $"{target.GetType().Name}.{name} is not set");
             return value;
+        }
+
+        private static void SetPrivate(object target, string name, object value)
+        {
+            var field = target.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.IsNotNull(field, $"{target.GetType().Name} has no {name}");
+            field.SetValue(target, value);
         }
     }
 }

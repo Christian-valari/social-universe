@@ -58,6 +58,15 @@ namespace SocialUniverse.Mining
             return clone;
         }
 
+        // Where the clone's current spin carries a world-space point after this many seconds.
+        public Vector3 PredictPoint(Vector3 worldPoint, float seconds)
+        {
+            if (StageClone == null) return worldPoint;
+
+            Vector3 center = StageClone.transform.position;
+            return center + Quaternion.AngleAxis(_rotationSpeed * seconds, _rotationAxis) * (worldPoint - center);
+        }
+
         // Slow tumble to match the atmosphere of the field asteroids (Asteroid.Update()).
         private void Update()
         {

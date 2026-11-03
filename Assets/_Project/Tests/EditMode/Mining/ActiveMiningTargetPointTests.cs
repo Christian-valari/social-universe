@@ -42,5 +42,33 @@ namespace SocialUniverse.Tests
             Object.DestroyImmediate(markerGo);
             Object.DestroyImmediate(asteroidGo);
         }
+
+        [Test]
+        public void IsOnScreen_accepts_a_point_well_inside_the_margin()
+        {
+            Assert.IsTrue(ActiveMiningTargetPoint.IsOnScreen(new Vector2(540f, 960f), new Vector2(1080f, 1920f), margin: 70f));
+        }
+
+        [TestCase(-10f, 960f,  TestName = "IsOnScreen_rejects_a_point_off_the_left")]
+        [TestCase(1090f, 960f, TestName = "IsOnScreen_rejects_a_point_off_the_right")]
+        [TestCase(540f, -10f,  TestName = "IsOnScreen_rejects_a_point_off_the_bottom")]
+        [TestCase(540f, 1930f, TestName = "IsOnScreen_rejects_a_point_off_the_top")]
+        [TestCase(69f, 960f,   TestName = "IsOnScreen_rejects_a_point_inside_the_left_margin")]
+        [TestCase(1011f, 960f, TestName = "IsOnScreen_rejects_a_point_inside_the_right_margin")]
+        [TestCase(540f, 69f,   TestName = "IsOnScreen_rejects_a_point_inside_the_bottom_margin")]
+        [TestCase(540f, 1851f, TestName = "IsOnScreen_rejects_a_point_inside_the_top_margin")]
+        public void IsOnScreen_rejects_a_point_past_the_margin(float x, float y)
+        {
+            Assert.IsFalse(ActiveMiningTargetPoint.IsOnScreen(new Vector2(x, y), new Vector2(1080f, 1920f), margin: 70f));
+        }
+
+        [TestCase(70f, 960f,   TestName = "IsOnScreen_accepts_a_point_exactly_on_the_left_margin")]
+        [TestCase(1010f, 960f, TestName = "IsOnScreen_accepts_a_point_exactly_on_the_right_margin")]
+        [TestCase(540f, 70f,   TestName = "IsOnScreen_accepts_a_point_exactly_on_the_bottom_margin")]
+        [TestCase(540f, 1850f, TestName = "IsOnScreen_accepts_a_point_exactly_on_the_top_margin")]
+        public void IsOnScreen_accepts_a_point_exactly_on_the_margin(float x, float y)
+        {
+            Assert.IsTrue(ActiveMiningTargetPoint.IsOnScreen(new Vector2(x, y), new Vector2(1080f, 1920f), margin: 70f));
+        }
     }
 }

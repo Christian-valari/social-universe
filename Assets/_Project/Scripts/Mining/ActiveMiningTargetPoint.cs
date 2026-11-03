@@ -28,6 +28,13 @@ namespace SocialUniverse.Mining
             return center + fallback * radius;
         }
 
+        // Whether a screen point is at least margin pixels inside every edge of the screen.
+        public static bool IsOnScreen(Vector2 screenPoint, Vector2 screenSize, float margin)
+        {
+            return screenPoint.x >= margin && screenPoint.x <= screenSize.x - margin
+                && screenPoint.y >= margin && screenPoint.y <= screenSize.y - margin;
+        }
+
         // Parents this marker to the asteroid and positions it at a random point on its surface
         // facing towardViewer, so subsequent asteroid rotation carries the marker along with it.
         public void PlaceOnAsteroid(Transform asteroidTransform, float radius, Vector3 towardViewer)
