@@ -93,5 +93,13 @@ namespace SocialUniverse.Tests
             Assert.IsNotNull(shipped.GetSfxClip(SfxId.ActiveMiningMiss));
             Assert.IsNotNull(shipped.GetSfxClip(SfxId.ActiveMiningFail));
         }
+
+        [Test]
+        public void In_the_shipped_catalog_a_failed_run_sounds_different_from_a_miss()
+        {
+            var shipped = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioCatalog>("Assets/_Project/ScriptableObjects/AudioCatalog.asset");
+
+            Assert.AreNotEqual(shipped.GetSfxClip(SfxId.ActiveMiningMiss), shipped.GetSfxClip(SfxId.ActiveMiningFail));
+        }
     }
 }

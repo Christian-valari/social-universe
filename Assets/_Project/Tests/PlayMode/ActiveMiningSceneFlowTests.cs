@@ -424,6 +424,16 @@ namespace SocialUniverse.Tests
         }
 
         [UnityTest]
+        public IEnumerator A_perfect_hit_shows_gold()
+        {
+            PressStart();
+            yield return TapNextTarget();
+
+            Assert.AreEqual("Perfect", GradeText());
+            Assert.AreEqual(new Color(1f, 0.84f, 0.3f), Private<Text>(_view, "_gradeText").color);
+        }
+
+        [UnityTest]
         public IEnumerator A_hit_after_the_perfect_cut_off_shows_good()
         {
             BeginRun(targets: 1, maxMisses: 3, perfectBySeconds: -1f);
@@ -431,6 +441,7 @@ namespace SocialUniverse.Tests
             yield return TapNextTarget();
 
             Assert.AreEqual("Good", GradeText());
+            Assert.AreEqual(new Color(0.42f, 0.83f, 0.46f), Private<Text>(_view, "_gradeText").color, "Green");
         }
 
         [UnityTest]
@@ -441,6 +452,7 @@ namespace SocialUniverse.Tests
             yield return TapNextTarget();
 
             Assert.AreEqual("Late", GradeText());
+            Assert.AreEqual(Color.white, Private<Text>(_view, "_gradeText").color);
         }
 
         [UnityTest]

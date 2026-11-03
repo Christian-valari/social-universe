@@ -32,6 +32,7 @@ namespace SocialUniverse.Tests
         public string ForfeitReply = "FORFEITED";
         public string RejectReason; // when set, the grant is rejected with this reason
         public TaskCompletionSource<MiningGrantResult> Pending; // when set, the grant waits on it
+        public TaskCompletionSource<MiningGrantResult> PendingForfeit; // when set, the forfeit waits on it
 
         public Task<SellResult> SellAsync(string mineralId, int qty) => Task.FromResult(new SellResult { Success = true });
         public Task<SellResult> SellAllAsync() => Task.FromResult(new SellResult { Success = true });
@@ -40,6 +41,7 @@ namespace SocialUniverse.Tests
         {
             LastForfeit = (planetId, mineralId, slotId);
             if (ThrowOnForfeit) throw new System.InvalidOperationException("simulated");
+            if (PendingForfeit != null) return PendingForfeit.Task;
             return Task.FromResult(new MiningGrantResult { Granted = 0, MineralId = mineralId, Reason = ForfeitReply });
         }
 
@@ -676,6 +678,39 @@ namespace SocialUniverse.Tests
             await Task.Yield();
 
             Assert.IsNull(_runStore.Load());
+        }
+
+        // By the time a slow answer arrives, the player may have begun another run.
+        [Test]
+        public async Task A_slow_claim_answer_leaves_the_next_runs_marker()
+        {
+            MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+            _runStore.Save("test_planet", "Iron#1", "iron", 80, 0.5f);
+            _minerals.Pending = new TaskCompletionSource<MiningGrantResult>();
+
+            _mining.Initialize();
+            _runStore.Save("test_planet", "Iron#2", "iron", 80, 0f);
+
+            _minerals.Pending.SetResult(new MiningGrantResult { Granted = 40, MineralId = "iron" });
+            await Task.Yield();
+
+            Assert.AreEqual("Iron#2", _runStore.Load()?.SlotId);
+        }
+
+        [Test]
+        public async Task A_slow_forfeit_answer_leaves_the_next_runs_marker()
+        {
+            MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+            _runStore.Save("test_planet", "Iron#1", "iron", 80, 0f);
+            _minerals.PendingForfeit = new TaskCompletionSource<MiningGrantResult>();
+
+            _mining.Initialize();
+            _runStore.Save("test_planet", "Iron#2", "iron", 80, 0f);
+
+            _minerals.PendingForfeit.SetResult(new MiningGrantResult { MineralId = "iron", Reason = "FORFEITED" });
+            await Task.Yield();
+
+            Assert.AreEqual("Iron#2", _runStore.Load()?.SlotId);
         }
 
         [Test]

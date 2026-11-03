@@ -63,5 +63,25 @@ namespace SocialUniverse.Tests
             Assert.IsNull(_store.Load());
             Assert.IsFalse(PlayerPrefs.HasKey(SaveKeys.ActiveMiningRun));
         }
+
+        [Test]
+        public void Clearing_the_markers_slot_clears_it()
+        {
+            _store.Save("earth", "Iron#1", "iron", 80, 0.5f);
+
+            _store.Clear("Iron#1");
+
+            Assert.IsNull(_store.Load());
+        }
+
+        [Test]
+        public void Clearing_another_slot_leaves_the_marker()
+        {
+            _store.Save("earth", "Iron#2", "iron", 80, 0.5f);
+
+            _store.Clear("Iron#1");
+
+            Assert.AreEqual("Iron#2", _store.Load()?.SlotId);
+        }
     }
 }

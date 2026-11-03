@@ -49,8 +49,9 @@ namespace SocialUniverse.Mining
         // serverRun: the player's idle run as GetIdleMining reported it (null if the read failed).
         // A pending active-mining result is finalized first: it may have consumed the asteroid the
         // idle run is on (possible after a failed GetIdleMining), which EnsureSlot then brings back.
-        // The same goes for a run left unsettled, which is only looked at when no result was pending,
-        // because a run that just returned has a marker too and must not claim twice.
+        // The same goes for a run left unsettled, which is only looked at when no result was pending:
+        // a normal claim that just failed leaves its marker for the next load to retry, and looking at
+        // it on this load would clear it, since its asteroid is already used up.
         public void Initialize(IdleMiningSessionResult serverRun = null)
         {
             if (!TryFinalizePendingActiveMining())
@@ -271,10 +272,11 @@ namespace SocialUniverse.Mining
 
         // quantity is the share the run banked of the full amount pinned when it began: Planet's reload
         // re-rolls asteroid yields, so the reloaded asteroid no longer says what the run was worth.
-        // The marker is cleared once the server answers, grant or rejection. A call that throws got no
-        // answer, so the marker stays and the next Planet load retries it.
+        // This run's marker is cleared once the server answers, grant or rejection. A call that throws
+        // got no answer, so the marker stays and the next Planet load retries it.
         private async Task CompleteActiveMiningAsync(Asteroid asteroid, int quantity)
         {
+            string slotId = asteroid.SlotId;
             int mined = asteroid.Mine(asteroid.RemainingYield);
             var mineral = asteroid.Definition.Mineral;
 
@@ -282,8 +284,8 @@ namespace SocialUniverse.Mining
             {
                 try
                 {
-                    var result = await _minerals.GrantMiningAsync(_planet.PlanetId, mineral.MineralId, quantity, slotId: asteroid.SlotId);
-                    _runStore.Clear();
+                    var result = await _minerals.GrantMiningAsync(_planet.PlanetId, mineral.MineralId, quantity, slotId: slotId);
+                    _runStore.Clear(slotId);
                     if (result.Granted > 0)
                     {
                         SULog.Info($"Active mining success: +{result.Granted} {mineral.MineralId}", SULog.Channel.Mining);
@@ -305,7 +307,7 @@ namespace SocialUniverse.Mining
             }
             else
             {
-                _runStore.Clear(); // nothing can be claimed, so there is nothing to retry
+                _runStore.Clear(slotId); // nothing can be claimed, so there is nothing to retry
             }
 
             _spawner.ScheduleRespawn(asteroid, _config.AsteroidRespawnHours);
@@ -327,14 +329,14 @@ namespace SocialUniverse.Mining
 
         // Never throws. The player already saw the run fail, so a forfeit the server doesn't record (an
         // old server, a full claim budget) is only logged: the slot is then empty on this device until
-        // the next Planet load. The marker is cleared once the server answers; with no answer (no
+        // the next Planet load. This run's marker is cleared once the server answers; with no answer (no
         // connection) it stays, and the next Planet load forfeits again.
         private async Task ForfeitAsync(string mineralId, string slotId)
         {
             try
             {
                 var result = await _minerals.ForfeitMiningAsync(_planet.PlanetId, mineralId, slotId);
-                _runStore.Clear();
+                _runStore.Clear(slotId);
                 if (result.Reason != "FORFEITED")
                     SULog.Warn($"Forfeit of {slotId} not recorded: {result.Reason}", SULog.Channel.Mining);
             }

@@ -73,6 +73,7 @@ namespace SocialUniverse.Core
             FullQuantity   = 0;
             Settings       = null;
             HasResult      = false;
+            Succeeded      = false;
             BankedFraction = 0f;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             DevSettingsForTier = null;

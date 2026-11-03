@@ -134,5 +134,16 @@ namespace SocialUniverse.Tests
             Assert.AreEqual(0f, _handoff.BankedFraction);
             Assert.AreEqual(0, _handoff.BankedQuantity);
         }
+
+        [Test]
+        public void Clear_forgets_that_the_run_succeeded()
+        {
+            _handoff.Begin("earth", "slot_0", _def, 10, _settings);
+            _handoff.SetResult(succeeded: true, bankedFraction: 1f);
+
+            _handoff.Clear();
+
+            Assert.IsFalse(_handoff.Succeeded);
+        }
     }
 }

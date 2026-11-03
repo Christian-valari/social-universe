@@ -33,8 +33,10 @@ namespace SocialUniverse.UI
         // the full radius left 73-100% of marker centres over rock and this leaves every one over it.
         public const float PlacementInset = 0.75f;
 
-        private static readonly Color HitColor  = Color.white;
-        private static readonly Color MissColor = new Color(1f, 0.3f, 0.3f);
+        private static readonly Color PerfectColor = new Color(1f, 0.84f, 0.3f);
+        private static readonly Color GoodColor    = new Color(0.42f, 0.83f, 0.46f);
+        private static readonly Color LateColor    = Color.white;
+        private static readonly Color MissColor    = new Color(1f, 0.3f, 0.3f);
 
         [SerializeField] private Camera                    _sceneCamera;
         [SerializeField] private ActiveMiningAsteroidStage  _stage;
@@ -233,7 +235,7 @@ namespace SocialUniverse.UI
                 {
                     _audio.PlaySfx(SfxId.ActiveMiningTap);
                     PlayHitVfx(slot.Anchor.transform.position);
-                    ShowGrade(grade.ToString(), HitColor, slot.View.transform.position);
+                    ShowGrade(grade.ToString(), ColorOf(grade), slot.View.transform.position);
                 }
                 slot.View.Hide();
                 break;
@@ -277,6 +279,13 @@ namespace SocialUniverse.UI
             ShowGrade("Miss", MissColor, screenPosition);
             if (_stage != null) _stage.Shake(MissShakeSeconds);
         }
+
+        private static Color ColorOf(ActiveMiningGrade grade) => grade switch
+        {
+            ActiveMiningGrade.Perfect => PerfectColor,
+            ActiveMiningGrade.Good    => GoodColor,
+            _                         => LateColor,
+        };
 
         private void ShowGrade(string label, Color color, Vector3 screenPosition)
         {

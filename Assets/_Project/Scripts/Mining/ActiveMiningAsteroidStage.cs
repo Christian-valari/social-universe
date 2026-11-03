@@ -29,8 +29,8 @@ namespace SocialUniverse.Mining
         private float   _shakeSecondsLeft;
 
         // Instantiates definition.ModelPrefab (or a fallback primitive sphere, matching
-        // AsteroidSpawner's fallback) as a child of this transform, and records the collider
-        // radius used for target-point placement.
+        // AsteroidSpawner's fallback) as a child of this transform, and records SurfaceRadius,
+        // which target-point placement uses.
         public GameObject SpawnClone(AsteroidDefinition definition)
         {
             if (StageClone != null)

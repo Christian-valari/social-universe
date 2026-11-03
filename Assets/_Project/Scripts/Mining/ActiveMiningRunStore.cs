@@ -42,6 +42,12 @@ namespace SocialUniverse.Mining
             return null;
         }
 
+        // For a server answer that may have taken a while: by then the marker can be the next run's.
+        public void Clear(string slotId)
+        {
+            if (Load()?.SlotId == slotId) Clear();
+        }
+
         public void Clear()
         {
             PlayerPrefs.DeleteKey(SaveKeys.ActiveMiningRun);
