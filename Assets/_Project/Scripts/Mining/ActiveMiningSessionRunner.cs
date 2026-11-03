@@ -1,5 +1,6 @@
 using UnityEngine;
 using VContainer.Unity;
+using SocialUniverse.Config;
 using SocialUniverse.Core;
 
 namespace SocialUniverse.Mining
@@ -20,7 +21,9 @@ namespace SocialUniverse.Mining
 
         public void Start()
         {
-            Session = new LegacyActiveMiningSession(_handoff.TapsRequired, _handoff.MaxErrors, _handoff.SessionDurationSeconds);
+            // A standalone ActiveMining scene has no run begun, so it plays the default (Tier 1) settings.
+            var tier = _handoff.Settings?.Tier ?? new ActiveMiningTierSettings();
+            Session = new LegacyActiveMiningSession(tier.Targets, tier.MaxMisses, tier.Targets * tier.RingSeconds);
             Session.OnStageChanged += OnStageChanged;
         }
 
@@ -35,8 +38,8 @@ namespace SocialUniverse.Mining
 
         private void OnStageChanged(ActiveMiningStage stage)
         {
-            if (stage == ActiveMiningStage.Success) _handoff.SetResult(succeeded: true);
-            else if (stage == ActiveMiningStage.Failed) _handoff.SetResult(succeeded: false);
+            if (stage == ActiveMiningStage.Success) _handoff.SetResult(succeeded: true, bankedFraction: 1f);
+            else if (stage == ActiveMiningStage.Failed) _handoff.SetResult(succeeded: false, bankedFraction: 0f);
         }
     }
 }

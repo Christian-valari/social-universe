@@ -38,13 +38,6 @@ MonoBehaviour:
   _maxIdleSessionSeconds: 1800
   _referenceDroneSpeed: 5
   _idleYieldFraction: 0.7
-  _activeYieldPerTap: 8
-  _minActiveTaps: 5
-  _maxActiveTaps: 20
-  _activeSecondsPerTap: 3
-  _minActiveSessionSeconds: 12
-  _maxActiveSessionSeconds: 60
-  _activeMaxErrors: 3
   _activeTiers:
   - _targets: 8
     _ringSeconds: 1.6

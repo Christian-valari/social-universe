@@ -132,7 +132,7 @@ namespace SocialUniverse.Mining
 
             int mined = asteroid.Mine(asteroid.RemainingYield);
             if (asteroid.IsDepleted) _audio.PlaySfx(SfxId.AsteroidDestroyed);
-            int quantity  = reward.MineralQuantity;
+            int quantity  = reward.IdleQuantity;
             var mineral   = asteroid.Definition.Mineral;
             var mineralId = MineralIdOf(asteroid);
 
@@ -179,9 +179,10 @@ namespace SocialUniverse.Mining
 
         // ---- Active mining ----
 
-        // Validates and computes the reward, then hands off to ActiveMiningHandoff — the
-        // actual minigame (timer/taps) now runs entirely inside the ActiveMining scene, which
-        // this MiningController instance won't exist for (it's destroyed along with Planet).
+        // Validates and computes the reward, then hands off to ActiveMiningHandoff, pinning the full
+        // quantity and the tier's settings — the actual minigame now runs entirely inside the
+        // ActiveMining scene, which this MiningController instance won't exist for (it's destroyed
+        // along with Planet).
         // The caller (MiningModePromptView, via ActiveMiningRequestedEvent) is responsible for
         // triggering the FSM transition once this returns true.
         public bool BeginActiveMining(Asteroid asteroid)
@@ -199,8 +200,8 @@ namespace SocialUniverse.Mining
             }
 
             var reward = _rewardCalc.Compute(asteroid, _fleet.Active.EffectiveYieldMult, _fleet.Active.EffectiveTravelSpeed);
-            _handoff.Begin(_planet.PlanetId, asteroid.SlotId, asteroid.Definition, asteroid.RemainingYield,
-                reward.ActiveTapsRequired, _config.ActiveMaxErrors, reward.ActiveSessionDurationSeconds);
+            _handoff.Begin(_planet.PlanetId, asteroid.SlotId, asteroid.Definition, reward.MineralQuantity,
+                _config.ActiveRunSettings(asteroid.Definition.Tier));
             return true;
         }
 
@@ -222,21 +223,21 @@ namespace SocialUniverse.Mining
                 var asteroid = _spawner.FindBySlotId(_handoff.AsteroidSlotId);
                 if (asteroid != null)
                 {
-                    if (_handoff.Succeeded) _ = CompleteActiveMiningAsync(asteroid);
-                    else                     FailActiveMining(asteroid);
+                    int banked = _handoff.BankedQuantity;
+                    if (banked > 0) _ = CompleteActiveMiningAsync(asteroid, banked);
+                    else            FailActiveMining(asteroid);
                 }
             }
 
             _handoff.Clear();
         }
 
-        private async Task CompleteActiveMiningAsync(Asteroid asteroid)
+        // quantity is the share the run banked of the full amount pinned when it began: Planet's reload
+        // re-rolls asteroid yields, so the reloaded asteroid no longer says what the run was worth.
+        private async Task CompleteActiveMiningAsync(Asteroid asteroid, int quantity)
         {
-            var reward = _rewardCalc.Compute(asteroid, _fleet.Active.EffectiveYieldMult, _fleet.Active.EffectiveTravelSpeed);
-
             int mined = asteroid.Mine(asteroid.RemainingYield);
-            int quantity = reward.MineralQuantity;
-            var mineral  = asteroid.Definition.Mineral;
+            var mineral = asteroid.Definition.Mineral;
 
             if (quantity > 0 && mineral != null)
             {

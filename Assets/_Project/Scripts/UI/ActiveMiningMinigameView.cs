@@ -133,7 +133,7 @@ namespace SocialUniverse.UI
             {
                 if (succeeded && _handoff.Definition != null)
                 {
-                    int mined = _handoff.RemainingYieldAtStart;
+                    int mined = _handoff.BankedQuantity;
                     string mineralName = _handoff.Definition.Mineral != null ? _handoff.Definition.Mineral.DisplayName : "minerals";
                     _rewardText.text = $"+{mined} {mineralName}";
                 }

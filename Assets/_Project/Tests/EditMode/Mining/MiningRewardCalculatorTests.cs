@@ -22,12 +22,7 @@ namespace SocialUniverse.Tests
             SetField(_config, "_idleSecondsPerYieldUnit", 3f);
             SetField(_config, "_minIdleSessionSeconds", 30f);
             SetField(_config, "_maxIdleSessionSeconds", 1800f);
-            SetField(_config, "_activeYieldPerTap", 8f);
-            SetField(_config, "_minActiveTaps", 5);
-            SetField(_config, "_maxActiveTaps", 20);
-            SetField(_config, "_activeSecondsPerTap", 3f);
-            SetField(_config, "_minActiveSessionSeconds", 20f);
-            SetField(_config, "_maxActiveSessionSeconds", 45f);
+            SetField(_config, "_idleYieldFraction", 0.7f);
             SetField(_config, "_referenceDroneSpeed", RefSpeed);
 
             _def = ScriptableObject.CreateInstance<AsteroidDefinition>();
@@ -98,22 +93,19 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
-        public void Active_taps_scale_with_yield_and_clamp_at_bounds()
+        public void Idle_pays_its_fraction_of_the_full_quantity()
         {
-            Assert.AreEqual(5, _calc.Compute(MakeAsteroid(1), 1f, RefSpeed).ActiveTapsRequired);     // ceil(1/8)=1, clamped up to min 5
-            Assert.AreEqual(13, _calc.Compute(MakeAsteroid(100), 1f, RefSpeed).ActiveTapsRequired);  // ceil(100/8)=13
-            Assert.AreEqual(20, _calc.Compute(MakeAsteroid(10000), 1f, RefSpeed).ActiveTapsRequired); // clamped down to max 20
+            Assert.AreEqual(56, _calc.Compute(MakeAsteroid(80), 1f, RefSpeed).IdleQuantity);
+            Assert.AreEqual(84, _calc.Compute(MakeAsteroid(80), 1.5f, RefSpeed).IdleQuantity);
+            Assert.AreEqual(80, _calc.Compute(MakeAsteroid(80), 1f, RefSpeed).MineralQuantity);
         }
 
         [Test]
-        public void Active_session_duration_scales_with_taps_and_clamps_at_bounds()
+        public void Idle_never_pays_more_than_the_full_quantity()
         {
-            // taps=5 (clamped up from ceil(1/8)=1) -> raw 5*3=15s, clamped up to min 20s
-            Assert.AreEqual(20f, _calc.Compute(MakeAsteroid(1), 1f, RefSpeed).ActiveSessionDurationSeconds, 0.001f);
-            // taps=13 -> raw 13*3=39s, within [20,45]
-            Assert.AreEqual(39f, _calc.Compute(MakeAsteroid(100), 1f, RefSpeed).ActiveSessionDurationSeconds, 0.001f);
-            // taps=20 (clamped down from a huge yield) -> raw 20*3=60s, clamped down to max 45s
-            Assert.AreEqual(45f, _calc.Compute(MakeAsteroid(10000), 1f, RefSpeed).ActiveSessionDurationSeconds, 0.001f);
+            SetField(_config, "_idleYieldFraction", 1.5f);
+
+            Assert.AreEqual(80, _calc.Compute(MakeAsteroid(80), 1f, RefSpeed).IdleQuantity);
         }
 
         [Test]
@@ -123,7 +115,7 @@ namespace SocialUniverse.Tests
             var reward1 = _calc.Compute(_asteroid, 1f, RefSpeed);
             var reward2 = _calc.Compute(_asteroid, 2f, RefSpeed);
             Assert.AreEqual(reward1.MineralQuantity * 2, reward2.MineralQuantity);
-            // pacing (duration/taps) is independent of the yield multiplier
+            // pacing (duration) is independent of the yield multiplier
             Assert.AreEqual(reward1.IdleDurationSeconds, reward2.IdleDurationSeconds);
         }
     
@@ -146,15 +138,13 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
-        public void Speed_does_not_change_the_mined_quantity_or_the_active_minigame()
+        public void Speed_does_not_change_the_mined_quantity()
         {
             var asteroid = MakeAsteroid(100);
             var slow = _calc.Compute(asteroid, 1.5f, RefSpeed);
             var fast = _calc.Compute(asteroid, 1.5f, RefSpeed * 3f);
 
             Assert.AreEqual(slow.MineralQuantity, fast.MineralQuantity);
-            Assert.AreEqual(slow.ActiveTapsRequired, fast.ActiveTapsRequired);
-            Assert.AreEqual(slow.ActiveSessionDurationSeconds, fast.ActiveSessionDurationSeconds, 0.001f);
         }
 
         [Test]

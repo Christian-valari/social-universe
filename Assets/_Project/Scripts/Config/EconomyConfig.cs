@@ -49,15 +49,6 @@ namespace SocialUniverse.Config
         [SerializeField] private float _referenceDroneSpeed     = 5f;    // drone speed at which idle durations are as above; faster drones (base TravelSpeed + Speed upgrades) mine proportionally faster
         [SerializeField] private float _idleYieldFraction       = 0.7f;  // idle mining pays this fraction of what a perfect active run does
 
-        [Header("Mining — Active")]
-        [SerializeField] private float _activeYieldPerTap       = 8f;    // how much RemainingYield one successful tap represents
-        [SerializeField] private int   _minActiveTaps           = 5;     // clamp: smallest asteroids still take at least this many taps
-        [SerializeField] private int   _maxActiveTaps            = 20;    // clamp: largest asteroids cap out at this many taps
-        [SerializeField] private float _activeSecondsPerTap     = 3f;    // seconds contributed per required tap toward the overall session countdown
-        [SerializeField] private float _minActiveSessionSeconds = 12f;   // clamp: smallest asteroids still get at least this long
-        [SerializeField] private float _maxActiveSessionSeconds = 60f;   // clamp: largest asteroids cap out at this long
-        [SerializeField] private int   _activeMaxErrors         = 3;     // wrong taps before the asteroid is lost
-
         [Header("Mining — Active Difficulty")]
         [SerializeField] private ActiveMiningTierSettings[] _activeTiers; // one row per asteroid tier, Tier 1 first
         [SerializeField] private float _activePerfectShare      = 1f;    // share of a target's payout banked by a Perfect hit
@@ -107,14 +98,6 @@ namespace SocialUniverse.Config
         public float MaxIdleSessionSeconds   => _maxIdleSessionSeconds;
         public float ReferenceDroneSpeed     => _referenceDroneSpeed;
         public float IdleYieldFraction       => _idleYieldFraction;
-
-        public float ActiveYieldPerTap        => _activeYieldPerTap;
-        public int   MinActiveTaps            => _minActiveTaps;
-        public int   MaxActiveTaps            => _maxActiveTaps;
-        public float ActiveSecondsPerTap      => _activeSecondsPerTap;
-        public float MinActiveSessionSeconds  => _minActiveSessionSeconds;
-        public float MaxActiveSessionSeconds  => _maxActiveSessionSeconds;
-        public int   ActiveMaxErrors          => _activeMaxErrors;
 
         // A tier outside the table takes the nearest row, and TierNumber reports the row used.
         // An empty table plays as Tier 1 defaults.

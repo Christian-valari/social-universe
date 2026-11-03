@@ -124,10 +124,7 @@ namespace SocialUniverse.Tests
             SetField(_config, "_idleSecondsPerYieldUnit", 0f);
             SetField(_config, "_minIdleSessionSeconds", 0.05f);
             SetField(_config, "_maxIdleSessionSeconds", 0.05f);
-            SetField(_config, "_activeYieldPerTap", 1f);
-            SetField(_config, "_minActiveTaps", 1);
-            SetField(_config, "_maxActiveTaps", 99);
-            SetField(_config, "_activeMaxErrors", 3);
+            SetField(_config, "_idleYieldFraction", 1f);
             SetField(_config, "_asteroidRespawnHours", 4f);
 
             _mineralDef = ScriptableObject.CreateInstance<MineralDefinition>();
@@ -257,12 +254,96 @@ namespace SocialUniverse.Tests
         {
             var asteroid = MakeAndRegisterAsteroid("Iron#1", remainingYield: 10);
             Assert.IsTrue(_mining.BeginActiveMining(asteroid));
-            _handoff.SetResult(succeeded: true);
+            _handoff.SetResult(succeeded: true, bankedFraction: 1f);
 
             _mining.Initialize();
             await Task.Yield();
 
             Assert.AreEqual("Iron#1", _minerals.LastSlotId);
+        }
+
+        // A failed run banked something: the asteroid is still lost, but the banked share is paid and
+        // nothing is forfeited.
+        [Test]
+        public async Task A_failed_run_with_a_banked_share_claims_that_share()
+        {
+            var asteroid = MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+            Assert.IsTrue(_mining.BeginActiveMining(asteroid));
+            _handoff.SetResult(succeeded: false, bankedFraction: 0.5f);
+
+            _mining.Initialize();
+            await Task.Yield();
+
+            Assert.AreEqual(40, _minerals.LastQty);
+            Assert.IsNull(_minerals.LastForfeit);
+            Assert.AreEqual("Iron#1", _minerals.LastSlotId);
+            Assert.IsTrue(asteroid.IsDepleted);
+        }
+
+        [Test]
+        public async Task A_cleared_run_claims_its_banked_share()
+        {
+            var asteroid = MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+            Assert.IsTrue(_mining.BeginActiveMining(asteroid));
+            _handoff.SetResult(succeeded: true, bankedFraction: 0.925f);
+
+            _mining.Initialize();
+            await Task.Yield();
+
+            Assert.AreEqual(74, _minerals.LastQty);
+        }
+
+        // Planet's reload re-rolls an asteroid's yield, so the claim must not be recomputed from it.
+        [Test]
+        public async Task The_claim_uses_the_quantity_pinned_when_the_run_began()
+        {
+            var asteroid = MakeAndRegisterAsteroid("Iron#1", remainingYield: 10);
+            Assert.IsTrue(_mining.BeginActiveMining(asteroid));
+            typeof(Asteroid).GetField("<RemainingYield>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance)
+                .SetValue(asteroid, 12);
+            _handoff.SetResult(succeeded: true, bankedFraction: 1f);
+
+            _mining.Initialize();
+            await Task.Yield();
+
+            Assert.AreEqual(10, _minerals.LastQty);
+        }
+
+        [Test]
+        public async Task A_run_that_banked_nothing_forfeits_the_asteroid()
+        {
+            var asteroid = MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+            Assert.IsTrue(_mining.BeginActiveMining(asteroid));
+            _handoff.SetResult(succeeded: false, bankedFraction: 0f);
+
+            _mining.Initialize();
+            await Task.Yield();
+
+            Assert.AreEqual(("test_planet", "iron", "Iron#1"), _minerals.LastForfeit);
+            Assert.IsNull(_minerals.LastMineralId);
+        }
+
+        [Test]
+        public void BeginActiveMining_pins_the_full_quantity_and_the_tier_settings()
+        {
+            var asteroid = MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+
+            Assert.IsTrue(_mining.BeginActiveMining(asteroid));
+
+            Assert.AreEqual(80, _handoff.FullQuantity);
+            Assert.AreEqual(1, _handoff.Settings.TierNumber);
+        }
+
+        [Test]
+        public async Task An_idle_claim_pays_the_idle_fraction()
+        {
+            SetField(_config, "_idleYieldFraction", 0.7f);
+            var asteroid = MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+            await StartAndFinish(_mining, asteroid);
+
+            await _mining.ClaimIdleSessionAsync(asteroid);
+
+            Assert.AreEqual(56, _minerals.LastQty);
         }
 
         [Test]
@@ -357,7 +438,7 @@ namespace SocialUniverse.Tests
         {
             var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 10);
             Assert.IsTrue(_mining.BeginActiveMining(asteroid));
-            _handoff.SetResult(succeeded: true);
+            _handoff.SetResult(succeeded: true, bankedFraction: 1f);
 
             _mining.Initialize();
             await Task.Yield(); // let the fire-and-forget payout Task complete
@@ -374,7 +455,7 @@ namespace SocialUniverse.Tests
         {
             var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 10);
             Assert.IsTrue(_mining.BeginActiveMining(asteroid));
-            _handoff.SetResult(succeeded: false);
+            _handoff.SetResult(succeeded: false, bankedFraction: 0f);
 
             _mining.Initialize();
 
@@ -390,7 +471,7 @@ namespace SocialUniverse.Tests
         {
             var asteroid = MakeAndRegisterAsteroid("Iron#1", remainingYield: 10);
             Assert.IsTrue(_mining.BeginActiveMining(asteroid));
-            _handoff.SetResult(succeeded: false);
+            _handoff.SetResult(succeeded: false, bankedFraction: 0f);
 
             _mining.Initialize();
             await Task.Yield();
@@ -408,7 +489,7 @@ namespace SocialUniverse.Tests
             var mining = NewController(new CapturingMineralService { ForfeitReply = "INVALID_PARAMS" });
             var asteroid = MakeAndRegisterAsteroid("Iron#1", remainingYield: 10);
             Assert.IsTrue(mining.BeginActiveMining(asteroid));
-            _handoff.SetResult(succeeded: false);
+            _handoff.SetResult(succeeded: false, bankedFraction: 0f);
             MiningClaimRejectedEvent rejected = null;
             EventBus.Subscribe<MiningClaimRejectedEvent>(e => rejected = e);
 
@@ -425,7 +506,7 @@ namespace SocialUniverse.Tests
             var mining   = NewController(minerals);
             var asteroid = MakeAndRegisterAsteroid("Iron#1", remainingYield: 10);
             Assert.IsTrue(mining.BeginActiveMining(asteroid));
-            _handoff.SetResult(succeeded: false);
+            _handoff.SetResult(succeeded: false, bankedFraction: 0f);
 
             mining.Initialize();
             await Task.Yield();
@@ -439,7 +520,7 @@ namespace SocialUniverse.Tests
         {
             var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 10);
             Assert.IsTrue(_mining.BeginActiveMining(asteroid));
-            _handoff.SetResult(succeeded: true);
+            _handoff.SetResult(succeeded: true, bankedFraction: 1f);
 
             var active = (List<Asteroid>)typeof(AsteroidSpawner)
                 .GetField("_active", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(_spawner);
@@ -645,7 +726,7 @@ namespace SocialUniverse.Tests
         {
             var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 10);
             Assert.IsTrue(_mining.BeginActiveMining(asteroid));
-            _handoff.SetResult(succeeded: true);
+            _handoff.SetResult(succeeded: true, bankedFraction: 1f);
 
             _mining.Initialize(ServerRun("test_planet", "slot_0", elapsed: 600f, duration: 60f));
             await Task.Yield();
@@ -917,7 +998,7 @@ namespace SocialUniverse.Tests
 
             var asteroid = MakeAndRegisterAsteroid("slot_0", remainingYield: 10);
             Assert.IsTrue(mining.BeginActiveMining(asteroid));
-            _handoff.SetResult(succeeded: true);
+            _handoff.SetResult(succeeded: true, bankedFraction: 1f);
 
             MiningClaimRejectedEvent rejected = null;
             EventBus.Subscribe<MiningClaimRejectedEvent>(e => rejected = e);
