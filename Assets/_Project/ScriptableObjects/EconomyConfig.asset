@@ -37,6 +37,7 @@ MonoBehaviour:
   _minIdleSessionSeconds: 30
   _maxIdleSessionSeconds: 1800
   _referenceDroneSpeed: 5
+  _idleYieldFraction: 0.7
   _activeYieldPerTap: 8
   _minActiveTaps: 5
   _maxActiveTaps: 20
@@ -44,6 +45,37 @@ MonoBehaviour:
   _minActiveSessionSeconds: 12
   _maxActiveSessionSeconds: 60
   _activeMaxErrors: 3
+  _activeTiers:
+  - _targets: 8
+    _ringSeconds: 1.6
+    _perfectBySeconds: 0.8
+    _goodBySeconds: 1.2
+    _maxMisses: 3
+  - _targets: 10
+    _ringSeconds: 1.3
+    _perfectBySeconds: 0.75
+    _goodBySeconds: 1.05
+    _maxMisses: 3
+  - _targets: 12
+    _ringSeconds: 1.1
+    _perfectBySeconds: 0.7
+    _goodBySeconds: 0.9
+    _maxMisses: 3
+  - _targets: 14
+    _ringSeconds: 1
+    _perfectBySeconds: 0.65
+    _goodBySeconds: 0.85
+    _maxMisses: 3
+  - _targets: 16
+    _ringSeconds: 0.9
+    _perfectBySeconds: 0.6
+    _goodBySeconds: 0.75
+    _maxMisses: 3
+  _activePerfectShare: 1
+  _activeGoodShare: 0.8
+  _activeLateShare: 0.6
+  _activeSpawnGapSeconds: 0.25
+  _activeMissGraceSeconds: 0.2
   _maxFuel: 100
   _fuelRechargePerHour: 10
   _fuelRefillCost: 50

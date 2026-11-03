@@ -47,6 +47,7 @@ namespace SocialUniverse.Config
         [SerializeField] private float _minIdleSessionSeconds   = 30f;   // clamp: smallest asteroids still take at least this long
         [SerializeField] private float _maxIdleSessionSeconds   = 1800f; // clamp: largest asteroids cap out at this long (30 min)
         [SerializeField] private float _referenceDroneSpeed     = 5f;    // drone speed at which idle durations are as above; faster drones (base TravelSpeed + Speed upgrades) mine proportionally faster
+        [SerializeField] private float _idleYieldFraction       = 0.7f;  // idle mining pays this fraction of what a perfect active run does
 
         [Header("Mining — Active")]
         [SerializeField] private float _activeYieldPerTap       = 8f;    // how much RemainingYield one successful tap represents
@@ -56,6 +57,14 @@ namespace SocialUniverse.Config
         [SerializeField] private float _minActiveSessionSeconds = 12f;   // clamp: smallest asteroids still get at least this long
         [SerializeField] private float _maxActiveSessionSeconds = 60f;   // clamp: largest asteroids cap out at this long
         [SerializeField] private int   _activeMaxErrors         = 3;     // wrong taps before the asteroid is lost
+
+        [Header("Mining — Active Difficulty")]
+        [SerializeField] private ActiveMiningTierSettings[] _activeTiers; // one row per asteroid tier, Tier 1 first
+        [SerializeField] private float _activePerfectShare      = 1f;    // share of a target's payout banked by a Perfect hit
+        [SerializeField] private float _activeGoodShare         = 0.8f;  // ... by a Good hit
+        [SerializeField] private float _activeLateShare         = 0.6f;  // ... by a Late hit
+        [SerializeField] private float _activeSpawnGapSeconds   = 0.25f; // pause between one target resolving and the next spawning
+        [SerializeField] private float _activeMissGraceSeconds  = 0.2f;  // stray taps right after a hit are forgiven for this long
 
         [Header("Drones — M6")]
         [SerializeField] private int   _startingFleetSlots    = 2;
@@ -97,6 +106,7 @@ namespace SocialUniverse.Config
         public float MinIdleSessionSeconds   => _minIdleSessionSeconds;
         public float MaxIdleSessionSeconds   => _maxIdleSessionSeconds;
         public float ReferenceDroneSpeed     => _referenceDroneSpeed;
+        public float IdleYieldFraction       => _idleYieldFraction;
 
         public float ActiveYieldPerTap        => _activeYieldPerTap;
         public int   MinActiveTaps            => _minActiveTaps;
@@ -105,6 +115,19 @@ namespace SocialUniverse.Config
         public float MinActiveSessionSeconds  => _minActiveSessionSeconds;
         public float MaxActiveSessionSeconds  => _maxActiveSessionSeconds;
         public int   ActiveMaxErrors          => _activeMaxErrors;
+
+        // A tier outside the table takes the nearest row, and TierNumber reports the row used.
+        // An empty table plays as Tier 1 defaults.
+        public ActiveMiningRunSettings ActiveRunSettings(int tier)
+        {
+            int rows   = _activeTiers == null ? 0 : _activeTiers.Length;
+            int number = Mathf.Clamp(tier, 1, Mathf.Max(1, rows));
+            var current  = rows == 0 ? new ActiveMiningTierSettings() : _activeTiers[number - 1];
+            var previous = number > 1 ? _activeTiers[number - 2] : null;
+            return new ActiveMiningRunSettings(number, current, previous,
+                _activePerfectShare, _activeGoodShare, _activeLateShare,
+                _activeSpawnGapSeconds, _activeMissGraceSeconds);
+        }
 
         public int   StartingFleetSlots   => _startingFleetSlots;
         public int   SlotUnlockBaseCost    => _slotUnlockBaseCost;
