@@ -16,6 +16,11 @@ namespace SocialUniverse.Mining
         public GameObject StageClone    { get; private set; }
         public float      ColliderRadius { get; private set; }
 
+        // The largest sphere about the clone's pivot that fits inside its mesh's bounds, so a point
+        // on it projects over the rock. ColliderRadius is the prefabs' sphere instead, which encloses
+        // the rock and leaves a point on it hanging in space.
+        public float      SurfaceRadius  { get; private set; }
+
         private Vector3 _rotationAxis;
         private float   _rotationSpeed;
 
@@ -56,6 +61,7 @@ namespace SocialUniverse.Mining
                 collider = sphere;
             }
             ColliderRadius = Mathf.Max(collider.bounds.extents.x, collider.bounds.extents.y, collider.bounds.extents.z);
+            SurfaceRadius  = MeasureSurfaceRadius(clone, ColliderRadius);
 
             _rotationAxis  = Random.onUnitSphere;
             _rotationSpeed = Random.Range(_minRotationSpeed, _maxRotationSpeed);
@@ -93,6 +99,28 @@ namespace SocialUniverse.Mining
                 StageClone.transform.Rotate(_rotationAxis, _rotationSpeed * Time.deltaTime, Space.World);
 
             AdvanceShake(Time.deltaTime);
+        }
+
+        // Reads only the mesh's bounds, which stay readable on a device where its vertices may not.
+        // The asteroid prefabs keep the mesh on a child that sits off the root's pivot, so the distance
+        // from the pivot to the bounds' centre is taken in the world, not from the mesh's own origin.
+        // With no mesh, or a pivot outside its bounds, half the collider's sphere is a safe guess.
+        private static float MeasureSurfaceRadius(GameObject clone, float colliderRadius)
+        {
+            float fallback = colliderRadius * 0.5f;
+
+            var filter = clone.GetComponentInChildren<MeshFilter>();
+            if (filter == null || filter.sharedMesh == null) return fallback;
+
+            Bounds  bounds = filter.sharedMesh.bounds;
+            Vector3 scale  = filter.transform.lossyScale;
+            Vector3 centre = filter.transform.TransformPoint(bounds.center) - clone.transform.position;
+
+            float radius = Mathf.Min(
+                bounds.extents.x * Mathf.Abs(scale.x) - Mathf.Abs(centre.x),
+                bounds.extents.y * Mathf.Abs(scale.y) - Mathf.Abs(centre.y),
+                bounds.extents.z * Mathf.Abs(scale.z) - Mathf.Abs(centre.z));
+            return radius > 0f ? radius : fallback;
         }
 
         private void AdvanceShake(float deltaTime)

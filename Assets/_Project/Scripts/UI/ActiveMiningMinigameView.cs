@@ -28,6 +28,11 @@ namespace SocialUniverse.UI
         private const float MissShakeSeconds     = 0.2f;
         private const float FailShakeSeconds     = 0.5f;
 
+        // The rocks are irregular and fill less than their bounds suggest, so a marker goes this share
+        // of the way out to the stage's SurfaceRadius. On the shipped asteroids at 1080x1920 and 1080x2340
+        // the full radius left 73-100% of marker centres over rock and this leaves every one over it.
+        public const float PlacementInset = 0.75f;
+
         private static readonly Color HitColor  = Color.white;
         private static readonly Color MissColor = new Color(1f, 0.3f, 0.3f);
 
@@ -216,9 +221,10 @@ namespace SocialUniverse.UI
 
         private void OnMissAreaTapped() => _session?.TapOffTarget();
 
+        // The miss that fails the run is answered by the fail sound alone, which ShowResult plays.
         private void PlayMissFeedback(Vector3 screenPosition)
         {
-            _audio.PlaySfx(SfxId.ActiveMiningMiss);
+            if (_session.ErrorCount < _session.MaxErrors) _audio.PlaySfx(SfxId.ActiveMiningMiss);
             ShowGrade("Miss", MissColor, screenPosition);
             if (_stage != null) _stage.Shake(MissShakeSeconds);
         }
@@ -328,7 +334,8 @@ namespace SocialUniverse.UI
 
         // A ring the player can't reach costs a miss they could do nothing about, and the bigger
         // asteroids overflow the screen, so a target's whole tap area has to be on screen both now
-        // and when its ring closes.
+        // and when its ring closes. Points sit inside the rock's bounds, so the marker projects over
+        // the rock rather than over the empty sky around it.
         private void PlaceAnchor(ActiveMiningTargetPoint anchor, ActiveMiningTarget target)
         {
             if (_stage == null || _stage.StageClone == null || _sceneCamera == null) return;
@@ -336,17 +343,18 @@ namespace SocialUniverse.UI
             var     asteroid     = _stage.StageClone.transform;
             Vector3 towardViewer = _sceneCamera.transform.position - asteroid.position;
             float   margin       = ((RectTransform)_targetTemplate.transform).rect.width / 2f * _canvas.scaleFactor;
+            float   radius       = _stage.SurfaceRadius * PlacementInset;
 
             for (int attempt = 0; attempt < MaxPlacementAttempts; attempt++)
             {
-                anchor.PlaceOnAsteroid(asteroid, _stage.ColliderRadius, towardViewer);
+                anchor.PlaceOnAsteroid(asteroid, radius, towardViewer);
 
                 Vector3 point = anchor.transform.position;
                 if (IsOnScreen(point, margin) && IsOnScreen(_stage.PredictPoint(point, target.RingSeconds), margin))
                     return;
             }
 
-            anchor.transform.position = asteroid.position + towardViewer.normalized * _stage.ColliderRadius;
+            anchor.transform.position = asteroid.position + towardViewer.normalized * radius;
         }
 
         private bool IsOnScreen(Vector3 worldPoint, float margin)

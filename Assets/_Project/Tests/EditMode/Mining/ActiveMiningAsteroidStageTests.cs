@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using SocialUniverse.Config;
@@ -10,6 +11,7 @@ namespace SocialUniverse.Tests
     {
         private GameObject                 _stageGo;
         private ActiveMiningAsteroidStage  _stage;
+        private readonly List<Object>      _made = new List<Object>();
 
         [SetUp]
         public void SetUp()
@@ -19,7 +21,12 @@ namespace SocialUniverse.Tests
         }
 
         [TearDown]
-        public void TearDown() => Object.DestroyImmediate(_stageGo);
+        public void TearDown()
+        {
+            Object.DestroyImmediate(_stageGo);
+            foreach (var made in _made) Object.DestroyImmediate(made);
+            _made.Clear();
+        }
 
         [Test]
         public void SpawnClone_falls_back_to_a_primitive_sphere_when_no_model_prefab_is_set()
@@ -93,6 +100,85 @@ namespace SocialUniverse.Tests
             var point = new Vector3(1f, 2f, 3f);
 
             AssertNear(point, _stage.PredictPoint(point, seconds: 2f));
+        }
+
+        // ColliderRadius is the prefab's sphere, which encloses the rock; SurfaceRadius is the sphere
+        // that fits inside the model's bounds, so a point on it projects over the rock.
+        [Test]
+        public void SurfaceRadius_of_the_primitive_fallback_is_its_radius()
+        {
+            var def = ScriptableObject.CreateInstance<AsteroidDefinition>();
+            _made.Add(def);
+
+            _stage.SpawnClone(def);
+
+            Assert.AreEqual(0.25f, _stage.SurfaceRadius, 0.0001f);
+        }
+
+        [Test]
+        public void SurfaceRadius_is_the_smallest_axis_of_a_non_uniformly_scaled_mesh()
+        {
+            // Half-sizes 0.5, 0.4 and 0.6, with y stretched threefold: 0.5, 1.2 and 0.6.
+            var def = DefinitionWithModel(MeshBounds(Vector3.zero, new Vector3(0.5f, 0.4f, 0.6f)), new Vector3(1f, 3f, 1f));
+
+            _stage.SpawnClone(def);
+
+            Assert.AreEqual(0.5f, _stage.SurfaceRadius, 0.0001f);
+        }
+
+        [Test]
+        public void SurfaceRadius_leaves_out_the_distance_a_mesh_sits_from_the_pivot()
+        {
+            // Bounds centred 0.4 along x with half-sizes 0.5, 0.3 and 0.4, all doubled: the pivot is
+            // 0.2 from the x face, and 0.6 and 0.8 from the others.
+            var def = DefinitionWithModel(MeshBounds(new Vector3(0.4f, 0f, 0f), new Vector3(0.5f, 0.3f, 0.4f)), Vector3.one * 2f);
+
+            _stage.SpawnClone(def);
+
+            Assert.AreEqual(0.2f, _stage.SurfaceRadius, 0.0001f);
+        }
+
+        // The asteroid prefabs keep their mesh on a child that sits off the root's pivot.
+        [Test]
+        public void SurfaceRadius_counts_the_distance_a_child_model_sits_from_the_pivot()
+        {
+            var root  = new GameObject("Model");
+            var child = new GameObject("Mesh");
+            child.AddComponent<MeshFilter>().sharedMesh = MeshBounds(Vector3.zero, Vector3.one * 0.5f);
+            child.transform.SetParent(root.transform, false);
+            child.transform.localPosition = new Vector3(0.3f, 0f, 0f);
+            _made.Add(root);
+            var def = DefinitionFor(root);
+
+            _stage.SpawnClone(def);
+
+            Assert.AreEqual(0.2f, _stage.SurfaceRadius, 0.0001f);
+        }
+
+        // No bounds to go by, or a pivot outside them: half the collider's sphere.
+        [Test]
+        public void SurfaceRadius_is_half_the_collider_radius_for_a_model_with_no_mesh()
+        {
+            var model = new GameObject("Model");
+            model.AddComponent<SphereCollider>().radius = 0.12f;
+            _made.Add(model);
+            var def = DefinitionFor(model);
+
+            _stage.SpawnClone(def);
+
+            Assert.AreEqual(0.12f, _stage.ColliderRadius, 0.0001f);
+            Assert.AreEqual(0.06f, _stage.SurfaceRadius, 0.0001f);
+        }
+
+        [Test]
+        public void SurfaceRadius_is_half_the_collider_radius_when_the_pivot_is_outside_the_mesh_bounds()
+        {
+            var def = DefinitionWithModel(MeshBounds(new Vector3(1f, 0f, 0f), Vector3.one * 0.5f), Vector3.one);
+
+            _stage.SpawnClone(def);
+
+            Assert.AreEqual(_stage.ColliderRadius * 0.5f, _stage.SurfaceRadius, 0.0001f);
+            Assert.Greater(_stage.SurfaceRadius, 0f);
         }
 
         [Test]
@@ -218,6 +304,32 @@ namespace SocialUniverse.Tests
             AssertNear(center + Vector3.back * 2f, predicted);
 
             Object.DestroyImmediate(def);
+        }
+
+        private AsteroidDefinition DefinitionWithModel(Mesh mesh, Vector3 scale)
+        {
+            var model = new GameObject("Model");
+            model.AddComponent<MeshFilter>().sharedMesh = mesh;
+            model.transform.localScale = scale;
+            _made.Add(model);
+            return DefinitionFor(model);
+        }
+
+        private AsteroidDefinition DefinitionFor(GameObject model)
+        {
+            var def = ScriptableObject.CreateInstance<AsteroidDefinition>();
+            typeof(AsteroidDefinition).GetField("_modelPrefab", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(def, model);
+            _made.Add(def);
+            return def;
+        }
+
+        // A mesh with these bounds and nothing else: only the bounds are ever read.
+        private Mesh MeshBounds(Vector3 center, Vector3 extents)
+        {
+            var mesh = new Mesh { vertices = new[] { Vector3.zero } };
+            mesh.bounds = new Bounds(center, extents * 2f);
+            _made.Add(mesh);
+            return mesh;
         }
 
         private void Advance(float seconds) =>

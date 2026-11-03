@@ -229,10 +229,11 @@ namespace SocialUniverse.Tests
         public IEnumerator A_target_is_placed_where_it_stays_on_screen_until_its_ring_closes()
         {
             var stage = Private<ActiveMiningAsteroidStage>(_view, "_stage");
-            var model = new GameObject("StandInModel");
-            model.AddComponent<SphereCollider>().radius = 0.12f;
+            var model = GameObject.CreatePrimitive(PrimitiveType.Sphere); // a rock 0.12 in radius, collider and mesh alike
+            model.transform.localScale = Vector3.one * 0.24f;
             SetPrivate(_definition, "_modelPrefab", model);
             stage.SpawnClone(_definition);
+            UnityEngine.Object.Destroy(model);
             SpinAsteroid(new Vector3(1f, 1f, 0f).normalized, degreesPerSecond: 60f);
 
             BeginRun(targets: 24, maxMisses: 3, ringSeconds: 1f);
@@ -256,6 +257,30 @@ namespace SocialUniverse.Tests
 
             Assert.Greater(qualified, 0, "This asteroid is meant to have places that qualify");
             CollectionAssert.IsEmpty(offScreen, $"Screen is {Screen.width}x{Screen.height}, margin {margin}");
+        }
+
+        // The prefab's sphere collider encloses the rock; a marker on it can hang in empty space.
+        [UnityTest]
+        public IEnumerator A_target_is_placed_inside_the_rock_not_on_the_sphere_around_it()
+        {
+            var stage = Private<ActiveMiningAsteroidStage>(_view, "_stage");
+            var model = GameObject.CreatePrimitive(PrimitiveType.Sphere); // a rock 0.05 in radius in a collider of 0.3
+            model.transform.localScale = Vector3.one * 0.1f;
+            UnityEngine.Object.DestroyImmediate(model.GetComponent<Collider>());
+            model.AddComponent<SphereCollider>().radius = 3f;
+            SetPrivate(_definition, "_modelPrefab", model);
+            stage.SpawnClone(_definition);
+            UnityEngine.Object.Destroy(model);
+            Assert.AreEqual(0.3f, stage.ColliderRadius, 0.001f);
+
+            PressStart();
+            yield return WaitForLiveTarget();
+
+            var placed = UnityEngine.Object.FindFirstObjectByType<ActiveMiningTargetPoint>().transform.position;
+            Assert.AreEqual(0.05f, stage.SurfaceRadius, 0.001f);
+            float distance = Vector3.Distance(stage.StageClone.transform.position, placed);
+            Assert.AreEqual(stage.SurfaceRadius * ActiveMiningMinigameView.PlacementInset, distance, 0.001f);
+            Assert.Less(distance, stage.SurfaceRadius, "Inside the rock's bounds, nowhere near the collider's sphere");
         }
 
         // Too big for anything near the middle to stay on screen through 75 degrees of spin, so no
@@ -431,13 +456,25 @@ namespace SocialUniverse.Tests
 
             TapMissArea(); // the miss that ends the run
 
-            CollectionAssert.AreEqual(new[] { SfxId.ActiveMiningMiss, SfxId.ActiveMiningFail }, _audio.Played);
+            CollectionAssert.AreEqual(new[] { SfxId.ActiveMiningFail }, _audio.Played, "The fail sound answers the final miss on its own");
+            Assert.AreEqual("Miss", GradeText(), "though the label still says so");
 
             yield return new WaitForSeconds(0.3f);
             Assert.Greater(Vector3.Distance(rest, clone.transform.localPosition), 0f, "A miss alone would have stopped by now");
 
             yield return new WaitForSeconds(0.4f);
             Assert.AreEqual(0f, (clone.transform.localPosition - rest).sqrMagnitude, "The run's shake is over after 0.5 s");
+        }
+
+        [UnityTest]
+        public IEnumerator A_ring_that_closes_on_the_final_miss_plays_only_the_fail_sound()
+        {
+            Time.captureDeltaTime = 0.05f;
+            BeginRun(targets: 2, maxMisses: 1, ringSeconds: 1f);
+            PressStart();
+            yield return WaitUntil(() => Session().Stage == ActiveMiningStage.Failed, "the ring to close and end the run");
+
+            CollectionAssert.AreEqual(new[] { SfxId.ActiveMiningFail }, _audio.Played);
         }
 
         [UnityTest]
@@ -464,6 +501,20 @@ namespace SocialUniverse.Tests
             Assert.IsTrue(rules.gameObject.activeInHierarchy, "It shows with the pre-game panel");
             Assert.IsFalse(rules.raycastTarget, "It must not swallow the Start tap");
             yield return null;
+        }
+
+        // A lone word on a second line reads as a mistake. The rules are a single sentence for now.
+        [UnityTest]
+        public IEnumerator The_rules_sit_on_one_line()
+        {
+            var scaler = _view.GetComponent<CanvasScaler>(); // measured as on a phone 1080 px wide, where the canvas scales by 1
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
+            scaler.scaleFactor = 1f;
+            yield return null;
+            Canvas.ForceUpdateCanvases();
+            var rules = Private<Text>(_view, "_rulesText");
+
+            Assert.Less(rules.preferredHeight, rules.fontSize * 1.5f, $"Wraps: {rules.preferredWidth} wide in a box {rules.rectTransform.rect.width} wide");
         }
 
         // Instructions that run off the screen, get cut off by their own box, or print over the
@@ -523,7 +574,7 @@ namespace SocialUniverse.Tests
         {
             var stage  = Private<ActiveMiningAsteroidStage>(_view, "_stage");
             var center = stage.StageClone.transform.position;
-            return center + (Private<Camera>(_view, "_sceneCamera").transform.position - center).normalized * stage.ColliderRadius;
+            return center + (Private<Camera>(_view, "_sceneCamera").transform.position - center).normalized * stage.SurfaceRadius * ActiveMiningMinigameView.PlacementInset;
         }
 
         private bool ProjectsOnScreen(Vector3 worldPoint, float margin)
