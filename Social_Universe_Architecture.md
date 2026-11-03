@@ -168,7 +168,7 @@ Priority tags follow the PRD: **P0** = core/MVP, **P1** = launch, **P2** = later
 | `DroneRuntime` | Mining | Live drone instance + current stats | P0 |
 | `MiningController` | Mining | Orchestrate a mining session (idle + active) | P0 |
 | `IdleMiningCalculator` | Mining | Compute offline haul up to cargo cap | P0 |
-| `ActiveMiningMinigame` | Mining | Tap/combo/crit logic and feedback hooks | P0 |
+| `ActiveMiningSession` | Mining | Closing-ring run logic and grading | P0 |
 | `IEconomyService` + `LocalMockEconomy` | Economy | Balances/spend/grant interface + offline stub | P0 |
 | `Wallet` | Economy | Client-cached balances + change events | P0 |
 | `LandPurchaseService` (mock) | Economy | Buy a tile: request → (mock) commit ownership | P0 |
