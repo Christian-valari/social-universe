@@ -264,8 +264,8 @@ with its `.meta`, so the GUID and the `Bootstrap.unity` / `Planet.unity` referen
 | `IdleMiningSession`           | `Mining/` | State machine: `Traveling → Mining → ReadyToClaim → Complete`, driven by wall-clock `DateTime.UtcNow` deltas rather than per-frame ticks so progress survives app close/background | ✅      |                                                                                                                                                        |
 | `IdleMiningSessionController` | `Mining/` | Drive the session: send drone, spawn mining VFX, tick timer, single tap on the ready asteroid claims via `MiningController.ClaimIdleSessionAsync`          | ✅      |                                                                                                                                                        |
 | `MiningRewardCalculator`      | `Mining/` | Shared idle/active/payout formula (yield, duration, coins/sec); replaces the removed `IdleMiningCalculator` and is used by both idle and active mining payout paths | ✅      | `IdleMiningCalculator` removed                                                                                                                        |
-| `ActiveMiningMinigame`        | `Mining/` | Tap-timing minigame: one "live" target point must be tapped within `TapWindowSeconds` or it counts as a miss; `TapsRequired` hits succeeds, `MaxErrors` misses fails the asteroid | ✅      | Was stubbed; now a real minigame driven by `ActiveMiningSession` + `ActiveMiningSessionController`, presented via the `ActiveMiningMinigameView` overlay on the Planet scene Canvas |
-| `ActiveMiningSessionController` | `Mining/` | Drives active-mining tap-window timeouts each frame                                        | ✅      | New in the idle/active rework                                                                                                                          |
+| `ActiveMiningSession`         | `Mining/` | Closing-ring minigame run: one ring is live at a time, and a tap before it closes banks a share by how early it landed (Perfect 100%, Good 80%, Late 60%); a ring that closes untapped or a tap on empty space is a miss; the tier's miss limit ends the run; `BankedFraction` is the share earned | ✅ (Phase 1) | Per-tier numbers (targets, ring time, grade cut-offs, miss limit) come from `EconomyConfig.ActiveRunSettings(tier)`, five tiers. Replaced the old tap-window `ActiveMiningMinigame` (2026-11). Phase 1 has not been played on a device yet — see "Active Mining Difficulty" below |
+| `ActiveMiningSessionRunner`   | `Mining/` | Creates the session when Start is pressed in the ActiveMining scene and ticks it; writes the outcome into `ActiveMiningHandoff` and keeps the run's local marker up to date | ✅ (Phase 1) | Replaced `ActiveMiningSessionController`. In the Editor and Development Builds each finished run also logs one `ActiveMining run: tier=… result=…` line (`ActiveMiningRunLog`) |
 
 
 ### Economy
@@ -1261,6 +1261,37 @@ deployed. Nothing in M6 has been exercised in Play Mode or on a device.
 
 ---
 
+## Active Mining Difficulty — Phase 1 🚧 CODE COMPLETE (branch `feature/active-mining-difficulty`)
+
+Spec: `docs/superpowers/specs/2026-11-03-active-mining-difficulty-design.md` · plan:
+`docs/superpowers/plans/2026-11-03-active-mining-difficulty.md`. Goal: an active run can be lost,
+playing better pays more, and higher tiers are harder.
+
+**Status (2026-11-04):** Phase 1 — the closing-ring core loop, plan tasks 1–8 — is written and tested on
+the branch and is not merged to `main`. **Phase 1 has not been played on a device yet**; every number
+below is a starting value for the first play session, not tuned balance. **Phase 2 (tap-based
+challenges: decoys, two live targets, faster spin) and Phase 3 (hold-and-drag veins) are not built**, and
+the plan holds them until the owner has played Phase 1 and said to continue. Tests on 2026-11-04 (scratch
+copy, Unity 6000.3.12f1): EditMode **740/740**, PlayMode **52/52**.
+
+| Piece                                  | Where                                                                                          | What it does                                                                                                                                                                                                                                                                                      |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Per-tier settings                      | `EconomyConfig`, `ActiveMiningTierSettings`, `ActiveMiningRunSettings` (`Config/`)             | Five tier rows: 8 / 10 / 12 / 14 / 16 targets, ring 1.6 / 1.3 / 1.1 / 1.0 / 0.9 s, Perfect by 0.8 / 0.75 / 0.7 / 0.65 / 0.6 s, Good by 1.2 / 1.05 / 0.9 / 0.85 / 0.75 s, 3 misses at every tier. Shared: shares 100% / 80% / 60%, 0.25 s between targets, 0.2 s after a hit when an off-target tap is ignored. `ActiveRunSettings(tier)` resolves a tier |
+| Closing-ring run                       | `ActiveMiningSession`, `ActiveMiningTarget`, `ActiveMiningGrade`, `ActiveMiningTargetKind` (`Mining/`) | One ring live at a time; the earlier the tap, the better the grade (Perfect, Good, Late); a ring that closes or a tap on empty space is a miss; the tier's miss limit fails the run; every target is worth an equal share                                                                          |
+| Banked payout                          | `ActiveMiningPayout`, `ActiveMiningHandoff` (`Core/`)                                          | A run pays its banked share of the full quantity pinned when it began, rather than a figure recomputed after Planet reloads. A run that banked nothing pays nothing, and the asteroid is used up whether the run cleared or failed                                                                |
+| Idle pays 70%                          | `EconomyConfig` (`_idleYieldFraction`), `MiningRewardCalculator`                               | Idle runs pay 70% of the full quantity; their durations are unchanged                                                                                                                                                                                                                              |
+| ActiveMining scene                     | `ActiveMiningMinigameView`, `ActiveMiningAsteroidStage`, `ActiveMiningTargetView`, `ActiveMiningRulesText` | Closing rings with a banked counter and a miss counter, grade labels, a shake and sounds on a miss and on a failed run (`SfxId.ActiveMiningMiss`, `ActiveMiningFail`, at the end of the enum), targets placed on the rock and kept on screen, a rules line on the pre-game panel, and an `AudioListener` on the scene camera (the scene had none) |
+| Mining prompt                          | `AsteroidTierPrompt.PayLines`, `MiningModePromptView`                                          | Under the tier status, when the drone can mine the asteroid: "Idle: safe, pays 70%" and "Active: up to 100%, depends on how you play"                                                                                                                                                             |
+| Quitting mid-run                       | `ActiveMiningRunStore`, `ActiveMiningRunRecord`, `SaveKeys.ActiveMiningRun`, `MiningController` | A local marker is written when Start is pressed and refreshed on pause, quit and run end. If Planet loads with a marker and no result, the run settles like a failed one (pays what was banked, asteroid used up). The marker is cleared once the claim is answered                                  |
+| Dev tools (Editor and Development Builds only) | `ActiveMiningDevTierPicker`, `ActiveMiningRunLog`, `ActiveMiningHandoff.DevSettingsForTier` / `UseSettings` | Tier 1–5 buttons across the top of the pre-game panel, so any tier can be tried on any asteroid; a pick changes only the minigame's difficulty for that run, not the asteroid or what it pays, and the picker goes when Start is pressed. Each finished run logs one line: `[SU:Mining] ActiveMining run: tier=3 perfect=1 good=1 late=0 misses=0 banked=0.90 result=Success`. All of it sits inside `#if UNITY_EDITOR || DEVELOPMENT_BUILD`; a release compile of the player scripts has none of it |
+
+The play-session steps (dev mode on, a Development Build to a phone, Tiers 1 and 2 through the picker)
+are in the plan's "STOP: Phase 1 play session". What to look for: Tier 1 clears nearly every time and
+banks at least 60% even when played casually, and a lost run feels like the player's mistake. This is
+the first time M6-era code runs on a device, so unrelated device problems may also show up.
+
+---
+
 ## M7 — Space Stations & Guilds 🔲 NOT STARTED
 
 **Exit criteria:** Join/found a station, co-build, perks, scheduled events.
@@ -1540,8 +1571,8 @@ deployed. Nothing in M6 has been exercised in Play Mode or on a device.
 | `WalletTests.cs`               | EditMode | `Wallet` balance changes                                                                                                                                                                                                                                                                                                    |
 | `MiningRewardCalculatorTests.cs` | EditMode | Shared idle/active/payout reward formula (replaces the removed `IdleMiningCalculatorTests.cs`)                                                                                                                                                                                                                          |
 | `IdleMiningSessionTests.cs`    | EditMode | Wall-clock idle session state machine (`Traveling → Mining → ReadyToClaim → Complete`)                                                                                                                                                                                                                                    |
-| `ActiveMiningSessionTests.cs`  | EditMode | Tap-timing minigame state machine: hit/miss windows, success/fail thresholds                                                                                                                                                                                                                                              |
-| `ActiveMiningMinigameTests.cs` | EditMode | `ActiveMiningMinigame` session lifecycle (begin/tap/clear), replacing the old free-tap stub                                                                                                                                                                                                                               |
+| `ActiveMiningSessionTests.cs`  | EditMode | Closing-ring run state machine: grading by tap time, banked share, miss limit, spawn gap and miss grace, tick clamp |
+| `ActiveMiningConfigTests.cs`, `ActiveMiningPayoutTests.cs`, `ActiveMiningRunStoreTests.cs`, `ActiveMiningSessionRunnerTests.cs`, `ActiveMiningRunLogTests.cs` | EditMode | Active-mining difficulty (Phase 1): per-tier settings from `EconomyConfig`, banked-share payout, the local run marker, the runner's result hand-off, and the dev run-log line. `ActiveMiningSceneFlowTests` (PlayMode) plays the real ActiveMining scene, including the dev tier picker |
 | `MiningControllerTests.cs`     | EditMode | `MiningController` idle/active orchestration, drone gating, single-tap claim, respawn scheduling; server-tracked idle runs (Known Issue #22): the awaited start, a refused start, `ALREADY_MINING` takeover, the in-flight guard, restore of the server's run (server-anchored progress, server wins over a legacy PlayerPrefs session, other planet ignored, unplaceable slot), and `idleSlotId` on claims |
 | `IdleMiningServiceTests.cs`    | EditMode | `IdleMiningService` start/get requests and reply mapping (null reply, network failure), and the standalone `LocalMockIdleMiningService` |
 | `IdleMiningSessionResultContractTests.cs` | EditMode | Deserializes every `StartIdleMining` / `GetIdleMining` reply shape the way the Cloud Code SDK does into `IdleMiningSessionResult` |
@@ -1718,6 +1749,19 @@ the declarations and the currency values.
 milestone. Once (1)–(3) land, run each milestone's "Manual Play Mode Verification" checklist:
 auth (email + Google), persistence, two-client presence/chat, travel/fuel, gyro sky discovery,
 land building, and the full M6 mine → sell → upgrade → higher-tier loop.
+
+**5a. Active Mining Phase 1 — weigh after the first play session** (see "Active Mining Difficulty" above;
+Phases 2 and 3 are not built and wait for the owner's go-ahead)
+
+- [ ] Play Phase 1 on a device (Development Build, dev tier picker, Tiers 1 and 2 first) and tune the
+      `EconomyConfig` tier rows if Tier 1 doesn't clear nearly every time or banks under 60%.
+- [ ] The mining prompt's pay lines render small — the status text auto-sizes to about 17 where it
+      normally uses 26 — and the prompt window has about 84 units of spare room below the button row.
+      Decide whether to use that room for larger text.
+- [ ] Targets sit nearer the centre of elongated asteroids: they are placed at 75% of the rock's
+      inscribed radius (`ActiveMiningMinigameView.PlacementInset`) so every one lands on the rock. Relax it
+      if the targets feel bunched.
+- [ ] Check on a device that a run left by closing the app settles when Planet next loads.
 
 **6. Editor/scene housekeeping**
 
