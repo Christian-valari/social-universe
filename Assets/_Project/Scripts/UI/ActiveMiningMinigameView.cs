@@ -120,6 +120,14 @@ namespace SocialUniverse.UI
                 if (_hitVfx[i] != null) Destroy(_hitVfx[i]);
         }
 
+        // A phone can kill a paused app without another callback, so the run is saved on the way out.
+        private void OnApplicationPause(bool paused)
+        {
+            if (paused) _runner.SaveProgress();
+        }
+
+        private void OnApplicationQuit() => _runner.SaveProgress();
+
         private void Update()
         {
             FadeGradeText();

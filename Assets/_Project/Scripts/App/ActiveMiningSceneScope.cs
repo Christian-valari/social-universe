@@ -18,9 +18,11 @@ namespace SocialUniverse.App
             builder.RegisterComponentInHierarchy<ActiveMiningAsteroidStage>();
             builder.RegisterComponentInHierarchy<SocialUniverse.UI.ActiveMiningMinigameView>();
 
-            // Registered as both an entry point (IStartable/ITickable) and directly injectable
-            // (AsSelf) — ActiveMiningMinigameView needs to inject the concrete type to read
-            // .Session, which RegisterEntryPoint alone doesn't guarantee.
+            builder.Register<ActiveMiningRunStore>(Lifetime.Singleton);
+
+            // Registered as both an entry point (ITickable) and directly injectable (AsSelf) —
+            // ActiveMiningMinigameView needs to inject the concrete type to call BeginRun(), which
+            // RegisterEntryPoint alone doesn't guarantee.
             builder.Register<ActiveMiningSessionRunner>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
 
             builder.RegisterEntryPoint<ActiveMiningSceneBootstrapper>();

@@ -19,6 +19,7 @@ namespace SocialUniverse.Mining
         private readonly IAudioManager           _audio;
         private readonly DroneFleet              _fleet;
         private readonly IIdleMiningService      _idle;
+        private readonly ActiveMiningRunStore    _runStore;
 
         public IdleMiningSession CurrentIdleSession { get; private set; }
         public Asteroid          ClaimingAsteroid    { get; private set; }
@@ -31,7 +32,7 @@ namespace SocialUniverse.Mining
 
         public MiningController(IMineralService minerals, MiningRewardCalculator rewardCalc,
             AsteroidSpawner spawner, EconomyConfig config, PlanetDefinition planet, ActiveMiningHandoff handoff,
-            IAudioManager audio, DroneFleet fleet, IIdleMiningService idle)
+            IAudioManager audio, DroneFleet fleet, IIdleMiningService idle, ActiveMiningRunStore runStore)
         {
             _minerals   = minerals;
             _rewardCalc = rewardCalc;
@@ -42,14 +43,19 @@ namespace SocialUniverse.Mining
             _audio      = audio;
             _fleet      = fleet;
             _idle       = idle;
+            _runStore   = runStore;
         }
 
         // serverRun: the player's idle run as GetIdleMining reported it (null if the read failed).
         // A pending active-mining result is finalized first: it may have consumed the asteroid the
         // idle run is on (possible after a failed GetIdleMining), which EnsureSlot then brings back.
+        // The same goes for a run left unsettled, which is only looked at when no result was pending,
+        // because a run that just returned has a marker too and must not claim twice.
         public void Initialize(IdleMiningSessionResult serverRun = null)
         {
-            TryFinalizePendingActiveMining();
+            if (!TryFinalizePendingActiveMining())
+                TrySettleLeftoverRun();
+
             if (!TryRestoreServerRun(serverRun))
                 TryRestoreIdleSession();
         }
@@ -210,32 +216,60 @@ namespace SocialUniverse.Mining
         // Called from Initialize (same spot idle-session restore already runs) once Planet has
         // reloaded after an active-mining round trip. Resolves the asteroid back by SlotId
         // (same tolerance TryRestoreIdleSession already has: if the slot no longer resolves,
-        // silently drop it rather than throwing) and finishes the grant/respawn flow.
+        // silently drop it, and the run's marker, rather than throwing) and finishes the
+        // grant/respawn flow. Returns whether there was a result to handle.
         // Clears the handoff unconditionally whenever one is pending, even if it never got a
         // result — reaching Planet with a populated-but-unresolved handoff means the session
         // was abandoned (only reachable via the standalone dev workflow, where nothing consumes
         // ActiveMiningRequestedEvent), and leaving it set would otherwise permanently block
         // future active/idle mining on that asteroid.
-        private void TryFinalizePendingActiveMining()
+        private bool TryFinalizePendingActiveMining()
         {
-            if (_handoff.AsteroidSlotId == null) return;
+            if (_handoff.AsteroidSlotId == null) return false;
 
-            if (_handoff.HasResult)
+            bool hadResult = _handoff.HasResult;
+            if (hadResult)
             {
                 var asteroid = _spawner.FindBySlotId(_handoff.AsteroidSlotId);
-                if (asteroid != null)
-                {
-                    int banked = _handoff.BankedQuantity;
-                    if (banked > 0) _ = CompleteActiveMiningAsync(asteroid, banked);
-                    else            FailActiveMining(asteroid);
-                }
+                if (asteroid != null) SettleActiveMining(asteroid, _handoff.BankedQuantity);
+                else                  _runStore.Clear();
             }
 
             _handoff.Clear();
+            return hadResult;
+        }
+
+        // A marker with no result behind it: the app closed mid-run or on the result screen, or the
+        // last claim got no answer. It settles like a failed run, paying what was banked and using up
+        // the asteroid. A slot that's gone means the claim already landed (the server's claim log keeps
+        // it off the field), so there is nothing left to do.
+        private void TrySettleLeftoverRun()
+        {
+            var record = _runStore.Load();
+            if (record == null) return;
+
+            var asteroid = record.PlanetId == _planet.PlanetId ? _spawner.FindBySlotId(record.SlotId) : null;
+            if (asteroid == null || asteroid.IsDepleted)
+            {
+                _runStore.Clear();
+                return;
+            }
+
+            int banked = ActiveMiningPayout.Quantity(record.FullQuantity, record.BankedFraction);
+            SULog.Info($"Settling the unfinished run on {record.SlotId}: {banked}/{record.FullQuantity} {record.MineralId}", SULog.Channel.Mining);
+            SettleActiveMining(asteroid, banked);
+        }
+
+        private void SettleActiveMining(Asteroid asteroid, int banked)
+        {
+            if (banked > 0) _ = CompleteActiveMiningAsync(asteroid, banked);
+            else            FailActiveMining(asteroid);
         }
 
         // quantity is the share the run banked of the full amount pinned when it began: Planet's reload
         // re-rolls asteroid yields, so the reloaded asteroid no longer says what the run was worth.
+        // The marker is cleared once the server answers, grant or rejection. A call that throws got no
+        // answer, so the marker stays and the next Planet load retries it.
         private async Task CompleteActiveMiningAsync(Asteroid asteroid, int quantity)
         {
             int mined = asteroid.Mine(asteroid.RemainingYield);
@@ -246,6 +280,7 @@ namespace SocialUniverse.Mining
                 try
                 {
                     var result = await _minerals.GrantMiningAsync(_planet.PlanetId, mineral.MineralId, quantity, slotId: asteroid.SlotId);
+                    _runStore.Clear();
                     if (result.Granted > 0)
                     {
                         SULog.Info($"Active mining success: +{result.Granted} {mineral.MineralId}", SULog.Channel.Mining);
@@ -259,10 +294,15 @@ namespace SocialUniverse.Mining
                 catch (Exception ex)
                 {
                     // Same reasoning as ClaimIdleSessionAsync: the asteroid is already mined-out
-                    // (intentional, for re-entrancy) — if the grant throws, the player loses the
-                    // minerals, but the asteroid must still respawn below instead of being stranded.
+                    // (intentional, for re-entrancy) — if the grant throws, the marker keeps the
+                    // claim for the next Planet load, and the asteroid must still respawn below
+                    // instead of being stranded.
                     SULog.Error($"GrantMiningAsync failed for active-mining success on {mineral.MineralId} ({quantity}): {ex.Message}", SULog.Channel.Mining);
                 }
+            }
+            else
+            {
+                _runStore.Clear(); // nothing can be claimed, so there is nothing to retry
             }
 
             _spawner.ScheduleRespawn(asteroid, _config.AsteroidRespawnHours);
@@ -283,13 +323,15 @@ namespace SocialUniverse.Mining
         }
 
         // Never throws. The player already saw the run fail, so a forfeit the server doesn't record (an
-        // old server, a full claim budget, no connection) is only logged: the slot is then empty on this
-        // device until the next Planet load.
+        // old server, a full claim budget) is only logged: the slot is then empty on this device until
+        // the next Planet load. The marker is cleared once the server answers; with no answer (no
+        // connection) it stays, and the next Planet load forfeits again.
         private async Task ForfeitAsync(string mineralId, string slotId)
         {
             try
             {
                 var result = await _minerals.ForfeitMiningAsync(_planet.PlanetId, mineralId, slotId);
+                _runStore.Clear();
                 if (result.Reason != "FORFEITED")
                     SULog.Warn($"Forfeit of {slotId} not recorded: {result.Reason}", SULog.Channel.Mining);
             }

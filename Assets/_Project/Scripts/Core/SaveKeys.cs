@@ -15,6 +15,8 @@ namespace SocialUniverse.Core
         public const string DailyStreak   = "daily_streak";
         public const string Inventory     = "inventory";
         public const string IdleMiningSession = "idle_mining_session";
+        // Local-only (PlayerPrefs) marker for an active mining run not yet answered by the server.
+        public const string ActiveMiningRun = "active_mining_run";
         // Legacy PlayerPrefs key: respawn timers now come from the server's claim log
         // (GetAsteroidRespawns); AsteroidSpawner deletes what older builds left here.
         public const string AsteroidRespawns = "asteroid_respawns";

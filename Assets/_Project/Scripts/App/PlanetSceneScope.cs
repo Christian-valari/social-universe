@@ -136,6 +136,7 @@ namespace SocialUniverse.App
 
             // Mining
             builder.Register<MiningRewardCalculator>(Lifetime.Singleton);
+            builder.Register<ActiveMiningRunStore>(Lifetime.Singleton);
             builder.Register<MiningController>(Lifetime.Singleton);
             builder.RegisterComponentInHierarchy<AsteroidSpawner>();
             builder.RegisterComponentInHierarchy<DroneController>();

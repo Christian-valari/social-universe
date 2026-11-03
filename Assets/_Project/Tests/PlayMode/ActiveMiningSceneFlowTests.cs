@@ -28,6 +28,7 @@ namespace SocialUniverse.Tests
 
         private GameObject               _rootScopeObject;
         private ActiveMiningHandoff      _handoff;
+        private ActiveMiningRunStore     _runStore;
         private ActiveMiningMinigameView _view;
         private AsteroidDefinition       _definition;
         private RecordingAudio           _audio;
@@ -35,10 +36,13 @@ namespace SocialUniverse.Tests
         [UnitySetUp]
         public IEnumerator SetUp()
         {
+            PlayerPrefs.DeleteKey(SaveKeys.ActiveMiningRun);
+
             _rootScopeObject = new GameObject("PlanetTestRootScope");
             UnityEngine.Object.DontDestroyOnLoad(_rootScopeObject);
             var rootScope = _rootScopeObject.AddComponent<PlanetTestRootScope>();
-            _handoff = rootScope.Container.Resolve(typeof(ActiveMiningHandoff)) as ActiveMiningHandoff;
+            _handoff  = rootScope.Container.Resolve(typeof(ActiveMiningHandoff)) as ActiveMiningHandoff;
+            _runStore = new ActiveMiningRunStore(rootScope.Container.Resolve(typeof(IAuthService)) as IAuthService);
 
             _definition = ScriptableObject.CreateInstance<AsteroidDefinition>();
             BeginRun(targets: 2, maxMisses: 3);
@@ -66,6 +70,13 @@ namespace SocialUniverse.Tests
         public IEnumerator TearDown()
         {
             Time.captureDeltaTime = 0f;
+
+            // A marker left behind would be settled by the next Planet-scene test. The scene outlives
+            // this test, so clearing the handoff also stops its quit hook from saving another when
+            // play mode ends.
+            _handoff?.Clear();
+            PlayerPrefs.DeleteKey(SaveKeys.ActiveMiningRun);
+
             if (_rootScopeObject != null) UnityEngine.Object.Destroy(_rootScopeObject);
             if (_definition != null) UnityEngine.Object.Destroy(_definition);
             yield return null;
@@ -127,6 +138,40 @@ namespace SocialUniverse.Tests
             Assert.AreEqual("Run over", ResultText());
             Assert.AreEqual("+40 minerals", RewardText());
             Assert.IsNull(LiveTarget(), "The session leaves the last ring live, but the view hides it");
+        }
+
+        [UnityTest]
+        public IEnumerator Nothing_is_saved_until_the_player_presses_start()
+        {
+            _view.SendMessage("OnApplicationPause", true);
+            Assert.IsNull(_runStore.Load());
+
+            PressStart();
+            Assert.AreEqual("Iron#1", _runStore.Load()?.SlotId);
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator Pausing_the_app_saves_what_the_run_has_banked()
+        {
+            PressStart();
+            yield return TapNextTarget();
+            Assert.AreEqual(0f, _runStore.Load().BankedFraction, "A hit alone doesn't save");
+
+            _view.SendMessage("OnApplicationPause", true);
+
+            Assert.AreEqual(0.5f, _runStore.Load().BankedFraction, 0.001f);
+        }
+
+        [UnityTest]
+        public IEnumerator Quitting_the_app_saves_what_the_run_has_banked()
+        {
+            PressStart();
+            yield return TapNextTarget();
+
+            _view.SendMessage("OnApplicationQuit");
+
+            Assert.AreEqual(0.5f, _runStore.Load().BankedFraction, 0.001f);
         }
 
         [UnityTest]

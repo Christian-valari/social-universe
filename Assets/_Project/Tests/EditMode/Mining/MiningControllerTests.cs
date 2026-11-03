@@ -7,6 +7,7 @@ using NUnit.Framework;
 using SocialUniverse.Config;
 using SocialUniverse.Core;
 using SocialUniverse.Mining;
+using SocialUniverse.Net;
 using SocialUniverse.Safety;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -24,6 +25,7 @@ namespace SocialUniverse.Tests
         public int    LastQty;
         public string LastIdleSlotId;
         public string LastSlotId;
+        public int    GrantCalls;
         public bool   Throw;
         public (string PlanetId, string MineralId, string SlotId)? LastForfeit;
         public bool   ThrowOnForfeit;
@@ -44,6 +46,7 @@ namespace SocialUniverse.Tests
         public Task<MiningGrantResult> GrantMiningAsync(string planetId, string mineralId, int qty, string idleSlotId = null,
             string slotId = null)
         {
+            GrantCalls++;
             if (Throw) throw new System.InvalidOperationException("simulated");
             LastPlanetId   = planetId;
             LastMineralId  = mineralId;
@@ -108,6 +111,7 @@ namespace SocialUniverse.Tests
         private DroneFleet             _fleet;
         private DroneDefinition        _droneDef;
         private DatabaseRegistry       _registry;
+        private ActiveMiningRunStore   _runStore;
         private MiningController       _mining;
 
         private static void SetField(object target, string field, object value) =>
@@ -119,6 +123,7 @@ namespace SocialUniverse.Tests
             EventBus.Clear();
             PlayerPrefs.DeleteKey(SaveKeys.IdleMiningSession);
             PlayerPrefs.DeleteKey(SaveKeys.AsteroidRespawns);
+            PlayerPrefs.DeleteKey(SaveKeys.ActiveMiningRun);
 
             _config = ScriptableObject.CreateInstance<EconomyConfig>();
             SetField(_config, "_idleSecondsPerYieldUnit", 0f);
@@ -156,6 +161,10 @@ namespace SocialUniverse.Tests
             var spawnerGo = new GameObject("TestSpawner");
             _spawner = spawnerGo.AddComponent<AsteroidSpawner>();
 
+            var auth = new LocalMockAuthService();
+            SetField(auth, "_playerId", "p1");
+            _runStore = new ActiveMiningRunStore(auth);
+
             _mining = NewController(_minerals);
         }
 
@@ -171,11 +180,12 @@ namespace SocialUniverse.Tests
             Object.DestroyImmediate(_spawner.gameObject);
             PlayerPrefs.DeleteKey(SaveKeys.IdleMiningSession);
             PlayerPrefs.DeleteKey(SaveKeys.AsteroidRespawns);
+            PlayerPrefs.DeleteKey(SaveKeys.ActiveMiningRun);
             EventBus.Clear();
         }
 
         private MiningController NewController(IMineralService minerals) =>
-            new MiningController(minerals, _rewardCalc, _spawner, _config, _planet, _handoff, new FakeAudioManager(), _fleet, _idle);
+            new MiningController(minerals, _rewardCalc, _spawner, _config, _planet, _handoff, new FakeAudioManager(), _fleet, _idle, _runStore);
 
         // Minimal registry stub carrying just the one drone def DroneFleet.Apply needs to
         // resolve DroneSnapshot.DroneId -> DroneDefinition.
@@ -555,6 +565,261 @@ namespace SocialUniverse.Tests
             Assert.IsNull(_minerals.LastMineralId, "no result was ever set, so no grant/mine should happen");
             Assert.IsFalse(asteroid.IsDepleted);
             Assert.IsNull(_handoff.AsteroidSlotId, "the abandoned handoff must still be cleared");
+        }
+
+        // ---- runs the player quit (the marker ActiveMiningSessionRunner saves) ----
+
+        // The reload re-rolled the asteroid's yield, so the claim comes from the marker's pinned quantity.
+        [Test]
+        public async Task A_leftover_marker_claims_its_banked_share_and_uses_up_the_asteroid()
+        {
+            var asteroid = MakeAndRegisterAsteroid("Iron#1", remainingYield: 12);
+            _runStore.Save("test_planet", "Iron#1", "iron", 80, 0.5f);
+
+            _mining.Initialize();
+            await Task.Yield();
+
+            Assert.AreEqual(40, _minerals.LastQty);
+            Assert.AreEqual("test_planet", _minerals.LastPlanetId);
+            Assert.AreEqual("iron", _minerals.LastMineralId);
+            Assert.AreEqual("Iron#1", _minerals.LastSlotId);
+            Assert.IsNull(_minerals.LastForfeit);
+            Assert.IsTrue(asteroid.IsDepleted);
+            Assert.IsTrue(_spawner.NextRespawnUtc.HasValue, "the slot is empty here straight away");
+            Assert.IsNull(_runStore.Load());
+        }
+
+        [Test]
+        public async Task A_leftover_marker_with_nothing_banked_forfeits()
+        {
+            var asteroid = MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+            _runStore.Save("test_planet", "Iron#1", "iron", 80, 0f);
+
+            _mining.Initialize();
+            await Task.Yield();
+
+            Assert.AreEqual(("test_planet", "iron", "Iron#1"), _minerals.LastForfeit);
+            Assert.AreEqual(0, _minerals.GrantCalls);
+            Assert.IsTrue(asteroid.IsDepleted);
+            Assert.IsNull(_runStore.Load());
+        }
+
+        [Test]
+        public async Task A_marker_for_another_planet_is_dropped_without_a_claim()
+        {
+            var asteroid = MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+            _runStore.Save("other_planet", "Iron#1", "iron", 80, 0.5f);
+
+            _mining.Initialize();
+            await Task.Yield();
+
+            Assert.AreEqual(0, _minerals.GrantCalls);
+            Assert.IsNull(_minerals.LastForfeit);
+            Assert.IsFalse(asteroid.IsDepleted);
+            Assert.IsNull(_runStore.Load());
+        }
+
+        // No answer came back, so the next Planet load tries again. The asteroid is still used up now.
+        [Test]
+        public async Task The_marker_stays_when_the_claim_throws()
+        {
+            MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+            _runStore.Save("test_planet", "Iron#1", "iron", 80, 0.5f);
+            _minerals.Throw = true;
+            LogAssert.Expect(LogType.Error, new Regex("GrantMiningAsync.*"));
+
+            _mining.Initialize();
+            await Task.Yield();
+
+            Assert.IsNotNull(_runStore.Load());
+            Assert.IsNull(_spawner.FindBySlotId("Iron#1"));
+            Assert.IsTrue(_spawner.NextRespawnUtc.HasValue);
+        }
+
+        [Test]
+        public async Task The_marker_stays_when_the_forfeit_throws()
+        {
+            MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+            _runStore.Save("test_planet", "Iron#1", "iron", 80, 0f);
+            _minerals.ThrowOnForfeit = true;
+
+            _mining.Initialize();
+            await Task.Yield();
+
+            Assert.IsNotNull(_runStore.Load());
+            Assert.IsNull(_spawner.FindBySlotId("Iron#1"));
+            Assert.IsTrue(_spawner.NextRespawnUtc.HasValue);
+        }
+
+        [Test]
+        public async Task The_marker_stays_until_the_claim_is_answered()
+        {
+            MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+            _runStore.Save("test_planet", "Iron#1", "iron", 80, 0.5f);
+            _minerals.Pending = new TaskCompletionSource<MiningGrantResult>();
+
+            _mining.Initialize();
+            Assert.IsNotNull(_runStore.Load());
+
+            _minerals.Pending.SetResult(new MiningGrantResult { Granted = 40, MineralId = "iron" });
+            await Task.Yield();
+
+            Assert.IsNull(_runStore.Load());
+        }
+
+        [Test]
+        public async Task The_marker_clears_when_the_server_rejects()
+        {
+            MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+            _runStore.Save("test_planet", "Iron#1", "iron", 80, 0.5f);
+            _minerals.RejectReason = "BUDGET_EXHAUSTED";
+
+            _mining.Initialize();
+            await Task.Yield();
+
+            Assert.AreEqual(1, _minerals.GrantCalls);
+            Assert.IsNull(_runStore.Load());
+        }
+
+        [Test]
+        public async Task The_marker_clears_when_the_server_refuses_the_forfeit()
+        {
+            MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+            _runStore.Save("test_planet", "Iron#1", "iron", 80, 0f);
+            _minerals.ForfeitReply = "INVALID_PARAMS";
+
+            _mining.Initialize();
+            await Task.Yield();
+
+            Assert.IsNotNull(_minerals.LastForfeit);
+            Assert.IsNull(_runStore.Load());
+        }
+
+        [Test]
+        public async Task The_normal_return_and_the_marker_claim_only_once()
+        {
+            var asteroid = MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+            Assert.IsTrue(_mining.BeginActiveMining(asteroid));
+            _runStore.Save("test_planet", "Iron#1", "iron", 80, 1f);
+            _handoff.SetResult(succeeded: true, bankedFraction: 1f);
+
+            _mining.Initialize();
+            await Task.Yield();
+
+            Assert.AreEqual(1, _minerals.GrantCalls);
+            Assert.AreEqual(80, _minerals.LastQty);
+            Assert.IsNull(_runStore.Load());
+        }
+
+        // The normal return's claim failed, so its marker stays for the next load, not this one.
+        [Test]
+        public async Task A_normal_return_whose_claim_throws_does_not_retry_until_the_next_load()
+        {
+            var asteroid = MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+            Assert.IsTrue(_mining.BeginActiveMining(asteroid));
+            _runStore.Save("test_planet", "Iron#1", "iron", 80, 1f);
+            _handoff.SetResult(succeeded: true, bankedFraction: 1f);
+            _minerals.Throw = true;
+            LogAssert.Expect(LogType.Error, new Regex("GrantMiningAsync.*"));
+
+            _mining.Initialize();
+            await Task.Yield();
+
+            Assert.AreEqual(1, _minerals.GrantCalls);
+            Assert.AreEqual(1f, _runStore.Load().BankedFraction);
+        }
+
+        // The app was closed before the server's answer reached it, but the server committed: its claim
+        // log keeps the slot off the field.
+        [Test]
+        public async Task A_marker_whose_slot_is_gone_clears_without_a_claim()
+        {
+            _runStore.Save("test_planet", "Iron#1", "iron", 80, 0.5f);
+
+            _mining.Initialize();
+            await Task.Yield();
+
+            Assert.AreEqual(0, _minerals.GrantCalls);
+            Assert.IsNull(_minerals.LastForfeit);
+            Assert.IsNull(_runStore.Load());
+        }
+
+        [Test]
+        public async Task A_marker_whose_asteroid_is_depleted_clears_without_a_claim()
+        {
+            var asteroid = MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+            asteroid.Mine(asteroid.RemainingYield);
+            _runStore.Save("test_planet", "Iron#1", "iron", 80, 0.5f);
+
+            _mining.Initialize();
+            await Task.Yield();
+
+            Assert.AreEqual(0, _minerals.GrantCalls);
+            Assert.IsNull(_minerals.LastForfeit);
+            Assert.IsNull(_runStore.Load());
+        }
+
+        // No claim can be sent for it, so keeping the marker would use up the asteroid on every load.
+        [Test]
+        public async Task A_marker_on_an_asteroid_with_no_mineral_clears_without_a_claim()
+        {
+            SetField(_asteroidDef, "_mineral", null);
+            var asteroid = MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+            _runStore.Save("test_planet", "Iron#1", "iron", 80, 0.5f);
+
+            _mining.Initialize();
+            await Task.Yield();
+
+            Assert.AreEqual(0, _minerals.GrantCalls);
+            Assert.IsTrue(asteroid.IsDepleted);
+            Assert.IsNull(_runStore.Load());
+        }
+
+        [Test]
+        public void A_pending_result_whose_slot_is_gone_clears_the_marker()
+        {
+            var asteroid = MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+            Assert.IsTrue(_mining.BeginActiveMining(asteroid));
+            _runStore.Save("test_planet", "Iron#1", "iron", 80, 1f);
+            _handoff.SetResult(succeeded: true, bankedFraction: 1f);
+            var active = (List<Asteroid>)typeof(AsteroidSpawner)
+                .GetField("_active", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(_spawner);
+            active.Remove(asteroid);
+
+            _mining.Initialize();
+
+            Assert.AreEqual(0, _minerals.GrantCalls);
+            Assert.IsNull(_runStore.Load());
+        }
+
+        // A handoff that never got a result hands nothing over, so the marker is what settles the run.
+        [Test]
+        public async Task An_abandoned_handoff_still_settles_its_marker()
+        {
+            var asteroid = MakeAndRegisterAsteroid("Iron#1", remainingYield: 80);
+            Assert.IsTrue(_mining.BeginActiveMining(asteroid));
+            _runStore.Save("test_planet", "Iron#1", "iron", 80, 0.5f);
+
+            _mining.Initialize();
+            await Task.Yield();
+
+            Assert.AreEqual(40, _minerals.LastQty);
+            Assert.IsNull(_handoff.AsteroidSlotId);
+            Assert.IsNull(_runStore.Load());
+        }
+
+        [Test]
+        public async Task Initialize_never_leaves_the_idle_run_on_an_asteroid_a_marker_consumed()
+        {
+            MakeAndRegisterAsteroid("slot_0", remainingYield: 10);
+            _runStore.Save("test_planet", "slot_0", "iron", 10, 1f);
+
+            _mining.Initialize(ServerRun("test_planet", "slot_0", elapsed: 600f, duration: 60f));
+            await Task.Yield();
+
+            var session = _mining.CurrentIdleSession;
+            Assert.IsTrue(session == null || session.Asteroid != null,
+                "the idle session must never point at a destroyed asteroid");
         }
 
         // ---- legacy PlayerPrefs sessions (written by builds before server-tracked runs) ----
