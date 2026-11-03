@@ -5,41 +5,47 @@ using SocialUniverse.Core;
 
 namespace SocialUniverse.Mining
 {
-    // Drives the local ActiveMiningSession's countdown once the player presses Start —
-    // relocates the role ActiveMiningSessionController played in PlanetSceneScope, now living
-    // inside ActiveMiningSceneScope since Planet is unloaded while this scene runs. Also writes
-    // the outcome back into ActiveMiningHandoff so MiningController can finalize the reward once
-    // Planet reloads.
-    public class ActiveMiningSessionRunner : IStartable, ITickable
+    // Creates this scene's ActiveMiningSession once the player presses Start and ticks it from
+    // then on — relocates the role ActiveMiningSessionController played in PlanetSceneScope, now
+    // living inside ActiveMiningSceneScope since Planet is unloaded while this scene runs. Also
+    // writes the outcome back into ActiveMiningHandoff so MiningController can finalize the reward
+    // once Planet reloads.
+    public class ActiveMiningSessionRunner : ITickable
     {
         private readonly ActiveMiningHandoff _handoff;
 
-        public LegacyActiveMiningSession Session   { get; private set; }
-        public bool                      IsRunning { get; private set; }
+        public ActiveMiningSession Session { get; private set; }
 
         public ActiveMiningSessionRunner(ActiveMiningHandoff handoff) => _handoff = handoff;
 
-        public void Start()
-        {
-            // A standalone ActiveMining scene has no run begun, so it plays the default (Tier 1) settings.
-            var tier = _handoff.Settings?.Tier ?? new ActiveMiningTierSettings();
-            Session = new LegacyActiveMiningSession(tier.Targets, tier.MaxMisses, tier.Targets * tier.RingSeconds);
-            Session.OnStageChanged += OnStageChanged;
-        }
-
         // Called once the player presses "Start Mining" in the pre-game panel — nothing spawns
-        // or counts down before this, so there's no race between scene-load and the first target.
-        public void BeginTicking() => IsRunning = true;
-
-        public void Tick()
+        // before this, so there's no race between scene-load and the first target.
+        public ActiveMiningSession BeginRun()
         {
-            if (IsRunning) Session.Tick(Time.deltaTime);
+            Session = new ActiveMiningSession(_handoff.Settings ?? DefaultSettings());
+
+            // Subscribed before the session reaches the view: its result screen reads the banked
+            // quantity from the handoff, so this handler has to run first.
+            Session.OnStageChanged += OnStageChanged;
+            return Session;
         }
+
+        public void Tick() => Session?.Tick(Time.deltaTime);
 
         private void OnStageChanged(ActiveMiningStage stage)
         {
-            if (stage == ActiveMiningStage.Success) _handoff.SetResult(succeeded: true, bankedFraction: 1f);
-            else if (stage == ActiveMiningStage.Failed) _handoff.SetResult(succeeded: false, bankedFraction: 0f);
+            if (stage == ActiveMiningStage.InProgress) return;
+
+            _handoff.SetResult(stage == ActiveMiningStage.Success, Session.BankedFraction);
+        }
+
+        // A standalone ActiveMining scene has no run begun, so it plays the default (Tier 1) settings.
+        private static ActiveMiningRunSettings DefaultSettings()
+        {
+            var config   = ScriptableObject.CreateInstance<EconomyConfig>();
+            var settings = config.ActiveRunSettings(1);
+            Object.Destroy(config);
+            return settings;
         }
     }
 }

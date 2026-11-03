@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -10,15 +11,18 @@ using TMPro;
 namespace SocialUniverse.UI
 {
     // Owns the ActiveMining scene's three-phase flow: a pre-game panel (asteroid info + Start
-    // button), the in-progress HUD (target point/timer/progress/miss counter, unchanged from the
-    // previous scene-based redesign), and a post-game panel (result + reward preview + Continue).
+    // button), the in-progress HUD (closing-ring targets, progress, miss counter and what's banked
+    // so far), and a post-game panel (result + reward preview + Continue).
     // Nothing spawns or ticks until the player presses Start — this also means there's no race
-    // between scene-load and the first target point (a bug the previous overlay design had).
-    // _targetButton must be a UI child rendered above _missAreaButton in the hierarchy so a tap
-    // on the point hits the target first and any other tap in the asteroid area falls through to
-    // the miss button (standard Unity UI raycast ordering).
+    // between scene-load and the first target (a bug the previous overlay design had).
+    // _targetTemplate must be a UI child rendered above _missAreaButton in the hierarchy so a tap
+    // on a target hits it first and any other tap falls through to the miss button (standard Unity
+    // UI raycast ordering). The template itself stays hidden; its clones sit right after it, which
+    // keeps them below the HUD.
     public class ActiveMiningMinigameView : MonoBehaviour
     {
+        private const int MaxHitVfx = 4;
+
         [SerializeField] private Camera                    _sceneCamera;
         [SerializeField] private ActiveMiningAsteroidStage  _stage;
 
@@ -28,12 +32,11 @@ namespace SocialUniverse.UI
         [SerializeField] private Button     _startButton;
 
         [Header("In-progress")]
-        [SerializeField] private RectTransform _targetPoint;
-        [SerializeField] private Button        _targetButton;
-        [SerializeField] private Button        _missAreaButton;
-        [SerializeField] private Text          _progressText;
-        [SerializeField] private Text          _errorText;
-        [SerializeField] private Text          _timeText;
+        [SerializeField] private ActiveMiningTargetView _targetTemplate;
+        [SerializeField] private Button                 _missAreaButton;
+        [SerializeField] private Text                   _progressText;
+        [SerializeField] private Text                   _errorText;
+        [SerializeField] private Text                   _bankedText;
 
         [Header("Post-game")]
         [SerializeField] private GameObject _resultBanner;
@@ -43,26 +46,35 @@ namespace SocialUniverse.UI
 
         [Header("VFX")]
         [SerializeField] private GameObject _hitVfxPrefab;
-        [SerializeField] private float      _hitVfxLifetime = 1f;
 
         [Inject] private ActiveMiningSessionRunner _runner;
         [Inject] private ActiveMiningHandoff       _handoff;
         [Inject] private ActiveMiningState         _activeMiningState;
         [Inject] private IAudioManager             _audio;
 
-        private ActiveMiningTargetPoint _currentTargetAnchor;
-        private bool                    _started;
+        // A pooled target view and the anchor that holds its place on the asteroid.
+        private sealed class TargetSlot
+        {
+            public ActiveMiningTargetView  View;
+            public ActiveMiningTargetPoint Anchor;
+        }
+
+        private readonly List<TargetSlot> _slots  = new List<TargetSlot>();
+        private readonly List<GameObject> _hitVfx = new List<GameObject>();
+
+        private int                 _oldestHitVfx;
+        private ActiveMiningSession _session;
 
         private void Awake()
         {
-            if (_targetButton   != null) _targetButton.onClick.AddListener(() => OnTapped(hitTarget: true));
-            if (_missAreaButton != null) _missAreaButton.onClick.AddListener(() => OnTapped(hitTarget: false));
+            if (_missAreaButton != null) _missAreaButton.onClick.AddListener(OnMissAreaTapped);
             if (_startButton    != null) _startButton.onClick.AddListener(OnStartClicked);
             if (_continueButton != null) _continueButton.onClick.AddListener(OnContinueClicked);
         }
 
         private void Start()
         {
+            _targetTemplate.Hide();
             SetInProgressUiActive(false);
             if (_resultBanner != null) _resultBanner.SetActive(false);
 
@@ -72,33 +84,49 @@ namespace SocialUniverse.UI
 
         private void OnDestroy()
         {
-            if (_started && _runner.Session != null) _runner.Session.OnStageChanged -= OnStageChanged;
-            if (_currentTargetAnchor != null) Destroy(_currentTargetAnchor.gameObject);
+            if (_session != null)
+            {
+                _session.OnStageChanged   -= OnStageChanged;
+                _session.OnTargetSpawned  -= OnTargetSpawned;
+                _session.OnTargetResolved -= OnTargetResolved;
+                _session.OnWrongTap       -= Refresh;
+            }
+
+            for (int i = 0; i < _slots.Count; i++)
+                if (_slots[i].Anchor != null) Destroy(_slots[i].Anchor.gameObject);
+
+            for (int i = 0; i < _hitVfx.Count; i++)
+                if (_hitVfx[i] != null) Destroy(_hitVfx[i]);
         }
 
         private void Update()
         {
-            if (!_started) return;
+            if (_session == null || _session.Stage != ActiveMiningStage.InProgress) return;
 
-            var session = _runner.Session;
-            if (session == null || session.Stage != ActiveMiningStage.InProgress) return;
+            for (int i = 0; i < _slots.Count; i++)
+            {
+                var slot = _slots[i];
+                if (slot.View.Target == null) continue;
 
-            Refresh(session);
-            ProjectTargetPointToScreen();
+                ProjectToScreen(slot);
+                slot.View.SetRingProgress(slot.View.Target.Progress);
+            }
         }
 
         private void OnStartClicked()
         {
-            if (_started || _runner.Session == null) return;
-            _started = true;
+            if (_session != null) return;
 
             if (_preGamePanel != null) _preGamePanel.SetActive(false);
             SetInProgressUiActive(true);
 
-            _runner.Session.OnStageChanged += OnStageChanged;
-            _runner.BeginTicking();
-            Refresh(_runner.Session);
-            SpawnNextTargetPoint();
+            // The session's first Tick spawns its first target, so subscribing here misses nothing.
+            _session = _runner.BeginRun();
+            _session.OnStageChanged   += OnStageChanged;
+            _session.OnTargetSpawned  += OnTargetSpawned;
+            _session.OnTargetResolved += OnTargetResolved;
+            _session.OnWrongTap       += Refresh;
+            Refresh();
         }
 
         private void OnStageChanged(ActiveMiningStage stage)
@@ -109,11 +137,51 @@ namespace SocialUniverse.UI
             ShowResult(stage);
         }
 
-        private void Refresh(LegacyActiveMiningSession session)
+        private void OnTargetSpawned(ActiveMiningTarget target)
         {
-            if (_progressText != null) _progressText.text = $"{session.SuccessfulTaps}/{session.TapsRequired}";
-            if (_errorText    != null) _errorText.text    = $"Misses: {session.ErrorCount}/{session.MaxErrors}";
-            if (_timeText     != null) _timeText.text     = $"{Mathf.CeilToInt(session.TimeRemainingSeconds)}s";
+            var slot = TakeFreeSlot();
+
+            if (_stage != null && _stage.StageClone != null)
+            {
+                Vector3 towardViewer = _sceneCamera != null
+                    ? _sceneCamera.transform.position - _stage.StageClone.transform.position
+                    : Vector3.back;
+
+                slot.Anchor.PlaceOnAsteroid(_stage.StageClone.transform, _stage.ColliderRadius, towardViewer);
+            }
+
+            slot.View.Show(target, OnTargetTapped);
+            ProjectToScreen(slot);
+        }
+
+        private void OnTargetResolved(ActiveMiningTarget target, ActiveMiningGrade grade)
+        {
+            for (int i = 0; i < _slots.Count; i++)
+            {
+                var slot = _slots[i];
+                if (slot.View.Target != target) continue;
+
+                if (grade != ActiveMiningGrade.Miss)
+                {
+                    _audio.PlaySfx(SfxId.ActiveMiningTap);
+                    PlayHitVfx(slot.Anchor.transform.position);
+                }
+                slot.View.Hide();
+                break;
+            }
+
+            Refresh();
+        }
+
+        private void OnTargetTapped(ActiveMiningTarget target) => _session.TapTarget(target.Id);
+
+        private void OnMissAreaTapped() => _session?.TapOffTarget();
+
+        private void Refresh()
+        {
+            if (_progressText != null) _progressText.text = $"{_session.ResolvedTargets}/{_session.Targets}";
+            if (_errorText    != null) _errorText.text    = $"Misses: {_session.ErrorCount}/{_session.MaxErrors}";
+            if (_bankedText   != null) _bankedText.text   = $"+{ActiveMiningPayout.Quantity(_handoff.FullQuantity, _session.BankedFraction)} {MineralName()}";
         }
 
         private void ShowResult(ActiveMiningStage stage)
@@ -127,82 +195,82 @@ namespace SocialUniverse.UI
             }
 
             if (_resultBanner != null) _resultBanner.SetActive(true);
-            if (_resultText   != null) _resultText.text = succeeded ? "Success!" : "Failed";
+            if (_resultText   != null)
+            {
+                _resultText.text = !succeeded ? "Run over"
+                    : _session.PerfectCount == _session.Targets ? "Perfect run!"
+                    : "Cleared!";
+            }
 
             if (_rewardText != null)
             {
-                if (succeeded && _handoff.Definition != null)
-                {
-                    int mined = _handoff.BankedQuantity;
-                    string mineralName = _handoff.Definition.Mineral != null ? _handoff.Definition.Mineral.DisplayName : "minerals";
-                    _rewardText.text = $"+{mined} {mineralName}";
-                }
-                else
-                {
-                    _rewardText.text = "No reward";
-                }
+                int mined = _handoff.BankedQuantity;
+                _rewardText.text = mined > 0 ? $"+{mined} {MineralName()}" : "No reward";
             }
         }
+
+        private string MineralName() =>
+            _handoff.Definition != null && _handoff.Definition.Mineral != null
+                ? _handoff.Definition.Mineral.DisplayName
+                : "minerals";
 
         private void OnContinueClicked() => _activeMiningState.Finish();
 
+        // Hiding also clears every live marker: a wrong tap that ends the run leaves its ring live
+        // in the session, with no resolve event to hide it.
         private void SetInProgressUiActive(bool active)
         {
-            if (_targetPoint    != null) _targetPoint.gameObject.SetActive(active);
             if (_missAreaButton != null) _missAreaButton.gameObject.SetActive(active);
             if (_progressText   != null) _progressText.gameObject.SetActive(active);
             if (_errorText      != null) _errorText.gameObject.SetActive(active);
-            if (_timeText       != null) _timeText.gameObject.SetActive(active);
+            if (_bankedText     != null) _bankedText.gameObject.SetActive(active);
+
+            if (active) return;
+
+            for (int i = 0; i < _slots.Count; i++)
+                _slots[i].View.Hide();
         }
 
-        private void SpawnNextTargetPoint()
+        private TargetSlot TakeFreeSlot()
         {
-            if (_stage == null || _stage.StageClone == null) return;
+            for (int i = 0; i < _slots.Count; i++)
+                if (_slots[i].View.Target == null) return _slots[i];
 
-            if (_currentTargetAnchor != null) Destroy(_currentTargetAnchor.gameObject);
+            var view = Instantiate(_targetTemplate, _targetTemplate.transform.parent);
+            view.transform.SetSiblingIndex(_targetTemplate.transform.GetSiblingIndex() + 1);
 
-            var anchorGo = new GameObject("ActiveMiningTargetAnchor");
-            _currentTargetAnchor = anchorGo.AddComponent<ActiveMiningTargetPoint>();
-
-            Vector3 towardViewer = _sceneCamera != null
-                ? _sceneCamera.transform.position - _stage.StageClone.transform.position
-                : Vector3.back;
-
-            _currentTargetAnchor.PlaceOnAsteroid(_stage.StageClone.transform, _stage.ColliderRadius, towardViewer);
-        }
-
-        private void ProjectTargetPointToScreen()
-        {
-            if (_targetPoint == null || _currentTargetAnchor == null || _sceneCamera == null) return;
-
-            _targetPoint.position = _sceneCamera.WorldToScreenPoint(_currentTargetAnchor.transform.position);
-        }
-
-        private void OnTapped(bool hitTarget)
-        {
-            if (!_started || _runner.Session.Stage != ActiveMiningStage.InProgress) return;
-
-            if (hitTarget)
+            var slot = new TargetSlot
             {
-                _audio.PlaySfx(SfxId.ActiveMiningTap);
-                SpawnHitVfx();
-                _runner.Session.RegisterHit();
-            }
-            else
-            {
-                _runner.Session.RegisterMiss();
-            }
-
-            if (_runner.Session.Stage == ActiveMiningStage.InProgress)
-                SpawnNextTargetPoint();
+                View   = view,
+                Anchor = new GameObject("ActiveMiningTargetAnchor").AddComponent<ActiveMiningTargetPoint>(),
+            };
+            _slots.Add(slot);
+            return slot;
         }
 
-        private void SpawnHitVfx()
+        private void ProjectToScreen(TargetSlot slot)
         {
-            if (_hitVfxPrefab == null || _currentTargetAnchor == null || !Application.isPlaying) return;
+            if (_sceneCamera != null)
+                slot.View.SetScreenPosition(_sceneCamera.WorldToScreenPoint(slot.Anchor.transform.position));
+        }
 
-            var vfx = Instantiate(_hitVfxPrefab, _currentTargetAnchor.transform.position, Quaternion.identity);
-            Destroy(vfx, _hitVfxLifetime);
+        // The prefab has playOnAwake, so re-enabling a pooled instance replays it.
+        private void PlayHitVfx(Vector3 position)
+        {
+            if (_hitVfxPrefab == null) return;
+
+            if (_hitVfx.Count < MaxHitVfx)
+            {
+                _hitVfx.Add(Instantiate(_hitVfxPrefab, position, Quaternion.identity));
+                return;
+            }
+
+            var vfx = _hitVfx[_oldestHitVfx];
+            _oldestHitVfx = (_oldestHitVfx + 1) % MaxHitVfx;
+
+            vfx.SetActive(false);
+            vfx.transform.position = position;
+            vfx.SetActive(true);
         }
     }
 }

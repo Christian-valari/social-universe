@@ -24,12 +24,13 @@ namespace SocialUniverse.Tests
 
         protected override void Configure(IContainerBuilder builder)
         {
-            // From ProjectLifetimeScope — only what the Planet scene and its handlers need.
+            // From ProjectLifetimeScope — only what the scenes under test and their handlers need.
             builder.RegisterInstance(ScriptableObject.CreateInstance<AppConfig>());
             builder.Register<SceneLoader>(Lifetime.Singleton);
             builder.Register<GameStateMachine>(Lifetime.Singleton);
             builder.Register<PlanetState>(Lifetime.Singleton);
             builder.Register<ActiveMiningHandoff>(Lifetime.Singleton);
+            builder.Register<ActiveMiningState>(Lifetime.Singleton);
             builder.Register<LandBuildingHandoff>(Lifetime.Singleton);
 
             // From RootLifetimeScope's dev-mode branch, with the scripted backend.
