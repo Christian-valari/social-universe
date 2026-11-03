@@ -11,12 +11,17 @@ namespace SocialUniverse.Mining
     {
         [SerializeField] private float _minRotationSpeed = 5f;  // degrees per second
         [SerializeField] private float _maxRotationSpeed = 15f;
+        [SerializeField] private float _shakeDistance    = 0.002f; // world units at the start of a shake
 
         public GameObject StageClone    { get; private set; }
         public float      ColliderRadius { get; private set; }
 
         private Vector3 _rotationAxis;
         private float   _rotationSpeed;
+
+        private Vector3 _restLocalPosition; // where the clone goes back to once a shake ends
+        private float   _shakeSeconds;
+        private float   _shakeSecondsLeft;
 
         // Instantiates definition.ModelPrefab (or a fallback primitive sphere, matching
         // AsteroidSpawner's fallback) as a child of this transform, and records the collider
@@ -27,6 +32,7 @@ namespace SocialUniverse.Mining
             {
                 if (Application.isPlaying) Destroy(StageClone);
                 else                       DestroyImmediate(StageClone);
+                _shakeSecondsLeft = 0f; // a shake goes with its clone
             }
 
             GameObject clone;
@@ -58,13 +64,26 @@ namespace SocialUniverse.Mining
             return clone;
         }
 
-        // Where the clone's current spin carries a world-space point after this many seconds.
+        // Where the clone's current spin carries a world-space point after this many seconds. The
+        // spin turns about where the clone rests, which a shake only moves it away from for a moment.
         public Vector3 PredictPoint(Vector3 worldPoint, float seconds)
         {
             if (StageClone == null) return worldPoint;
 
-            Vector3 center = StageClone.transform.position;
-            return center + Quaternion.AngleAxis(_rotationSpeed * seconds, _rotationAxis) * (worldPoint - center);
+            Vector3 center  = StageClone.transform.position;
+            Vector3 resting = _shakeSecondsLeft > 0f ? transform.TransformPoint(_restLocalPosition) : center;
+            return resting + Quaternion.AngleAxis(_rotationSpeed * seconds, _rotationAxis) * (worldPoint - center);
+        }
+
+        // Jitters the clone's position for this long, easing out, then puts it back exactly where it
+        // started. A shake already under way is only replaced by a longer one.
+        public void Shake(float seconds)
+        {
+            if (StageClone == null || seconds <= _shakeSecondsLeft) return;
+
+            if (_shakeSecondsLeft <= 0f) _restLocalPosition = StageClone.transform.localPosition;
+            _shakeSeconds     = seconds;
+            _shakeSecondsLeft = seconds;
         }
 
         // Slow tumble to match the atmosphere of the field asteroids (Asteroid.Update()).
@@ -72,6 +91,18 @@ namespace SocialUniverse.Mining
         {
             if (StageClone != null)
                 StageClone.transform.Rotate(_rotationAxis, _rotationSpeed * Time.deltaTime, Space.World);
+
+            AdvanceShake(Time.deltaTime);
+        }
+
+        private void AdvanceShake(float deltaTime)
+        {
+            if (StageClone == null || _shakeSecondsLeft <= 0f) return;
+
+            _shakeSecondsLeft -= deltaTime;
+            StageClone.transform.localPosition = _shakeSecondsLeft > 0f
+                ? _restLocalPosition + Random.onUnitSphere * (_shakeDistance * _shakeSecondsLeft / _shakeSeconds)
+                : _restLocalPosition;
         }
     }
 }

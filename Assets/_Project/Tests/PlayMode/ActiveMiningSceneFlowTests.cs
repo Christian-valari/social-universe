@@ -13,6 +13,7 @@ using TMPro;
 using SocialUniverse.Config;
 using SocialUniverse.Core;
 using SocialUniverse.Mining;
+using SocialUniverse.Safety;
 using SocialUniverse.UI;
 
 namespace SocialUniverse.Tests
@@ -29,6 +30,7 @@ namespace SocialUniverse.Tests
         private ActiveMiningHandoff      _handoff;
         private ActiveMiningMinigameView _view;
         private AsteroidDefinition       _definition;
+        private RecordingAudio           _audio;
 
         [UnitySetUp]
         public IEnumerator SetUp()
@@ -55,11 +57,15 @@ namespace SocialUniverse.Tests
 
             _view = UnityEngine.Object.FindFirstObjectByType<ActiveMiningMinigameView>();
             Assert.IsNotNull(_view, "ActiveMiningMinigameView is not in the scene");
+
+            _audio = new RecordingAudio();
+            SetPrivate(_view, "_audio", _audio);
         }
 
         [UnityTearDown]
         public IEnumerator TearDown()
         {
+            Time.captureDeltaTime = 0f;
             if (_rootScopeObject != null) UnityEngine.Object.Destroy(_rootScopeObject);
             if (_definition != null) UnityEngine.Object.Destroy(_definition);
             yield return null;
@@ -79,6 +85,7 @@ namespace SocialUniverse.Tests
             Assert.AreEqual("+80 minerals", RewardText());
             Assert.IsTrue(Private<GameObject>(_view, "_resultBanner").activeSelf, "The result banner comes up");
             Assert.IsFalse(Private<Text>(_view, "_bankedText").gameObject.activeSelf, "The HUD goes away");
+            CollectionAssert.DoesNotContain(_audio.Played, SfxId.ActiveMiningFail, "A clear is not a failure");
         }
 
         [UnityTest]
@@ -314,9 +321,185 @@ namespace SocialUniverse.Tests
             Assert.Less(clone.GetSiblingIndex(), hud.GetSiblingIndex());
         }
 
-        private void BeginRun(int targets, int maxMisses, float ringSeconds = 5f, float perfectBySeconds = 4f)
+        [UnityTest]
+        public IEnumerator A_perfect_hit_shows_its_grade_where_the_target_was()
         {
-            var tier = new ActiveMiningTierSettings(targets, ringSeconds, perfectBySeconds, goodBySeconds: 4.5f, maxMisses);
+            PressStart();
+            yield return WaitForLiveTarget();
+            var     view = LiveTarget();
+            Vector3 at   = view.transform.position;
+
+            Private<Button>(view, "_button").onClick.Invoke();
+
+            var label = Private<Text>(_view, "_gradeText");
+            Assert.AreEqual("Perfect", GradeText());
+            Assert.IsTrue(label.gameObject.activeInHierarchy, "The label is showing");
+            Assert.AreEqual(1f, label.color.a, 0.001f);
+            Assert.Less(Vector3.Distance(at, label.transform.position), 0.01f);
+            CollectionAssert.AreEqual(new[] { SfxId.ActiveMiningTap }, _audio.Played, "A hit has no miss feedback");
+        }
+
+        [UnityTest]
+        public IEnumerator A_hit_after_the_perfect_cut_off_shows_good()
+        {
+            BeginRun(targets: 1, maxMisses: 3, perfectBySeconds: -1f);
+            PressStart();
+            yield return TapNextTarget();
+
+            Assert.AreEqual("Good", GradeText());
+        }
+
+        [UnityTest]
+        public IEnumerator A_hit_after_the_good_cut_off_shows_late()
+        {
+            BeginRun(targets: 1, maxMisses: 3, perfectBySeconds: -2f, goodBySeconds: -1f);
+            PressStart();
+            yield return TapNextTarget();
+
+            Assert.AreEqual("Late", GradeText());
+        }
+
+        [UnityTest]
+        public IEnumerator A_wrong_tap_shows_a_red_miss_beside_the_live_target_not_over_it()
+        {
+            PressStart();
+            yield return WaitForLiveTarget();
+            var     ring      = LiveTarget();
+            Vector2 at        = ring.transform.position;
+            var     canvas    = _view.GetComponent<Canvas>();
+            float   clearance = ((RectTransform)ring.transform).rect.height * canvas.scaleFactor;
+
+            TapMissArea();
+
+            var label = Private<Text>(_view, "_gradeText");
+            Assert.AreEqual("Miss", GradeText());
+            Assert.IsTrue(label.gameObject.activeInHierarchy, "The label is showing");
+            Assert.Greater(label.color.r, 0.8f);
+            Assert.Less(label.color.g, 0.5f);
+            Assert.Less(label.color.b, 0.5f);
+            Assert.AreEqual(clearance, Vector2.Distance(at, label.transform.position), 0.5f, "The label is a target's height from the ring");
+            Assert.IsTrue(canvas.pixelRect.Contains(label.transform.position), "and still on screen");
+        }
+
+        [UnityTest]
+        public IEnumerator A_wrong_tap_plays_the_miss_sound_and_shakes_the_asteroid_briefly()
+        {
+            Time.captureDeltaTime = 0.05f; // each frame is 0.05 s of game time
+            PressStart();
+            yield return WaitForLiveTarget();
+            var clone = StageClone();
+            var rest  = clone.transform.localPosition;
+
+            TapMissArea();
+            yield return null;
+
+            CollectionAssert.AreEqual(new[] { SfxId.ActiveMiningMiss }, _audio.Played);
+            Assert.Greater(Vector3.Distance(rest, clone.transform.localPosition), 0f, "The rock is shaking");
+
+            yield return new WaitForSeconds(0.3f);
+            Assert.AreEqual(0f, (clone.transform.localPosition - rest).sqrMagnitude, "A miss shakes for 0.2 s, then the rock sits where it was");
+        }
+
+        [UnityTest]
+        public IEnumerator A_ring_that_closes_gets_the_same_miss_feedback()
+        {
+            Time.captureDeltaTime = 0.05f;
+            BeginRun(targets: 2, maxMisses: 3, ringSeconds: 1f);
+            PressStart();
+            yield return WaitForLiveTarget();
+            var target = LiveTarget().Target;
+            var clone  = StageClone();
+            var rest   = clone.transform.localPosition;
+
+            yield return WaitUntil(() => target.Progress >= 1f, "the ring to close");
+
+            Assert.AreEqual("Miss", GradeText());
+            CollectionAssert.AreEqual(new[] { SfxId.ActiveMiningMiss }, _audio.Played);
+            yield return null;
+            Assert.Greater(Vector3.Distance(rest, clone.transform.localPosition), 0f, "The rock is shaking");
+        }
+
+        [UnityTest]
+        public IEnumerator A_failed_run_plays_the_fail_sound_and_shakes_longer_than_a_miss()
+        {
+            Time.captureDeltaTime = 0.05f;
+            BeginRun(targets: 2, maxMisses: 1);
+            PressStart();
+            yield return WaitForLiveTarget();
+            var clone = StageClone();
+            var rest  = clone.transform.localPosition;
+
+            TapMissArea(); // the miss that ends the run
+
+            CollectionAssert.AreEqual(new[] { SfxId.ActiveMiningMiss, SfxId.ActiveMiningFail }, _audio.Played);
+
+            yield return new WaitForSeconds(0.3f);
+            Assert.Greater(Vector3.Distance(rest, clone.transform.localPosition), 0f, "A miss alone would have stopped by now");
+
+            yield return new WaitForSeconds(0.4f);
+            Assert.AreEqual(0f, (clone.transform.localPosition - rest).sqrMagnitude, "The run's shake is over after 0.5 s");
+        }
+
+        [UnityTest]
+        public IEnumerator A_grade_label_fades_out_over_half_a_second()
+        {
+            Time.captureDeltaTime = 0.05f;
+            PressStart();
+            yield return TapNextTarget();
+            var label = Private<Text>(_view, "_gradeText");
+
+            yield return new WaitForSeconds(0.25f);
+            Assert.That(label.color.a, Is.InRange(0.2f, 0.8f), "Part way through its fade");
+
+            yield return new WaitForSeconds(0.35f);
+            Assert.IsFalse(label.gameObject.activeSelf, "Faded away");
+        }
+
+        [UnityTest]
+        public IEnumerator The_pre_game_panel_shows_the_rules()
+        {
+            var rules = Private<Text>(_view, "_rulesText");
+
+            StringAssert.StartsWith("Tap each target", rules.text);
+            Assert.IsTrue(rules.gameObject.activeInHierarchy, "It shows with the pre-game panel");
+            Assert.IsFalse(rules.raycastTarget, "It must not swallow the Start tap");
+            yield return null;
+        }
+
+        // Instructions that run off the screen, get cut off by their own box, or print over the
+        // start prompt are as good as missing.
+        [UnityTest]
+        public IEnumerator The_rules_fit_on_screen_clear_of_the_start_prompt()
+        {
+            yield return null;
+            Canvas.ForceUpdateCanvases();
+            var rules       = Private<Text>(_view, "_rulesText");
+            var startPrompt = Private<Button>(_view, "_startButton").GetComponentInChildren<Text>();
+            var mineralType = Private<Text>(_view, "_mineralTypeText");
+
+            Assert.LessOrEqual(rules.preferredHeight, rules.rectTransform.rect.height, "The text isn't cut off by its box");
+
+            Rect box    = WorldRect(rules.rectTransform);
+            Rect screen = new Rect(0f, 0f, Screen.width, Screen.height);
+            Assert.IsTrue(screen.Contains(box.min) && screen.Contains(box.max), $"{box} is within the screen {screen}");
+            Assert.IsFalse(box.Overlaps(WorldRect(mineralType.rectTransform)), "It clears the mineral type text");
+            Assert.IsFalse(box.Overlaps(RenderedTextRect(startPrompt)), "It clears the start prompt");
+        }
+
+        // Every sound in the minigame is silent without one, and Planet's is unloaded before this loads.
+        [UnityTest]
+        public IEnumerator The_scene_has_one_audio_listener()
+        {
+            var listeners = UnityEngine.Object.FindObjectsByType<AudioListener>(FindObjectsSortMode.None)
+                .Where(listener => listener.enabled && listener.gameObject.activeInHierarchy);
+
+            Assert.AreEqual(1, listeners.Count());
+            yield return null;
+        }
+
+        private void BeginRun(int targets, int maxMisses, float ringSeconds = 5f, float perfectBySeconds = 4f, float goodBySeconds = 4.5f)
+        {
+            var tier = new ActiveMiningTierSettings(targets, ringSeconds, perfectBySeconds, goodBySeconds, maxMisses);
             var settings = new ActiveMiningRunSettings(1, tier, previousTier: null,
                 perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: 0f, missGraceSeconds: 0f);
             _handoff.Begin("earth", "Iron#1", _definition, 80, settings);
@@ -324,6 +507,8 @@ namespace SocialUniverse.Tests
 
         private void PressStart()   => Private<Button>(_view, "_startButton").onClick.Invoke();
         private void TapMissArea()  => Private<Button>(_view, "_missAreaButton").onClick.Invoke();
+
+        private GameObject StageClone() => Private<ActiveMiningAsteroidStage>(_view, "_stage").StageClone;
 
         private ActiveMiningSession Session() => Private<ActiveMiningSessionRunner>(_view, "_runner").Session;
 
@@ -373,6 +558,22 @@ namespace SocialUniverse.Tests
         private string BankedText()   => Private<Text>(_view, "_bankedText").text;
         private string ProgressText() => Private<Text>(_view, "_progressText").text;
         private string ErrorText()    => Private<Text>(_view, "_errorText").text;
+        private string GradeText()    => Private<Text>(_view, "_gradeText").text;
+
+        private static Rect WorldRect(RectTransform rect)
+        {
+            var corners = new Vector3[4];
+            rect.GetWorldCorners(corners);
+            return Rect.MinMaxRect(corners[0].x, corners[0].y, corners[2].x, corners[2].y);
+        }
+
+        // Where a middle-centre text's glyphs sit within its rect.
+        private static Rect RenderedTextRect(Text text)
+        {
+            Rect  box  = WorldRect(text.rectTransform);
+            var   size = new Vector2(text.preferredWidth, text.preferredHeight) * text.transform.lossyScale.x;
+            return new Rect(box.center - size / 2f, size);
+        }
 
         private static IEnumerator WaitUntil(Func<bool> condition, string what)
         {
@@ -394,6 +595,16 @@ namespace SocialUniverse.Tests
             var field = target.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Instance);
             Assert.IsNotNull(field, $"{target.GetType().Name} has no {name}");
             field.SetValue(target, value);
+        }
+
+        private sealed class RecordingAudio : IAudioManager
+        {
+            public readonly List<SfxId> Played = new List<SfxId>();
+
+            public void PlaySfx(SfxId id) => Played.Add(id);
+            public void PlayBgmForPlanet(PlanetDefinition planet) { }
+            public void PlaySolarSystemBgm() { }
+            public void PlayTravelBgm() { }
         }
     }
 }

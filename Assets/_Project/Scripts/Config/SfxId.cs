@@ -15,6 +15,8 @@ namespace SocialUniverse.Config
         RocketDepart,
         RocketArrive,
         BuildPlace,
-        BuildRemove
+        BuildRemove,
+        ActiveMiningMiss,
+        ActiveMiningFail
     }
 }

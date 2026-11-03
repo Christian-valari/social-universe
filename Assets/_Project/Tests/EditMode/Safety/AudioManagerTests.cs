@@ -75,5 +75,23 @@ namespace SocialUniverse.Tests
         {
             Assert.IsNull(_catalog.GetSfxClip(SfxId.Cancel));
         }
+
+        // AudioCatalog.asset stores each entry's id as a number, so a new id may only go on the end.
+        [Test]
+        public void New_sfx_ids_are_appended_so_catalog_numbers_hold()
+        {
+            Assert.AreEqual(13, (int)SfxId.BuildRemove);
+            Assert.AreEqual(14, (int)SfxId.ActiveMiningMiss);
+            Assert.AreEqual(15, (int)SfxId.ActiveMiningFail);
+        }
+
+        [Test]
+        public void The_shipped_catalog_has_a_clip_for_the_active_mining_miss_and_fail_sounds()
+        {
+            var shipped = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioCatalog>("Assets/_Project/ScriptableObjects/AudioCatalog.asset");
+
+            Assert.IsNotNull(shipped.GetSfxClip(SfxId.ActiveMiningMiss));
+            Assert.IsNotNull(shipped.GetSfxClip(SfxId.ActiveMiningFail));
+        }
     }
 }

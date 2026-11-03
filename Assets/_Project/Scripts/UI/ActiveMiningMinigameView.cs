@@ -10,9 +10,10 @@ using TMPro;
 
 namespace SocialUniverse.UI
 {
-    // Owns the ActiveMining scene's three-phase flow: a pre-game panel (asteroid info + Start
-    // button), the in-progress HUD (closing-ring targets, progress, miss counter and what's banked
-    // so far), and a post-game panel (result + reward preview + Continue).
+    // Owns the ActiveMining scene's three-phase flow: a pre-game panel (asteroid info, the rules
+    // and a Start button), the in-progress HUD (closing-ring targets, progress, miss counter and
+    // what's banked so far, with a grade label and a shake of the rock to answer each tap), and a
+    // post-game panel (result + reward preview + Continue).
     // Nothing spawns or ticks until the player presses Start — this also means there's no race
     // between scene-load and the first target (a bug the previous overlay design had).
     // _targetTemplate must be a UI child rendered above _missAreaButton in the hierarchy so a tap
@@ -21,8 +22,14 @@ namespace SocialUniverse.UI
     // keeps them below the HUD.
     public class ActiveMiningMinigameView : MonoBehaviour
     {
-        private const int MaxHitVfx            = 4;
-        private const int MaxPlacementAttempts = 32;
+        private const int   MaxHitVfx            = 4;
+        private const int   MaxPlacementAttempts = 32;
+        private const float GradeFadeSeconds     = 0.5f;
+        private const float MissShakeSeconds     = 0.2f;
+        private const float FailShakeSeconds     = 0.5f;
+
+        private static readonly Color HitColor  = Color.white;
+        private static readonly Color MissColor = new Color(1f, 0.3f, 0.3f);
 
         [SerializeField] private Camera                    _sceneCamera;
         [SerializeField] private ActiveMiningAsteroidStage  _stage;
@@ -30,6 +37,7 @@ namespace SocialUniverse.UI
         [Header("Pre-game")]
         [SerializeField] private GameObject _preGamePanel;
         [SerializeField] private Text       _mineralTypeText;
+        [SerializeField] private Text       _rulesText;
         [SerializeField] private Button     _startButton;
 
         [Header("In-progress")]
@@ -38,6 +46,7 @@ namespace SocialUniverse.UI
         [SerializeField] private Text                   _progressText;
         [SerializeField] private Text                   _errorText;
         [SerializeField] private Text                   _bankedText;
+        [SerializeField] private Text                   _gradeText;
 
         [Header("Post-game")]
         [SerializeField] private GameObject _resultBanner;
@@ -64,6 +73,7 @@ namespace SocialUniverse.UI
         private readonly List<GameObject> _hitVfx = new List<GameObject>();
 
         private int                 _oldestHitVfx;
+        private float               _gradeSecondsLeft;
         private ActiveMiningSession _session;
         private Canvas              _canvas;
 
@@ -81,9 +91,11 @@ namespace SocialUniverse.UI
             _targetTemplate.Hide();
             SetInProgressUiActive(false);
             if (_resultBanner != null) _resultBanner.SetActive(false);
+            if (_gradeText     != null) _gradeText.gameObject.SetActive(false);
 
             if (_preGamePanel    != null) _preGamePanel.SetActive(true);
             if (_mineralTypeText != null) _mineralTypeText.text = _handoff.Definition != null ? _handoff.Definition.MineralType : "";
+            if (_rulesText       != null) _rulesText.text       = ActiveMiningRulesText.For(_handoff.Settings);
         }
 
         private void OnDestroy()
@@ -93,7 +105,7 @@ namespace SocialUniverse.UI
                 _session.OnStageChanged   -= OnStageChanged;
                 _session.OnTargetSpawned  -= OnTargetSpawned;
                 _session.OnTargetResolved -= OnTargetResolved;
-                _session.OnWrongTap       -= Refresh;
+                _session.OnWrongTap       -= OnWrongTap;
             }
 
             for (int i = 0; i < _slots.Count; i++)
@@ -105,6 +117,8 @@ namespace SocialUniverse.UI
 
         private void Update()
         {
+            FadeGradeText();
+
             if (_session == null || _session.Stage != ActiveMiningStage.InProgress) return;
 
             for (int i = 0; i < _slots.Count; i++)
@@ -129,7 +143,7 @@ namespace SocialUniverse.UI
             _session.OnStageChanged   += OnStageChanged;
             _session.OnTargetSpawned  += OnTargetSpawned;
             _session.OnTargetResolved += OnTargetResolved;
-            _session.OnWrongTap       += Refresh;
+            _session.OnWrongTap       += OnWrongTap;
             Refresh();
         }
 
@@ -157,10 +171,15 @@ namespace SocialUniverse.UI
                 var slot = _slots[i];
                 if (slot.View.Target != target) continue;
 
-                if (grade != ActiveMiningGrade.Miss)
+                if (grade == ActiveMiningGrade.Miss)
+                {
+                    PlayMissFeedback(slot.View.transform.position);
+                }
+                else
                 {
                     _audio.PlaySfx(SfxId.ActiveMiningTap);
                     PlayHitVfx(slot.Anchor.transform.position);
+                    ShowGrade(grade.ToString(), HitColor, slot.View.transform.position);
                 }
                 slot.View.Hide();
                 break;
@@ -169,9 +188,67 @@ namespace SocialUniverse.UI
             Refresh();
         }
 
+        // A wrong tap lands on empty space and leaves its ring live, so the label goes beside that
+        // ring rather than over the thing the player has to tap next.
+        private void OnWrongTap()
+        {
+            Refresh();
+
+            for (int i = 0; i < _slots.Count; i++)
+            {
+                if (_slots[i].View.Target == null) continue;
+
+                PlayMissFeedback(ClearOfRing(_slots[i].View.transform.position));
+                break;
+            }
+        }
+
+        // One target's height toward the middle of the screen, which keeps it on screen.
+        private Vector3 ClearOfRing(Vector3 ringPosition)
+        {
+            Vector2 toMiddle  = _canvas.pixelRect.center - (Vector2)ringPosition;
+            float   clearance = ((RectTransform)_targetTemplate.transform).rect.height * _canvas.scaleFactor;
+            Vector2 step      = (toMiddle.sqrMagnitude > 0f ? toMiddle.normalized : Vector2.up) * clearance;
+            return ringPosition + (Vector3)step;
+        }
+
         private void OnTargetTapped(ActiveMiningTarget target) => _session.TapTarget(target.Id);
 
         private void OnMissAreaTapped() => _session?.TapOffTarget();
+
+        private void PlayMissFeedback(Vector3 screenPosition)
+        {
+            _audio.PlaySfx(SfxId.ActiveMiningMiss);
+            ShowGrade("Miss", MissColor, screenPosition);
+            if (_stage != null) _stage.Shake(MissShakeSeconds);
+        }
+
+        private void ShowGrade(string label, Color color, Vector3 screenPosition)
+        {
+            if (_gradeText == null) return;
+
+            _gradeText.text               = label;
+            _gradeText.color              = color;
+            _gradeText.transform.position = screenPosition;
+            _gradeText.gameObject.SetActive(true);
+            _gradeSecondsLeft = GradeFadeSeconds;
+        }
+
+        private void FadeGradeText()
+        {
+            if (_gradeSecondsLeft <= 0f) return;
+
+            _gradeSecondsLeft -= Time.deltaTime;
+            if (_gradeSecondsLeft <= 0f)
+            {
+                _gradeText.gameObject.SetActive(false);
+                return;
+            }
+
+            Color color = _gradeText.color;
+            color.a = _gradeSecondsLeft / GradeFadeSeconds;
+            _gradeText.color = color;
+        }
 
         private void Refresh()
         {
@@ -188,6 +265,11 @@ namespace SocialUniverse.UI
             {
                 _audio.PlaySfx(SfxId.MiningComplete);
                 _audio.PlaySfx(SfxId.AsteroidDestroyed);
+            }
+            else
+            {
+                _audio.PlaySfx(SfxId.ActiveMiningFail);
+                if (_stage != null) _stage.Shake(FailShakeSeconds);
             }
 
             if (_resultBanner != null) _resultBanner.SetActive(true);
