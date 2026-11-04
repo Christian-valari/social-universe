@@ -137,6 +137,9 @@ item, so Tier 5 ships without it if it doesn't feel good. *(Drafting calls for a
 - **Spin:** the asteroid eases down to 5°/s while a vein is live, so the player isn't tracing a line
   moving at full speed. Use that slower speed in the placement cone.
 - **Ring time:** starts at 1.6s, with Perfect and Good times to be set in playtest.
+- **Length:** 300-550 canvas units, so the grade reflects skill and not how long a vein happened to be.
+  If veins stay, a time scaled to length is the better fix.
+- **Press feedback:** the start marker grows and turns gold while held, so a press that missed is obvious.
 
 The session's target model should allow for a vein from the start, as a target kind that takes the
 screen to itself, so Phase 3 doesn't force a rework of Phase 1.
@@ -176,8 +179,8 @@ A harder game needs these to feel fair, so they are part of this work:
   reloaded, by which point the asteroid's yield has re-rolled, so the claim can differ from the result
   screen. Compute `fullQuantity` once in `BeginActiveMining`, keep it in the handoff and claim from
   that value.
-- **Short instructions.** The pre-game panel says how the ring works and names any challenge new at
-  this tier, in one or two lines.
+- **Short instructions.** The pre-game panel says how the ring works and names every challenge this tier
+  has. Tiers are per mineral, so a player can reach a tier having skipped the ones before it.
 
 ## 9. Quitting mid-run
 
