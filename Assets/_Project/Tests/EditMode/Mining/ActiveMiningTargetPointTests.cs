@@ -53,6 +53,15 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
+        public void IsFarEnough_compares_per_axis_so_a_diagonal_point_can_still_be_too_close()
+        {
+            var others = new[] { Vector2.zero };
+
+            Assert.IsFalse(ActiveMiningTargetPoint.IsFarEnough(new Vector2(120f, 120f), others, 160f), "170 px away in a straight line, but within 160 on both axes");
+            Assert.IsTrue(ActiveMiningTargetPoint.IsFarEnough(new Vector2(120f, 160f), others, 160f));
+        }
+
+        [Test]
         public void IsFarEnough_accepts_a_point_exactly_at_the_distance()
         {
             Assert.IsTrue(ActiveMiningTargetPoint.IsFarEnough(new Vector2(160f, 0f), new[] { Vector2.zero }, 160f));

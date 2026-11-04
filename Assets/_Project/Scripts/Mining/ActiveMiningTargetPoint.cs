@@ -36,12 +36,16 @@ namespace SocialUniverse.Mining
                 && screenPoint.y >= margin && screenPoint.y <= screenSize.y - margin;
         }
 
-        // Whether a screen point is at least minDistance pixels from every one of the others.
+        // How far apart two screen points are by the larger of their two axis gaps. Two square tap
+        // areas of side s can't overlap when this is at least s.
+        public static float AxisGap(Vector2 a, Vector2 b) => Mathf.Max(Mathf.Abs(a.x - b.x), Mathf.Abs(a.y - b.y));
+
+        // Whether a screen point is at least minDistance pixels from every one of the others along
+        // at least one axis, so square areas centred on them don't overlap.
         public static bool IsFarEnough(Vector2 candidate, IReadOnlyList<Vector2> others, float minDistance)
         {
-            float minSqr = minDistance * minDistance;
             for (int i = 0; i < others.Count; i++)
-                if ((candidate - others[i]).sqrMagnitude < minSqr) return false;
+                if (AxisGap(candidate, others[i]) < minDistance) return false;
             return true;
         }
 

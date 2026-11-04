@@ -24,7 +24,7 @@ namespace SocialUniverse.UI
     {
         private const int   MaxHitVfx            = 4;
         private const int   MaxPlacementAttempts = 32;
-        private const float MinMarkerSeparation  = 160f; // canvas pixels between live markers' centres
+        private const float MinMarkerSeparation  = 160f; // canvas pixels between live markers' centres along an axis, so their tap areas can't overlap
         private const float GradeFadeSeconds     = 0.5f;
         private const float MissShakeSeconds     = 0.2f;
         private const float FailShakeSeconds     = 0.5f;
@@ -464,7 +464,7 @@ namespace SocialUniverse.UI
         {
             float nearest = float.MaxValue;
             for (int i = 0; i < others.Count; i++)
-                nearest = Mathf.Min(nearest, Vector2.Distance(point, others[i]));
+                nearest = Mathf.Min(nearest, ActiveMiningTargetPoint.AxisGap(point, others[i]));
             return nearest;
         }
 
