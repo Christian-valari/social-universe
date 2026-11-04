@@ -37,7 +37,7 @@ Three things that will otherwise waste your time:
 - **The `ServerCode/` drift tests** (`MiningCatalogAlignmentTests`, `DroneCatalogAlignmentTests`, `ServerCodeEconomyApiTests`) read `ServerCode/*.js` from the repo root, so a copy without `ServerCode/` fails them.
 - **EditMode tests touch the project's editor `PlayerPrefs`** (music/SFX volume, idle-mining session, asteroid respawn timers). Running the suite resets those values for the Editor on this machine.
 
-Current results (2026-11-04, Unity 6000.3.12f1, branch `feature/active-mining-difficulty`): EditMode **818/818**; PlayMode **62/62**. The `ServerCode/` scripts have no checked-in JS test harness; the C# drift tests read them as text. `PlanetSceneFlowTests`, `DroneGarageFlowTests` and `MineralSaleFlowTests` run the real Planet scene under `PlanetTestRootScope` with a scripted `FakeBackendClient` (Tests/PlayMode/).
+Current results (2026-11-04, Unity 6000.3.12f1, branch `feature/active-mining-difficulty`): EditMode **821/821**; PlayMode **66/66**. The `ServerCode/` scripts have no checked-in JS test harness; the C# drift tests read them as text. `PlanetSceneFlowTests`, `DroneGarageFlowTests` and `MineralSaleFlowTests` run the real Planet scene under `PlanetTestRootScope` with a scripted `FakeBackendClient` (Tests/PlayMode/).
 
 ## Architecture Rules (enforce on every task)
 
