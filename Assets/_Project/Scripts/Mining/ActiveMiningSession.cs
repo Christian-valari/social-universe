@@ -20,9 +20,9 @@ namespace SocialUniverse.Mining
     // tapped; the view reports the outcome with CompleteVein or FailVein, and a ring that closes
     // first is a miss. A vein has the screen to itself: it waits for every live target to resolve
     // (dismissing live decoys at no cost), and nothing else spawns until it resolves.
-// A vein's three times (ring, Perfect by, Good by) scale with its length: it spawns with those of the
-// reference length, and the view that places it reports the length it measured with SetVeinLength
-// before the ring starts aging.
+    // A vein's three times (ring, Perfect by, Good by) scale with its length: it spawns with those of the
+    // reference length, and the view that places it reports the length it measured with SetVeinLength
+    // before the ring starts aging.
     public sealed class ActiveMiningSession
     {
         // Engineering limit: a hitch can't age a ring, or burn the miss limit, in a single frame.

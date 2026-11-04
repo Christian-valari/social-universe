@@ -1272,7 +1272,7 @@ challenges: decoys, two live targets, faster spin) and Phase 3 (hold-and-drag ve
 and tested on the branch and are not merged to `main`. **No device results are recorded for Phases 1–3
 yet**; every number below is a starting value, not tuned balance. **The owner decided on 2026-11-05 that
 veins stay**; setting `_veinEvery: 0` for Tier 5 in `EconomyConfig` still turns them off, and nothing else
-is needed. Tests on 2026-11-04 (scratch copy, Unity 6000.3.12f1): EditMode **884/884**, PlayMode **104/104** (2026-11-05).
+is needed. Tests on 2026-11-05 (scratch copy, Unity 6000.3.12f1): EditMode **884/884**, PlayMode **104/104**.
 
 | Piece                                  | Where                                                                                          | What it does                                                                                                                                                                                                                                                                                      |
 | -------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
