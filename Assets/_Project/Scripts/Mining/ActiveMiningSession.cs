@@ -20,6 +20,9 @@ namespace SocialUniverse.Mining
     // tapped; the view reports the outcome with CompleteVein or FailVein, and a ring that closes
     // first is a miss. A vein has the screen to itself: it waits for every live target to resolve
     // (dismissing live decoys at no cost), and nothing else spawns until it resolves.
+// A vein's three times (ring, Perfect by, Good by) scale with its length: it spawns with those of the
+// reference length, and the view that places it reports the length it measured with SetVeinLength
+// before the ring starts aging.
     public sealed class ActiveMiningSession
     {
         // Engineering limit: a hitch can't age a ring, or burn the miss limit, in a single frame.
@@ -132,7 +135,7 @@ namespace SocialUniverse.Mining
             if (vein == null || vein.Kind != ActiveMiningTargetKind.Vein) return;
 
             _graceRemaining = _settings.MissGraceSeconds;
-            Resolve(vein, GradeForVein(vein.ElapsedSeconds));
+            Resolve(vein, GradeForVein(vein));
         }
 
         // The player lifted early or strayed off the line. The vein is used up as a miss, with no
@@ -146,6 +149,19 @@ namespace SocialUniverse.Mining
 
             _graceRemaining = _settings.MissGraceSeconds;
             Resolve(vein, ActiveMiningGrade.Miss, failedVein: true);
+        }
+
+        // The view measured a vein, in canvas units, as it placed it; a longer vein gets longer to drag. The
+        // times are fixed once the ring starts aging, so this can't be used to extend one. An id that isn't
+        // a live vein, or a finished run, is ignored.
+        public void SetVeinLength(int targetId, float length)
+        {
+            if (Stage != ActiveMiningStage.InProgress) return;
+
+            var vein = FindLive(targetId);
+            if (vein == null || vein.Kind != ActiveMiningTargetKind.Vein || vein.ElapsedSeconds > 0f) return;
+
+            SetVeinTimes(vein, length);
         }
 
         // The player tapped empty space. Counts as a miss while a target is live, unless it follows
@@ -183,7 +199,7 @@ namespace SocialUniverse.Mining
         {
             bool vein = NextIsVein();
             var target = vein
-                ? new ActiveMiningTarget(_nextTargetId++, ActiveMiningTargetKind.Vein, _settings.VeinRingSeconds)
+                ? NewVein()
                 : new ActiveMiningTarget(_nextTargetId++, ActiveMiningTargetKind.Normal, _settings.Tier.RingSeconds);
             _spawned++;
             _live.Add(target);
@@ -192,6 +208,21 @@ namespace SocialUniverse.Mining
             // A vein has the screen to itself, so it rolls for no decoy.
             if (!vein && _settings.Tier.DecoyChance > 0f && _random() < _settings.Tier.DecoyChance)
                 SpawnDecoy();
+        }
+
+        // A vein spawns with the times for the reference length; a view that measures it calls SetVeinLength.
+        private ActiveMiningTarget NewVein()
+        {
+            var vein = new ActiveMiningTarget(_nextTargetId++, ActiveMiningTargetKind.Vein, _settings.VeinRingSeconds);
+            SetVeinTimes(vein, _settings.VeinReferenceLength);
+            return vein;
+        }
+
+        private void SetVeinTimes(ActiveMiningTarget vein, float length)
+        {
+            vein.RingSeconds      = _settings.VeinRingSecondsFor(length);
+            vein.PerfectBySeconds = _settings.VeinPerfectBySecondsFor(length);
+            vein.GoodBySeconds    = _settings.VeinGoodBySecondsFor(length);
         }
 
         // Decoys have their own ids but add nothing to _spawned, so Targets stays a count of real ones.
@@ -255,8 +286,8 @@ namespace SocialUniverse.Mining
         private ActiveMiningGrade GradeFor(float elapsedSeconds) =>
             GradeAt(elapsedSeconds, _settings.Tier.PerfectBySeconds, _settings.Tier.GoodBySeconds);
 
-        private ActiveMiningGrade GradeForVein(float elapsedSeconds) =>
-            GradeAt(elapsedSeconds, _settings.VeinPerfectBySeconds, _settings.VeinGoodBySeconds);
+        private static ActiveMiningGrade GradeForVein(ActiveMiningTarget vein) =>
+            GradeAt(vein.ElapsedSeconds, vein.PerfectBySeconds, vein.GoodBySeconds);
 
         private static ActiveMiningGrade GradeAt(float elapsedSeconds, float perfectBySeconds, float goodBySeconds)
         {

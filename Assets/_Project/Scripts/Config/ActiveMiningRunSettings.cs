@@ -20,10 +20,14 @@ namespace SocialUniverse.Config
             float veinDragTolerance = 90f,
             float veinCompleteProgress = 0.95f,
             float veinMinLength = 300f,
-            float veinMaxLength = 550f)
+            float veinMaxLength = 550f,
+            float veinReachSeconds = 0.5f,
+            float veinReferenceLength = 425f)
         {
             VeinMinLength           = veinMinLength;
             VeinMaxLength           = veinMaxLength;
+            VeinReachSeconds        = veinReachSeconds;
+            VeinReferenceLength     = veinReferenceLength;
             VeinDragTolerance       = veinDragTolerance;
             VeinCompleteProgress    = veinCompleteProgress;
             VeinRingSeconds         = veinRingSeconds;
@@ -54,6 +58,8 @@ namespace SocialUniverse.Config
         public float                    SecondTargetStagger     { get; }
 
         // A vein is graded on its own times, and the asteroid eases down to VeinSpinDegrees while one is live.
+        // These three are the times of a vein VeinReferenceLength long; VeinRingSecondsFor and the two below
+        // give the times for any length.
         public float                    VeinRingSeconds         { get; }
         public float                    VeinPerfectBySeconds    { get; }
         public float                    VeinGoodBySeconds       { get; }
@@ -66,5 +72,20 @@ namespace SocialUniverse.Config
         // The distance between a vein's ends, in canvas units, that placement aims for.
         public float                    VeinMinLength           { get; }
         public float                    VeinMaxLength           { get; }
+
+        // Seeing a vein and reaching its start takes VeinReachSeconds on any vein; only the drag grows with length.
+        public float                    VeinReachSeconds        { get; }
+        public float                    VeinReferenceLength     { get; }
+
+        public float VeinRingSecondsFor(float length)      => ScaledForLength(VeinRingSeconds, length);
+        public float VeinPerfectBySecondsFor(float length) => ScaledForLength(VeinPerfectBySeconds, length);
+        public float VeinGoodBySecondsFor(float length)    => ScaledForLength(VeinGoodBySeconds, length);
+
+        // A length outside the band takes the nearest end of it.
+        private float ScaledForLength(float referenceSeconds, float length)
+        {
+            float clamped = UnityEngine.Mathf.Clamp(length, VeinMinLength, VeinMaxLength);
+            return VeinReachSeconds + (referenceSeconds - VeinReachSeconds) * clamped / VeinReferenceLength;
+        }
     }
 }

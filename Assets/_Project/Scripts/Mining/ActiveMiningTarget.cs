@@ -15,8 +15,12 @@ namespace SocialUniverse.Mining
 
         public int                    Id             { get; }
         public ActiveMiningTargetKind Kind           { get; }
-        public float                  RingSeconds    { get; }
+        public float                  RingSeconds    { get; internal set; }
         public float                  ElapsedSeconds { get; internal set; }
+
+        // Only a vein sets these; it is graded on them rather than on the tier's.
+        public float                  PerfectBySeconds { get; internal set; }
+        public float                  GoodBySeconds    { get; internal set; }
 
         public float Progress => RingSeconds > 0f ? Mathf.Clamp01(ElapsedSeconds / RingSeconds) : 1f;
     }

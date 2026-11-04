@@ -855,6 +855,46 @@ namespace SocialUniverse.Tests
             CollectionAssert.IsEmpty(wrong, $"Screen is {Screen.width}x{Screen.height}");
         }
 
+        // Read in the frame the vein is placed, after the view's handler: the rock turns, so the ends are
+        // only where they were measured for that frame.
+        [UnityTest]
+        public IEnumerator A_placed_vein_gets_times_for_its_length()
+        {
+            SpawnRock(0.2f);
+            BeginRun(targets: 8, maxMisses: 99, ringSeconds: 1.6f, veinEvery: 1, spinDegrees: 40f);
+            PressStart();
+
+            var   camera   = Private<Camera>(_view, "_sceneCamera");
+            float scale    = _view.GetComponent<Canvas>().scaleFactor;
+            var   settings = new ActiveMiningRunSettings(1, new ActiveMiningTierSettings(), 1f, 0.8f, 0.6f, 0f, 0f, veinRingSeconds: 1.6f);
+
+            int placed = 0;
+            var wrong  = new List<string>();
+            Session().OnTargetSpawned += vein =>
+            {
+                placed++;
+                float length = Vector2.Distance(
+                    camera.WorldToScreenPoint(Private<ActiveMiningTargetPoint>(_view, "_veinStart").transform.position),
+                    camera.WorldToScreenPoint(Private<ActiveMiningTargetPoint>(_view, "_veinEnd").transform.position)) / scale;
+
+                if (Mathf.Abs(vein.RingSeconds - settings.VeinRingSecondsFor(length)) > 0.005f
+                    || Mathf.Abs(vein.PerfectBySeconds - settings.VeinPerfectBySecondsFor(length)) > 0.005f
+                    || Mathf.Abs(vein.GoodBySeconds - settings.VeinGoodBySecondsFor(length)) > 0.005f)
+                    wrong.Add($"Vein {vein.Id}: length {length}, ring {vein.RingSeconds}, expected {settings.VeinRingSecondsFor(length)}");
+            };
+
+            for (int i = 0; i < 8; i++)
+            {
+                yield return WaitForLiveVein();
+                VeinView().OnPointerDown(Pointer(VeinView().StartPosition));
+                VeinView().OnPointerUp(Pointer(VeinView().StartPosition));
+                yield return null;
+            }
+
+            Assert.AreEqual(8, placed);
+            CollectionAssert.IsEmpty(wrong, $"Screen is {Screen.width}x{Screen.height}");
+        }
+
         // No pair on this rock is 300 apart, so the view takes the one nearest the band, which is the longest: on screen, and not one point.
         [UnityTest]
         public IEnumerator A_vein_on_a_rock_too_small_for_the_band_takes_the_longest_pair()
@@ -1061,9 +1101,9 @@ namespace SocialUniverse.Tests
         public IEnumerator A_vein_finished_after_the_good_cut_off_shows_late()
         {
             Time.captureDeltaTime = 0.05f;
-            yield return BeginVein(targets: 2); // Perfect by 1.1 s, Good by 1.35 s
+            yield return BeginVein(targets: 2); // its Good cut-off depends on its length, so read the vein's own
             var target = VeinView().Target;
-            yield return WaitUntil(() => target.ElapsedSeconds > 1.4f, "the Good cut-off to pass");
+            yield return WaitUntil(() => target.ElapsedSeconds > target.GoodBySeconds + 0.05f, "the Good cut-off to pass");
 
             VeinView().OnPointerDown(Pointer(VeinView().StartPosition));
             VeinView().OnDrag(Pointer(VeinView().EndPosition));

@@ -104,6 +104,40 @@ namespace SocialUniverse.Tests
             Assert.AreEqual((300f, 550f), (s.VeinMinLength, s.VeinMaxLength));
         }
 
+        [Test] public void Real_asset_holds_the_vein_scaling_values()
+        {
+            var s = Real().ActiveRunSettings(5);
+            Assert.AreEqual((0.5f, 425f), (s.VeinReachSeconds, s.VeinReferenceLength));
+            foreach (float length in new[] { s.VeinMinLength, s.VeinMaxLength })
+            {
+                Assert.Less(s.VeinReachSeconds, s.VeinPerfectBySecondsFor(length));
+                Assert.Less(s.VeinPerfectBySecondsFor(length), s.VeinGoodBySecondsFor(length));
+                Assert.Less(s.VeinGoodBySecondsFor(length), s.VeinRingSecondsFor(length));
+            }
+        }
+
+        // Perfect by, Good by, ring.
+        [TestCase(300f, 0.924f, 1.100f, 1.276f)]
+        [TestCase(425f, 1.100f, 1.350f, 1.600f)]
+        [TestCase(550f, 1.276f, 1.600f, 1.924f)]
+        public void Vein_times_scale_with_length(float length, float perfect, float good, float ring)
+        {
+            var s = Real().ActiveRunSettings(5);
+            Assert.AreEqual(perfect, s.VeinPerfectBySecondsFor(length), 0.001f);
+            Assert.AreEqual(good, s.VeinGoodBySecondsFor(length), 0.001f);
+            Assert.AreEqual(ring, s.VeinRingSecondsFor(length), 0.001f);
+        }
+
+        [TestCase(100f, 300f)]
+        [TestCase(2000f, 550f)]
+        public void Vein_times_clamp_to_the_length_band(float length, float clamped)
+        {
+            var s = Real().ActiveRunSettings(5);
+            Assert.AreEqual(s.VeinPerfectBySecondsFor(clamped), s.VeinPerfectBySecondsFor(length), 0.0001f);
+            Assert.AreEqual(s.VeinGoodBySecondsFor(clamped), s.VeinGoodBySecondsFor(length), 0.0001f);
+            Assert.AreEqual(s.VeinRingSecondsFor(clamped), s.VeinRingSecondsFor(length), 0.0001f);
+        }
+
         [Test] public void A_run_settings_object_defaults_to_the_shipped_vein_length_band()
         {
             var s = new ActiveMiningRunSettings(1, new ActiveMiningTierSettings(), 1f, 0.8f, 0.6f, 0.25f, 0.2f);

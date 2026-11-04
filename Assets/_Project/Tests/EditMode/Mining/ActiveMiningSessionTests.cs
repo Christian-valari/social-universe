@@ -1094,6 +1094,131 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
+        public void A_vein_defaults_to_the_reference_times()
+        {
+            var s = NewVeins(veinEvery: 1);
+            s.Tick(0f);
+            var vein = s.LiveTargets[0];
+
+            AssertTimes(vein, 1.6f, 1.1f, 1.35f);
+        }
+
+        [TestCase(300f, 0.924f, 1.100f, 1.276f)]
+        [TestCase(550f, 1.276f, 1.600f, 1.924f)]
+        public void SetVeinLength_sets_the_veins_ring_and_grades(float length, float perfect, float good, float ring)
+        {
+            var s = NewVeins(veinEvery: 1);
+            s.Tick(0f);
+            var vein = s.LiveTargets[0];
+            var graded = new List<ActiveMiningGrade>();
+            s.OnTargetResolved += (_, grade) => graded.Add(grade);
+
+            s.SetVeinLength(vein.Id, length);
+
+            AssertTimes(vein, ring, perfect, good);
+            AdvanceTo(s, perfect + 0.02f);
+            s.CompleteVein(vein.Id);
+            CollectionAssert.AreEqual(new[] { ActiveMiningGrade.Good }, graded);
+        }
+
+        // Reaching the start takes 0.5s on any vein, then the finger covers the length at its own speed.
+        [TestCase(800f, ActiveMiningGrade.Perfect)]
+        [TestCase(600f, ActiveMiningGrade.Good)]
+        [TestCase(450f, ActiveMiningGrade.Late)]
+        public void The_same_finger_speed_earns_the_same_grade_at_any_length(float speed, ActiveMiningGrade expected)
+        {
+            foreach (float length in new[] { 300f, 425f, 550f })
+            {
+                var s = NewVeins(veinEvery: 1);
+                s.Tick(0f);
+                var vein = s.LiveTargets[0];
+                var graded = new List<ActiveMiningGrade>();
+                s.OnTargetResolved += (_, grade) => graded.Add(grade);
+                s.SetVeinLength(vein.Id, length);
+
+                AdvanceTo(s, 0.5f + length / speed);
+                s.CompleteVein(vein.Id);
+
+                CollectionAssert.AreEqual(new[] { expected }, graded, $"length {length}");
+            }
+        }
+
+        [Test]
+        public void SetVeinLength_is_ignored_once_the_ring_has_started()
+        {
+            var s = NewVeins(veinEvery: 1);
+            s.Tick(0f);
+            var vein = s.LiveTargets[0];
+            s.Tick(Step);
+
+            s.SetVeinLength(vein.Id, 550f);
+
+            AssertTimes(vein, 1.6f, 1.1f, 1.35f);
+        }
+
+        [Test]
+        public void SetVeinLength_is_ignored_for_a_non_vein_and_an_unknown_id()
+        {
+            var s = NewVeins(veinEvery: 2);
+            s.Tick(0f);
+            var real = Real(s);
+            var vein = ReachVein(s);
+
+            s.SetVeinLength(real.Id, 550f);
+            s.SetVeinLength(999, 550f);
+
+            Assert.AreEqual(1.6f, real.RingSeconds, 0.0001f);
+            AssertTimes(vein, 1.6f, 1.1f, 1.35f);
+        }
+
+        [Test]
+        public void SetVeinLength_is_ignored_once_the_run_has_finished()
+        {
+            var s = NewVeins(veinEvery: 1, targets: 2, maxMisses: 1);
+            s.Tick(0f);
+            var vein = s.LiveTargets[0];
+            s.FailVein(vein.Id);
+            Assert.AreEqual(ActiveMiningStage.Failed, s.Stage);
+
+            s.SetVeinLength(vein.Id, 550f);
+
+            AssertTimes(vein, 1.6f, 1.1f, 1.35f);
+        }
+
+        [Test]
+        public void A_short_veins_ring_closes_on_its_own_time()
+        {
+            var shortRun = NewVeins(veinEvery: 1, targets: 2);
+            shortRun.Tick(0f);
+            shortRun.SetVeinLength(shortRun.LiveTargets[0].Id, 300f);
+            var longRun = NewVeins(veinEvery: 1, targets: 2);
+            longRun.Tick(0f);
+            longRun.SetVeinLength(longRun.LiveTargets[0].Id, 550f);
+
+            Advance(shortRun, 1.3f);
+            Advance(longRun, 1.3f);
+
+            Assert.AreEqual((1, 1), (shortRun.RingMisses, shortRun.ResolvedTargets));
+            Assert.AreEqual((0, 0), (longRun.RingMisses, longRun.ResolvedTargets));
+            Assert.IsTrue(longRun.IsVeinLive);
+        }
+
+        private static void AssertTimes(ActiveMiningTarget vein, float ring, float perfect, float good)
+        {
+            Assert.AreEqual(ring, vein.RingSeconds, 0.001f);
+            Assert.AreEqual(perfect, vein.PerfectBySeconds, 0.001f);
+            Assert.AreEqual(good, vein.GoodBySeconds, 0.001f);
+        }
+
+        // Ticks in Step increments, then the remainder, so the target's age lands on the given second.
+        private static void AdvanceTo(ActiveMiningSession s, float seconds)
+        {
+            float left = seconds;
+            while (left > Step) { s.Tick(Step); left -= Step; }
+            s.Tick(left);
+        }
+
+        [Test]
         public void A_tap_does_not_complete_a_vein()
         {
             var s = NewVeins(veinEvery: 1);

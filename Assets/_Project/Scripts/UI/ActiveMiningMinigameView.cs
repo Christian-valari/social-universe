@@ -313,7 +313,13 @@ namespace SocialUniverse.UI
                 _veinStart = new GameObject("ActiveMiningVeinStart").AddComponent<ActiveMiningTargetPoint>();
                 _veinEnd   = new GameObject("ActiveMiningVeinEnd").AddComponent<ActiveMiningTargetPoint>();
             }
-            PlaceVein();
+            if (PlaceVein())
+            {
+                // The ring hasn't started aging yet, so the session still takes the vein's length.
+                float length = Vector2.Distance(_sceneCamera.WorldToScreenPoint(_veinStart.transform.position),
+                    _sceneCamera.WorldToScreenPoint(_veinEnd.transform.position)) / _canvas.scaleFactor;
+                _session.SetVeinLength(vein.Id, length);
+            }
 
             _veinView.Show(vein, TapRadius, _settings.VeinDragTolerance, _settings.VeinCompleteProgress, OnVeinCompleted, OnVeinFailed);
             ProjectVein();
@@ -592,10 +598,11 @@ namespace SocialUniverse.UI
         // the rock. The first pair whose length is inside the config's band is used, or else the pair
         // that came nearest the band. A rock too big to leave any pair on screen gets a level line of
         // the band's shortest length through the point facing the viewer, so there is still something
-        // the player can drag.
-        private void PlaceVein()
+        // the player can drag. The ring they are held to is the longest a vein's can be, so a long vein
+        // can't leave the screen before its ring closes. Returns false if there was nowhere to place them.
+        private bool PlaceVein()
         {
-            if (_settings == null || _stage == null || _stage.StageClone == null || _sceneCamera == null) return;
+            if (_settings == null || _stage == null || _stage.StageClone == null || _sceneCamera == null) return false;
 
             var     asteroid     = _stage.StageClone.transform;
             Vector3 towardViewer = _sceneCamera.transform.position - asteroid.position;
@@ -603,7 +610,7 @@ namespace SocialUniverse.UI
             float   radius       = _stage.SurfaceRadius * PlacementInset;
             float   minLength    = _settings.VeinMinLength * _canvas.scaleFactor;
             float   maxLength    = _settings.VeinMaxLength * _canvas.scaleFactor;
-            float   ringSeconds  = _settings.VeinRingSeconds;
+            float   ringSeconds  = _settings.VeinRingSecondsFor(_settings.VeinMaxLength);
             float   maxAngle     = ActiveMiningTargetPoint.MaxPlacementAngle(_settings.VeinSpinDegrees, ringSeconds);
 
             Vector3 nearestStart = default, nearestEnd = default;
@@ -619,7 +626,7 @@ namespace SocialUniverse.UI
 
                 float length = Vector2.Distance(_sceneCamera.WorldToScreenPoint(start), _sceneCamera.WorldToScreenPoint(end));
                 float miss = Mathf.Max(minLength - length, length - maxLength);
-                if (miss <= 0f) return;
+                if (miss <= 0f) return true;
 
                 if (miss < nearestMiss)
                 {
@@ -633,13 +640,14 @@ namespace SocialUniverse.UI
             {
                 _veinStart.transform.position = nearestStart;
                 _veinEnd.transform.position   = nearestEnd;
-                return;
+                return true;
             }
 
             Vector3 facing = _sceneCamera.WorldToScreenPoint(asteroid.position + towardViewer.normalized * radius);
             Vector3 half   = Vector3.right * (minLength / 2f);
             _veinStart.transform.position = _sceneCamera.ScreenToWorldPoint(facing - half);
             _veinEnd.transform.position   = _sceneCamera.ScreenToWorldPoint(facing + half);
+            return true;
         }
 
         private bool StaysOnScreen(Vector3 worldPoint, float seconds, float margin) =>

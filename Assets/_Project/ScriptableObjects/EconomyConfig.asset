@@ -104,6 +104,8 @@ MonoBehaviour:
   _activeVeinCompleteProgress: 0.95
   _activeVeinMinLength: 300
   _activeVeinMaxLength: 550
+  _activeVeinReachSeconds: 0.5
+  _activeVeinReferenceLength: 425
   _maxFuel: 100
   _fuelRechargePerHour: 10
   _fuelRefillCost: 50

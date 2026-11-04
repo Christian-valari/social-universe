@@ -58,14 +58,16 @@ namespace SocialUniverse.Config
         [SerializeField] private float _activeMissGraceSeconds  = 0.2f;  // stray taps right after a hit are forgiven for this long
         [SerializeField] private float _activeFirstTargetDelaySeconds = 0.6f; // pause between pressing Start and the first target
         [SerializeField] private float _activeSecondTargetStagger = 0.4f; // share of the newest ring that must have run before another target joins it
-        [SerializeField] private float _activeVeinRingSeconds   = 1.6f;  // how long a vein stays open
-        [SerializeField] private float _activeVeinPerfectBySeconds = 1.1f; // a vein finished at or before this age is Perfect (playtest guess)
+        [SerializeField] private float _activeVeinRingSeconds   = 1.6f;  // how long a vein stays open, for a vein _activeVeinReferenceLength long
+        [SerializeField] private float _activeVeinPerfectBySeconds = 1.1f; // a vein of that length finished at or before this age is Perfect (playtest guess)
         [SerializeField] private float _activeVeinGoodBySeconds = 1.35f; // ... Good; later is Late (playtest guess)
         [SerializeField] private float _activeVeinSpinDegrees   = 5f;    // the asteroid's spin while a vein is live, in degrees per second
         [SerializeField] private float _activeVeinDragTolerance = 90f;   // canvas units a finger may be off a vein's line before the drag fails (playtest guess)
         [SerializeField] private float _activeVeinCompleteProgress = 0.95f; // share of a vein's line that finishes it (playtest guess)
         [SerializeField] private float _activeVeinMinLength     = 300f;  // shortest distance between a vein's ends, in canvas units
-        [SerializeField] private float _activeVeinMaxLength     = 550f;  // longest; a vein's time budget is the same whatever its length, so a longer one is harder (playtest guess)
+        [SerializeField] private float _activeVeinMaxLength     = 550f;  // longest; a vein's three times grow with its length, so the same finger speed earns the same grade on any vein (playtest guess)
+        [SerializeField] private float _activeVeinReachSeconds  = 0.5f;  // time to see a vein and reach its start; the same on any vein, so only the time past it scales with length (playtest guess)
+        [SerializeField] private float _activeVeinReferenceLength = 425f; // the length, in canvas units, at which the three vein times above apply as they stand
 
         [Header("Drones — M6")]
         [SerializeField] private int   _startingFleetSlots    = 2;
@@ -120,7 +122,8 @@ namespace SocialUniverse.Config
                 _activePerfectShare, _activeGoodShare, _activeLateShare,
                 _activeSpawnGapSeconds, _activeMissGraceSeconds, _activeFirstTargetDelaySeconds, _activeSecondTargetStagger,
                 _activeVeinRingSeconds, _activeVeinPerfectBySeconds, _activeVeinGoodBySeconds, _activeVeinSpinDegrees,
-                _activeVeinDragTolerance, _activeVeinCompleteProgress, _activeVeinMinLength, _activeVeinMaxLength);
+                _activeVeinDragTolerance, _activeVeinCompleteProgress, _activeVeinMinLength, _activeVeinMaxLength,
+                _activeVeinReachSeconds, _activeVeinReferenceLength);
         }
 
         public int   StartingFleetSlots   => _startingFleetSlots;
