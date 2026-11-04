@@ -449,20 +449,59 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
-        public void The_spawn_gap_applies_only_when_nothing_is_live()
+        public void The_spawn_gap_applies_after_every_resolve()
         {
             var s = NewTwoLive();
             s.Tick(0f);
             Advance(s, 0.45f);
-            s.TapTarget(s.LiveTargets[0].Id);
-            Advance(s, 0.05f);
-            Assert.AreEqual(1, s.LiveTargets.Count, "One is still live and its ring is not far enough round");
+            Assert.AreEqual(2, s.LiveTargets.Count);
+            Advance(s, 0.5f); // the newer ring is now past the stagger
             s.TapTarget(s.LiveTargets[0].Id);
 
             Advance(s, 0.2f);
-            Assert.AreEqual(0, s.LiveTargets.Count);
+            Assert.AreEqual(1, s.LiveTargets.Count, "The other is past the stagger, but the gap has not run out");
             Advance(s, 0.1f);
-            Assert.AreEqual(1, s.LiveTargets.Count);
+            Assert.AreEqual(2, s.LiveTargets.Count);
+        }
+
+        // Tier 5: 16 targets, ring 0.9s, Perfect by 0.6s, Good by 0.75s, two live, no decoys.
+        private static ActiveMiningSession NewTierFive() =>
+            new ActiveMiningSession(new ActiveMiningRunSettings(5,
+                new ActiveMiningTierSettings(16, 0.9f, 0.6f, 0.75f, 3, 0f, liveTargets: 2), null,
+                1f, 0.8f, 0.6f, 0.25f, 0.2f, secondTargetStagger: 0.4f));
+
+        // Taps the oldest live target every tapEvery seconds until the run ends.
+        private static void TapSteadily(ActiveMiningSession s, float tapEvery)
+        {
+            int ticksPerTap = Mathf.RoundToInt(tapEvery / Step);
+            for (int tick = 1; tick <= 2000 && s.Stage == ActiveMiningStage.InProgress; tick++)
+            {
+                s.Tick(Step);
+                if (tick % ticksPerTap == 0 && s.LiveTargets.Count > 0)
+                    s.TapTarget(s.LiveTargets[0].Id);
+            }
+        }
+
+        [Test]
+        public void A_steady_half_second_tapper_clears_tier_5_settings()
+        {
+            var s = NewTierFive();
+
+            TapSteadily(s, 0.5f);
+
+            Assert.AreEqual(ActiveMiningStage.Success, s.Stage);
+            Assert.AreEqual(0, s.ErrorCount);
+            Assert.That(s.BankedFraction, Is.InRange(0.6f, 0.85f));
+        }
+
+        [Test]
+        public void A_steady_quarter_second_tapper_gets_all_perfect_at_tier_5()
+        {
+            var s = NewTierFive();
+
+            TapSteadily(s, 0.25f);
+
+            Assert.AreEqual(16, s.PerfectCount);
         }
 
         [Test]

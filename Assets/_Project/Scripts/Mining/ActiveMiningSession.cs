@@ -13,7 +13,7 @@ namespace SocialUniverse.Mining
     // was banked; resolving every target succeeds it.
     // A tier holds one ring live at a time, or more where its LiveTargets says so: the next target
     // joins once the newest ring has run SecondTargetStagger of its way, and each ring is resolved
-    // on its own. The gap between targets applies only when none is live.
+    // on its own. Either way a target also waits out the spawn gap that each resolve restarts.
     // A decoy can spawn beside a target. It is not a target: tapping it is a miss, ignoring it costs
     // nothing, and it never counts toward the run or holds back the next target.
     public sealed class ActiveMiningSession
@@ -176,7 +176,8 @@ namespace SocialUniverse.Mining
                 newest = _live[i];
             }
 
-            if (liveReal == 0) return _spawnGapRemaining <= 0f;
+            if (_spawnGapRemaining > 0f) return false;
+            if (liveReal == 0) return true;
 
             return liveReal < Mathf.Max(1, _settings.Tier.LiveTargets)
                 && newest.Progress >= _settings.SecondTargetStagger;
