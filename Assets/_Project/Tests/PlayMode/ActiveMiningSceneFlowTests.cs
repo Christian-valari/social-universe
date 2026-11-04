@@ -768,6 +768,7 @@ namespace SocialUniverse.Tests
         [UnityTest]
         public IEnumerator A_vein_draws_its_line_between_the_projected_ends_each_frame()
         {
+            Time.captureDeltaTime = 1f / 60f; // the line trails the rock by up to a frame, so a slow frame mustn't widen that
             SpawnRock(0.1f);
             BeginRun(targets: 2, maxMisses: 3, veinEvery: 1, spinDegrees: 30f, veinSpinDegrees: 30f);
             PressStart();
@@ -884,15 +885,28 @@ namespace SocialUniverse.Tests
             SpinAsteroid(Vector3.up);
             BeginRun(targets: 2, maxMisses: 3, veinEvery: 1, spinDegrees: 15f, veinSpinDegrees: 15f);
             PressStart();
+
+            // Read in the frame the vein is placed, after the view's handler: the rock turns, so the line
+            // is only as placed for that frame.
+            Vector2 start = Vector2.zero, end = Vector2.zero;
+            bool    placed = false;
+            Session().OnTargetSpawned += _ =>
+            {
+                if (placed) return;
+                placed = true;
+                start  = VeinView().StartPosition;
+                end    = VeinView().EndPosition;
+            };
             yield return WaitForLiveVein();
+            Assert.IsTrue(placed, "The vein was placed");
 
             var     vein   = VeinView();
             float   scale  = _view.GetComponent<Canvas>().scaleFactor;
             Vector2 middle = new Vector2(Screen.width / 2f, Screen.height / 2f);
 
-            Assert.AreEqual(300f * scale, Vector2.Distance(vein.StartPosition, vein.EndPosition), 2f);
-            Assert.AreEqual(vein.StartPosition.y, vein.EndPosition.y, 2f, "Level");
-            Assert.Less(Vector2.Distance(middle, (vein.StartPosition + vein.EndPosition) / 2f), 2f, "Across the middle");
+            Assert.AreEqual(300f * scale, Vector2.Distance(start, end), 2f);
+            Assert.AreEqual(start.y, end.y, 2f, "Level");
+            Assert.Less(Vector2.Distance(middle, (start + end) / 2f), 2f, "Across the middle");
 
             vein.OnPointerDown(Pointer(vein.StartPosition));
             vein.OnDrag(Pointer(vein.EndPosition));
