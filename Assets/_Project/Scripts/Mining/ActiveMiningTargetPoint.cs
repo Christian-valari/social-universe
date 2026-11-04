@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SocialUniverse.Mining
@@ -33,6 +34,15 @@ namespace SocialUniverse.Mining
         {
             return screenPoint.x >= margin && screenPoint.x <= screenSize.x - margin
                 && screenPoint.y >= margin && screenPoint.y <= screenSize.y - margin;
+        }
+
+        // Whether a screen point is at least minDistance pixels from every one of the others.
+        public static bool IsFarEnough(Vector2 candidate, IReadOnlyList<Vector2> others, float minDistance)
+        {
+            float minSqr = minDistance * minDistance;
+            for (int i = 0; i < others.Count; i++)
+                if ((candidate - others[i]).sqrMagnitude < minSqr) return false;
+            return true;
         }
 
         // Parents this marker to the asteroid and positions it at a random point on its surface

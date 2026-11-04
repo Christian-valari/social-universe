@@ -908,6 +908,7 @@ MonoBehaviour:
   _button: {fileID: 100064}
   _marker: {fileID: 730013953}
   _ring: {fileID: 2035610680}
+  _decoySprite: {fileID: 21300000, guid: 6f764dee92b5d4c5b8e1c5aa46bed53a, type: 3}
 --- !u!1 &100070
 GameObject:
   m_ObjectHideFlags: 0

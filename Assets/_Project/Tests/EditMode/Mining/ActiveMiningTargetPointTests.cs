@@ -44,6 +44,36 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
+        public void IsFarEnough_rejects_a_point_inside_the_distance()
+        {
+            var others = new[] { Vector2.zero };
+
+            Assert.IsFalse(ActiveMiningTargetPoint.IsFarEnough(new Vector2(100f, 0f), others, 160f));
+            Assert.IsTrue(ActiveMiningTargetPoint.IsFarEnough(new Vector2(200f, 0f), others, 160f));
+        }
+
+        [Test]
+        public void IsFarEnough_accepts_a_point_exactly_at_the_distance()
+        {
+            Assert.IsTrue(ActiveMiningTargetPoint.IsFarEnough(new Vector2(160f, 0f), new[] { Vector2.zero }, 160f));
+        }
+
+        [Test]
+        public void IsFarEnough_needs_every_other_point_to_be_far()
+        {
+            var others = new[] { new Vector2(0f, 0f), new Vector2(500f, 0f) };
+
+            Assert.IsFalse(ActiveMiningTargetPoint.IsFarEnough(new Vector2(450f, 0f), others, 160f));
+            Assert.IsTrue(ActiveMiningTargetPoint.IsFarEnough(new Vector2(250f, 0f), others, 160f));
+        }
+
+        [Test]
+        public void IsFarEnough_accepts_any_point_when_there_are_no_others()
+        {
+            Assert.IsTrue(ActiveMiningTargetPoint.IsFarEnough(Vector2.zero, new Vector2[0], 160f));
+        }
+
+        [Test]
         public void IsOnScreen_accepts_a_point_well_inside_the_margin()
         {
             Assert.IsTrue(ActiveMiningTargetPoint.IsOnScreen(new Vector2(540f, 960f), new Vector2(1080f, 1920f), margin: 70f));

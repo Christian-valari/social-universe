@@ -13,16 +13,18 @@ namespace SocialUniverse.Config
         [SerializeField] private float _perfectBySeconds = 0.8f;  // a hit at or before this age is Perfect
         [SerializeField] private float _goodBySeconds    = 1.2f;  // a hit at or before this age is Good; later is Late
         [SerializeField] private int   _maxMisses        = 3;     // misses before the asteroid is lost
+        [SerializeField] private float _decoyChance      = 0f;    // chance a target spawns with a decoy beside it
 
         public ActiveMiningTierSettings() { }
 
-        public ActiveMiningTierSettings(int targets, float ringSeconds, float perfectBySeconds, float goodBySeconds, int maxMisses)
+        public ActiveMiningTierSettings(int targets, float ringSeconds, float perfectBySeconds, float goodBySeconds, int maxMisses, float decoyChance = 0f)
         {
             _targets          = targets;
             _ringSeconds      = ringSeconds;
             _perfectBySeconds = perfectBySeconds;
             _goodBySeconds    = goodBySeconds;
             _maxMisses        = maxMisses;
+            _decoyChance      = decoyChance;
         }
 
         public int   Targets          => _targets;
@@ -30,5 +32,6 @@ namespace SocialUniverse.Config
         public float PerfectBySeconds => _perfectBySeconds;
         public float GoodBySeconds    => _goodBySeconds;
         public int   MaxMisses        => _maxMisses;
+        public float DecoyChance      => _decoyChance;
     }
 }

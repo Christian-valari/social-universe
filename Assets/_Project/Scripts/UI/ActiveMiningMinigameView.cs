@@ -24,6 +24,7 @@ namespace SocialUniverse.UI
     {
         private const int   MaxHitVfx            = 4;
         private const int   MaxPlacementAttempts = 32;
+        private const float MinMarkerSeparation  = 160f; // canvas pixels between live markers' centres
         private const float GradeFadeSeconds     = 0.5f;
         private const float MissShakeSeconds     = 0.2f;
         private const float FailShakeSeconds     = 0.5f;
@@ -120,6 +121,7 @@ namespace SocialUniverse.UI
                 _session.OnTargetSpawned  -= OnTargetSpawned;
                 _session.OnTargetResolved -= OnTargetResolved;
                 _session.OnWrongTap       -= OnWrongTap;
+                _session.OnDecoyExpired   -= OnDecoyExpired;
             }
 
             for (int i = 0; i < _slots.Count; i++)
@@ -172,6 +174,7 @@ namespace SocialUniverse.UI
             _session.OnTargetSpawned  += OnTargetSpawned;
             _session.OnTargetResolved += OnTargetResolved;
             _session.OnWrongTap       += OnWrongTap;
+            _session.OnDecoyExpired   += OnDecoyExpired;
             Refresh();
         }
 
@@ -220,6 +223,7 @@ namespace SocialUniverse.UI
             ProjectToScreen(slot);
         }
 
+        // A tapped decoy arrives here as a Miss, so it gets the miss feedback and no hit effect.
         private void OnTargetResolved(ActiveMiningTarget target, ActiveMiningGrade grade)
         {
             for (int i = 0; i < _slots.Count; i++)
@@ -244,6 +248,18 @@ namespace SocialUniverse.UI
             Refresh();
         }
 
+        // An ignored decoy just goes away: nothing was earned or lost.
+        private void OnDecoyExpired(ActiveMiningTarget decoy)
+        {
+            for (int i = 0; i < _slots.Count; i++)
+            {
+                if (_slots[i].View.Target != decoy) continue;
+
+                _slots[i].View.Hide();
+                break;
+            }
+        }
+
         // A wrong tap lands on empty space and leaves its ring live, so the label goes beside that
         // ring rather than over the thing the player has to tap next.
         private void OnWrongTap()
@@ -252,7 +268,8 @@ namespace SocialUniverse.UI
 
             for (int i = 0; i < _slots.Count; i++)
             {
-                if (_slots[i].View.Target == null) continue;
+                var shown = _slots[i].View.Target;
+                if (shown == null || shown.Kind == ActiveMiningTargetKind.Decoy) continue;
 
                 PlayMissFeedback(ClearOfRing(_slots[i].View.transform.position));
                 break;
@@ -393,7 +410,9 @@ namespace SocialUniverse.UI
         // A ring the player can't reach costs a miss they could do nothing about, and the bigger
         // asteroids overflow the screen, so a target's whole tap area has to be on screen both now
         // and when its ring closes. Points sit inside the rock's bounds, so the marker projects over
-        // the rock rather than over the empty sky around it.
+        // the rock rather than over the empty sky around it. A marker also keeps clear of the ones
+        // already live, so a decoy can't sit on a target; where nothing is both on screen and clear,
+        // the on-screen point farthest from them is the next best.
         private void PlaceAnchor(ActiveMiningTargetPoint anchor, ActiveMiningTarget target)
         {
             if (_stage == null || _stage.StageClone == null || _sceneCamera == null) return;
@@ -402,17 +421,51 @@ namespace SocialUniverse.UI
             Vector3 towardViewer = _sceneCamera.transform.position - asteroid.position;
             float   margin       = ((RectTransform)_targetTemplate.transform).rect.width / 2f * _canvas.scaleFactor;
             float   radius       = _stage.SurfaceRadius * PlacementInset;
+            float   separation   = MinMarkerSeparation * _canvas.scaleFactor;
+
+            var     others       = LiveMarkerScreenPositions();
+            Vector3 farthest     = default;
+            float   farthestGap  = -1f;
 
             for (int attempt = 0; attempt < MaxPlacementAttempts; attempt++)
             {
                 anchor.PlaceOnAsteroid(asteroid, radius, towardViewer);
 
                 Vector3 point = anchor.transform.position;
-                if (IsOnScreen(point, margin) && IsOnScreen(_stage.PredictPoint(point, target.RingSeconds), margin))
-                    return;
+                if (!IsOnScreen(point, margin) || !IsOnScreen(_stage.PredictPoint(point, target.RingSeconds), margin))
+                    continue;
+
+                Vector2 screen = _sceneCamera.WorldToScreenPoint(point);
+                if (ActiveMiningTargetPoint.IsFarEnough(screen, others, separation)) return;
+
+                float gap = NearestDistance(screen, others);
+                if (gap > farthestGap)
+                {
+                    farthestGap = gap;
+                    farthest    = point;
+                }
             }
 
-            anchor.transform.position = asteroid.position + towardViewer.normalized * radius;
+            anchor.transform.position = farthestGap >= 0f
+                ? farthest
+                : asteroid.position + towardViewer.normalized * radius;
+        }
+
+        private List<Vector2> LiveMarkerScreenPositions()
+        {
+            var positions = new List<Vector2>();
+            for (int i = 0; i < _slots.Count; i++)
+                if (_slots[i].View.Target != null)
+                    positions.Add(_sceneCamera.WorldToScreenPoint(_slots[i].Anchor.transform.position));
+            return positions;
+        }
+
+        private static float NearestDistance(Vector2 point, List<Vector2> others)
+        {
+            float nearest = float.MaxValue;
+            for (int i = 0; i < others.Count; i++)
+                nearest = Mathf.Min(nearest, Vector2.Distance(point, others[i]));
+            return nearest;
         }
 
         private bool IsOnScreen(Vector3 worldPoint, float margin)

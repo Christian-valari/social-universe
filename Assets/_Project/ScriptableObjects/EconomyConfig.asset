@@ -44,26 +44,31 @@ MonoBehaviour:
     _perfectBySeconds: 0.8
     _goodBySeconds: 1.2
     _maxMisses: 3
+    _decoyChance: 0
   - _targets: 10
     _ringSeconds: 1.3
     _perfectBySeconds: 0.75
     _goodBySeconds: 1.05
     _maxMisses: 3
+    _decoyChance: 0.25
   - _targets: 12
     _ringSeconds: 1.1
     _perfectBySeconds: 0.7
     _goodBySeconds: 0.9
     _maxMisses: 3
+    _decoyChance: 0.25
   - _targets: 14
     _ringSeconds: 1
     _perfectBySeconds: 0.65
     _goodBySeconds: 0.85
     _maxMisses: 3
+    _decoyChance: 0.35
   - _targets: 16
     _ringSeconds: 0.9
     _perfectBySeconds: 0.6
     _goodBySeconds: 0.75
     _maxMisses: 3
+    _decoyChance: 0.35
   _activePerfectShare: 1
   _activeGoodShare: 0.8
   _activeLateShare: 0.6

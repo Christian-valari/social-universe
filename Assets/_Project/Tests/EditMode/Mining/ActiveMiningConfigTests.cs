@@ -28,6 +28,20 @@ namespace SocialUniverse.Tests
             Assert.Less(s.Tier.GoodBySeconds, s.Tier.RingSeconds);
         }
 
+        [TestCase(1, 0f)]
+        [TestCase(2, 0.25f)]
+        [TestCase(3, 0.25f)]
+        [TestCase(4, 0.35f)]
+        [TestCase(5, 0.35f)]
+        public void Real_asset_holds_decoy_chances(int tier, float chance) =>
+            Assert.AreEqual(chance, Real().ActiveRunSettings(tier).Tier.DecoyChance, 0.001f);
+
+        [Test] public void A_tier_has_no_decoys_unless_it_is_given_a_chance()
+        {
+            Assert.AreEqual(0f, new ActiveMiningTierSettings().DecoyChance);
+            Assert.AreEqual(0f, new ActiveMiningTierSettings(8, 1.6f, 0.8f, 1.2f, 3).DecoyChance);
+        }
+
         [Test] public void Real_asset_holds_the_shared_values()
         {
             var s = Real().ActiveRunSettings(1);

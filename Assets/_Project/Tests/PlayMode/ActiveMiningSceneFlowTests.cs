@@ -608,6 +608,138 @@ namespace SocialUniverse.Tests
             Assert.IsFalse(box.Overlaps(RenderedTextRect(startPrompt)), "It clears the start prompt");
         }
 
+        // The same marker image and ring serve both kinds, so the look is what tells them apart.
+        [UnityTest]
+        public IEnumerator A_decoy_shows_a_red_x_and_a_target_the_normal_marker()
+        {
+            BeginRun(targets: 2, maxMisses: 3, decoyChance: 2f);
+            PressStart();
+            yield return WaitForLiveDecoy();
+
+            var decoy    = LiveDecoy();
+            var target   = LiveTarget();
+            var template = Private<ActiveMiningTargetView>(_view, "_targetTemplate");
+            var decoyArt = Private<Sprite>(decoy, "_decoySprite");
+
+            var decoyMarker = Private<Image>(decoy, "_marker");
+            Assert.AreSame(decoyArt, decoyMarker.sprite);
+            AssertRed(decoyMarker.color);
+            AssertRed(Private<RectTransform>(decoy, "_ring").GetComponent<Image>().color);
+
+            var targetMarker = Private<Image>(target, "_marker");
+            Assert.AreNotSame(decoyArt, targetMarker.sprite);
+            Assert.AreSame(Private<Image>(template, "_marker").sprite, targetMarker.sprite);
+            Assert.AreEqual(Private<Image>(template, "_marker").color, targetMarker.color);
+            Assert.AreEqual(Private<RectTransform>(template, "_ring").GetComponent<Image>().color,
+                Private<RectTransform>(target, "_ring").GetComponent<Image>().color);
+        }
+
+        // Views are pooled, so a view that showed a decoy is next handed a target.
+        [UnityTest]
+        public IEnumerator A_pooled_view_that_showed_a_decoy_shows_the_normal_look_for_a_target()
+        {
+            BeginRun(targets: 2, maxMisses: 3, decoyChance: 2f);
+            PressStart();
+            yield return WaitForLiveDecoy();
+            var view     = LiveDecoy();
+            var template = Private<ActiveMiningTargetView>(_view, "_targetTemplate");
+
+            view.Hide();
+            view.Show(new ActiveMiningTarget(99, ActiveMiningTargetKind.Normal, 1f), _ => { });
+
+            var marker = Private<Image>(view, "_marker");
+            Assert.AreSame(Private<Image>(template, "_marker").sprite, marker.sprite);
+            Assert.AreEqual(Private<Image>(template, "_marker").color, marker.color);
+            Assert.AreEqual(Private<RectTransform>(template, "_ring").GetComponent<Image>().color,
+                Private<RectTransform>(view, "_ring").GetComponent<Image>().color);
+        }
+
+        [UnityTest]
+        public IEnumerator Tapping_a_decoy_is_answered_as_a_miss_with_no_hit_effect()
+        {
+            BeginRun(targets: 2, maxMisses: 3, decoyChance: 2f);
+            PressStart();
+            yield return WaitForLiveDecoy();
+            var     decoy = LiveDecoy();
+            Vector3 at    = decoy.transform.position;
+
+            Private<Button>(decoy, "_button").onClick.Invoke();
+
+            var label = Private<Text>(_view, "_gradeText");
+            Assert.AreEqual("Misses: 1/3", ErrorText());
+            Assert.AreEqual("0/2", ProgressText());
+            Assert.AreEqual("Miss", GradeText());
+            Assert.Less(Vector3.Distance(at, label.transform.position), 0.01f, "The label is where the decoy was");
+            CollectionAssert.AreEqual(new[] { SfxId.ActiveMiningMiss }, _audio.Played);
+            Assert.AreEqual(0, Private<List<GameObject>>(_view, "_hitVfx").Count, "A decoy is not a hit");
+            Assert.IsNull(decoy.Target, "The decoy goes");
+            Assert.IsNotNull(LiveTarget(), "The target stays");
+        }
+
+        [UnityTest]
+        public IEnumerator An_ignored_decoy_closes_and_goes_away_at_no_cost()
+        {
+            BeginRun(targets: 2, maxMisses: 3, ringSeconds: 1f, decoyChance: 2f, spawnGapSeconds: 5f);
+            PressStart();
+            yield return WaitForLiveDecoy();
+            var decoy = LiveDecoy().Target;
+            Private<Button>(LiveTarget(), "_button").onClick.Invoke();
+
+            yield return WaitUntil(() => decoy.Progress >= 1f, "the decoy's ring to close");
+
+            Assert.IsNull(LiveDecoy(), "Its marker goes away");
+            Assert.AreEqual("Misses: 0/3", ErrorText());
+            CollectionAssert.AreEqual(new[] { SfxId.ActiveMiningTap }, _audio.Played, "Only the hit made a sound");
+            Assert.AreEqual("Perfect", GradeText(), "and no miss label followed it");
+        }
+
+        [UnityTest]
+        public IEnumerator A_wrong_tap_labels_the_target_not_a_decoy_beside_it()
+        {
+            BeginRun(targets: 2, maxMisses: 3, decoyChance: 2f);
+            PressStart();
+            yield return WaitForLiveDecoy();
+            Vector2 at        = LiveTarget().transform.position;
+            float   clearance = ((RectTransform)LiveTarget().transform).rect.height * _view.GetComponent<Canvas>().scaleFactor;
+
+            TapMissArea();
+
+            var label = Private<Text>(_view, "_gradeText");
+            Assert.AreEqual(clearance, Vector2.Distance(at, label.transform.position), 0.5f);
+        }
+
+        // Where the rules gain a second line, it has to fit the box and stay clear of the start prompt.
+        [UnityTest]
+        public IEnumerator The_rules_for_a_tier_with_decoys_fit_on_screen_clear_of_the_start_prompt()
+        {
+            var tierTwo = new ActiveMiningRunSettings(2,
+                new ActiveMiningTierSettings(10, 1.3f, 0.75f, 1.05f, 3, 0.25f),
+                new ActiveMiningTierSettings(8, 1.6f, 0.8f, 1.2f, 3),
+                perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: 0.25f, missGraceSeconds: 0.2f);
+            var rules       = Private<Text>(_view, "_rulesText");
+            var startPrompt = Private<Button>(_view, "_startButton").GetComponentInChildren<Text>();
+            var mineralType = Private<Text>(_view, "_mineralTypeText");
+            rules.text = ActiveMiningRulesText.For(tierTwo);
+            StringAssert.Contains("decoys", rules.text);
+            yield return null;
+            Canvas.ForceUpdateCanvases();
+
+            Assert.LessOrEqual(rules.preferredHeight, rules.rectTransform.rect.height, "The text is not cut off by its box");
+
+            Rect box    = WorldRect(rules.rectTransform);
+            Rect screen = new Rect(0f, 0f, Screen.width, Screen.height);
+            Assert.IsTrue(screen.Contains(box.min) && screen.Contains(box.max), $"{box} is within the screen {screen}");
+            Assert.IsFalse(box.Overlaps(WorldRect(mineralType.rectTransform)), "It clears the mineral type text");
+            Assert.IsFalse(box.Overlaps(RenderedTextRect(startPrompt)), "It clears the start prompt");
+        }
+
+        private static void AssertRed(Color color)
+        {
+            Assert.Greater(color.r, 0.8f);
+            Assert.Less(color.g, 0.4f);
+            Assert.Less(color.b, 0.4f);
+        }
+
         // Every sound in the minigame is silent without one, and Planet's is unloaded before this loads.
         [UnityTest]
         public IEnumerator The_scene_has_one_audio_listener()
@@ -676,11 +808,13 @@ namespace SocialUniverse.Tests
 
         private void PickTier(int tier) => InvokePrivate(_view, "OnTierPicked", tier);
 
-        private void BeginRun(int targets, int maxMisses, float ringSeconds = 5f, float perfectBySeconds = 4f, float goodBySeconds = 4.5f)
+        // A decoyChance of 2 puts a decoy beside every target.
+        private void BeginRun(int targets, int maxMisses, float ringSeconds = 5f, float perfectBySeconds = 4f, float goodBySeconds = 4.5f,
+            float decoyChance = 0f, float spawnGapSeconds = 0f)
         {
-            var tier = new ActiveMiningTierSettings(targets, ringSeconds, perfectBySeconds, goodBySeconds, maxMisses);
+            var tier = new ActiveMiningTierSettings(targets, ringSeconds, perfectBySeconds, goodBySeconds, maxMisses, decoyChance);
             var settings = new ActiveMiningRunSettings(1, tier, previousTier: null,
-                perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: 0f, missGraceSeconds: 0f);
+                perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: spawnGapSeconds, missGraceSeconds: 0f);
             _handoff.Begin("earth", "Iron#1", _definition, 80, settings);
         }
 
@@ -720,9 +854,15 @@ namespace SocialUniverse.Tests
 
         private IEnumerator WaitForLiveTarget() => WaitUntil(() => LiveTarget() != null, "a target to spawn");
 
-        private static ActiveMiningTargetView LiveTarget() =>
+        private IEnumerator WaitForLiveDecoy() => WaitUntil(() => LiveDecoy() != null, "a decoy to spawn");
+
+        private static ActiveMiningTargetView LiveTarget() => LiveView(ActiveMiningTargetKind.Normal);
+
+        private static ActiveMiningTargetView LiveDecoy() => LiveView(ActiveMiningTargetKind.Decoy);
+
+        private static ActiveMiningTargetView LiveView(ActiveMiningTargetKind kind) =>
             UnityEngine.Object.FindObjectsByType<ActiveMiningTargetView>(FindObjectsSortMode.None)
-                .FirstOrDefault(view => view.Target != null);
+                .FirstOrDefault(view => view.Target != null && view.Target.Kind == kind);
 
         private static GameObject TopRaycastAt(Vector3 screenPoint)
         {
