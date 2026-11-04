@@ -42,10 +42,12 @@ namespace SocialUniverse.Mining
             return null;
         }
 
-        // For a server answer that may have taken a while: by then the marker can be the next run's.
-        public void Clear(string slotId)
+        // For a server answer that may have taken a while: by then the marker can be the next run's,
+        // on another planet's slot of the same name.
+        public void Clear(string planetId, string slotId)
         {
-            if (Load()?.SlotId == slotId) Clear();
+            var record = Load();
+            if (record != null && record.PlanetId == planetId && record.SlotId == slotId) Clear();
         }
 
         public void Clear()

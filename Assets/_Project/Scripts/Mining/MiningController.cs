@@ -285,7 +285,7 @@ namespace SocialUniverse.Mining
                 try
                 {
                     var result = await _minerals.GrantMiningAsync(_planet.PlanetId, mineral.MineralId, quantity, slotId: slotId);
-                    _runStore.Clear(slotId);
+                    _runStore.Clear(_planet.PlanetId, slotId);
                     if (result.Granted > 0)
                     {
                         SULog.Info($"Active mining success: +{result.Granted} {mineral.MineralId}", SULog.Channel.Mining);
@@ -307,7 +307,7 @@ namespace SocialUniverse.Mining
             }
             else
             {
-                _runStore.Clear(slotId); // nothing can be claimed, so there is nothing to retry
+                _runStore.Clear(_planet.PlanetId, slotId); // nothing can be claimed, so there is nothing to retry
             }
 
             _spawner.ScheduleRespawn(asteroid, _config.AsteroidRespawnHours);
@@ -336,7 +336,7 @@ namespace SocialUniverse.Mining
             try
             {
                 var result = await _minerals.ForfeitMiningAsync(_planet.PlanetId, mineralId, slotId);
-                _runStore.Clear(slotId);
+                _runStore.Clear(_planet.PlanetId, slotId);
                 if (result.Reason != "FORFEITED")
                     SULog.Warn($"Forfeit of {slotId} not recorded: {result.Reason}", SULog.Channel.Mining);
             }

@@ -234,7 +234,6 @@ namespace SocialUniverse.Mining
         {
             if (IsVeinLive) return false;
 
-
             int liveReal = 0;
             ActiveMiningTarget newest = null;
             for (int i = 0; i < _live.Count; i++)
@@ -253,17 +252,16 @@ namespace SocialUniverse.Mining
         }
 
         // Inclusive bounds: a tap exactly on a cut-off earns the better grade.
-        private ActiveMiningGrade GradeFor(float elapsedSeconds)
-        {
-            if (elapsedSeconds <= _settings.Tier.PerfectBySeconds) return ActiveMiningGrade.Perfect;
-            if (elapsedSeconds <= _settings.Tier.GoodBySeconds)    return ActiveMiningGrade.Good;
-            return ActiveMiningGrade.Late;
-        }
+        private ActiveMiningGrade GradeFor(float elapsedSeconds) =>
+            GradeAt(elapsedSeconds, _settings.Tier.PerfectBySeconds, _settings.Tier.GoodBySeconds);
 
-        private ActiveMiningGrade GradeForVein(float elapsedSeconds)
+        private ActiveMiningGrade GradeForVein(float elapsedSeconds) =>
+            GradeAt(elapsedSeconds, _settings.VeinPerfectBySeconds, _settings.VeinGoodBySeconds);
+
+        private static ActiveMiningGrade GradeAt(float elapsedSeconds, float perfectBySeconds, float goodBySeconds)
         {
-            if (elapsedSeconds <= _settings.VeinPerfectBySeconds) return ActiveMiningGrade.Perfect;
-            if (elapsedSeconds <= _settings.VeinGoodBySeconds)    return ActiveMiningGrade.Good;
+            if (elapsedSeconds <= perfectBySeconds) return ActiveMiningGrade.Perfect;
+            if (elapsedSeconds <= goodBySeconds)    return ActiveMiningGrade.Good;
             return ActiveMiningGrade.Late;
         }
 

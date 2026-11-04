@@ -69,7 +69,7 @@ namespace SocialUniverse.Tests
         {
             _store.Save("earth", "Iron#1", "iron", 80, 0.5f);
 
-            _store.Clear("Iron#1");
+            _store.Clear("earth", "Iron#1");
 
             Assert.IsNull(_store.Load());
         }
@@ -79,9 +79,20 @@ namespace SocialUniverse.Tests
         {
             _store.Save("earth", "Iron#2", "iron", 80, 0.5f);
 
-            _store.Clear("Iron#1");
+            _store.Clear("earth", "Iron#1");
 
             Assert.AreEqual("Iron#2", _store.Load()?.SlotId);
+        }
+
+        // Slot ids repeat from planet to planet, so a late answer for one must not clear another's marker.
+        [Test]
+        public void Clearing_the_same_slot_on_another_planet_leaves_the_marker()
+        {
+            _store.Save("earth", "Iron#1", "iron", 80, 0.5f);
+
+            _store.Clear("mars", "Iron#1");
+
+            Assert.AreEqual("Iron#1", _store.Load()?.SlotId);
         }
     }
 }

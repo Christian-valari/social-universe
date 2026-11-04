@@ -176,6 +176,8 @@ namespace SocialUniverse.Mining
         // The asteroid prefabs keep the mesh on a child that sits off the root's pivot, so the distance
         // from the pivot to the bounds' centre is taken in the world, not from the mesh's own origin.
         // With no mesh, or a pivot outside its bounds, half the collider's sphere is a safe guess.
+        // This assumes the mesh child isn't rotated relative to the clone, since the extents are
+        // compared along the clone's axes, and it measures the first mesh found only.
         private static float MeasureSurfaceRadius(GameObject clone, float colliderRadius)
         {
             float fallback = colliderRadius * 0.5f;

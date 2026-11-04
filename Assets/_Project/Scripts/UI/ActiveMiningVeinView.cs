@@ -131,6 +131,12 @@ namespace SocialUniverse.UI
             if (paused) SetHeld(false);
         }
 
+        // The same for a touch the system took away, such as a call or a dialog coming up over the game.
+        private void OnApplicationFocus(bool focused)
+        {
+            if (!focused) SetHeld(false);
+        }
+
         private bool IsHeldBy(PointerEventData eventData) => _held && eventData.pointerId == _heldPointerId;
 
         // Straying comes first: a finger far past the end of the line hasn't traced it.

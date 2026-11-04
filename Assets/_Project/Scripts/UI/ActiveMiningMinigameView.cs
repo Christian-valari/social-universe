@@ -170,7 +170,7 @@ namespace SocialUniverse.UI
                 slot.View.SetRingProgress(slot.View.Target.Progress);
             }
 
-            if (_veinView.Target != null) ProjectVein();
+            if (_veinView != null && _veinView.Target != null) ProjectVein();
         }
 
         private void OnStartClicked()
@@ -304,6 +304,8 @@ namespace SocialUniverse.UI
         // The spin eases down first, because placing the ends predicts where it will carry them.
         private void ShowVein(ActiveMiningTarget vein)
         {
+            if (_veinView == null || _settings == null) return;
+
             if (_stage != null) _stage.EaseSpinTo(_settings.VeinSpinDegrees);
 
             if (_veinStart == null)
@@ -321,21 +323,24 @@ namespace SocialUniverse.UI
 
         private void OnVeinFailed(ActiveMiningTarget vein) => _session.FailVein(vein.Id);
 
-        // A finished vein answers at its end marker, where the finger is. A failed one has no such
-        // place, so the label goes back to where it began.
+        // A finished vein answers at its end marker, one marker's height clear of it so the fingertip
+        // doesn't hide the label. A failed one has no such place, so the label goes back to where it began.
         private void OnVeinResolved(ActiveMiningGrade grade)
         {
+            Vector2 start = _veinView != null ? _veinView.StartPosition : default;
+            Vector2 end   = _veinView != null ? _veinView.EndPosition   : default;
+
             if (grade == ActiveMiningGrade.Miss)
-                PlayMissFeedback(_veinView.StartPosition);
+                PlayMissFeedback(start);
             else
-                PlayHitFeedback(grade, _veinEnd.transform.position, _veinView.EndPosition);
+                PlayHitFeedback(grade, _veinEnd != null ? _veinEnd.transform.position : Vector3.zero, ClearOfRing(end));
 
             HideVein();
         }
 
         private void HideVein()
         {
-            _veinView.Hide();
+            if (_veinView != null) _veinView.Hide();
             if (_stage != null) _stage.RestoreSpin();
         }
 
@@ -590,7 +595,7 @@ namespace SocialUniverse.UI
         // the player can drag.
         private void PlaceVein()
         {
-            if (_stage == null || _stage.StageClone == null || _sceneCamera == null) return;
+            if (_settings == null || _stage == null || _stage.StageClone == null || _sceneCamera == null) return;
 
             var     asteroid     = _stage.StageClone.transform;
             Vector3 towardViewer = _sceneCamera.transform.position - asteroid.position;
@@ -642,7 +647,7 @@ namespace SocialUniverse.UI
 
         private void ProjectVein()
         {
-            if (_sceneCamera == null) return;
+            if (_veinView == null || _sceneCamera == null) return;
 
             _veinView.UpdateLine(_sceneCamera.WorldToScreenPoint(_veinStart.transform.position),
                 _sceneCamera.WorldToScreenPoint(_veinEnd.transform.position));

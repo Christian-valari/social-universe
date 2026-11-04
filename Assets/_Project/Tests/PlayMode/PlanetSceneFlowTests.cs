@@ -146,6 +146,12 @@ namespace SocialUniverse.Tests
 
             var respawns = _backend.Calls.First(c => c.Function == "GetAsteroidRespawns");
             Assert.AreEqual(_planet.PlanetId, respawns.Args["planetId"], "asteroid respawns are read for this planet");
+
+            // A normal run reaches the server for mining; only dev mode swaps in the on-device stand-ins.
+            Assert.IsInstanceOf<MineralService>(_scope.Container.Resolve(typeof(IMineralService)));
+            Assert.IsInstanceOf<DroneService>(_scope.Container.Resolve(typeof(IDroneService)));
+            Assert.IsInstanceOf<IdleMiningService>(_scope.Container.Resolve(typeof(IIdleMiningService)));
+            Assert.IsInstanceOf<AsteroidRespawnService>(_scope.Container.Resolve(typeof(IAsteroidRespawnService)));
             yield return null;
         }
 

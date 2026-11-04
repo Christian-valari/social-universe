@@ -674,6 +674,83 @@ namespace SocialUniverse.Tests
             Assert.AreEqual((1, 0), (Session().ResolvedTargets, Session().ErrorCount));
         }
 
+        // Losing focus, as when a system dialog takes the touch, ends the hold the same way a pause does.
+        [UnityTest]
+        public IEnumerator Losing_focus_lets_go_of_a_vein_at_no_cost_and_its_start_can_be_pressed_again()
+        {
+            yield return BeginVein(targets: 2);
+            var     vein  = VeinView();
+            Vector2 start = vein.StartPosition, end = vein.EndPosition;
+            vein.OnPointerDown(Pointer(start));
+            vein.OnDrag(Pointer(Vector2.Lerp(start, end, 0.5f)));
+
+            vein.SendMessage("OnApplicationFocus", false);
+
+            vein.OnDrag(Pointer(end));
+            vein.OnPointerUp(Pointer(end));
+            Assert.AreEqual((0, 0), (Session().ErrorCount, Session().ResolvedTargets), "The hold is gone, so neither finishes nor fails it");
+            Assert.IsTrue(Session().IsVeinLive);
+
+            vein.SendMessage("OnApplicationFocus", true);
+            Assert.IsTrue(Session().IsVeinLive, "Getting focus back changes nothing");
+            vein.OnPointerDown(Pointer(vein.StartPosition));
+            vein.OnDrag(Pointer(vein.EndPosition));
+
+            Assert.AreEqual((1, 0), (Session().ResolvedTargets, Session().ErrorCount));
+        }
+
+        // The ring closing is the miss. The finger that was still down is lifted later, and costs nothing more.
+        [UnityTest]
+        public IEnumerator A_ring_closing_during_a_hold_then_a_lift_costs_one_miss()
+        {
+            BeginRun(targets: 3, maxMisses: 5, ringSeconds: 1f, veinEvery: 1);
+            PressStart();
+            yield return WaitForLiveVein();
+            var vein = VeinView();
+            var held = vein.Target;
+            Vector2 start = vein.StartPosition;
+
+            vein.OnPointerDown(Pointer(start));
+            while (held.Progress < 1f && vein.Target == held) // the rock turns, so the finger follows the start
+            {
+                vein.OnDrag(Pointer(vein.StartPosition));
+                yield return null;
+            }
+            Assert.AreEqual((1, 1), (Session().ErrorCount, Session().ResolvedTargets), "The ring closing is one miss");
+
+            vein.OnPointerUp(Pointer(start));
+
+            Assert.AreEqual((1, 1), (Session().ErrorCount, Session().ResolvedTargets), "and the lift is not another");
+        }
+
+        // The finger that was down when a vein closed has no hold on the one that follows it.
+        [UnityTest]
+        public IEnumerator The_next_vein_does_not_inherit_a_held_finger()
+        {
+            BeginRun(targets: 3, maxMisses: 5, ringSeconds: 1f, veinEvery: 1);
+            PressStart();
+            yield return WaitForLiveVein();
+            var vein  = VeinView();
+            var first = vein.Target;
+            vein.OnPointerDown(Pointer(vein.StartPosition));
+
+            while (vein.Target == first)
+            {
+                vein.OnDrag(Pointer(vein.StartPosition));
+                yield return null;
+            }
+            yield return WaitUntil(() => VeinView().Target != null, "the next vein to spawn");
+            var next = vein.Target;
+            Assert.AreNotSame(first, next);
+
+            vein.OnDrag(Pointer(vein.EndPosition));
+            vein.OnPointerUp(Pointer(vein.EndPosition));
+
+            Assert.AreSame(next, vein.Target, "The old finger neither completes nor fails the new vein");
+            Assert.IsTrue(Session().IsVeinLive);
+            Assert.AreEqual((1, 1), (Session().ErrorCount, Session().ResolvedTargets), "Only the first vein's ring miss");
+        }
+
         // The view covers the screen, so a press goes to it and not to the miss area beneath. A real raycast.
         [UnityTest]
         public IEnumerator A_live_vein_takes_a_press_anywhere_on_screen()
@@ -945,7 +1022,7 @@ namespace SocialUniverse.Tests
         }
 
         [UnityTest]
-        public IEnumerator A_completed_vein_plays_the_hit_sound_effect_and_grade_at_its_end_marker()
+        public IEnumerator A_completed_vein_plays_the_hit_sound_effect_and_shows_its_grade_clear_of_the_end_marker()
         {
             yield return BeginVein(targets: 2);
             var     vein = VeinView();
@@ -961,7 +1038,9 @@ namespace SocialUniverse.Tests
             Assert.Less(Vector3.Distance(Private<ActiveMiningTargetPoint>(_view, "_veinEnd").transform.position, hitVfx[0].transform.position), 0.01f);
             Assert.AreEqual("Perfect", GradeText());
             Assert.AreEqual(new Color(1f, 0.84f, 0.3f), label.color, "Gold, like a tap");
-            Assert.Less(Vector2.Distance(end, label.transform.position), 0.01f);
+            float clearance = ((RectTransform)Private<ActiveMiningTargetView>(_view, "_targetTemplate").transform).rect.height
+                * _view.GetComponent<Canvas>().scaleFactor;
+            Assert.AreEqual(clearance, Vector2.Distance(end, label.transform.position), 0.5f, "A marker's height from the end, not under the fingertip");
         }
 
         [UnityTest]
