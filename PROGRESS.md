@@ -1269,10 +1269,10 @@ playing better pays more, and higher tiers are harder.
 
 **Status (2026-11-04):** Phase 1 (the closing-ring core loop, plan tasks 1–8), Phase 2 (the tap-based
 challenges: decoys, two live targets, faster spin) and Phase 3 (hold-and-drag veins at Tier 5) are written
-and tested on the branch and are not merged to `main`. **None of Phases 1–3 has been played on a device
-yet**; every number below is a starting value for the play sessions, not tuned balance. **Veins await the
-owner's go or no-go after playing them**; setting `_veinEvery: 0` for Tier 5 in `EconomyConfig` turns them
-off, and nothing else is needed. Tests on 2026-11-04 (scratch copy, Unity 6000.3.12f1): EditMode **868/868**, PlayMode **103/103**.
+and tested on the branch and are not merged to `main`. **No device results are recorded for Phases 1–3
+yet**; every number below is a starting value, not tuned balance. **The owner decided on 2026-11-05 that
+veins stay**; setting `_veinEvery: 0` for Tier 5 in `EconomyConfig` still turns them off, and nothing else
+is needed. Tests on 2026-11-04 (scratch copy, Unity 6000.3.12f1): EditMode **868/868**, PlayMode **103/103**.
 
 | Piece                                  | Where                                                                                          | What it does                                                                                                                                                                                                                                                                                      |
 | -------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -1312,7 +1312,7 @@ Play-session notes for Phase 3:
 - Read the run log's counts together. A high `rings=` with a low `veins=` on vein runs means presses are missing the start or the clock is too short. A high `veins=` means the stray tolerance or the finish threshold is the limit.
 - Device checks: a touch cancelled by a system dialog; a start near a side edge, where Android's back gesture may take the press; the hand hiding the line on downward drags; and the ring sitting behind the finger.
 - The values to tune are `_activeVeinRingSeconds`, `_activeVeinPerfectBySeconds`, `_activeVeinGoodBySeconds`, `_activeVeinDragTolerance` and `_activeVeinCompleteProgress` in `EconomyConfig`.
-- For a no-go, set `_veinEvery: 0` for Tier 5. The rules line and the veins both go with it, and nothing else needs changing.
+- To turn veins off later, set `_veinEvery: 0` for Tier 5. The rules line and the veins both go with it, and nothing else needs changing.
 
 The play-session steps (dev mode on, a Development Build to a phone, Tiers 1 and 2 through the picker)
 are in the plan's "STOP: Phase 1 play session". What to look for: Tier 1 clears nearly every time and
@@ -1785,9 +1785,9 @@ are built and none has been played on a device)
 
 - [ ] Play Phase 1 on a device (Development Build, dev tier picker, Tiers 1 and 2 first) and tune the
       `EconomyConfig` tier rows if Tier 1 doesn't clear nearly every time or banks under 60%.
-- [ ] Play Phase 3 on a device (dev tier picker, Tier 5) and decide go or no-go on veins. For a no-go, set
-      `_veinEvery: 0` for Tier 5 in `EconomyConfig`; nothing else is needed.
-- [ ] If veins stay: scale a vein's time to its length, since the clock is the same for 300 and 550 units.
+- [x] Decide go or no-go on veins: the owner chose to keep them (2026-11-05).
+- [ ] Record device results for Phases 2 and 3 (dev tier picker, up to Tier 5), including the Phase 3 checks above.
+- [ ] Scale a vein's time to its length, since the clock is the same for 300 and 550 units.
 - [ ] If the run log's `veins=` count is high: measure the stray tolerance from the press offset
       rather than from the start marker's centre; that is the first knob to try.
 - [ ] Move vein placement out of `ActiveMiningMinigameView`, which is about 700 lines.
