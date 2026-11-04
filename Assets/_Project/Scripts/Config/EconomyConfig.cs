@@ -57,6 +57,7 @@ namespace SocialUniverse.Config
         [SerializeField] private float _activeSpawnGapSeconds   = 0.25f; // pause between one target resolving and the next spawning
         [SerializeField] private float _activeMissGraceSeconds  = 0.2f;  // stray taps right after a hit are forgiven for this long
         [SerializeField] private float _activeFirstTargetDelaySeconds = 0.6f; // pause between pressing Start and the first target
+        [SerializeField] private float _activeSecondTargetStagger = 0.4f; // share of the newest ring that must have run before another target joins it
 
         [Header("Drones — M6")]
         [SerializeField] private int   _startingFleetSlots    = 2;
@@ -110,7 +111,7 @@ namespace SocialUniverse.Config
             var previous = number > 1 ? _activeTiers[number - 2] : null;
             return new ActiveMiningRunSettings(number, current, previous,
                 _activePerfectShare, _activeGoodShare, _activeLateShare,
-                _activeSpawnGapSeconds, _activeMissGraceSeconds, _activeFirstTargetDelaySeconds);
+                _activeSpawnGapSeconds, _activeMissGraceSeconds, _activeFirstTargetDelaySeconds, _activeSecondTargetStagger);
         }
 
         public int   StartingFleetSlots   => _startingFleetSlots;

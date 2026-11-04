@@ -733,6 +733,39 @@ namespace SocialUniverse.Tests
             Assert.IsFalse(box.Overlaps(RenderedTextRect(startPrompt)), "It clears the start prompt");
         }
 
+        // The second target joins a ring that is a share of the way round, so the older one is the lower id.
+        [UnityTest]
+        public IEnumerator Two_live_targets_can_be_tapped_in_either_order()
+        {
+            BeginRun(targets: 2, maxMisses: 3, liveTargets: 2);
+            PressStart();
+            yield return WaitUntil(() => LiveTargetViews().Count == 2, "both targets to be live");
+            var views = LiveTargetViews();
+            var older = views[0];
+            var newer = views[1];
+            Assert.Less(older.Target.Id, newer.Target.Id);
+
+            Private<Button>(newer, "_button").onClick.Invoke();
+
+            Assert.IsNull(newer.Target, "The tapped marker hides");
+            Assert.AreSame(older, LiveTarget(), "The other stays");
+            Assert.AreEqual("1/2", ProgressText());
+
+            Private<Button>(older, "_button").onClick.Invoke();
+
+            Assert.IsNull(older.Target);
+            Assert.IsNull(LiveTarget());
+            Assert.AreEqual("2/2", ProgressText());
+            Assert.AreEqual("Misses: 0/3", ErrorText());
+            Assert.AreEqual((2, 0, ActiveMiningStage.Success), (Session().PerfectCount, Session().ErrorCount, Session().Stage));
+        }
+
+        private static List<ActiveMiningTargetView> LiveTargetViews() =>
+            UnityEngine.Object.FindObjectsByType<ActiveMiningTargetView>(FindObjectsSortMode.None)
+                .Where(view => view.Target != null && view.Target.Kind == ActiveMiningTargetKind.Normal)
+                .OrderBy(view => view.Target.Id)
+                .ToList();
+
         private static void AssertRed(Color color)
         {
             Assert.Greater(color.r, 0.8f);
@@ -810,9 +843,9 @@ namespace SocialUniverse.Tests
 
         // A decoyChance of 2 puts a decoy beside every target.
         private void BeginRun(int targets, int maxMisses, float ringSeconds = 5f, float perfectBySeconds = 4f, float goodBySeconds = 4.5f,
-            float decoyChance = 0f, float spawnGapSeconds = 0f)
+            float decoyChance = 0f, float spawnGapSeconds = 0f, int liveTargets = 1)
         {
-            var tier = new ActiveMiningTierSettings(targets, ringSeconds, perfectBySeconds, goodBySeconds, maxMisses, decoyChance);
+            var tier = new ActiveMiningTierSettings(targets, ringSeconds, perfectBySeconds, goodBySeconds, maxMisses, decoyChance, liveTargets);
             var settings = new ActiveMiningRunSettings(1, tier, previousTier: null,
                 perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: spawnGapSeconds, missGraceSeconds: 0f);
             _handoff.Begin("earth", "Iron#1", _definition, 80, settings);

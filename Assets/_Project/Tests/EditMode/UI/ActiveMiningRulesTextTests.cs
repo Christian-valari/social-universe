@@ -37,6 +37,26 @@ namespace SocialUniverse.Tests
         public void A_tier_without_decoys_does_not_name_them() =>
             Assert.AreEqual(Rules, ActiveMiningRulesText.For(Tier(chance: 0f, previousChance: 0f)));
 
+        private const string TwoTargetsLine = "New: two targets can be live at once.";
+
+        [Test]
+        public void Tier_3_rules_name_two_targets() =>
+            StringAssert.Contains(TwoTargetsLine, ActiveMiningRulesText.For(Live(live: 2, previousLive: 1)));
+
+        [Test]
+        public void The_two_targets_line_follows_the_ring_rule() =>
+            StringAssert.StartsWith(Rules, ActiveMiningRulesText.For(Live(live: 2, previousLive: 1)));
+
+        [TestCase(2, 2, TestName = "A_tier_with_two_targets_like_the_one_below_does_not_repeat_it")]
+        [TestCase(1, 1, TestName = "A_tier_with_one_target_does_not_name_two")]
+        public void Two_targets_are_named_only_where_they_first_appear(int live, int previousLive) =>
+            StringAssert.DoesNotContain("two targets", ActiveMiningRulesText.For(Live(live, previousLive)));
+
+        private static ActiveMiningRunSettings Live(int live, int previousLive) =>
+            new ActiveMiningRunSettings(3, new ActiveMiningTierSettings(12, 1.1f, 0.7f, 0.9f, 3, 0f, live),
+                new ActiveMiningTierSettings(10, 1.3f, 0.75f, 1.05f, 3, 0f, previousLive),
+                perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: 0.25f, missGraceSeconds: 0.2f);
+
         private static ActiveMiningRunSettings Tier(float chance, float previousChance) =>
             new ActiveMiningRunSettings(2, new ActiveMiningTierSettings(10, 1.3f, 0.75f, 1.05f, 3, chance),
                 new ActiveMiningTierSettings(8, 1.6f, 0.8f, 1.2f, 3, previousChance),

@@ -13,8 +13,10 @@ namespace SocialUniverse.Config
             float lateShare,
             float spawnGapSeconds,
             float missGraceSeconds,
-            float firstTargetDelaySeconds = 0f)
+            float firstTargetDelaySeconds = 0f,
+            float secondTargetStagger = 0.4f)
         {
+            SecondTargetStagger     = secondTargetStagger;
             TierNumber              = tierNumber;
             Tier                    = tier;
             PreviousTier            = previousTier;
@@ -35,5 +37,8 @@ namespace SocialUniverse.Config
         public float                    SpawnGapSeconds         { get; }
         public float                    MissGraceSeconds        { get; }
         public float                    FirstTargetDelaySeconds { get; }
+
+        // How far round its ring the newest target must be before another can join it (0-1).
+        public float                    SecondTargetStagger     { get; }
     }
 }

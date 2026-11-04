@@ -16,6 +16,10 @@ namespace SocialUniverse.UI
                 && !(settings.PreviousTier != null && settings.PreviousTier.DecoyChance > 0f))
                 rules += "\nNew: red X spots are decoys, so leave them alone.";
 
+            if (settings != null && settings.Tier.LiveTargets > 1
+                && !(settings.PreviousTier != null && settings.PreviousTier.LiveTargets > 1))
+                rules += "\nNew: two targets can be live at once.";
+
             return rules;
         }
     }

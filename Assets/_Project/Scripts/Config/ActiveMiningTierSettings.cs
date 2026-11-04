@@ -15,10 +15,13 @@ namespace SocialUniverse.Config
         [SerializeField] private int   _maxMisses        = 3;     // misses before the asteroid is lost
         [SerializeField] private float _decoyChance      = 0f;    // chance a target spawns with a decoy beside it
 
+        [SerializeField] private int   _liveTargets      = 1;     // targets that can be live at once
+
         public ActiveMiningTierSettings() { }
 
-        public ActiveMiningTierSettings(int targets, float ringSeconds, float perfectBySeconds, float goodBySeconds, int maxMisses, float decoyChance = 0f)
+        public ActiveMiningTierSettings(int targets, float ringSeconds, float perfectBySeconds, float goodBySeconds, int maxMisses, float decoyChance = 0f, int liveTargets = 1)
         {
+            _liveTargets      = liveTargets;
             _targets          = targets;
             _ringSeconds      = ringSeconds;
             _perfectBySeconds = perfectBySeconds;
@@ -33,5 +36,6 @@ namespace SocialUniverse.Config
         public float GoodBySeconds    => _goodBySeconds;
         public int   MaxMisses        => _maxMisses;
         public float DecoyChance      => _decoyChance;
+        public int   LiveTargets      => _liveTargets;
     }
 }

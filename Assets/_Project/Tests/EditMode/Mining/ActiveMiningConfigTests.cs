@@ -36,6 +36,19 @@ namespace SocialUniverse.Tests
         public void Real_asset_holds_decoy_chances(int tier, float chance) =>
             Assert.AreEqual(chance, Real().ActiveRunSettings(tier).Tier.DecoyChance, 0.001f);
 
+        [TestCase(1, 1)] [TestCase(2, 1)] [TestCase(3, 2)] [TestCase(4, 2)] [TestCase(5, 2)]
+        public void Real_asset_holds_live_target_counts(int tier, int live) =>
+            Assert.AreEqual(live, Real().ActiveRunSettings(tier).Tier.LiveTargets);
+
+        [Test] public void Real_asset_holds_the_second_target_stagger() =>
+            Assert.AreEqual(0.4f, Real().ActiveRunSettings(3).SecondTargetStagger, 0.001f);
+
+        [Test] public void A_tier_holds_one_live_target_unless_it_is_given_more()
+        {
+            Assert.AreEqual(1, new ActiveMiningTierSettings().LiveTargets);
+            Assert.AreEqual(1, new ActiveMiningTierSettings(8, 1.6f, 0.8f, 1.2f, 3).LiveTargets);
+        }
+
         [Test] public void A_tier_has_no_decoys_unless_it_is_given_a_chance()
         {
             Assert.AreEqual(0f, new ActiveMiningTierSettings().DecoyChance);

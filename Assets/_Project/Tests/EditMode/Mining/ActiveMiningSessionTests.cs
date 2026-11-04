@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -274,6 +275,184 @@ namespace SocialUniverse.Tests
             Assert.AreEqual(ActiveMiningStage.Success, s.Stage);
             Assert.IsNotNull(Decoy(s));
             Assert.AreEqual(0, expired);
+        }
+
+        // Ring 1.1s, Perfect by 0.6s, Good by 0.9s; two targets can be live at once.
+        private static ActiveMiningSession NewTwoLive(int targets = 6, int maxMisses = 3, float stagger = 0.4f,
+            float spawnGap = 0.25f, float missGrace = 0.2f, float decoyChance = 0f, Func<float> random = null) =>
+            new ActiveMiningSession(new ActiveMiningRunSettings(3,
+                new ActiveMiningTierSettings(targets, 1.1f, 0.6f, 0.9f, maxMisses, decoyChance, liveTargets: 2), null,
+                1f, 0.8f, 0.6f, spawnGap, missGrace, secondTargetStagger: stagger), random);
+
+        private static IEnumerable<ActiveMiningTarget> Reals(ActiveMiningSession s) =>
+            s.LiveTargets.Where(t => t.Kind == ActiveMiningTargetKind.Normal);
+
+        [Test]
+        public void A_second_target_joins_at_40_percent_of_the_first_ring()
+        {
+            var s = NewTwoLive();
+            s.Tick(0f);
+
+            Advance(s, 0.4f);
+            Assert.AreEqual(1, s.LiveTargets.Count);
+
+            Advance(s, 0.05f);
+            Assert.AreEqual(2, s.LiveTargets.Count);
+            Assert.AreEqual(0f, s.LiveTargets[1].Progress, "The newcomer starts with its ring open");
+        }
+
+        [Test]
+        public void Live_targets_never_exceed_the_tier_limit()
+        {
+            var s = NewTwoLive(decoyChance: 2f, random: () => 0.1f);
+            s.Tick(0f);
+
+            Advance(s, 1f);
+
+            Assert.AreEqual(2, Reals(s).Count());
+        }
+
+        [Test]
+        public void A_decoy_neither_fills_the_limit_nor_sets_the_stagger()
+        {
+            int rolls = 0;
+            var s = NewTwoLive(decoyChance: 2f, random: () => { rolls++; return 0.1f; });
+            s.Tick(0f);
+            Assert.AreEqual((1, 1), (Reals(s).Count(), s.LiveTargets.Count - 1), "A target and its decoy");
+
+            Advance(s, 0.35f);
+            Assert.AreEqual(1, Reals(s).Count(), "The decoy is not a second target");
+
+            Advance(s, 0.1f);
+            Assert.AreEqual(2, Reals(s).Count());
+            Assert.AreEqual(2, rolls, "The second target rolls for its own decoy");
+            Assert.AreEqual(2, s.LiveTargets.Count(t => t.Kind == ActiveMiningTargetKind.Decoy));
+        }
+
+        [Test]
+        public void The_remaining_target_keeps_its_own_ring_when_the_other_resolves()
+        {
+            var s = NewTwoLive();
+            s.Tick(0f);
+            Advance(s, 0.45f);
+            var first  = s.LiveTargets[0];
+            var second = s.LiveTargets[1];
+            float elapsed = second.ElapsedSeconds;
+
+            s.TapTarget(first.Id);
+
+            Assert.AreEqual(1, s.ResolvedTargets);
+            CollectionAssert.AreEqual(new[] { second }, s.LiveTargets);
+            Assert.AreEqual(elapsed, second.ElapsedSeconds, "Resolving one ring leaves the other's untouched");
+
+            Advance(s, 0.1f);
+            Assert.AreEqual(elapsed + 0.1f, second.ElapsedSeconds, 0.001f);
+        }
+
+        [Test]
+        public void Either_target_can_be_tapped_first()
+        {
+            var s = NewTwoLive();
+            s.Tick(0f);
+            Advance(s, 0.45f);
+            var older = s.LiveTargets[0];
+            var newer = s.LiveTargets[1];
+
+            s.TapTarget(newer.Id);
+            s.TapTarget(older.Id);
+
+            Assert.AreEqual((2, 0), (s.ResolvedTargets, s.ErrorCount));
+            Assert.AreEqual(0, s.LiveTargets.Count);
+        }
+
+        [Test]
+        public void A_closed_ring_uses_up_only_its_own_target()
+        {
+            var s = NewTwoLive();
+            s.Tick(0f);
+            Advance(s, 0.45f);
+            var second = s.LiveTargets[1];
+
+            Advance(s, 0.7f); // the first ring closes, the second has not
+
+            Assert.AreEqual((1, 1), (s.ErrorCount, s.ResolvedTargets));
+            CollectionAssert.Contains(s.LiveTargets, second);
+            Assert.Less(second.Progress, 1f);
+        }
+
+        [Test]
+        public void No_more_targets_spawn_than_the_run_holds()
+        {
+            var s = NewTwoLive(targets: 2);
+            int spawned = 0;
+            s.OnTargetSpawned += _ => spawned++;
+
+            Advance(s, 5f);
+
+            Assert.AreEqual(2, spawned);
+            Assert.AreEqual(ActiveMiningStage.Success, s.Stage);
+        }
+
+        [Test]
+        public void The_spawn_gap_applies_only_when_nothing_is_live()
+        {
+            var s = NewTwoLive();
+            s.Tick(0f);
+            Advance(s, 0.45f);
+            s.TapTarget(s.LiveTargets[0].Id);
+            Advance(s, 0.05f);
+            Assert.AreEqual(1, s.LiveTargets.Count, "One is still live and its ring is not far enough round");
+            s.TapTarget(s.LiveTargets[0].Id);
+
+            Advance(s, 0.2f);
+            Assert.AreEqual(0, s.LiveTargets.Count);
+            Advance(s, 0.1f);
+            Assert.AreEqual(1, s.LiveTargets.Count);
+        }
+
+        [Test]
+        public void A_wrong_tap_with_two_targets_live_costs_one_miss_and_leaves_both_rings_running()
+        {
+            var s = NewTwoLive(missGrace: 0f);
+            int wrongTaps = 0;
+            s.OnWrongTap += () => wrongTaps++;
+            s.Tick(0f);
+            Advance(s, 0.45f);
+            var first  = s.LiveTargets[0];
+            var second = s.LiveTargets[1];
+            float firstElapsed  = first.ElapsedSeconds;
+            float secondElapsed = second.ElapsedSeconds;
+
+            s.TapOffTarget();
+
+            Assert.AreEqual((1, 1, 0, 0f), (s.ErrorCount, wrongTaps, s.ResolvedTargets, s.BankedFraction));
+            CollectionAssert.AreEqual(new[] { first, second }, s.LiveTargets);
+            Assert.AreEqual((firstElapsed, secondElapsed), (first.ElapsedSeconds, second.ElapsedSeconds));
+        }
+
+        [Test]
+        public void Two_rings_closing_on_the_last_miss_fail_the_run_not_clear_it()
+        {
+            var s = NewTwoLive(targets: 2, maxMisses: 2, stagger: 0f);
+            s.Tick(0f);
+            Assert.AreEqual(2, s.LiveTargets.Count, "No stagger, so both are live at once");
+
+            Advance(s, 1.2f);
+
+            Assert.AreEqual(ActiveMiningStage.Failed, s.Stage);
+            Assert.AreEqual((2, 2), (s.ErrorCount, s.ResolvedTargets));
+        }
+
+        [Test]
+        public void The_first_ring_closing_on_the_last_miss_fails_the_run_before_the_other_resolves()
+        {
+            var s = NewTwoLive(targets: 2, maxMisses: 1, stagger: 0f);
+            s.Tick(0f);
+
+            Advance(s, 1.2f);
+
+            Assert.AreEqual(ActiveMiningStage.Failed, s.Stage);
+            Assert.AreEqual((1, 1), (s.ErrorCount, s.ResolvedTargets));
         }
 
         [Test]

@@ -7,10 +7,13 @@ namespace SocialUniverse.Mining
 {
     public enum ActiveMiningStage { InProgress, Success, Failed }
 
-    // Closing-ring tap minigame. One ring is live at a time: tapping it before it closes banks a
-    // share of the asteroid by how early the tap landed (Perfect, Good, Late). A ring that closes
-    // untapped, or a tap on empty space while a ring is live, is a miss. MaxErrors misses fails
-    // the run with whatever was banked; resolving every target succeeds it.
+    // Closing-ring tap minigame. Tapping a live ring before it closes banks a share of the asteroid
+    // by how early the tap landed (Perfect, Good, Late). A ring that closes untapped, or a tap on
+    // empty space while a ring is live, is a miss. MaxErrors misses fails the run with whatever
+    // was banked; resolving every target succeeds it.
+    // A tier holds one ring live at a time, or more where its LiveTargets says so: the next target
+    // joins once the newest ring has run SecondTargetStagger of its way, and each ring is resolved
+    // on its own. The gap between targets applies only when none is live.
     // A decoy can spawn beside a target. It is not a target: tapping it is a miss, ignoring it costs
     // nothing, and it never counts toward the run or holds back the next target.
     public sealed class ActiveMiningSession
@@ -72,10 +75,7 @@ namespace SocialUniverse.Mining
 
             AgeLiveTargets(step);
 
-            if (Stage == ActiveMiningStage.InProgress
-                && !HasLiveTarget()
-                && _spawned < Targets
-                && _spawnGapRemaining <= 0f)
+            while (Stage == ActiveMiningStage.InProgress && _spawned < Targets && ShouldSpawn())
                 SpawnTarget();
         }
 
@@ -150,6 +150,24 @@ namespace SocialUniverse.Mining
             for (int i = 0; i < _live.Count; i++)
                 if (_live[i].Kind == ActiveMiningTargetKind.Normal) return true;
             return false;
+        }
+
+        // Decoys count for nothing here: only real targets fill the limit or set the stagger.
+        private bool ShouldSpawn()
+        {
+            int liveReal = 0;
+            ActiveMiningTarget newest = null;
+            for (int i = 0; i < _live.Count; i++)
+            {
+                if (_live[i].Kind != ActiveMiningTargetKind.Normal) continue;
+                liveReal++;
+                newest = _live[i];
+            }
+
+            if (liveReal == 0) return _spawnGapRemaining <= 0f;
+
+            return liveReal < Mathf.Max(1, _settings.Tier.LiveTargets)
+                && newest.Progress >= _settings.SecondTargetStagger;
         }
 
         // Inclusive bounds: a tap exactly on a cut-off earns the better grade.
