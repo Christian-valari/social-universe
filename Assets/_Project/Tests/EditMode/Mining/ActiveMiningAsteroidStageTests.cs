@@ -44,6 +44,30 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
+        public void SetSpinRange_picks_a_speed_inside_the_range()
+        {
+            var def = ScriptableObject.CreateInstance<AsteroidDefinition>();
+            _stage.SpawnClone(def);
+
+            _stage.SetSpinRange(30f, 45f);
+
+            Assert.That(_stage.RotationSpeed, Is.InRange(30f, 45f));
+            Object.DestroyImmediate(def);
+        }
+
+        [Test]
+        public void SetSpinRange_also_governs_a_clone_spawned_afterwards()
+        {
+            var def = ScriptableObject.CreateInstance<AsteroidDefinition>();
+
+            _stage.SetSpinRange(30f, 45f);
+            _stage.SpawnClone(def);
+
+            Assert.That(_stage.RotationSpeed, Is.InRange(30f, 45f));
+            Object.DestroyImmediate(def);
+        }
+
+        [Test]
         public void SpawnClone_replaces_a_previous_clone_instead_of_stacking_them()
         {
             var def = ScriptableObject.CreateInstance<AsteroidDefinition>();

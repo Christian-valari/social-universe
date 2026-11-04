@@ -83,6 +83,7 @@ namespace SocialUniverse.UI
         private int                 _oldestHitVfx;
         private float               _gradeSecondsLeft;
         private ActiveMiningSession _session;
+        private ActiveMiningTierSettings _tier = new ActiveMiningTierSettings();
         private Canvas              _canvas;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private ActiveMiningDevTierPicker _tierPicker;
@@ -167,6 +168,11 @@ namespace SocialUniverse.UI
 
             if (_preGamePanel != null) _preGamePanel.SetActive(false);
             SetInProgressUiActive(true);
+
+            // Read now, since the dev tier picker can change the settings before Start. The spin is
+            // set before the first target is placed, which predicts where the target will be.
+            _tier = _handoff.Settings?.Tier ?? new ActiveMiningTierSettings();
+            if (_stage != null) _stage.SetSpinRange(_tier.MinSpinDegrees, _tier.MaxSpinDegrees);
 
             // Nothing spawns before the session's first Tick, so subscribing here misses nothing.
             _session = _runner.BeginRun();
@@ -422,6 +428,7 @@ namespace SocialUniverse.UI
             float   margin       = ((RectTransform)_targetTemplate.transform).rect.width / 2f * _canvas.scaleFactor;
             float   radius       = _stage.SurfaceRadius * PlacementInset;
             float   separation   = MinMarkerSeparation * _canvas.scaleFactor;
+            float   maxAngle     = ActiveMiningTargetPoint.MaxPlacementAngle(_tier.MaxSpinDegrees, target.RingSeconds);
 
             var     others       = LiveMarkerScreenPositions();
             Vector3 farthest     = default;
@@ -429,7 +436,7 @@ namespace SocialUniverse.UI
 
             for (int attempt = 0; attempt < MaxPlacementAttempts; attempt++)
             {
-                anchor.PlaceOnAsteroid(asteroid, radius, towardViewer);
+                anchor.PlaceOnAsteroid(asteroid, radius, towardViewer, maxAngle);
 
                 Vector3 point = anchor.transform.position;
                 if (!IsOnScreen(point, margin) || !IsOnScreen(_stage.PredictPoint(point, target.RingSeconds), margin))

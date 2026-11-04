@@ -16,10 +16,12 @@ namespace SocialUniverse.Config
         [SerializeField] private float _decoyChance      = 0f;    // chance a target spawns with a decoy beside it
 
         [SerializeField] private int   _liveTargets      = 1;     // targets that can be live at once
+        [SerializeField] private float _minSpinDegrees   = 5f;    // slowest the asteroid spins, in degrees per second
+        [SerializeField] private float _maxSpinDegrees   = 15f;   // fastest it spins
 
         public ActiveMiningTierSettings() { }
 
-        public ActiveMiningTierSettings(int targets, float ringSeconds, float perfectBySeconds, float goodBySeconds, int maxMisses, float decoyChance = 0f, int liveTargets = 1)
+        public ActiveMiningTierSettings(int targets, float ringSeconds, float perfectBySeconds, float goodBySeconds, int maxMisses, float decoyChance = 0f, int liveTargets = 1, float minSpinDegrees = 5f, float maxSpinDegrees = 15f)
         {
             _liveTargets      = liveTargets;
             _targets          = targets;
@@ -28,6 +30,8 @@ namespace SocialUniverse.Config
             _goodBySeconds    = goodBySeconds;
             _maxMisses        = maxMisses;
             _decoyChance      = decoyChance;
+            _minSpinDegrees   = minSpinDegrees;
+            _maxSpinDegrees   = maxSpinDegrees;
         }
 
         public int   Targets          => _targets;
@@ -37,5 +41,7 @@ namespace SocialUniverse.Config
         public int   MaxMisses        => _maxMisses;
         public float DecoyChance      => _decoyChance;
         public int   LiveTargets      => _liveTargets;
+        public float MinSpinDegrees   => _minSpinDegrees;
+        public float MaxSpinDegrees   => _maxSpinDegrees;
     }
 }

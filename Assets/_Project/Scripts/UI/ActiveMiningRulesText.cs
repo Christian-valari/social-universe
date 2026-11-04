@@ -20,6 +20,10 @@ namespace SocialUniverse.UI
                 && !(settings.PreviousTier != null && settings.PreviousTier.LiveTargets > 1))
                 rules += "\nNew: two targets can be live at once.";
 
+            if (settings != null && settings.PreviousTier != null
+                && settings.Tier.MaxSpinDegrees > settings.PreviousTier.MaxSpinDegrees)
+                rules += "\nNew: the asteroid spins faster, so targets move.";
+
             return rules;
         }
     }

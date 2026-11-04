@@ -40,6 +40,21 @@ namespace SocialUniverse.Tests
         public void Real_asset_holds_live_target_counts(int tier, int live) =>
             Assert.AreEqual(live, Real().ActiveRunSettings(tier).Tier.LiveTargets);
 
+        [TestCase(1, 5f, 15f)] [TestCase(2, 5f, 15f)] [TestCase(3, 5f, 15f)] [TestCase(4, 30f, 45f)] [TestCase(5, 30f, 45f)]
+        public void Real_asset_holds_spin_ranges(int tier, float min, float max)
+        {
+            var settings = Real().ActiveRunSettings(tier).Tier;
+            Assert.AreEqual(min, settings.MinSpinDegrees, 0.001f);
+            Assert.AreEqual(max, settings.MaxSpinDegrees, 0.001f);
+        }
+
+        [Test] public void A_tier_spins_at_the_base_range_unless_it_is_given_one()
+        {
+            Assert.AreEqual((5f, 15f), (new ActiveMiningTierSettings().MinSpinDegrees, new ActiveMiningTierSettings().MaxSpinDegrees));
+            var tier = new ActiveMiningTierSettings(8, 1.6f, 0.8f, 1.2f, 3);
+            Assert.AreEqual((5f, 15f), (tier.MinSpinDegrees, tier.MaxSpinDegrees));
+        }
+
         [Test] public void Real_asset_holds_the_second_target_stagger() =>
             Assert.AreEqual(0.4f, Real().ActiveRunSettings(3).SecondTargetStagger, 0.001f);
 

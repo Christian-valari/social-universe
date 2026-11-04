@@ -279,9 +279,9 @@ namespace SocialUniverse.Tests
             SetPrivate(_definition, "_modelPrefab", model);
             stage.SpawnClone(_definition);
             UnityEngine.Object.Destroy(model);
-            SpinAsteroid(new Vector3(1f, 1f, 0f).normalized, degreesPerSecond: 60f);
+            SpinAsteroid(new Vector3(1f, 1f, 0f).normalized);
 
-            BeginRun(targets: 24, maxMisses: 3, ringSeconds: 1f);
+            BeginRun(targets: 24, maxMisses: 3, ringSeconds: 1f, spinDegrees: 60f);
             PressStart();
 
             int qualified = 0;
@@ -333,7 +333,8 @@ namespace SocialUniverse.Tests
         [UnityTest]
         public IEnumerator A_target_with_nowhere_that_stays_on_screen_directly_faces_the_camera()
         {
-            SpinAsteroid(Vector3.up, degreesPerSecond: 15f);
+            SpinAsteroid(Vector3.up);
+            BeginRun(targets: 2, maxMisses: 3, spinDegrees: 15f);
             PressStart();
 
             Vector3 placed = Vector3.zero, onScreen = Vector3.zero;
@@ -347,6 +348,17 @@ namespace SocialUniverse.Tests
 
             Assert.Less(Vector3.Distance(PointFacingTheCamera(), placed), 0.0001f, $"Placed at {placed}");
             Assert.Less(Vector2.Distance(new Vector2(Screen.width / 2f, Screen.height / 2f), onScreen), 1f, $"On screen at {onScreen}");
+        }
+
+        // The settings in force when Start is pressed set the spin, since the dev tier picker can change them first.
+        [UnityTest]
+        public IEnumerator The_asteroid_spins_at_the_speed_the_run_settings_give()
+        {
+            BeginRun(targets: 2, maxMisses: 3, spinDegrees: 40f);
+            PressStart();
+            yield return WaitForLiveTarget();
+
+            Assert.AreEqual(40f, Private<ActiveMiningAsteroidStage>(_view, "_stage").RotationSpeed, 0.001f);
         }
 
         // One ring is live at a time, so a whole run needs one view and one anchor, and hit effects stop
@@ -843,9 +855,11 @@ namespace SocialUniverse.Tests
 
         // A decoyChance of 2 puts a decoy beside every target.
         private void BeginRun(int targets, int maxMisses, float ringSeconds = 5f, float perfectBySeconds = 4f, float goodBySeconds = 4.5f,
-            float decoyChance = 0f, float spawnGapSeconds = 0f, int liveTargets = 1)
+            float decoyChance = 0f, float spawnGapSeconds = 0f, int liveTargets = 1, float spinDegrees = 0f)
         {
-            var tier = new ActiveMiningTierSettings(targets, ringSeconds, perfectBySeconds, goodBySeconds, maxMisses, decoyChance, liveTargets);
+            var tier = spinDegrees > 0f
+                ? new ActiveMiningTierSettings(targets, ringSeconds, perfectBySeconds, goodBySeconds, maxMisses, decoyChance, liveTargets, spinDegrees, spinDegrees)
+                : new ActiveMiningTierSettings(targets, ringSeconds, perfectBySeconds, goodBySeconds, maxMisses, decoyChance, liveTargets);
             var settings = new ActiveMiningRunSettings(1, tier, previousTier: null,
                 perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: spawnGapSeconds, missGraceSeconds: 0f);
             _handoff.Begin("earth", "Iron#1", _definition, 80, settings);
@@ -858,12 +872,9 @@ namespace SocialUniverse.Tests
 
         private ActiveMiningSession Session() => Private<ActiveMiningSessionRunner>(_view, "_runner").Session;
 
-        private void SpinAsteroid(Vector3 axis, float degreesPerSecond)
-        {
-            var stage = Private<ActiveMiningAsteroidStage>(_view, "_stage");
-            SetPrivate(stage, "_rotationAxis", axis);
-            SetPrivate(stage, "_rotationSpeed", degreesPerSecond);
-        }
+        // The speed comes from the run's settings, which the stage reads when Start is pressed.
+        private void SpinAsteroid(Vector3 axis) =>
+            SetPrivate(Private<ActiveMiningAsteroidStage>(_view, "_stage"), "_rotationAxis", axis);
 
         private Vector3 PointFacingTheCamera()
         {

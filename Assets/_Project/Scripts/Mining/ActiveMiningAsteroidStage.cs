@@ -16,6 +16,9 @@ namespace SocialUniverse.Mining
         public GameObject StageClone    { get; private set; }
         public float      ColliderRadius { get; private set; }
 
+        // Degrees per second the clone is turning at.
+        public float      RotationSpeed  => _rotationSpeed;
+
         // The largest sphere about the clone's pivot that fits inside its mesh's bounds, so a point
         // on it projects over the rock. ColliderRadius is the prefabs' sphere instead, which encloses
         // the rock and leaves a point on it hanging in space.
@@ -68,6 +71,15 @@ namespace SocialUniverse.Mining
 
             StageClone = clone;
             return clone;
+        }
+
+        // Sets how fast the clone may spin and picks a new speed in that range, for the clone on
+        // stage and for any spawned after.
+        public void SetSpinRange(float minDegrees, float maxDegrees)
+        {
+            _minRotationSpeed = minDegrees;
+            _maxRotationSpeed = maxDegrees;
+            _rotationSpeed    = Random.Range(minDegrees, maxDegrees);
         }
 
         // Where the clone's current spin carries a world-space point after this many seconds. The

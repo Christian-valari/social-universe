@@ -24,6 +24,29 @@ namespace SocialUniverse.Tests
             }
         }
 
+        [TestCase(15f, 1.6f, 61f)] [TestCase(45f, 0.9f, 44.5f)]
+        public void Placement_angle_leaves_room_for_the_spin(float spin, float ring, float expected) =>
+            Assert.AreEqual(expected, ActiveMiningTargetPoint.MaxPlacementAngle(spin, ring), 0.01f);
+
+        [Test]
+        public void Placement_angle_never_drops_below_15_degrees() =>
+            Assert.AreEqual(15f, ActiveMiningTargetPoint.MaxPlacementAngle(100f, 5f), 0.01f);
+
+        [Test]
+        public void Points_stay_inside_the_cone_and_on_the_sphere()
+        {
+            var center = new Vector3(1f, 2f, 3f);
+            var towardViewer = new Vector3(0.3f, -0.5f, 1f).normalized;
+
+            for (int i = 0; i < 200; i++)
+            {
+                Vector3 offset = ActiveMiningTargetPoint.PickFacingPoint(center, 2f, towardViewer, 44.5f) - center;
+
+                Assert.AreEqual(2f, offset.magnitude, 0.001f);
+                Assert.LessOrEqual(Vector3.Angle(offset, towardViewer), 44.6f);
+            }
+        }
+
         [Test]
         public void PlaceOnAsteroid_parents_the_marker_and_positions_it_on_the_asteroid_surface()
         {

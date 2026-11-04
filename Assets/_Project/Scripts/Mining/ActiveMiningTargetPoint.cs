@@ -9,24 +9,31 @@ namespace SocialUniverse.Mining
     // at spawn time (no occlusion tracking) — see design spec 2026-07-04 §4.
     public class ActiveMiningTargetPoint : MonoBehaviour
     {
-        // Picks a random point on the sphere (center, radius) that lies within the hemisphere
-        // facing towardViewer. Pure/static so it's directly unit-testable without a scene.
-        public static Vector3 PickFacingPoint(Vector3 center, float radius, Vector3 towardViewer)
+        const float MinPlacementAngle = 15f;
+        const float MaxPlacementAngleCap = 85f;
+
+        // How far from the viewer axis a target may be placed so that the spin can't carry it past
+        // the asteroid's edge before its ring closes: the cap less the turn at the fastest spin.
+        public static float MaxPlacementAngle(float maxSpinDegrees, float ringSeconds) =>
+            Mathf.Clamp(MaxPlacementAngleCap - maxSpinDegrees * ringSeconds, MinPlacementAngle, MaxPlacementAngleCap);
+
+        // Picks a random point on the sphere (center, radius) within maxAngleDegrees of the
+        // direction towardViewer, uniformly over the cap. 90 is the whole facing hemisphere.
+        // Pure/static so it's directly unit-testable without a scene.
+        public static Vector3 PickFacingPoint(Vector3 center, float radius, Vector3 towardViewer, float maxAngleDegrees = 90f)
         {
             Vector3 viewerDir = towardViewer.normalized;
+            float   cosMax    = maxAngleDegrees >= 90f ? 0f : Mathf.Cos(Mathf.Max(maxAngleDegrees, 0f) * Mathf.Deg2Rad);
 
-            for (int attempt = 0; attempt < 64; attempt++)
-            {
-                Vector3 dir = Random.onUnitSphere;
-                if (Vector3.Dot(dir, viewerDir) >= 0f)
-                    return center + dir * radius;
-            }
+            float cos = Random.Range(cosMax, 1f);
+            float sin = Mathf.Sqrt(Mathf.Max(0f, 1f - cos * cos));
 
-            // Fallback so this never loops forever: reflect a random point into the facing
-            // hemisphere instead of retrying again.
-            Vector3 fallback = Random.onUnitSphere;
-            if (Vector3.Dot(fallback, viewerDir) < 0f) fallback = -fallback;
-            return center + fallback * radius;
+            Vector3 side = Vector3.Cross(viewerDir, Mathf.Abs(viewerDir.y) < 0.99f ? Vector3.up : Vector3.right).normalized;
+            Vector3 up   = Vector3.Cross(viewerDir, side);
+            float   spin = Random.Range(0f, Mathf.PI * 2f);
+
+            Vector3 dir = viewerDir * cos + (side * Mathf.Cos(spin) + up * Mathf.Sin(spin)) * sin;
+            return center + dir * radius;
         }
 
         // Whether a screen point is at least margin pixels inside every edge of the screen.
@@ -51,10 +58,10 @@ namespace SocialUniverse.Mining
 
         // Parents this marker to the asteroid and positions it at a random point on its surface
         // facing towardViewer, so subsequent asteroid rotation carries the marker along with it.
-        public void PlaceOnAsteroid(Transform asteroidTransform, float radius, Vector3 towardViewer)
+        public void PlaceOnAsteroid(Transform asteroidTransform, float radius, Vector3 towardViewer, float maxAngleDegrees = 90f)
         {
             transform.SetParent(asteroidTransform, worldPositionStays: false);
-            Vector3 worldPoint = PickFacingPoint(asteroidTransform.position, radius, towardViewer);
+            Vector3 worldPoint = PickFacingPoint(asteroidTransform.position, radius, towardViewer, maxAngleDegrees);
             transform.position = worldPoint;
         }
     }

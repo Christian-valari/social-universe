@@ -52,6 +52,26 @@ namespace SocialUniverse.Tests
         public void Two_targets_are_named_only_where_they_first_appear(int live, int previousLive) =>
             StringAssert.DoesNotContain("two targets", ActiveMiningRulesText.For(Live(live, previousLive)));
 
+        private const string SpinLine = "New: the asteroid spins faster, so targets move.";
+
+        [Test]
+        public void Tier_4_rules_name_the_spin() =>
+            StringAssert.Contains(SpinLine, ActiveMiningRulesText.For(Spin(maxSpin: 45f, previousMaxSpin: 15f)));
+
+        [Test]
+        public void The_spin_line_follows_the_ring_rule() =>
+            StringAssert.StartsWith(Rules, ActiveMiningRulesText.For(Spin(maxSpin: 45f, previousMaxSpin: 15f)));
+
+        [TestCase(45f, 45f, TestName = "A_tier_that_spins_like_the_one_below_does_not_repeat_it")]
+        [TestCase(15f, 15f, TestName = "A_tier_at_the_base_spin_does_not_name_it")]
+        public void The_spin_is_named_only_where_it_first_speeds_up(float maxSpin, float previousMaxSpin) =>
+            StringAssert.DoesNotContain("spins", ActiveMiningRulesText.For(Spin(maxSpin, previousMaxSpin)));
+
+        private static ActiveMiningRunSettings Spin(float maxSpin, float previousMaxSpin) =>
+            new ActiveMiningRunSettings(4, new ActiveMiningTierSettings(14, 1f, 0.65f, 0.85f, 3, 0f, 1, 5f, maxSpin),
+                new ActiveMiningTierSettings(12, 1.1f, 0.7f, 0.9f, 3, 0f, 1, 5f, previousMaxSpin),
+                perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: 0.25f, missGraceSeconds: 0.2f);
+
         private static ActiveMiningRunSettings Live(int live, int previousLive) =>
             new ActiveMiningRunSettings(3, new ActiveMiningTierSettings(12, 1.1f, 0.7f, 0.9f, 3, 0f, live),
                 new ActiveMiningTierSettings(10, 1.3f, 0.75f, 1.05f, 3, 0f, previousLive),
