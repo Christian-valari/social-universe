@@ -96,6 +96,18 @@ namespace SocialUniverse.Mining
                 Resolve(target, GradeFor(target.ElapsedSeconds));
         }
 
+        // Takes a live decoy off the board at no cost, for a view that has nowhere to show it clear of
+        // the other markers. A real target, an unknown id, or a finished run is left alone.
+        public void DismissDecoy(int targetId)
+        {
+            if (Stage != ActiveMiningStage.InProgress) return;
+
+            var target = FindLive(targetId);
+            if (target == null || target.Kind != ActiveMiningTargetKind.Decoy) return;
+
+            ExpireDecoy(target);
+        }
+
         // The player tapped empty space. Counts as a miss while a target is live, unless it follows
         // right behind a hit; the ring itself carries on.
         public void TapOffTarget()

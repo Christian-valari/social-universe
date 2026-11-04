@@ -646,6 +646,65 @@ namespace SocialUniverse.Tests
                 Private<RectTransform>(target, "_ring").GetComponent<Image>().color);
         }
 
+        // Two markers never fit on a rock this small without their tap areas overlapping, so the decoy gives way.
+        [UnityTest]
+        public IEnumerator A_decoy_with_no_clear_spot_is_not_shown_and_costs_nothing()
+        {
+            SpawnRock(0.002f);
+
+            BeginRun(targets: 2, maxMisses: 3, decoyChance: 2f, roomyRock: false);
+            PressStart();
+            yield return WaitForLiveTarget();
+            yield return null;
+
+            Assert.IsNull(LiveDecoy(), "No decoy is on screen");
+            Assert.IsFalse(Session().LiveTargets.Any(t => t.Kind == ActiveMiningTargetKind.Decoy), "Nor in the session");
+            Assert.AreEqual("Misses: 0/3", ErrorText());
+
+            yield return TapNextTarget();
+            Assert.AreEqual(ActiveMiningStage.InProgress, Session().Stage);
+            Assert.AreEqual("1/2", ProgressText());
+        }
+
+        [UnityTest]
+        public IEnumerator A_target_placed_over_a_live_decoy_dismisses_it_at_no_cost()
+        {
+            BeginRun(targets: 2, maxMisses: 3, decoyChance: 2f);
+            PressStart();
+            yield return WaitForLiveDecoy();
+            var decoy = LiveDecoy();
+
+            InvokePrivate(_view, "DismissDecoysNear", (Vector2)(Vector3)decoy.transform.position + new Vector2(10f, 10f));
+
+            Assert.IsNull(decoy.Target, "The decoy's view is free");
+            Assert.IsNull(LiveDecoy());
+            Assert.IsFalse(Session().LiveTargets.Any(t => t.Kind == ActiveMiningTargetKind.Decoy));
+            Assert.AreEqual("Misses: 0/3", ErrorText());
+        }
+
+        [UnityTest]
+        public IEnumerator A_decoy_clear_of_a_new_target_is_left_alone()
+        {
+            BeginRun(targets: 2, maxMisses: 3, decoyChance: 2f);
+            PressStart();
+            yield return WaitForLiveDecoy();
+            var decoy = LiveDecoy();
+
+            InvokePrivate(_view, "DismissDecoysNear", (Vector2)(Vector3)decoy.transform.position + new Vector2(1000f, 0f));
+
+            Assert.IsNotNull(decoy.Target);
+        }
+
+        [UnityTest]
+        public IEnumerator A_decoy_is_drawn_below_a_real_target()
+        {
+            BeginRun(targets: 2, maxMisses: 3, decoyChance: 2f);
+            PressStart();
+            yield return WaitForLiveDecoy();
+
+            Assert.Less(LiveDecoy().transform.GetSiblingIndex(), LiveTarget().transform.GetSiblingIndex());
+        }
+
         // Views are pooled, so a view that showed a decoy is next handed a target.
         [UnityTest]
         public IEnumerator A_pooled_view_that_showed_a_decoy_shows_the_normal_look_for_a_target()
@@ -855,14 +914,29 @@ namespace SocialUniverse.Tests
 
         // A decoyChance of 2 puts a decoy beside every target.
         private void BeginRun(int targets, int maxMisses, float ringSeconds = 5f, float perfectBySeconds = 4f, float goodBySeconds = 4.5f,
-            float decoyChance = 0f, float spawnGapSeconds = 0f, int liveTargets = 1, float spinDegrees = 0f)
+            float decoyChance = 0f, float spawnGapSeconds = 0f, int liveTargets = 1, float spinDegrees = 0f, bool roomyRock = true)
         {
+            // The stand-in rock is too big for the camera to leave a decoy a clear spot, so a run with decoys gets one that does.
+            if (decoyChance > 0f && roomyRock && _view != null)
+            {
+                SpawnRock(0.1f);
+                if (spinDegrees <= 0f) spinDegrees = 5f;
+            }
             var tier = spinDegrees > 0f
                 ? new ActiveMiningTierSettings(targets, ringSeconds, perfectBySeconds, goodBySeconds, maxMisses, decoyChance, liveTargets, spinDegrees, spinDegrees)
                 : new ActiveMiningTierSettings(targets, ringSeconds, perfectBySeconds, goodBySeconds, maxMisses, decoyChance, liveTargets);
             var settings = new ActiveMiningRunSettings(1, tier, previousTier: null,
                 perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: spawnGapSeconds, missGraceSeconds: 0f);
             _handoff.Begin("earth", "Iron#1", _definition, 80, settings);
+        }
+
+        private void SpawnRock(float diameter)
+        {
+            var model = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            model.transform.localScale = Vector3.one * diameter;
+            SetPrivate(_definition, "_modelPrefab", model);
+            Private<ActiveMiningAsteroidStage>(_view, "_stage").SpawnClone(_definition);
+            UnityEngine.Object.Destroy(model);
         }
 
         private void PressStart()   => Private<Button>(_view, "_startButton").onClick.Invoke();

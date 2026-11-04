@@ -222,11 +222,53 @@ namespace SocialUniverse.UI
 
         private void OnTargetSpawned(ActiveMiningTarget target)
         {
-            var slot = TakeFreeSlot();
+            var slot    = TakeFreeSlot();
+            bool decoy  = target.Kind == ActiveMiningTargetKind.Decoy;
 
-            PlaceAnchor(slot.Anchor, target);
+            // A decoy with no clear spot isn't shown; a real target always is.
+            if (!PlaceAnchor(slot.Anchor, target))
+            {
+                _session.DismissDecoy(target.Id);
+                return;
+            }
+
             slot.View.Show(target, OnTargetTapped);
             ProjectToScreen(slot);
+            OrderInCanvas(slot.View, decoy);
+
+            if (!decoy && _sceneCamera != null)
+                DismissDecoysNear(_sceneCamera.WorldToScreenPoint(slot.Anchor.transform.position));
+        }
+
+        // A real target takes the spot a live decoy's tap area would share, so the player's tap on it
+        // can't land on a decoy.
+        private void DismissDecoysNear(Vector2 screenPoint)
+        {
+            float separation = MinMarkerSeparation * _canvas.scaleFactor;
+
+            for (int i = 0; i < _slots.Count; i++)
+            {
+                var other = _slots[i].View.Target;
+                if (other == null || other.Kind != ActiveMiningTargetKind.Decoy) continue;
+
+                Vector2 at = _sceneCamera.WorldToScreenPoint(_slots[i].Anchor.transform.position);
+                if (ActiveMiningTargetPoint.AxisGap(screenPoint, at) < separation)
+                    _session.DismissDecoy(other.Id);
+            }
+        }
+
+        // Decoys sit below the real targets in the canvas, so where the spin brings a pair together
+        // the real target takes the tap.
+        private void OrderInCanvas(ActiveMiningTargetView view, bool decoy)
+        {
+            int lowest = int.MaxValue, highest = int.MinValue;
+            for (int i = 0; i < _slots.Count; i++)
+            {
+                int index = _slots[i].View.transform.GetSiblingIndex();
+                lowest  = Mathf.Min(lowest, index);
+                highest = Mathf.Max(highest, index);
+            }
+            view.transform.SetSiblingIndex(decoy ? lowest : highest);
         }
 
         // A tapped decoy arrives here as a Miss, so it gets the miss feedback and no hit effect.
@@ -417,11 +459,12 @@ namespace SocialUniverse.UI
         // asteroids overflow the screen, so a target's whole tap area has to be on screen both now
         // and when its ring closes. Points sit inside the rock's bounds, so the marker projects over
         // the rock rather than over the empty sky around it. A marker also keeps clear of the ones
-        // already live, so a decoy can't sit on a target; where nothing is both on screen and clear,
-        // the on-screen point farthest from them is the next best.
-        private void PlaceAnchor(ActiveMiningTargetPoint anchor, ActiveMiningTarget target)
+        // already live, so a decoy can't sit on a target. Where nothing is both on screen and clear,
+        // a real target takes the on-screen point farthest from the others, and a decoy isn't placed:
+        // this returns false for it.
+        private bool PlaceAnchor(ActiveMiningTargetPoint anchor, ActiveMiningTarget target)
         {
-            if (_stage == null || _stage.StageClone == null || _sceneCamera == null) return;
+            if (_stage == null || _stage.StageClone == null || _sceneCamera == null) return true;
 
             var     asteroid     = _stage.StageClone.transform;
             Vector3 towardViewer = _sceneCamera.transform.position - asteroid.position;
@@ -443,7 +486,7 @@ namespace SocialUniverse.UI
                     continue;
 
                 Vector2 screen = _sceneCamera.WorldToScreenPoint(point);
-                if (ActiveMiningTargetPoint.IsFarEnough(screen, others, separation)) return;
+                if (ActiveMiningTargetPoint.IsFarEnough(screen, others, separation)) return true;
 
                 float gap = NearestDistance(screen, others);
                 if (gap > farthestGap)
@@ -453,9 +496,12 @@ namespace SocialUniverse.UI
                 }
             }
 
+            if (target.Kind == ActiveMiningTargetKind.Decoy) return false;
+
             anchor.transform.position = farthestGap >= 0f
                 ? farthest
                 : asteroid.position + towardViewer.normalized * radius;
+            return true;
         }
 
         private List<Vector2> LiveMarkerScreenPositions()

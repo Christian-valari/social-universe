@@ -204,6 +204,61 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
+        public void A_dismissed_decoy_goes_at_no_cost_and_is_announced_as_expired()
+        {
+            var s = NewWithDecoys(rolls: new[] { 0.1f, 0.9f });
+            var expired  = new List<ActiveMiningTarget>();
+            var resolved = new List<ActiveMiningTarget>();
+            s.OnDecoyExpired   += expired.Add;
+            s.OnTargetResolved += (t, _) => resolved.Add(t);
+            s.Tick(0f);
+            var decoy = Decoy(s);
+
+            s.DismissDecoy(decoy.Id);
+
+            CollectionAssert.AreEqual(new[] { decoy }, expired);
+            CollectionAssert.IsEmpty(resolved);
+            CollectionAssert.DoesNotContain(s.LiveTargets, decoy);
+            Assert.AreEqual((0, 0), (s.ErrorCount, s.ResolvedTargets));
+            Assert.IsNotNull(Real(s), "The real target stays");
+        }
+
+        [Test]
+        public void Dismissing_a_real_target_or_an_unknown_id_does_nothing()
+        {
+            var s = NewWithDecoys(rolls: new[] { 0.1f, 0.9f });
+            var expired = new List<ActiveMiningTarget>();
+            s.OnDecoyExpired += expired.Add;
+            s.Tick(0f);
+            var real = Real(s);
+
+            s.DismissDecoy(real.Id);
+            s.DismissDecoy(999);
+
+            CollectionAssert.Contains(s.LiveTargets, real);
+            CollectionAssert.IsEmpty(expired);
+            Assert.IsNotNull(Decoy(s));
+            Assert.AreEqual((0, 0), (s.ErrorCount, s.ResolvedTargets));
+        }
+
+        [Test]
+        public void Dismissing_a_decoy_after_the_run_has_finished_does_nothing()
+        {
+            var s = NewWithDecoys(maxMisses: 1, rolls: new[] { 0.1f, 0.9f });
+            var expired = new List<ActiveMiningTarget>();
+            s.OnDecoyExpired += expired.Add;
+            s.Tick(0f);
+            var decoy = Decoy(s);
+            s.TapOffTarget();
+            Assert.AreEqual(ActiveMiningStage.Failed, s.Stage);
+
+            s.DismissDecoy(decoy.Id);
+
+            CollectionAssert.IsEmpty(expired);
+            CollectionAssert.Contains(s.LiveTargets, decoy);
+        }
+
+        [Test]
         public void A_decoy_and_its_target_closing_together_cost_one_miss()
         {
             var s = NewWithDecoys(rolls: new[] { 0.1f, 0.9f });
