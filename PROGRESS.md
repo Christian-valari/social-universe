@@ -1261,18 +1261,17 @@ deployed. Nothing in M6 has been exercised in Play Mode or on a device.
 
 ---
 
-## Active Mining Difficulty — Phase 1 🚧 CODE COMPLETE (branch `feature/active-mining-difficulty`)
+## Active Mining Difficulty — Phases 1 and 2 🚧 CODE COMPLETE (branch `feature/active-mining-difficulty`)
 
 Spec: `docs/superpowers/specs/2026-11-03-active-mining-difficulty-design.md` · plan:
 `docs/superpowers/plans/2026-11-03-active-mining-difficulty.md`. Goal: an active run can be lost,
 playing better pays more, and higher tiers are harder.
 
-**Status (2026-11-04):** Phase 1 — the closing-ring core loop, plan tasks 1–8 — is written and tested on
-the branch and is not merged to `main`. **Phase 1 has not been played on a device yet**; every number
-below is a starting value for the first play session, not tuned balance. **Phase 2 (tap-based
-challenges: decoys, two live targets, faster spin) and Phase 3 (hold-and-drag veins) are not built**, and
-the plan holds them until the owner has played Phase 1 and said to continue. Tests on 2026-11-04 (scratch
-copy, Unity 6000.3.12f1): EditMode **748/748**, PlayMode **54/54**.
+**Status (2026-11-04):** Phase 1 (the closing-ring core loop, plan tasks 1–8) and Phase 2 (the tap-based
+challenges: decoys, two live targets, faster spin) are written and tested on the branch and are not merged
+to `main`. **Neither phase has been played on a device yet**; every number below is a starting value for
+the play sessions, not tuned balance. **Phase 3 (hold-and-drag veins) is not built.** Tests on 2026-11-04
+(scratch copy, Unity 6000.3.12f1): EditMode **818/818**, PlayMode **62/62**.
 
 | Piece                                  | Where                                                                                          | What it does                                                                                                                                                                                                                                                                                      |
 | -------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -1281,10 +1280,13 @@ copy, Unity 6000.3.12f1): EditMode **748/748**, PlayMode **54/54**.
 | Banked payout                          | `ActiveMiningPayout`, `ActiveMiningHandoff` (`Core/`)                                          | A run pays its banked share of the full quantity pinned when it began, rather than a figure recomputed after Planet reloads. A run that banked nothing pays nothing, and the asteroid is used up whether the run cleared or failed                                                                |
 | Idle pays 70%                          | `EconomyConfig` (`_idleYieldFraction`), `MiningRewardCalculator`                               | Idle runs pay 70% of the full quantity; their durations are unchanged                                                                                                                                                                                                                              |
 | ActiveMining scene                     | `ActiveMiningMinigameView`, `ActiveMiningAsteroidStage`, `ActiveMiningTargetView`, `ActiveMiningRulesText` | Closing rings with a banked counter and a miss counter, grade labels, a shake and sounds on a miss and on a failed run (`SfxId.ActiveMiningMiss`, `ActiveMiningFail`, at the end of the enum), targets placed on the rock and kept on screen, a rules line on the pre-game panel, and an `AudioListener` on the scene camera (the scene had none) |
+| Phase 2 challenges                     | `ActiveMiningTierSettings` (`_decoyChance`, `_liveTargets`, `_minSpinDegrees`, `_maxSpinDegrees`), `ActiveMiningSession`, `ActiveMiningAsteroidStage`, `ActiveMiningTargetPoint`, `ActiveMiningRulesText` | From Tier 2 a target can spawn with a red X decoy beside it (25%, 35% from Tier 4); from Tier 3 two targets can be live at once; from Tier 4 the asteroid spins at 30–45 degrees per second instead of 5–15. Each tier's rules line names a challenge on the tier that introduces it. The stage reads the spin range from the run's settings when Start is pressed. Random target placement is limited to a cone around the viewer axis of `Clamp(85 − maxSpin × ringSeconds, 15, 85)` degrees, so the spin can't carry a target behind the asteroid before its ring closes; the on-screen, separation and fallback checks are unchanged |
 | Mining prompt                          | `AsteroidTierPrompt.PayLines`, `MiningModePromptView`                                          | Under the tier status, when the drone can mine the asteroid: "Idle: safe, pays 70%" and "Active: up to 100%, depends on how you play"                                                                                                                                                             |
 | Quitting mid-run                       | `ActiveMiningRunStore`, `ActiveMiningRunRecord`, `SaveKeys.ActiveMiningRun`, `MiningController` | A local marker is written when Start is pressed and refreshed on pause, quit and run end. If Planet loads with a marker and no result, the run settles like a failed one (pays what was banked, asteroid used up). The marker is cleared once the claim is answered                                  |
 | Dev tools (Editor and Development Builds only) | `ActiveMiningDevTierPicker`, `ActiveMiningRunLog`, `ActiveMiningHandoff.DevSettingsForTier` / `UseSettings` | Tier 1–5 buttons across the top of the pre-game panel, so any tier can be tried on any asteroid; a pick changes only the minigame's difficulty for that run, not the asteroid or what it pays, and the picker goes when Start is pressed. Each finished run logs one line: `[SU:Mining] ActiveMining run: tier=3 perfect=1 good=1 late=0 misses=0 banked=0.90 result=Success`. All of it sits inside `#if UNITY_EDITOR || DEVELOPMENT_BUILD`; a release compile of the player scripts has none of it |
 | Dev mode                               | `RootLifetimeScope.UsesDevMode`, `PlanetSceneScope`                                            | With `_devMode` on, Planet uses the local mining services (`LocalMockMineralService`, `LocalMockDroneService`, `LocalMockIdleMiningService`, `LocalMockAsteroidRespawnService`), so claims and idle runs work with no backend. Minerals, coins and idle runs last only until the next Planet load, and an emptied asteroid comes back then |
+
+Placement was measured with a scratch harness (not committed) on all eight asteroids at their own tier and at Tier 5, at 1080×1920 and 1080×2340: every sampled target stayed on screen for its whole ring, none passed behind the asteroid's centre plane, and none used the facing-point fallback. The Phase 2 play session should check that a target never reaches the far side before its ring closes, that decoys read at a glance, and that Tier 5 without veins banks about 60–85% for a skilled player.
 
 The play-session steps (dev mode on, a Development Build to a phone, Tiers 1 and 2 through the picker)
 are in the plan's "STOP: Phase 1 play session". What to look for: Tier 1 clears nearly every time and
