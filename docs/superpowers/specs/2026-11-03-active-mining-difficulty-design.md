@@ -136,9 +136,23 @@ item, so Tier 5 ships without it if it doesn't feel good. *(Drafting calls for a
   it resolves. This keeps it one-finger, with no multi-touch.
 - **Spin:** the asteroid eases down to 5°/s while a vein is live, so the player isn't tracing a line
   moving at full speed. Use that slower speed in the placement cone.
-- **Ring time:** starts at 1.6s, with Perfect and Good times to be set in playtest.
-- **Length:** 300-550 canvas units, so the grade reflects skill and not how long a vein happened to be.
-  If veins stay, a time scaled to length is the better fix.
+- **Length and time:** a vein is 300-550 canvas units long, and its three times scale with that length so
+  the same finger speed earns the same grade on any vein. Seeing a vein and reaching its start takes about
+  the same time whatever its length, so only the time past that scales:
+  `scaled(t, length) = reach + (t - reach) x clamp(length, 300, 550) / 425`, with `reach` 0.5s and 425
+  the reference length, where the times are the original 1.1s (Perfect by), 1.35s (Good by) and 1.6s
+  (ring). Perfect and Good times are playtest guesses.
+
+  | Length | Perfect by | Good by | Ring |
+  |---|---|---|---|
+  | 300 | 0.924s | 1.100s | 1.276s |
+  | 425 | 1.100s | 1.350s | 1.600s |
+  | 550 | 1.276s | 1.600s | 1.924s |
+
+  Reach stays fixed because scaling the whole time with length would give a short vein too little time to
+  see and reach, and a long one too much. The clamp keeps a fallback vein outside the band from getting an
+  absurdly short or long clock. Placement uses the longest ring (1.924s) for its on-screen checks, and the
+  view reports each vein's measured length to the session as it places it.
 - **Press feedback:** the start marker grows and turns gold while held, so a press that missed is obvious.
 
 The session's target model should allow for a vein from the start, as a target kind that takes the
