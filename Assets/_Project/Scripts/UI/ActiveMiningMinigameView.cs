@@ -26,7 +26,6 @@ namespace SocialUniverse.UI
         private const int   MaxHitVfx            = 4;
         private const int   MaxPlacementAttempts = 32;
         private const float MinMarkerSeparation  = 160f; // canvas pixels between live markers' centres along an axis, so their tap areas can't overlap
-        private const float MinVeinLength        = 300f; // canvas pixels between a vein's ends
         private const float GradeFadeSeconds     = 0.5f;
         private const float MissShakeSeconds     = 0.2f;
         private const float FailShakeSeconds     = 0.5f;
@@ -585,9 +584,10 @@ namespace SocialUniverse.UI
         }
 
         // Both ends are held to what a target is held to: on screen now and when the ring closes, over
-        // the rock. The first pair far enough apart is used, or else the farthest pair found. A rock too
-        // big to leave any pair on screen gets a level line through the point facing the viewer, so
-        // there is still something the player can drag.
+        // the rock. The first pair whose length is inside the config's band is used, or else the pair
+        // that came nearest the band. A rock too big to leave any pair on screen gets a level line of
+        // the band's shortest length through the point facing the viewer, so there is still something
+        // the player can drag.
         private void PlaceVein()
         {
             if (_stage == null || _stage.StageClone == null || _sceneCamera == null) return;
@@ -596,12 +596,13 @@ namespace SocialUniverse.UI
             Vector3 towardViewer = _sceneCamera.transform.position - asteroid.position;
             float   margin       = TapRadius * _canvas.scaleFactor;
             float   radius       = _stage.SurfaceRadius * PlacementInset;
-            float   minLength    = MinVeinLength * _canvas.scaleFactor;
+            float   minLength    = _settings.VeinMinLength * _canvas.scaleFactor;
+            float   maxLength    = _settings.VeinMaxLength * _canvas.scaleFactor;
             float   ringSeconds  = _settings.VeinRingSeconds;
             float   maxAngle     = ActiveMiningTargetPoint.MaxPlacementAngle(_settings.VeinSpinDegrees, ringSeconds);
 
-            Vector3 farthestStart  = default, farthestEnd = default;
-            float   farthestLength = -1f;
+            Vector3 nearestStart = default, nearestEnd = default;
+            float   nearestMiss  = float.MaxValue;
 
             for (int attempt = 0; attempt < MaxPlacementAttempts; attempt++)
             {
@@ -612,20 +613,21 @@ namespace SocialUniverse.UI
                 if (!StaysOnScreen(start, ringSeconds, margin) || !StaysOnScreen(end, ringSeconds, margin)) continue;
 
                 float length = Vector2.Distance(_sceneCamera.WorldToScreenPoint(start), _sceneCamera.WorldToScreenPoint(end));
-                if (length >= minLength) return;
+                float miss = Mathf.Max(minLength - length, length - maxLength);
+                if (miss <= 0f) return;
 
-                if (length > farthestLength)
+                if (miss < nearestMiss)
                 {
-                    farthestLength = length;
-                    farthestStart  = start;
-                    farthestEnd    = end;
+                    nearestMiss  = miss;
+                    nearestStart = start;
+                    nearestEnd   = end;
                 }
             }
 
-            if (farthestLength >= 0f)
+            if (nearestMiss < float.MaxValue)
             {
-                _veinStart.transform.position = farthestStart;
-                _veinEnd.transform.position   = farthestEnd;
+                _veinStart.transform.position = nearestStart;
+                _veinEnd.transform.position   = nearestEnd;
                 return;
             }
 

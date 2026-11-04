@@ -102,6 +102,8 @@ MonoBehaviour:
   _activeVeinSpinDegrees: 5
   _activeVeinDragTolerance: 90
   _activeVeinCompleteProgress: 0.95
+  _activeVeinMinLength: 300
+  _activeVeinMaxLength: 550
   _maxFuel: 100
   _fuelRechargePerHour: 10
   _fuelRefillCost: 50

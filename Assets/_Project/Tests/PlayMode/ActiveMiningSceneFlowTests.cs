@@ -738,7 +738,7 @@ namespace SocialUniverse.Tests
 
         // Both ends count, now and when the ring closes, on a rock with plenty of room.
         [UnityTest]
-        public IEnumerator A_vein_ends_are_on_screen_until_its_ring_closes_and_far_enough_apart()
+        public IEnumerator A_vein_ends_are_on_screen_until_its_ring_closes_and_within_the_length_band()
         {
             SpawnRock(0.2f);
             BeginRun(targets: 16, maxMisses: 99, ringSeconds: 1.6f, veinEvery: 1, spinDegrees: 40f);
@@ -762,7 +762,7 @@ namespace SocialUniverse.Tests
                     wrong.Add($"Vein {vein.Id} off screen: {start} {end}");
 
                 float length = Vector2.Distance(camera.WorldToScreenPoint(start), camera.WorldToScreenPoint(end));
-                if (length < 300f * scale) wrong.Add($"Vein {vein.Id} only {length} px long at scale {scale}");
+                if (length < 300f * scale || length > 550f * scale) wrong.Add($"Vein {vein.Id} is {length} px long at scale {scale}, outside 300-550");
             };
 
             for (int i = 0; i < 16; i++)
@@ -777,9 +777,9 @@ namespace SocialUniverse.Tests
             CollectionAssert.IsEmpty(wrong, $"Screen is {Screen.width}x{Screen.height}");
         }
 
-        // No pair on this rock is 300 apart, so the view takes the longest it found: on screen, and not one point.
+        // No pair on this rock is 300 apart, so the view takes the one nearest the band, which is the longest: on screen, and not one point.
         [UnityTest]
-        public IEnumerator A_vein_on_a_rock_too_small_for_the_gap_takes_the_farthest_pair()
+        public IEnumerator A_vein_on_a_rock_too_small_for_the_band_takes_the_longest_pair()
         {
             SpawnRock(0.02f);
             BeginRun(targets: 2, maxMisses: 3, veinEvery: 1);
@@ -820,6 +820,46 @@ namespace SocialUniverse.Tests
             vein.OnPointerDown(Pointer(vein.StartPosition));
             vein.OnDrag(Pointer(vein.EndPosition));
             Assert.AreEqual(1, Session().ResolvedTargets, "and it can be played");
+        }
+
+        // A press that lands is shown on the start marker: bigger and gold, until it is let go.
+        [UnityTest]
+        public IEnumerator The_start_marker_shows_a_held_press()
+        {
+            yield return BeginVein(targets: 3);
+            var     vein   = VeinView();
+            var     marker = Private<RectTransform>(vein, "_startMarker");
+            var     graphic = marker.GetComponent<UnityEngine.UI.Graphic>();
+            Vector2 start  = vein.StartPosition, end = vein.EndPosition;
+            var     target = vein.Target;
+            Vector3 restScale = marker.localScale;
+            Color   restColor = graphic.color;
+
+            vein.OnPointerDown(Pointer(start + Vector2.Perpendicular(end - start).normalized * 400f));
+            Assert.AreEqual(restScale, marker.localScale, "A press off the marker changes nothing");
+            Assert.AreEqual(restColor, graphic.color);
+
+            vein.OnPointerDown(Pointer(start));
+            Assert.AreEqual(restScale.x * 1.25f, marker.localScale.x, 0.001f);
+            Assert.AreEqual(new Color(1f, 0.84f, 0.3f), graphic.color);
+
+            vein.OnDrag(Pointer(Vector2.Lerp(start, end, 0.5f)));
+            vein.OnPointerUp(Pointer(Vector2.Lerp(start, end, 0.5f)));
+            Assert.AreEqual(restScale, marker.localScale, "Letting go puts it back");
+            Assert.AreEqual(restColor, graphic.color);
+
+            vein.Show(target, 70f, 90f, 0.95f, null, null);
+            vein.OnPointerDown(Pointer(start));
+            Assert.AreNotEqual(restScale, marker.localScale);
+            vein.Hide();
+            Assert.AreEqual(restScale, marker.localScale, "Hiding while held restores it for the next vein");
+            Assert.AreEqual(restColor, graphic.color);
+
+            vein.Show(target, 70f, 90f, 0.95f, null, null);
+            vein.OnPointerDown(Pointer(start));
+            vein.Show(target, 70f, 90f, 0.95f, null, null);
+            Assert.AreEqual(restScale, marker.localScale, "A pooled reuse starts plain");
+            vein.Hide();
         }
 
         // The anchors come from no pool the tap targets use, and stay two however many veins a run has.

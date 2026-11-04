@@ -64,6 +64,8 @@ namespace SocialUniverse.Config
         [SerializeField] private float _activeVeinSpinDegrees   = 5f;    // the asteroid's spin while a vein is live, in degrees per second
         [SerializeField] private float _activeVeinDragTolerance = 90f;   // canvas units a finger may be off a vein's line before the drag fails (playtest guess)
         [SerializeField] private float _activeVeinCompleteProgress = 0.95f; // share of a vein's line that finishes it (playtest guess)
+        [SerializeField] private float _activeVeinMinLength     = 300f;  // shortest distance between a vein's ends, in canvas units
+        [SerializeField] private float _activeVeinMaxLength     = 550f;  // longest; a vein's time budget is the same whatever its length, so a longer one is harder (playtest guess)
 
         [Header("Drones — M6")]
         [SerializeField] private int   _startingFleetSlots    = 2;
@@ -119,7 +121,7 @@ namespace SocialUniverse.Config
                 _activePerfectShare, _activeGoodShare, _activeLateShare,
                 _activeSpawnGapSeconds, _activeMissGraceSeconds, _activeFirstTargetDelaySeconds, _activeSecondTargetStagger,
                 _activeVeinRingSeconds, _activeVeinPerfectBySeconds, _activeVeinGoodBySeconds, _activeVeinSpinDegrees,
-                _activeVeinDragTolerance, _activeVeinCompleteProgress);
+                _activeVeinDragTolerance, _activeVeinCompleteProgress, _activeVeinMinLength, _activeVeinMaxLength);
         }
 
         public int   StartingFleetSlots   => _startingFleetSlots;

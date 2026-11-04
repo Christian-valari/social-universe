@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using SocialUniverse.Mining;
 
 namespace SocialUniverse.UI
@@ -25,6 +26,14 @@ namespace SocialUniverse.UI
         private float   _dragTolerance;
         private float   _completeProgress;
 
+        private static readonly Color HeldColor = new Color(1f, 0.84f, 0.3f);
+        private const float HeldScale = 1.25f;
+
+        // The start marker's look at rest, taken the first time it is needed: Hide can run before Awake.
+        private Graphic _startGraphic;
+        private Color   _startColor;
+        private Vector3 _startScale;
+        private bool    _startLookKnown;
         private bool    _held;
         private int     _heldPointerId;
         private Vector2 _heldAt;
@@ -46,7 +55,7 @@ namespace SocialUniverse.UI
             _completeProgress = completeProgress;
             _onCompleted      = onCompleted;
             _onFailed         = onFailed;
-            _held             = false;
+            SetHeld(false);
             gameObject.SetActive(true);
         }
 
@@ -55,7 +64,7 @@ namespace SocialUniverse.UI
             Target       = null;
             _onCompleted = null;
             _onFailed    = null;
-            _held        = false;
+            SetHeld(false);
             gameObject.SetActive(false);
         }
 
@@ -91,7 +100,7 @@ namespace SocialUniverse.UI
             float reach = Mathf.Min(_tapRadius, _dragTolerance) * _canvas.scaleFactor;
             if (Vector2.Distance(eventData.position, StartPosition) > reach) return;
 
-            _held          = true;
+            SetHeld(true);
             _heldPointerId = eventData.pointerId;
             _heldAt        = eventData.position;
         }
@@ -119,7 +128,7 @@ namespace SocialUniverse.UI
         // pressed again while the ring has time.
         private void OnApplicationPause(bool paused)
         {
-            if (paused) _held = false;
+            if (paused) SetHeld(false);
         }
 
         private bool IsHeldBy(PointerEventData eventData) => _held && eventData.pointerId == _heldPointerId;
@@ -134,9 +143,25 @@ namespace SocialUniverse.UI
                 Resolve(_onCompleted);
         }
 
+        // A held press shows on the start marker, so the player can tell it landed.
+        private void SetHeld(bool held)
+        {
+            if (!_startLookKnown)
+            {
+                _startGraphic   = _startMarker.GetComponent<Graphic>();
+                _startColor     = _startGraphic != null ? _startGraphic.color : Color.white;
+                _startScale     = _startMarker.localScale;
+                _startLookKnown = true;
+            }
+
+            _held = held;
+            _startMarker.localScale = held ? _startScale * HeldScale : _startScale;
+            if (_startGraphic != null) _startGraphic.color = held ? HeldColor : _startColor;
+        }
+
         private void Resolve(Action<ActiveMiningTarget> outcome)
         {
-            _held = false;
+            SetHeld(false);
             outcome?.Invoke(Target);
         }
     }

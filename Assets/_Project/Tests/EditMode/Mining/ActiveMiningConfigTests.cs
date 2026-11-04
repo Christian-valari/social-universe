@@ -97,6 +97,18 @@ namespace SocialUniverse.Tests
             Assert.AreEqual((90f, 0.95f), (s.VeinDragTolerance, s.VeinCompleteProgress));
         }
 
+        [Test] public void Real_asset_holds_the_vein_length_band()
+        {
+            var s = Real().ActiveRunSettings(5);
+            Assert.AreEqual((300f, 550f), (s.VeinMinLength, s.VeinMaxLength));
+        }
+
+        [Test] public void A_run_settings_object_defaults_to_the_shipped_vein_length_band()
+        {
+            var s = new ActiveMiningRunSettings(1, new ActiveMiningTierSettings(), null, 1f, 0.8f, 0.6f, 0.25f, 0.2f);
+            Assert.AreEqual((300f, 550f), (s.VeinMinLength, s.VeinMaxLength));
+        }
+
         [Test] public void A_tier_has_no_veins_unless_it_is_given_a_cadence()
         {
             Assert.AreEqual(0, new ActiveMiningTierSettings().VeinEvery);

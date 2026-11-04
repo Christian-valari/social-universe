@@ -20,8 +20,12 @@ namespace SocialUniverse.Config
             float veinGoodBySeconds = 1.35f,
             float veinSpinDegrees = 5f,
             float veinDragTolerance = 90f,
-            float veinCompleteProgress = 0.95f)
+            float veinCompleteProgress = 0.95f,
+            float veinMinLength = 300f,
+            float veinMaxLength = 550f)
         {
+            VeinMinLength           = veinMinLength;
+            VeinMaxLength           = veinMaxLength;
             VeinDragTolerance       = veinDragTolerance;
             VeinCompleteProgress    = veinCompleteProgress;
             VeinRingSeconds         = veinRingSeconds;
@@ -62,5 +66,9 @@ namespace SocialUniverse.Config
         // A drag fails more than VeinDragTolerance canvas units off the line, and finishes VeinCompleteProgress (0-1) of the way along it.
         public float                    VeinDragTolerance       { get; }
         public float                    VeinCompleteProgress    { get; }
+
+        // The distance between a vein's ends, in canvas units, that placement aims for.
+        public float                    VeinMinLength           { get; }
+        public float                    VeinMaxLength           { get; }
     }
 }
