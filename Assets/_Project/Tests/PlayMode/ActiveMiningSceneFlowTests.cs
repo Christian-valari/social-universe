@@ -779,6 +779,30 @@ namespace SocialUniverse.Tests
             Assert.AreEqual(clearance, Vector2.Distance(at, label.transform.position), 0.5f);
         }
 
+        // Reuse of a freed pool slot puts the newer target ahead of the older one in pool order.
+        [UnityTest]
+        public IEnumerator A_wrong_tap_labels_the_oldest_live_target()
+        {
+            BeginRun(targets: 4, maxMisses: 3, liveTargets: 2);
+            PressStart();
+            yield return WaitUntil(() => LiveTargetViews().Count == 2, "both targets to be live");
+            Private<Button>(LiveTargetViews()[0], "_button").onClick.Invoke();
+            yield return WaitUntil(() => LiveTargetViews().Count == 2, "a replacement to be live");
+
+            var views  = LiveTargetViews();
+            var oldest = views[0];
+            var newer  = views[1];
+            var slots  = (IList)typeof(ActiveMiningMinigameView).GetField("_slots", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(_view);
+            var firstInPool = (ActiveMiningTargetView)slots[0].GetType().GetField("View").GetValue(slots[0]);
+            Assert.AreSame(newer, firstInPool, "The newer target comes first in pool order");
+
+            float clearance = ((RectTransform)oldest.transform).rect.height * _view.GetComponent<Canvas>().scaleFactor;
+            TapMissArea();
+
+            var label = Private<Text>(_view, "_gradeText");
+            Assert.AreEqual(clearance, Vector2.Distance(oldest.transform.position, label.transform.position), 0.5f);
+        }
+
         // Where the rules gain a second line, it has to fit the box and stay clear of the start prompt.
         [UnityTest]
         public IEnumerator The_rules_for_a_tier_with_decoys_fit_on_screen_clear_of_the_start_prompt()

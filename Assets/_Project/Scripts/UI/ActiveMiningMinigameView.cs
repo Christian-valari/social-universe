@@ -321,20 +321,22 @@ namespace SocialUniverse.UI
             }
         }
 
-        // A wrong tap lands on empty space and leaves its ring live, so the label goes beside that
-        // ring rather than over the thing the player has to tap next.
+        // A wrong tap lands on empty space and leaves its ring live, so the label goes beside the oldest
+        // live ring rather than over the thing the player has to tap next.
         private void OnWrongTap()
         {
             Refresh();
 
+            TargetSlot oldest = null;
             for (int i = 0; i < _slots.Count; i++)
             {
                 var shown = _slots[i].View.Target;
                 if (shown == null || shown.Kind == ActiveMiningTargetKind.Decoy) continue;
 
-                PlayMissFeedback(ClearOfRing(_slots[i].View.transform.position));
-                break;
+                if (oldest == null || shown.Id < oldest.View.Target.Id) oldest = _slots[i];
             }
+
+            if (oldest != null) PlayMissFeedback(ClearOfRing(oldest.View.transform.position));
         }
 
         // One target's height toward the middle of the screen, which keeps it on screen.

@@ -5,8 +5,9 @@ namespace SocialUniverse.Mining
 {
     // Marker for a single tap target during active mining. Anchored to a random point on the
     // spawned asteroid's surface that currently faces the camera, so it's a genuine 3D point
-    // that moves as the asteroid rotates. Only ever placed on the hemisphere facing the viewer
-    // at spawn time (no occlusion tracking) — see design spec 2026-07-04 §4.
+    // that moves as the asteroid rotates. Placed within the cap of the facing hemisphere that
+    // the spin can't carry past the edge before the ring closes (no occlusion tracking) — see
+    // design spec 2026-07-04 §4.
     public class ActiveMiningTargetPoint : MonoBehaviour
     {
         const float MinPlacementAngle = 15f;

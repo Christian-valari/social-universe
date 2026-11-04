@@ -9,6 +9,7 @@ namespace SocialUniverse.Mining
     // touches the original field Asteroid instance back in the Planet scene.
     public class ActiveMiningAsteroidStage : MonoBehaviour
     {
+        // The tumble before a run starts; Start replaces the range with the run's own (SetSpinRange).
         [SerializeField] private float _minRotationSpeed = 5f;  // degrees per second
         [SerializeField] private float _maxRotationSpeed = 15f;
         [SerializeField] private float _shakeDistance    = 0.002f; // world units at the start of a shake

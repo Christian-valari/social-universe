@@ -161,7 +161,7 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
-        public void A_tap_just_after_a_decoy_is_forgiven_like_one_after_a_hit()
+        public void A_stray_tap_after_a_decoy_tap_is_free()
         {
             var s = NewWithDecoys();
             s.Tick(0f);
@@ -169,7 +169,20 @@ namespace SocialUniverse.Tests
 
             s.TapOffTarget();
 
-            Assert.AreEqual(1, s.ErrorCount);
+            Assert.AreEqual((1, 0), (s.ErrorCount, s.WrongTaps));
+        }
+
+        [Test]
+        public void A_decoy_tap_during_grace_is_still_a_miss()
+        {
+            var s = NewWithDecoys(rolls: new[] { 0.1f, 0.9f });
+            s.Tick(0f);
+            var decoy = Decoy(s);
+            s.TapTarget(Real(s).Id); // opens the grace window
+
+            s.TapTarget(decoy.Id);
+
+            Assert.AreEqual((1, 1), (s.ErrorCount, s.DecoyTaps));
         }
 
         [Test]
