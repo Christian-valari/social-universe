@@ -11,7 +11,7 @@ namespace SocialUniverse.UI
     // as colour; the next normal target puts the usual look back.
     public class ActiveMiningTargetView : MonoBehaviour
     {
-        private const float RingStartScale = 2.2f;
+        public const float RingStartScale = 2.2f;
 
         [SerializeField] private Button        _button;
         [SerializeField] private Image         _marker;

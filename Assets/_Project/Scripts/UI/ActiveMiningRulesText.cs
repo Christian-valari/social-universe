@@ -24,6 +24,10 @@ namespace SocialUniverse.UI
                 && settings.Tier.MaxSpinDegrees > settings.PreviousTier.MaxSpinDegrees)
                 rules += "\nNew: the asteroid spins faster, so targets move.";
 
+            if (settings != null && settings.Tier.VeinEvery > 0
+                && !(settings.PreviousTier != null && settings.PreviousTier.VeinEvery > 0))
+                rules += "\nNew: press and drag along glowing veins.";
+
             return rules;
         }
     }

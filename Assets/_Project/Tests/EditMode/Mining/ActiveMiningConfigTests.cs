@@ -91,6 +91,12 @@ namespace SocialUniverse.Tests
             Assert.Less(s.VeinGoodBySeconds, s.VeinRingSeconds);
         }
 
+        [Test] public void Real_asset_holds_the_vein_drag_values()
+        {
+            var s = Real().ActiveRunSettings(5);
+            Assert.AreEqual((90f, 0.95f), (s.VeinDragTolerance, s.VeinCompleteProgress));
+        }
+
         [Test] public void A_tier_has_no_veins_unless_it_is_given_a_cadence()
         {
             Assert.AreEqual(0, new ActiveMiningTierSettings().VeinEvery);

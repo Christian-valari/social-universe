@@ -62,6 +62,8 @@ namespace SocialUniverse.Config
         [SerializeField] private float _activeVeinPerfectBySeconds = 1.1f; // a vein finished at or before this age is Perfect (playtest guess)
         [SerializeField] private float _activeVeinGoodBySeconds = 1.35f; // ... Good; later is Late (playtest guess)
         [SerializeField] private float _activeVeinSpinDegrees   = 5f;    // the asteroid's spin while a vein is live, in degrees per second
+        [SerializeField] private float _activeVeinDragTolerance = 90f;   // canvas units a finger may be off a vein's line before the drag fails (playtest guess)
+        [SerializeField] private float _activeVeinCompleteProgress = 0.95f; // share of a vein's line that finishes it (playtest guess)
 
         [Header("Drones — M6")]
         [SerializeField] private int   _startingFleetSlots    = 2;
@@ -116,7 +118,8 @@ namespace SocialUniverse.Config
             return new ActiveMiningRunSettings(number, current, previous,
                 _activePerfectShare, _activeGoodShare, _activeLateShare,
                 _activeSpawnGapSeconds, _activeMissGraceSeconds, _activeFirstTargetDelaySeconds, _activeSecondTargetStagger,
-                _activeVeinRingSeconds, _activeVeinPerfectBySeconds, _activeVeinGoodBySeconds, _activeVeinSpinDegrees);
+                _activeVeinRingSeconds, _activeVeinPerfectBySeconds, _activeVeinGoodBySeconds, _activeVeinSpinDegrees,
+                _activeVeinDragTolerance, _activeVeinCompleteProgress);
         }
 
         public int   StartingFleetSlots   => _startingFleetSlots;

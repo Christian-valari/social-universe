@@ -18,8 +18,12 @@ namespace SocialUniverse.Config
             float veinRingSeconds = 1.6f,
             float veinPerfectBySeconds = 1.1f,
             float veinGoodBySeconds = 1.35f,
-            float veinSpinDegrees = 5f)
+            float veinSpinDegrees = 5f,
+            float veinDragTolerance = 90f,
+            float veinCompleteProgress = 0.95f)
         {
+            VeinDragTolerance       = veinDragTolerance;
+            VeinCompleteProgress    = veinCompleteProgress;
             VeinRingSeconds         = veinRingSeconds;
             VeinPerfectBySeconds    = veinPerfectBySeconds;
             VeinGoodBySeconds       = veinGoodBySeconds;
@@ -54,5 +58,9 @@ namespace SocialUniverse.Config
         public float                    VeinPerfectBySeconds    { get; }
         public float                    VeinGoodBySeconds       { get; }
         public float                    VeinSpinDegrees         { get; }
+
+        // A drag fails more than VeinDragTolerance canvas units off the line, and finishes VeinCompleteProgress (0-1) of the way along it.
+        public float                    VeinDragTolerance       { get; }
+        public float                    VeinCompleteProgress    { get; }
     }
 }

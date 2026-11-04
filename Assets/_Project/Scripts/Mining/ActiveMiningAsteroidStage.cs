@@ -9,6 +9,8 @@ namespace SocialUniverse.Mining
     // touches the original field Asteroid instance back in the Planet scene.
     public class ActiveMiningAsteroidStage : MonoBehaviour
     {
+        private const float SpinEaseSeconds = 0.2f; // how long the spin takes to reach a new speed
+
         // The tumble before a run starts; Start replaces the range with the run's own (SetSpinRange).
         [SerializeField] private float _minRotationSpeed = 5f;  // degrees per second
         [SerializeField] private float _maxRotationSpeed = 15f;
@@ -27,6 +29,11 @@ namespace SocialUniverse.Mining
 
         private Vector3 _rotationAxis;
         private float   _rotationSpeed;
+
+        private float   _spinGoal;        // the speed an ease is heading for
+        private float   _spinEaseRate;    // degrees per second gained or lost each second; 0 when not easing
+        private float   _spinToRestore;   // what RestoreSpin goes back to
+        private bool    _spinEased;       // an EaseSpinTo is waiting on its RestoreSpin
 
         private Vector3 _restLocalPosition; // where the clone goes back to once a shake ends
         private float   _shakeSeconds;
@@ -68,7 +75,7 @@ namespace SocialUniverse.Mining
             SurfaceRadius  = MeasureSurfaceRadius(clone, ColliderRadius);
 
             _rotationAxis  = Random.onUnitSphere;
-            _rotationSpeed = Random.Range(_minRotationSpeed, _maxRotationSpeed);
+            SetSpeed(Random.Range(_minRotationSpeed, _maxRotationSpeed));
 
             StageClone = clone;
             return clone;
@@ -80,18 +87,39 @@ namespace SocialUniverse.Mining
         {
             _minRotationSpeed = minDegrees;
             _maxRotationSpeed = maxDegrees;
-            _rotationSpeed    = Random.Range(minDegrees, maxDegrees);
+            SetSpeed(Random.Range(minDegrees, maxDegrees));
         }
 
-        // Where the clone's current spin carries a world-space point after this many seconds. The
-        // spin turns about where the clone rests, which a shake only moves it away from for a moment.
+        // Takes the spin to this speed over a moment. RestoreSpin puts back the speed from before the
+        // first ease, however many follow it.
+        public void EaseSpinTo(float degrees)
+        {
+            if (!_spinEased)
+            {
+                _spinToRestore = SettlingSpeed;
+                _spinEased     = true;
+            }
+            BeginEase(degrees);
+        }
+
+        public void RestoreSpin()
+        {
+            if (!_spinEased) return;
+
+            _spinEased = false;
+            BeginEase(_spinToRestore);
+        }
+
+        // Where the clone's spin carries a world-space point after this many seconds, at the speed it
+        // is settling at, since an ease is over long before a ring closes. The spin turns about where
+        // the clone rests, which a shake only moves it away from for a moment.
         public Vector3 PredictPoint(Vector3 worldPoint, float seconds)
         {
             if (StageClone == null) return worldPoint;
 
             Vector3 center  = StageClone.transform.position;
             Vector3 resting = _shakeSecondsLeft > 0f ? transform.TransformPoint(_restLocalPosition) : center;
-            return resting + Quaternion.AngleAxis(_rotationSpeed * seconds, _rotationAxis) * (worldPoint - center);
+            return resting + Quaternion.AngleAxis(SettlingSpeed * seconds, _rotationAxis) * (worldPoint - center);
         }
 
         // Jitters the clone's position for this long, easing out, then puts it back exactly where it
@@ -108,10 +136,40 @@ namespace SocialUniverse.Mining
         // Slow tumble to match the atmosphere of the field asteroids (Asteroid.Update()).
         private void Update()
         {
+            AdvanceSpin(Time.deltaTime);
+
             if (StageClone != null)
                 StageClone.transform.Rotate(_rotationAxis, _rotationSpeed * Time.deltaTime, Space.World);
 
             AdvanceShake(Time.deltaTime);
+        }
+
+        private float SettlingSpeed => _spinEaseRate > 0f ? _spinGoal : _rotationSpeed;
+
+        // A speed picked outright replaces any ease, and with it what the ease would restore.
+        private void SetSpeed(float degrees)
+        {
+            _rotationSpeed = degrees;
+            _spinEaseRate  = 0f;
+            _spinEased     = false;
+        }
+
+        private void BeginEase(float degrees)
+        {
+            _spinGoal     = degrees;
+            _spinEaseRate = Mathf.Abs(_rotationSpeed - degrees) / SpinEaseSeconds;
+        }
+
+        private void AdvanceSpin(float deltaTime)
+        {
+            if (_spinEaseRate <= 0f) return;
+
+            _rotationSpeed = Mathf.MoveTowards(_rotationSpeed, _spinGoal, _spinEaseRate * deltaTime);
+            if (Mathf.Approximately(_rotationSpeed, _spinGoal))
+            {
+                _rotationSpeed = _spinGoal;
+                _spinEaseRate  = 0f;
+            }
         }
 
         // Reads only the mesh's bounds, which stay readable on a device where its vertices may not.

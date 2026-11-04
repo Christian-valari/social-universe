@@ -100,6 +100,8 @@ MonoBehaviour:
   _activeVeinPerfectBySeconds: 1.1
   _activeVeinGoodBySeconds: 1.35
   _activeVeinSpinDegrees: 5
+  _activeVeinDragTolerance: 90
+  _activeVeinCompleteProgress: 0.95
   _maxFuel: 100
   _fuelRechargePerHour: 10
   _fuelRefillCost: 50

@@ -67,6 +67,26 @@ namespace SocialUniverse.Tests
         public void The_spin_is_named_only_where_it_first_speeds_up(float maxSpin, float previousMaxSpin) =>
             StringAssert.DoesNotContain("spins", ActiveMiningRulesText.For(Spin(maxSpin, previousMaxSpin)));
 
+        private const string VeinLine = "New: press and drag along glowing veins.";
+
+        [Test]
+        public void Tier_5_rules_name_the_veins() =>
+            StringAssert.Contains(VeinLine, ActiveMiningRulesText.For(Veins(every: 4, previousEvery: 0)));
+
+        [Test]
+        public void The_vein_line_follows_the_ring_rule() =>
+            StringAssert.StartsWith(Rules, ActiveMiningRulesText.For(Veins(every: 4, previousEvery: 0)));
+
+        [TestCase(4, 4, TestName = "A_tier_with_veins_like_the_one_below_does_not_repeat_them")]
+        [TestCase(0, 0, TestName = "A_tier_with_veins_turned_off_does_not_name_them")]
+        public void Veins_are_named_only_where_they_first_appear(int every, int previousEvery) =>
+            StringAssert.DoesNotContain("vein", ActiveMiningRulesText.For(Veins(every, previousEvery)));
+
+        private static ActiveMiningRunSettings Veins(int every, int previousEvery) =>
+            new ActiveMiningRunSettings(5, new ActiveMiningTierSettings(16, 0.9f, 0.6f, 0.75f, 3, veinEvery: every),
+                new ActiveMiningTierSettings(14, 1f, 0.65f, 0.85f, 3, veinEvery: previousEvery),
+                perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: 0.25f, missGraceSeconds: 0.2f);
+
         private static ActiveMiningRunSettings Spin(float maxSpin, float previousMaxSpin) =>
             new ActiveMiningRunSettings(4, new ActiveMiningTierSettings(14, 1f, 0.65f, 0.85f, 3, 0f, 1, 5f, maxSpin),
                 new ActiveMiningTierSettings(12, 1.1f, 0.7f, 0.9f, 3, 0f, 1, 5f, previousMaxSpin),

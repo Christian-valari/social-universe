@@ -19,12 +19,14 @@ namespace SocialUniverse.UI
     // _targetTemplate must be a UI child rendered above _missAreaButton in the hierarchy so a tap
     // on a target hits it first and any other tap falls through to the miss button (standard Unity
     // UI raycast ordering). The template itself stays hidden; its clones sit right after it, which
-    // keeps them below the HUD.
+    // keeps them below the HUD. A vein goes to _veinView rather than to a target clone, and has the
+    // screen to itself until it resolves.
     public class ActiveMiningMinigameView : MonoBehaviour
     {
         private const int   MaxHitVfx            = 4;
         private const int   MaxPlacementAttempts = 32;
         private const float MinMarkerSeparation  = 160f; // canvas pixels between live markers' centres along an axis, so their tap areas can't overlap
+        private const float MinVeinLength        = 300f; // canvas pixels between a vein's ends
         private const float GradeFadeSeconds     = 0.5f;
         private const float MissShakeSeconds     = 0.2f;
         private const float FailShakeSeconds     = 0.5f;
@@ -50,6 +52,7 @@ namespace SocialUniverse.UI
 
         [Header("In-progress")]
         [SerializeField] private ActiveMiningTargetView _targetTemplate;
+        [SerializeField] private ActiveMiningVeinView   _veinView;
         [SerializeField] private Button                 _missAreaButton;
         [SerializeField] private Text                   _progressText;
         [SerializeField] private Text                   _errorText;
@@ -90,8 +93,11 @@ namespace SocialUniverse.UI
         private int                 _oldestHitVfx;
         private float               _gradeSecondsLeft;
         private ActiveMiningSession _session;
+        private ActiveMiningRunSettings  _settings;
         private ActiveMiningTierSettings _tier = new ActiveMiningTierSettings();
         private Canvas              _canvas;
+        private ActiveMiningTargetPoint _veinStart; // made by the first vein, then reused
+        private ActiveMiningTargetPoint _veinEnd;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private ActiveMiningDevTierPicker _tierPicker;
 #endif
@@ -135,6 +141,9 @@ namespace SocialUniverse.UI
             for (int i = 0; i < _slots.Count; i++)
                 if (_slots[i].Anchor != null) Destroy(_slots[i].Anchor.gameObject);
 
+            if (_veinStart != null) Destroy(_veinStart.gameObject);
+            if (_veinEnd   != null) Destroy(_veinEnd.gameObject);
+
             for (int i = 0; i < _hitVfx.Count; i++)
                 if (_hitVfx[i] != null) Destroy(_hitVfx[i]);
         }
@@ -161,6 +170,8 @@ namespace SocialUniverse.UI
                 ProjectToScreen(slot);
                 slot.View.SetRingProgress(slot.View.Target.Progress);
             }
+
+            if (_veinView.Target != null) ProjectVein();
         }
 
         private void OnStartClicked()
@@ -178,7 +189,8 @@ namespace SocialUniverse.UI
 
             // Read now, since the dev tier picker can change the settings before Start. The spin is
             // set before the first target is placed, which predicts where the target will be.
-            _tier = _handoff.Settings?.Tier ?? new ActiveMiningTierSettings();
+            _settings = _handoff.Settings;
+            _tier     = _settings?.Tier ?? new ActiveMiningTierSettings();
             if (_stage != null) _stage.SetSpinRange(_tier.MinSpinDegrees, _tier.MaxSpinDegrees);
 
             // Nothing spawns before the session's first Tick, so subscribing here misses nothing.
@@ -235,6 +247,12 @@ namespace SocialUniverse.UI
 
         private void OnTargetSpawned(ActiveMiningTarget target)
         {
+            if (target.Kind == ActiveMiningTargetKind.Vein)
+            {
+                ShowVein(target);
+                return;
+            }
+
             var slot    = TakeFreeSlot();
             bool decoy  = target.Kind == ActiveMiningTargetKind.Decoy;
 
@@ -284,9 +302,49 @@ namespace SocialUniverse.UI
             view.transform.SetSiblingIndex(decoy ? lowest : highest);
         }
 
+        // The spin eases down first, because placing the ends predicts where it will carry them.
+        private void ShowVein(ActiveMiningTarget vein)
+        {
+            if (_stage != null) _stage.EaseSpinTo(_settings.VeinSpinDegrees);
+
+            if (_veinStart == null)
+            {
+                _veinStart = new GameObject("ActiveMiningVeinStart").AddComponent<ActiveMiningTargetPoint>();
+                _veinEnd   = new GameObject("ActiveMiningVeinEnd").AddComponent<ActiveMiningTargetPoint>();
+            }
+            PlaceVein();
+
+            _veinView.Show(vein, TapRadius, _settings.VeinDragTolerance, _settings.VeinCompleteProgress, OnVeinCompleted, OnVeinFailed);
+            ProjectVein();
+        }
+
+        private void OnVeinCompleted(ActiveMiningTarget vein) => _session.CompleteVein(vein.Id);
+
+        private void OnVeinFailed(ActiveMiningTarget vein) => _session.FailVein(vein.Id);
+
+        // A finished vein answers at its end marker, where the finger is. A failed one has no such
+        // place, so the label goes back to where it began.
+        private void OnVeinResolved(ActiveMiningGrade grade)
+        {
+            if (grade == ActiveMiningGrade.Miss)
+                PlayMissFeedback(_veinView.StartPosition);
+            else
+                PlayHitFeedback(grade, _veinEnd.transform.position, _veinView.EndPosition);
+
+            HideVein();
+        }
+
+        private void HideVein()
+        {
+            _veinView.Hide();
+            if (_stage != null) _stage.RestoreSpin();
+        }
+
         // A tapped decoy arrives here as a Miss, so it gets the miss feedback and no hit effect.
         private void OnTargetResolved(ActiveMiningTarget target, ActiveMiningGrade grade)
         {
+            if (target.Kind == ActiveMiningTargetKind.Vein) OnVeinResolved(grade);
+
             for (int i = 0; i < _slots.Count; i++)
             {
                 var slot = _slots[i];
@@ -298,9 +356,7 @@ namespace SocialUniverse.UI
                 }
                 else
                 {
-                    _audio.PlaySfx(SfxId.ActiveMiningTap);
-                    PlayHitVfx(slot.Anchor.transform.position);
-                    ShowGrade(grade.ToString(), ColorOf(grade), slot.View.transform.position);
+                    PlayHitFeedback(grade, slot.Anchor.transform.position, slot.View.transform.position);
                 }
                 slot.View.Hide();
                 break;
@@ -351,6 +407,13 @@ namespace SocialUniverse.UI
         private void OnTargetTapped(ActiveMiningTarget target) => _session.TapTarget(target.Id);
 
         private void OnMissAreaTapped() => _session?.TapOffTarget();
+
+        private void PlayHitFeedback(ActiveMiningGrade grade, Vector3 worldPoint, Vector3 screenPosition)
+        {
+            _audio.PlaySfx(SfxId.ActiveMiningTap);
+            PlayHitVfx(worldPoint);
+            ShowGrade(grade.ToString(), ColorOf(grade), screenPosition);
+        }
 
         // The miss that fails the run is answered by the fail sound alone, which ShowResult plays.
         private void PlayMissFeedback(Vector3 screenPosition)
@@ -451,6 +514,8 @@ namespace SocialUniverse.UI
 
             for (int i = 0; i < _slots.Count; i++)
                 _slots[i].View.Hide();
+
+            HideVein();
         }
 
         private TargetSlot TakeFreeSlot()
@@ -483,7 +548,7 @@ namespace SocialUniverse.UI
 
             var     asteroid     = _stage.StageClone.transform;
             Vector3 towardViewer = _sceneCamera.transform.position - asteroid.position;
-            float   margin       = ((RectTransform)_targetTemplate.transform).rect.width / 2f * _canvas.scaleFactor;
+            float   margin       = TapRadius * _canvas.scaleFactor;
             float   radius       = _stage.SurfaceRadius * PlacementInset;
             float   separation   = MinMarkerSeparation * _canvas.scaleFactor;
             float   maxAngle     = ActiveMiningTargetPoint.MaxPlacementAngle(_tier.MaxSpinDegrees, target.RingSeconds);
@@ -518,6 +583,71 @@ namespace SocialUniverse.UI
                 : asteroid.position + towardViewer.normalized * radius;
             return true;
         }
+
+        // Both ends are held to what a target is held to: on screen now and when the ring closes, over
+        // the rock. The first pair far enough apart is used, or else the farthest pair found. A rock too
+        // big to leave any pair on screen gets a level line through the point facing the viewer, so
+        // there is still something the player can drag.
+        private void PlaceVein()
+        {
+            if (_stage == null || _stage.StageClone == null || _sceneCamera == null) return;
+
+            var     asteroid     = _stage.StageClone.transform;
+            Vector3 towardViewer = _sceneCamera.transform.position - asteroid.position;
+            float   margin       = TapRadius * _canvas.scaleFactor;
+            float   radius       = _stage.SurfaceRadius * PlacementInset;
+            float   minLength    = MinVeinLength * _canvas.scaleFactor;
+            float   ringSeconds  = _settings.VeinRingSeconds;
+            float   maxAngle     = ActiveMiningTargetPoint.MaxPlacementAngle(_settings.VeinSpinDegrees, ringSeconds);
+
+            Vector3 farthestStart  = default, farthestEnd = default;
+            float   farthestLength = -1f;
+
+            for (int attempt = 0; attempt < MaxPlacementAttempts; attempt++)
+            {
+                _veinStart.PlaceOnAsteroid(asteroid, radius, towardViewer, maxAngle);
+                _veinEnd.PlaceOnAsteroid(asteroid, radius, towardViewer, maxAngle);
+
+                Vector3 start = _veinStart.transform.position, end = _veinEnd.transform.position;
+                if (!StaysOnScreen(start, ringSeconds, margin) || !StaysOnScreen(end, ringSeconds, margin)) continue;
+
+                float length = Vector2.Distance(_sceneCamera.WorldToScreenPoint(start), _sceneCamera.WorldToScreenPoint(end));
+                if (length >= minLength) return;
+
+                if (length > farthestLength)
+                {
+                    farthestLength = length;
+                    farthestStart  = start;
+                    farthestEnd    = end;
+                }
+            }
+
+            if (farthestLength >= 0f)
+            {
+                _veinStart.transform.position = farthestStart;
+                _veinEnd.transform.position   = farthestEnd;
+                return;
+            }
+
+            Vector3 facing = _sceneCamera.WorldToScreenPoint(asteroid.position + towardViewer.normalized * radius);
+            Vector3 half   = Vector3.right * (minLength / 2f);
+            _veinStart.transform.position = _sceneCamera.ScreenToWorldPoint(facing - half);
+            _veinEnd.transform.position   = _sceneCamera.ScreenToWorldPoint(facing + half);
+        }
+
+        private bool StaysOnScreen(Vector3 worldPoint, float seconds, float margin) =>
+            IsOnScreen(worldPoint, margin) && IsOnScreen(_stage.PredictPoint(worldPoint, seconds), margin);
+
+        private void ProjectVein()
+        {
+            if (_sceneCamera == null) return;
+
+            _veinView.UpdateLine(_sceneCamera.WorldToScreenPoint(_veinStart.transform.position),
+                _sceneCamera.WorldToScreenPoint(_veinEnd.transform.position));
+        }
+
+        // Half a target's hit area, in canvas units.
+        private float TapRadius => ((RectTransform)_targetTemplate.transform).rect.width / 2f;
 
         private List<Vector2> LiveMarkerScreenPositions()
         {

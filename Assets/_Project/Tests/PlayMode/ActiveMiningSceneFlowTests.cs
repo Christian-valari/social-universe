@@ -406,24 +406,573 @@ namespace SocialUniverse.Tests
             TapMissArea();
         }
 
-        // The view has no drag yet, so a vein can only close its ring as a miss; the run must still end.
+        // Nobody drags it, so its ring closes: that's a ring miss rather than a failed drag, and the
+        // run still ends. It takes no pooled marker, which is also why a tap can't reach it.
         [UnityTest]
-        public IEnumerator A_vein_the_view_cannot_drag_closes_as_a_miss_and_the_run_still_ends()
+        public IEnumerator An_undragged_vein_closes_as_a_ring_miss_and_the_run_still_ends()
         {
             BeginRun(targets: 2, maxMisses: 3, ringSeconds: 1f, veinEvery: 1);
             PressStart();
-            yield return WaitUntil(() => LiveView(ActiveMiningTargetKind.Vein) != null, "a vein to spawn");
-            var vein = LiveView(ActiveMiningTargetKind.Vein).Target;
+            yield return WaitForLiveVein();
+            var vein = VeinView().Target;
 
-            Private<Button>(LiveView(ActiveMiningTargetKind.Vein), "_button").onClick.Invoke();
+            Assert.IsNull(LiveView(ActiveMiningTargetKind.Vein), "A vein isn't shown as a marker");
             TapMissArea();
             Assert.AreEqual((0, 0), (Session().ErrorCount, Session().ResolvedTargets), "A tap neither completes it nor misses");
 
             yield return WaitUntil(() => vein.Progress >= 1f, "the vein's ring to close");
+            Assert.AreEqual("Miss", GradeText());
+            Assert.AreNotSame(vein, VeinView().Target, "A closed vein goes away");
+
             yield return WaitUntil(() => Session().Stage != ActiveMiningStage.InProgress, "the run to end");
 
             Assert.AreEqual(ActiveMiningStage.Success, Session().Stage);
-            Assert.AreEqual((2, 2), (Session().RingMisses, Session().ResolvedTargets));
+            Assert.AreEqual((2, 2, 0), (Session().RingMisses, Session().ResolvedTargets, Session().VeinFails));
+            Assert.IsFalse(VeinView().gameObject.activeSelf);
+        }
+
+        [UnityTest]
+        public IEnumerator Dragging_start_to_end_completes_the_vein()
+        {
+            yield return BeginVein(targets: 2);
+            var     vein  = VeinView();
+            Vector2 start = vein.StartPosition, end = vein.EndPosition;
+
+            vein.OnPointerDown(Pointer(start));
+            vein.OnDrag(Pointer(Vector2.Lerp(start, end, 0.5f)));
+            Assert.AreEqual((0, 0), (Session().ResolvedTargets, Session().ErrorCount), "Halfway isn't finished");
+
+            vein.OnDrag(Pointer(Vector2.Lerp(start, end, 0.96f)));
+
+            Assert.AreEqual((1, 0, 1), (Session().ResolvedTargets, Session().ErrorCount, Session().PerfectCount));
+            Assert.AreEqual("1/2", ProgressText());
+            Assert.AreEqual("Perfect", GradeText());
+            Assert.IsNull(vein.Target);
+            Assert.IsFalse(vein.gameObject.activeSelf, "The line goes away");
+        }
+
+        // Short of the threshold is still short: the end of the line has to be reached.
+        [UnityTest]
+        public IEnumerator A_drag_that_stops_short_of_the_threshold_does_not_complete()
+        {
+            yield return BeginVein(targets: 2);
+            var     vein  = VeinView();
+            Vector2 start = vein.StartPosition, end = vein.EndPosition;
+
+            vein.OnPointerDown(Pointer(start));
+            vein.OnDrag(Pointer(Vector2.Lerp(start, end, 0.93f)));
+
+            Assert.AreEqual(0, Session().ResolvedTargets);
+            Assert.IsTrue(Session().IsVeinLive);
+        }
+
+        // Canvas units on the config, screen pixels on the pointer: the stray limit scales with the canvas.
+        [UnityTest]
+        public IEnumerator The_stray_limit_is_in_canvas_units()
+        {
+            yield return BeginVein(targets: 3, maxMisses: 3, veinDragTolerance: 90f);
+            var     vein  = VeinView();
+            Vector2 start = vein.StartPosition, end = vein.EndPosition;
+            Vector2 off   = Vector2.Perpendicular(end - start).normalized * 90f * _view.GetComponent<Canvas>().scaleFactor;
+            Vector2 mid   = Vector2.Lerp(start, end, 0.5f);
+
+            vein.OnPointerDown(Pointer(start));
+            vein.OnDrag(Pointer(mid + off * 0.95f));
+            Assert.AreEqual(0, Session().ErrorCount, "Just inside it");
+
+            vein.OnDrag(Pointer(mid + off * 1.05f));
+            Assert.AreEqual(1, Session().VeinFails, "Just outside it");
+        }
+
+        [UnityTest]
+        public IEnumerator Lifting_early_fails_the_vein()
+        {
+            yield return BeginVein(targets: 2);
+            var     vein  = VeinView();
+            Vector2 start = vein.StartPosition, end = vein.EndPosition;
+
+            vein.OnPointerDown(Pointer(start));
+            vein.OnDrag(Pointer(Vector2.Lerp(start, end, 0.5f)));
+            vein.OnPointerUp(Pointer(Vector2.Lerp(start, end, 0.5f)));
+
+            Assert.AreEqual((1, 1, 1), (Session().ErrorCount, Session().ResolvedTargets, Session().VeinFails));
+            Assert.AreEqual("Miss", GradeText());
+            Assert.IsFalse(vein.gameObject.activeSelf);
+        }
+
+        // The UI module delivers a move and a release from the same frame as a pointer-up alone.
+        [UnityTest]
+        public IEnumerator A_lift_that_lands_on_the_end_of_the_line_completes_the_vein()
+        {
+            yield return BeginVein(targets: 2);
+            var vein = VeinView();
+
+            vein.OnPointerDown(Pointer(vein.StartPosition));
+            vein.OnPointerUp(Pointer(vein.EndPosition));
+
+            Assert.AreEqual((1, 0, 1), (Session().ResolvedTargets, Session().ErrorCount, Session().PerfectCount));
+        }
+
+        [UnityTest]
+        public IEnumerator Straying_off_the_line_fails_the_vein()
+        {
+            yield return BeginVein(targets: 2);
+            var     vein  = VeinView();
+            Vector2 start = vein.StartPosition, end = vein.EndPosition;
+            Vector2 away  = Vector2.Perpendicular(end - start).normalized * 500f;
+
+            vein.OnPointerDown(Pointer(start));
+            vein.OnDrag(Pointer(Vector2.Lerp(start, end, 0.5f) + away));
+
+            Assert.AreEqual((1, 1, 1), (Session().ErrorCount, Session().ResolvedTargets, Session().VeinFails));
+            Assert.AreEqual("Miss", GradeText());
+        }
+
+        // Straying first: a finger far off the line doesn't finish it just by getting past the end.
+        [UnityTest]
+        public IEnumerator Straying_past_the_end_of_the_line_fails_rather_than_completes()
+        {
+            yield return BeginVein(targets: 2);
+            var     vein  = VeinView();
+            Vector2 start = vein.StartPosition, end = vein.EndPosition;
+
+            vein.OnPointerDown(Pointer(start));
+            vein.OnDrag(Pointer(end + (end - start).normalized * 500f));
+
+            Assert.AreEqual((1, 0), (Session().VeinFails, Session().PerfectCount));
+        }
+
+        // The rock turns under a finger that isn't moving, and no drag event says so.
+        [UnityTest]
+        public IEnumerator The_line_moving_off_a_still_finger_fails_the_vein()
+        {
+            yield return BeginVein(targets: 2);
+            var     vein  = VeinView();
+            Vector2 start = vein.StartPosition, end = vein.EndPosition;
+            vein.OnPointerDown(Pointer(start));
+
+            vein.UpdateLine(start + Vector2.up * 500f, end + Vector2.up * 500f);
+
+            Assert.AreEqual(1, Session().VeinFails);
+        }
+
+        [UnityTest]
+        public IEnumerator A_press_away_from_the_start_costs_nothing()
+        {
+            yield return BeginVein(targets: 2);
+            var     vein  = VeinView();
+            Vector2 start = vein.StartPosition, end = vein.EndPosition;
+            Vector2 away  = start + Vector2.Perpendicular(end - start).normalized * 500f;
+
+            vein.OnPointerDown(Pointer(away));
+            vein.OnDrag(Pointer(end));
+            vein.OnPointerUp(Pointer(end));
+
+            Assert.AreEqual((0, 0), (Session().ErrorCount, Session().ResolvedTargets));
+            Assert.IsTrue(Session().IsVeinLive);
+            Assert.IsNotNull(vein.Target);
+        }
+
+        // The tap area is a circle the width of a normal target's hit area: all of it is within the
+        // stray limit, where the corners of a square wouldn't be.
+        [UnityTest]
+        public IEnumerator A_press_counts_only_within_the_start_marker_tap_area()
+        {
+            yield return BeginVein(targets: 2);
+            var     vein      = VeinView();
+            Vector2 start     = vein.StartPosition, end = vein.EndPosition;
+            float   tapRadius = 70f * _view.GetComponent<Canvas>().scaleFactor;
+            Vector2 back      = (start - end).normalized;
+
+            vein.OnPointerDown(Pointer(start + back * tapRadius * 1.05f));
+            vein.OnPointerUp(Pointer(start + back * tapRadius * 1.05f));
+            Assert.AreEqual(0, Session().ErrorCount, "Just outside, nothing was held to let go of");
+
+            vein.OnPointerDown(Pointer(start + back * tapRadius * 0.95f));
+            vein.OnPointerUp(Pointer(start + back * tapRadius * 0.95f));
+            Assert.AreEqual(1, Session().VeinFails, "Just inside, it was held");
+        }
+
+        // A press on the rim of the tap area, on the far side from the end, is a finger still within
+        // the stray limit, so it holds rather than failing on the next frame.
+        [UnityTest]
+        public IEnumerator A_press_at_the_rim_of_the_tap_area_is_not_a_stray()
+        {
+            yield return BeginVein(targets: 2);
+            var     vein  = VeinView();
+            Vector2 start = vein.StartPosition, end = vein.EndPosition;
+            float   rim   = 69f * _view.GetComponent<Canvas>().scaleFactor;
+
+            vein.OnPointerDown(Pointer(start + (start - end).normalized * rim));
+            yield return null;
+            yield return null;
+
+            Assert.AreEqual(0, Session().ErrorCount);
+            Assert.IsNotNull(vein.Target);
+        }
+
+        // A tighter stray limit brings the tap area in with it, or a press near its rim would fail at once.
+        [UnityTest]
+        public IEnumerator A_stray_limit_inside_the_tap_area_narrows_what_counts_as_a_press()
+        {
+            yield return BeginVein(targets: 2, veinDragTolerance: 40f);
+            var     vein  = VeinView();
+            Vector2 start = vein.StartPosition, end = vein.EndPosition;
+            float   scale = _view.GetComponent<Canvas>().scaleFactor;
+
+            vein.OnPointerDown(Pointer(start + (start - end).normalized * 60f * scale));
+            yield return null;
+
+            Assert.AreEqual(0, Session().ErrorCount, "Not held, so not a stray either");
+            vein.OnPointerUp(Pointer(start));
+            Assert.AreEqual(0, Session().ErrorCount, "and nothing to let go of");
+        }
+
+        [UnityTest]
+        public IEnumerator A_second_finger_is_ignored()
+        {
+            yield return BeginVein(targets: 2);
+            var     vein  = VeinView();
+            Vector2 start = vein.StartPosition, end = vein.EndPosition;
+            Vector2 away  = start + Vector2.Perpendicular(end - start).normalized * 500f;
+
+            vein.OnPointerDown(Pointer(start, id: 7));
+
+            vein.OnPointerDown(Pointer(start, id: 8));
+            vein.OnDrag(Pointer(away, id: 8));
+            vein.OnPointerUp(Pointer(away, id: 8));
+            Assert.AreEqual((0, 0), (Session().ErrorCount, Session().ResolvedTargets), "The other finger strays and lifts at no cost");
+
+            vein.OnDrag(Pointer(end, id: 8));
+            Assert.AreEqual(0, Session().ResolvedTargets, "and can't finish it either");
+
+            vein.OnDrag(Pointer(end, id: 7));
+            Assert.AreEqual((1, 1), (Session().ResolvedTargets, Session().PerfectCount), "The first finger still holds it");
+        }
+
+        // Unity sends no pointer-up on pause, and a phone call shouldn't cost a miss.
+        [UnityTest]
+        public IEnumerator Pausing_the_app_lets_go_of_a_vein_at_no_cost_and_its_start_can_be_pressed_again()
+        {
+            yield return BeginVein(targets: 2);
+            var     vein  = VeinView();
+            Vector2 start = vein.StartPosition, end = vein.EndPosition;
+            vein.OnPointerDown(Pointer(start));
+            vein.OnDrag(Pointer(Vector2.Lerp(start, end, 0.5f)));
+
+            vein.SendMessage("OnApplicationPause", true);
+
+            vein.OnDrag(Pointer(end));
+            vein.OnPointerUp(Pointer(end));
+            Assert.AreEqual((0, 0), (Session().ErrorCount, Session().ResolvedTargets), "The hold is gone, so neither finishes nor fails it");
+            Assert.IsTrue(Session().IsVeinLive);
+
+            vein.SendMessage("OnApplicationPause", false);
+            vein.OnPointerDown(Pointer(vein.StartPosition));
+            vein.OnDrag(Pointer(vein.EndPosition));
+
+            Assert.AreEqual((1, 0), (Session().ResolvedTargets, Session().ErrorCount));
+        }
+
+        // The view covers the screen, so a press goes to it and not to the miss area beneath. A real raycast.
+        [UnityTest]
+        public IEnumerator A_live_vein_takes_a_press_anywhere_on_screen()
+        {
+            Assert.IsFalse(VeinView().gameObject.activeSelf, "Nothing to press before a vein");
+
+            yield return BeginVein(targets: 2);
+            yield return null; // raycasts only see what the canvas has drawn
+
+            Assert.AreSame(VeinView().gameObject, TopRaycastAt(new Vector2(Screen.width / 2f, Screen.height / 2f)));
+            Assert.AreSame(VeinView().gameObject, TopRaycastAt(new Vector2(5f, 5f)));
+            Assert.AreSame(VeinView().gameObject, TopRaycastAt(VeinView().StartPosition));
+        }
+
+        [UnityTest]
+        public IEnumerator A_vein_draws_its_line_between_the_projected_ends_each_frame()
+        {
+            SpawnRock(0.1f);
+            BeginRun(targets: 2, maxMisses: 3, veinEvery: 1, spinDegrees: 30f, veinSpinDegrees: 30f);
+            PressStart();
+            yield return WaitForLiveVein();
+            yield return null;
+
+            var     vein   = VeinView();
+            var     camera = Private<Camera>(_view, "_sceneCamera");
+            float   scale  = _view.GetComponent<Canvas>().scaleFactor;
+            Vector2 first  = vein.StartPosition;
+
+            yield return new WaitForSeconds(0.1f);
+
+            Vector2 start = vein.StartPosition, end = vein.EndPosition;
+            Assert.Greater(Vector2.Distance(first, start), 0f, "The ends ride the spinning rock");
+            Assert.Less(Vector2.Distance(start, (Vector2)camera.WorldToScreenPoint(Private<ActiveMiningTargetPoint>(_view, "_veinStart").transform.position)), 2f);
+            Assert.Less(Vector2.Distance(end, (Vector2)camera.WorldToScreenPoint(Private<ActiveMiningTargetPoint>(_view, "_veinEnd").transform.position)), 2f);
+
+            var line = Private<RectTransform>(vein, "_line");
+            Assert.Less(Vector2.Distance((start + end) / 2f, line.position), 1f, "The line's middle is between the ends");
+            Assert.AreEqual(Vector2.Distance(start, end), line.rect.width * scale, 1f, "and it reaches them");
+            Assert.AreEqual(Vector2.SignedAngle(Vector2.right, end - start), Mathf.DeltaAngle(0f, line.eulerAngles.z), 0.5f);
+
+            Assert.Less(Vector2.Distance(start, Private<RectTransform>(vein, "_startMarker").position), 0.01f);
+            Assert.Less(Vector2.Distance(end, Private<RectTransform>(vein, "_endMarker").position), 0.01f);
+            Assert.Less(Vector2.Distance(start, Private<RectTransform>(vein, "_ring").position), 0.01f, "The ring closes on the start");
+        }
+
+        [UnityTest]
+        public IEnumerator A_vein_ring_closes_in_on_its_start_like_a_target_ring()
+        {
+            BeginRun(targets: 2, maxMisses: 3, ringSeconds: 1f, veinEvery: 1);
+            PressStart();
+            yield return WaitForLiveVein();
+            var vein = VeinView().Target;
+            var ring = Private<RectTransform>(VeinView(), "_ring");
+            yield return null;
+            Assert.Greater(ring.localScale.x, 1.8f, "It starts wide");
+
+            yield return WaitUntil(() => vein.Progress > 0.5f, "the ring to close halfway");
+            yield return null;
+            Assert.Less(ring.localScale.x, 1.7f);
+            Assert.Greater(ring.localScale.x, 1f);
+        }
+
+        // Both ends count, now and when the ring closes, on a rock with plenty of room.
+        [UnityTest]
+        public IEnumerator A_vein_ends_are_on_screen_until_its_ring_closes_and_far_enough_apart()
+        {
+            SpawnRock(0.2f);
+            BeginRun(targets: 16, maxMisses: 99, ringSeconds: 1.6f, veinEvery: 1, spinDegrees: 40f);
+            PressStart();
+
+            var   stage  = Private<ActiveMiningAsteroidStage>(_view, "_stage");
+            var   camera = Private<Camera>(_view, "_sceneCamera");
+            float scale  = _view.GetComponent<Canvas>().scaleFactor;
+            float margin = 70f * scale;
+
+            int placed = 0;
+            var wrong  = new List<string>();
+            Session().OnTargetSpawned += vein => // after the view's handler, so the ends have just been placed
+            {
+                placed++;
+                Vector3 start = Private<ActiveMiningTargetPoint>(_view, "_veinStart").transform.position;
+                Vector3 end   = Private<ActiveMiningTargetPoint>(_view, "_veinEnd").transform.position;
+
+                if (!ProjectsOnScreen(start, margin) || !ProjectsOnScreen(stage.PredictPoint(start, vein.RingSeconds), margin)
+                    || !ProjectsOnScreen(end, margin) || !ProjectsOnScreen(stage.PredictPoint(end, vein.RingSeconds), margin))
+                    wrong.Add($"Vein {vein.Id} off screen: {start} {end}");
+
+                float length = Vector2.Distance(camera.WorldToScreenPoint(start), camera.WorldToScreenPoint(end));
+                if (length < 300f * scale) wrong.Add($"Vein {vein.Id} only {length} px long at scale {scale}");
+            };
+
+            for (int i = 0; i < 16; i++)
+            {
+                yield return WaitForLiveVein();
+                VeinView().OnPointerDown(Pointer(VeinView().StartPosition));
+                VeinView().OnPointerUp(Pointer(VeinView().StartPosition));
+                yield return null;
+            }
+
+            Assert.AreEqual(16, placed);
+            CollectionAssert.IsEmpty(wrong, $"Screen is {Screen.width}x{Screen.height}");
+        }
+
+        // No pair on this rock is 300 apart, so the view takes the longest it found: on screen, and not one point.
+        [UnityTest]
+        public IEnumerator A_vein_on_a_rock_too_small_for_the_gap_takes_the_farthest_pair()
+        {
+            SpawnRock(0.02f);
+            BeginRun(targets: 2, maxMisses: 3, veinEvery: 1);
+            PressStart();
+            yield return WaitForLiveVein();
+
+            float   scale = _view.GetComponent<Canvas>().scaleFactor;
+            float   rim   = 0.01f * ActiveMiningMinigameView.PlacementInset;
+            Vector3 start = Private<ActiveMiningTargetPoint>(_view, "_veinStart").transform.position;
+            Vector3 end   = Private<ActiveMiningTargetPoint>(_view, "_veinEnd").transform.position;
+            var     center = StageClone().transform.position;
+            float   length = Vector2.Distance(VeinView().StartPosition, VeinView().EndPosition);
+
+            Assert.Less(length, 300f * scale);
+            Assert.Greater(length, 0f, "The ends are apart");
+            Assert.AreEqual(rim, Vector3.Distance(center, start), 0.001f, "and on the rock's surface, not the fallback");
+            Assert.AreEqual(rim, Vector3.Distance(center, end), 0.001f);
+        }
+
+        // Too big for anything near the middle to stay on screen through 75 degrees of spin, so no random
+        // pair can qualify: a level line through the middle, the full gap long, is still playable.
+        [UnityTest]
+        public IEnumerator A_vein_with_nowhere_that_stays_on_screen_lies_level_across_the_point_facing_the_camera()
+        {
+            SpinAsteroid(Vector3.up);
+            BeginRun(targets: 2, maxMisses: 3, veinEvery: 1, spinDegrees: 15f, veinSpinDegrees: 15f);
+            PressStart();
+            yield return WaitForLiveVein();
+
+            var     vein   = VeinView();
+            float   scale  = _view.GetComponent<Canvas>().scaleFactor;
+            Vector2 middle = new Vector2(Screen.width / 2f, Screen.height / 2f);
+
+            Assert.AreEqual(300f * scale, Vector2.Distance(vein.StartPosition, vein.EndPosition), 2f);
+            Assert.AreEqual(vein.StartPosition.y, vein.EndPosition.y, 2f, "Level");
+            Assert.Less(Vector2.Distance(middle, (vein.StartPosition + vein.EndPosition) / 2f), 2f, "Across the middle");
+
+            vein.OnPointerDown(Pointer(vein.StartPosition));
+            vein.OnDrag(Pointer(vein.EndPosition));
+            Assert.AreEqual(1, Session().ResolvedTargets, "and it can be played");
+        }
+
+        // The anchors come from no pool the tap targets use, and stay two however many veins a run has.
+        [UnityTest]
+        public IEnumerator A_run_reuses_its_two_vein_anchors()
+        {
+            BeginRun(targets: 4, maxMisses: 99, veinEvery: 1);
+            PressStart();
+            for (int i = 0; i < 4; i++)
+            {
+                yield return WaitForLiveVein();
+                VeinView().OnPointerDown(Pointer(VeinView().StartPosition));
+                VeinView().OnPointerUp(Pointer(VeinView().StartPosition));
+                yield return null;
+            }
+
+            Assert.AreEqual(2, UnityEngine.Object.FindObjectsByType<ActiveMiningTargetPoint>(FindObjectsInactive.Include, FindObjectsSortMode.None).Length);
+        }
+
+        [UnityTest]
+        public IEnumerator A_vein_has_the_screen_to_itself()
+        {
+            BeginRun(targets: 2, maxMisses: 3, decoyChance: 2f, veinEvery: 2);
+            PressStart();
+            yield return WaitForLiveDecoy();
+            Assert.IsFalse(VeinView().gameObject.activeSelf, "The first target is a tap");
+
+            Private<Button>(LiveTarget(), "_button").onClick.Invoke();
+            yield return WaitForLiveVein();
+
+            Assert.IsTrue(VeinView().gameObject.activeSelf);
+            Assert.IsNull(LiveTarget(), "No target shows beside it");
+            Assert.IsNull(LiveDecoy(), "Nor a decoy");
+        }
+
+        [UnityTest]
+        public IEnumerator Target_clones_and_the_hud_draw_above_the_vein_view_and_the_miss_area_below()
+        {
+            yield return null;
+
+            var vein = VeinView().transform;
+            Assert.Greater(vein.GetSiblingIndex(), Private<Button>(_view, "_missAreaButton").transform.GetSiblingIndex());
+            Assert.Less(vein.GetSiblingIndex(), Private<Text>(_view, "_progressText").transform.GetSiblingIndex());
+            Assert.Less(vein.GetSiblingIndex(), Private<Text>(_view, "_gradeText").transform.GetSiblingIndex());
+        }
+
+        [UnityTest]
+        public IEnumerator The_asteroid_slows_for_a_vein_and_spins_back_up_when_it_resolves()
+        {
+            Time.captureDeltaTime = 0.05f;
+            BeginRun(targets: 2, maxMisses: 3, veinEvery: 1, spinDegrees: 40f, spawnGapSeconds: 5f);
+            PressStart();
+            yield return WaitForLiveVein();
+            var stage = Private<ActiveMiningAsteroidStage>(_view, "_stage");
+
+            yield return new WaitForSeconds(0.3f);
+            Assert.AreEqual(5f, stage.RotationSpeed, 0.001f, "The asteroid eases down while the vein is live");
+
+            VeinView().OnPointerDown(Pointer(VeinView().StartPosition));
+            VeinView().OnPointerUp(Pointer(VeinView().StartPosition));
+
+            yield return new WaitForSeconds(0.3f);
+            Assert.AreEqual(40f, stage.RotationSpeed, 0.001f, "and picks up again once it resolves");
+        }
+
+        [UnityTest]
+        public IEnumerator A_run_that_ends_on_a_vein_restores_the_spin_and_hides_the_line()
+        {
+            Time.captureDeltaTime = 0.05f;
+            BeginRun(targets: 1, maxMisses: 3, veinEvery: 1, spinDegrees: 40f);
+            PressStart();
+            yield return WaitForLiveVein();
+            var stage = Private<ActiveMiningAsteroidStage>(_view, "_stage");
+            yield return new WaitForSeconds(0.3f);
+
+            VeinView().OnPointerDown(Pointer(VeinView().StartPosition));
+            VeinView().OnDrag(Pointer(VeinView().EndPosition));
+            Assert.AreEqual(ActiveMiningStage.Success, Session().Stage);
+            Assert.IsFalse(VeinView().gameObject.activeSelf);
+
+            yield return new WaitForSeconds(0.3f);
+            Assert.AreEqual(40f, stage.RotationSpeed, 0.001f);
+        }
+
+        [UnityTest]
+        public IEnumerator A_completed_vein_plays_the_hit_sound_effect_and_grade_at_its_end_marker()
+        {
+            yield return BeginVein(targets: 2);
+            var     vein = VeinView();
+            Vector2 end  = vein.EndPosition;
+
+            vein.OnPointerDown(Pointer(vein.StartPosition));
+            vein.OnDrag(Pointer(end));
+
+            var label  = Private<Text>(_view, "_gradeText");
+            var hitVfx = Private<List<GameObject>>(_view, "_hitVfx");
+            CollectionAssert.AreEqual(new[] { SfxId.ActiveMiningTap }, _audio.Played);
+            Assert.AreEqual(1, hitVfx.Count);
+            Assert.Less(Vector3.Distance(Private<ActiveMiningTargetPoint>(_view, "_veinEnd").transform.position, hitVfx[0].transform.position), 0.01f);
+            Assert.AreEqual("Perfect", GradeText());
+            Assert.AreEqual(new Color(1f, 0.84f, 0.3f), label.color, "Gold, like a tap");
+            Assert.Less(Vector2.Distance(end, label.transform.position), 0.01f);
+        }
+
+        [UnityTest]
+        public IEnumerator A_vein_finished_after_the_good_cut_off_shows_late()
+        {
+            Time.captureDeltaTime = 0.05f;
+            yield return BeginVein(targets: 2); // Perfect by 1.1 s, Good by 1.35 s
+            var target = VeinView().Target;
+            yield return WaitUntil(() => target.ElapsedSeconds > 1.4f, "the Good cut-off to pass");
+
+            VeinView().OnPointerDown(Pointer(VeinView().StartPosition));
+            VeinView().OnDrag(Pointer(VeinView().EndPosition));
+
+            Assert.AreEqual("Late", GradeText());
+            Assert.AreEqual(Color.white, Private<Text>(_view, "_gradeText").color);
+        }
+
+        [UnityTest]
+        public IEnumerator A_failed_vein_plays_the_miss_feedback()
+        {
+            Time.captureDeltaTime = 0.05f;
+            yield return BeginVein(targets: 2);
+            var     vein  = VeinView();
+            Vector2 start = vein.StartPosition;
+            var     clone = StageClone();
+            var     rest  = clone.transform.localPosition;
+
+            vein.OnPointerDown(Pointer(start));
+            vein.OnPointerUp(Pointer(start));
+            yield return null;
+
+            CollectionAssert.AreEqual(new[] { SfxId.ActiveMiningMiss }, _audio.Played);
+            Assert.AreEqual("Miss", GradeText());
+            Assert.Less(Vector2.Distance(start, Private<Text>(_view, "_gradeText").transform.position), 0.01f, "Where the vein began");
+            Assert.AreEqual(0, Private<List<GameObject>>(_view, "_hitVfx").Count, "A miss is not a hit");
+            Assert.Greater(Vector3.Distance(rest, clone.transform.localPosition), 0f, "The rock is shaking");
+        }
+
+        [UnityTest]
+        public IEnumerator A_failed_vein_on_the_final_miss_plays_only_the_fail_sound()
+        {
+            yield return BeginVein(targets: 2, maxMisses: 1);
+            var vein = VeinView();
+
+            vein.OnPointerDown(Pointer(vein.StartPosition));
+            vein.OnPointerUp(Pointer(vein.StartPosition));
+
+            Assert.AreEqual(ActiveMiningStage.Failed, Session().Stage);
+            CollectionAssert.AreEqual(new[] { SfxId.ActiveMiningFail }, _audio.Played);
+            Assert.AreEqual("Miss", GradeText(), "though the label still says so");
+            Assert.IsFalse(vein.gameObject.activeSelf, "The line goes with the HUD");
         }
 
         [UnityTest]
@@ -976,21 +1525,39 @@ namespace SocialUniverse.Tests
 
         // A decoyChance of 2 puts a decoy beside every target.
         private void BeginRun(int targets, int maxMisses, float ringSeconds = 5f, float perfectBySeconds = 4f, float goodBySeconds = 4.5f,
-            float decoyChance = 0f, float spawnGapSeconds = 0f, int liveTargets = 1, float spinDegrees = 0f, bool roomyRock = true, int veinEvery = 0)
+            float decoyChance = 0f, float spawnGapSeconds = 0f, int liveTargets = 1, float spinDegrees = 0f, bool roomyRock = true, int veinEvery = 0,
+            float veinSpinDegrees = 5f, float veinDragTolerance = 90f)
         {
             // The stand-in rock is too big for the camera to leave a decoy a clear spot, so a run with decoys gets one that does.
+            // In the test window, a rock half this size turns away about one decoy in thirteen, when its target lands near the middle.
             if (decoyChance > 0f && roomyRock && _view != null)
             {
-                SpawnRock(0.1f);
+                SpawnRock(0.2f);
                 if (spinDegrees <= 0f) spinDegrees = 5f;
             }
             var tier = spinDegrees > 0f
                 ? new ActiveMiningTierSettings(targets, ringSeconds, perfectBySeconds, goodBySeconds, maxMisses, decoyChance, liveTargets, spinDegrees, spinDegrees, veinEvery)
                 : new ActiveMiningTierSettings(targets, ringSeconds, perfectBySeconds, goodBySeconds, maxMisses, decoyChance, liveTargets, veinEvery: veinEvery);
             var settings = new ActiveMiningRunSettings(1, tier, previousTier: null,
-                perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: spawnGapSeconds, missGraceSeconds: 0f, veinRingSeconds: ringSeconds);
+                perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: spawnGapSeconds, missGraceSeconds: 0f, veinRingSeconds: ringSeconds,
+                veinSpinDegrees: veinSpinDegrees, veinDragTolerance: veinDragTolerance);
             _handoff.Begin("earth", "Iron#1", _definition, 80, settings);
         }
+
+        // Every target a vein, the first one live on the stand-in rock.
+        private IEnumerator BeginVein(int targets, int maxMisses = 3, float veinDragTolerance = 90f)
+        {
+            BeginRun(targets, maxMisses, veinEvery: 1, veinDragTolerance: veinDragTolerance);
+            PressStart();
+            yield return WaitForLiveVein();
+        }
+
+        private ActiveMiningVeinView VeinView() => Private<ActiveMiningVeinView>(_view, "_veinView");
+
+        private IEnumerator WaitForLiveVein() => WaitUntil(() => VeinView().Target != null, "a vein to spawn");
+
+        private static PointerEventData Pointer(Vector2 position, int id = 0) =>
+            new PointerEventData(EventSystem.current) { position = position, pointerId = id };
 
         private void SpawnRock(float diameter)
         {

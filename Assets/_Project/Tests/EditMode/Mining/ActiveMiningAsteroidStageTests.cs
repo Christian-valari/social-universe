@@ -330,6 +330,162 @@ namespace SocialUniverse.Tests
             Object.DestroyImmediate(def);
         }
 
+        [Test]
+        public void EaseSpinTo_slows_the_asteroid_and_RestoreSpin_returns_it()
+        {
+            SpawnWithSpin(40f);
+
+            _stage.EaseSpinTo(5f);
+            Assert.AreEqual(40f, _stage.RotationSpeed, 0.001f, "An ease starts from the current speed");
+
+            AdvanceSpin(0.1f);
+            Assert.That(_stage.RotationSpeed, Is.InRange(6f, 39f), "and passes through the speeds between");
+
+            AdvanceSpin(0.1f);
+            Assert.AreEqual(5f, _stage.RotationSpeed, 0.001f, "It is there within 0.2 s");
+
+            _stage.RestoreSpin();
+            AdvanceSpin(0.2f);
+            Assert.AreEqual(40f, _stage.RotationSpeed, 0.001f);
+        }
+
+        // Placement asks where a point will be when the ring closes, and most of a ring is spent at
+        // the speed the stage is heading for.
+        [Test]
+        public void PredictPoint_uses_the_speed_the_spin_is_easing_toward()
+        {
+            var center = SpawnWithSpin(45f).transform.position;
+
+            _stage.EaseSpinTo(5f);
+
+            AssertNear(center + Vector3.back * 2f, _stage.PredictPoint(center + Vector3.right * 2f, seconds: 18f)); // a quarter turn at 5
+        }
+
+        [Test]
+        public void PredictPoint_uses_the_speed_the_spin_is_restoring_to()
+        {
+            var center = SpawnWithSpin(45f).transform.position;
+            _stage.EaseSpinTo(5f);
+            AdvanceSpin(0.2f);
+
+            _stage.RestoreSpin();
+
+            AssertNear(center + Vector3.back * 2f, _stage.PredictPoint(center + Vector3.right * 2f, seconds: 2f)); // a quarter turn at 45
+        }
+
+        [Test]
+        public void PredictPoint_uses_the_eased_speed_once_it_gets_there()
+        {
+            var center = SpawnWithSpin(45f).transform.position;
+            _stage.EaseSpinTo(5f);
+            AdvanceSpin(0.2f);
+
+            AssertNear(center + Vector3.back * 2f, _stage.PredictPoint(center + Vector3.right * 2f, seconds: 18f));
+        }
+
+        // A vein can follow right behind another, while the spin is still on its way back up.
+        [Test]
+        public void An_ease_during_a_restore_still_restores_the_full_speed()
+        {
+            SpawnWithSpin(40f);
+            _stage.EaseSpinTo(5f);
+            AdvanceSpin(0.2f);
+            _stage.RestoreSpin();
+            AdvanceSpin(0.1f);
+
+            _stage.EaseSpinTo(5f);
+            AdvanceSpin(0.2f);
+            Assert.AreEqual(5f, _stage.RotationSpeed, 0.001f);
+
+            _stage.RestoreSpin();
+            AdvanceSpin(0.2f);
+            Assert.AreEqual(40f, _stage.RotationSpeed, 0.001f);
+        }
+
+        [Test]
+        public void A_second_ease_keeps_the_speed_to_restore()
+        {
+            SpawnWithSpin(40f);
+            _stage.EaseSpinTo(5f);
+            AdvanceSpin(0.2f);
+
+            _stage.EaseSpinTo(10f);
+            AdvanceSpin(0.2f);
+            Assert.AreEqual(10f, _stage.RotationSpeed, 0.001f);
+
+            _stage.RestoreSpin();
+            AdvanceSpin(0.2f);
+            Assert.AreEqual(40f, _stage.RotationSpeed, 0.001f);
+        }
+
+        [Test]
+        public void RestoreSpin_with_no_ease_leaves_the_spin_alone()
+        {
+            SpawnWithSpin(40f);
+
+            _stage.RestoreSpin();
+            AdvanceSpin(0.2f);
+
+            Assert.AreEqual(40f, _stage.RotationSpeed, 0.001f);
+        }
+
+        [Test]
+        public void SetSpinRange_ends_an_ease_and_becomes_the_speed_there_is()
+        {
+            SpawnWithSpin(40f);
+            _stage.EaseSpinTo(5f);
+
+            _stage.SetSpinRange(20f, 20f);
+            AdvanceSpin(0.2f);
+            Assert.AreEqual(20f, _stage.RotationSpeed, 0.001f);
+
+            _stage.RestoreSpin();
+            AdvanceSpin(0.2f);
+            Assert.AreEqual(20f, _stage.RotationSpeed, 0.001f);
+        }
+
+        [Test]
+        public void SpawnClone_ends_an_ease_in_progress()
+        {
+            var def = ScriptableObject.CreateInstance<AsteroidDefinition>();
+            _made.Add(def);
+            _stage.SetSpinRange(40f, 40f);
+            _stage.SpawnClone(def);
+            _stage.EaseSpinTo(5f);
+
+            _stage.SpawnClone(def);
+            AdvanceSpin(0.2f);
+
+            Assert.AreEqual(40f, _stage.RotationSpeed, 0.001f);
+        }
+
+        [Test]
+        public void A_shake_during_an_ease_still_ends_where_it_began()
+        {
+            var clone = SpawnWithSpin(40f);
+            var rest  = clone.transform.localPosition;
+
+            _stage.EaseSpinTo(5f);
+            _stage.Shake(0.2f);
+            Advance(0.1f);
+            AdvanceSpin(0.1f);
+            Advance(0.2f);
+            AdvanceSpin(0.1f);
+
+            Assert.AreEqual(0f, (clone.transform.localPosition - rest).sqrMagnitude);
+            Assert.AreEqual(5f, _stage.RotationSpeed, 0.001f);
+        }
+
+        // A clone on stage turning about up at this speed, so a quarter turn carries right to back.
+        private GameObject SpawnWithSpin(float degreesPerSecond)
+        {
+            var def = ScriptableObject.CreateInstance<AsteroidDefinition>();
+            _made.Add(def);
+            var clone = _stage.SpawnClone(def);
+            SetSpin(Vector3.up, degreesPerSecond);
+            return clone;
+        }
+
         private AsteroidDefinition DefinitionWithModel(Mesh mesh, Vector3 scale)
         {
             var model = new GameObject("Model");
@@ -358,6 +514,10 @@ namespace SocialUniverse.Tests
 
         private void Advance(float seconds) =>
             typeof(ActiveMiningAsteroidStage).GetMethod("AdvanceShake", BindingFlags.NonPublic | BindingFlags.Instance)
+                .Invoke(_stage, new object[] { seconds });
+
+        private void AdvanceSpin(float seconds) =>
+            typeof(ActiveMiningAsteroidStage).GetMethod("AdvanceSpin", BindingFlags.NonPublic | BindingFlags.Instance)
                 .Invoke(_stage, new object[] { seconds });
 
         private void SetSpin(Vector3 axis, float degreesPerSecond)
