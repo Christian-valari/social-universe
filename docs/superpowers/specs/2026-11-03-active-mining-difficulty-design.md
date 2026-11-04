@@ -112,10 +112,13 @@ unreachable; drift comes from the faster spin alone, with no separate drift move
 
 **Decoys.** A decoy may appear alongside a real target. It differs in shape as well as colour, so
 it stays readable for colour-blind players. Tapping one is a miss. If ignored, it disappears when
-its ring closes at no cost, and it doesn't count toward Targets.
+its ring closes at no cost, and it doesn't count toward Targets. Decoys give way when the screen is
+crowded: one with no clear spot isn't shown, a real target dismisses any decoy it would overlap, and
+decoys draw below real targets.
 
 **Two live targets.** The second target joins when the first is about 40% through its ring, so they
-never close together and the player has to choose an order *(drafting call)*. Markers keep enough
+never close together and the player has to choose an order *(drafting call)*. The 0.25-second gap
+still applies after every resolve, so a tap never brings a replacement at once. Markers keep enough
 distance that their tap areas don't overlap.
 
 **Faster spin.** Targets ride the asteroid's surface, so spin moves them across the screen. A target
@@ -276,7 +279,8 @@ Phase 2 for a play session, and the project owner decides whether to continue. T
 
 **Dev-only test tools**, compiled out of release builds *(drafting call)*:
 
-- A way to start a run at any tier, since reaching Tier 5 otherwise takes a 15,000-coin drone.
+- A way to start a run at any tier, showing a real asteroid of that tier, since reaching Tier 5
+  otherwise takes a 15,000-coin drone.
 - One `SULog` line per run with tier, grades, misses and banked share, to measure the targets below.
 
 **Playtest setup.** The project owner plays alone on their own phone, installed over USB with dev mode
