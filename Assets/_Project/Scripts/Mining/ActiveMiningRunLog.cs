@@ -9,9 +9,9 @@ namespace SocialUniverse.Mining
     {
         public static string Format(int tierNumber, ActiveMiningSession session) =>
             string.Format(CultureInfo.InvariantCulture,
-                "ActiveMining run: tier={0} perfect={1} good={2} late={3} misses={4} banked={5:0.00} result={6}",
+                "ActiveMining run: tier={0} perfect={1} good={2} late={3} rings={4} decoys={5} wrong={6} banked={7:0.00} result={8}",
                 tierNumber, session.PerfectCount, session.GoodCount, session.LateCount,
-                session.ErrorCount, session.BankedFraction, session.Stage);
+                session.RingMisses, session.DecoyTaps, session.WrongTaps, session.BankedFraction, session.Stage);
     }
 }
 #endif

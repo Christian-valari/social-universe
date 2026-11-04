@@ -141,7 +141,7 @@ namespace SocialUniverse.Tests
             var session = _runner.BeginRun();
             HitNextTarget(session);
 
-            LogAssert.Expect(LogType.Log, "[SU:Mining] ActiveMining run: tier=4 perfect=2 good=0 late=0 misses=0 banked=1.00 result=Success");
+            LogAssert.Expect(LogType.Log, "[SU:Mining] ActiveMining run: tier=4 perfect=2 good=0 late=0 rings=0 decoys=0 wrong=0 banked=1.00 result=Success");
             HitNextTarget(session);
         }
 

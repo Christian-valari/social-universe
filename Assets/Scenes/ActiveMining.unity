@@ -650,6 +650,12 @@ MonoBehaviour:
   _rewardText: {fileID: 142999135}
   _continueButton: {fileID: 975936130}
   _hitVfxPrefab: {fileID: 3350008543128462700, guid: 2ac269d5cb8c48246b3ce068ce9280b3, type: 3}
+  _devAsteroidsByTier:
+  - {fileID: 11400000, guid: 23c16a66f215aba419c786ee1606a9ad, type: 2}
+  - {fileID: 11400000, guid: bd567778965878a4bb6f98ceae2a1c3b, type: 2}
+  - {fileID: 11400000, guid: 18f73dc4d9a8d9d43a26744869206dba, type: 2}
+  - {fileID: 11400000, guid: 88339cd6474640d391d07b740392670e, type: 2}
+  - {fileID: 11400000, guid: 037e407e7b334c219db9f26938023f40, type: 2}
 --- !u!1 &100050
 GameObject:
   m_ObjectHideFlags: 0

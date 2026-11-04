@@ -505,6 +505,19 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
+        public void Miss_causes_add_up_to_the_error_count()
+        {
+            var s = NewWithDecoys(maxMisses: 5, missGrace: 0f, rolls: new[] { 0.1f, 0.9f });
+            s.Tick(0f);
+            s.TapTarget(Decoy(s).Id);
+            s.TapOffTarget();
+            Advance(s, 1.65f);
+
+            Assert.AreEqual((1, 1, 1), (s.RingMisses, s.DecoyTaps, s.WrongTaps));
+            Assert.AreEqual(s.ErrorCount, s.RingMisses + s.DecoyTaps + s.WrongTaps);
+        }
+
+        [Test]
         public void A_wrong_tap_with_two_targets_live_costs_one_miss_and_leaves_both_rings_running()
         {
             var s = NewTwoLive(missGrace: 0f);

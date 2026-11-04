@@ -23,13 +23,13 @@ namespace SocialUniverse.Tests
         }
 
         [Test]
-        public void A_run_logs_its_tier_grades_misses_and_bank()
+        public void A_run_logs_its_tier_grades_miss_causes_and_bank()
         {
             var session = NewSession(targets: 2, maxMisses: 3);
             HitAfter(session, 0); // fresh ring: Perfect
             HitAfter(session, 9); // 0.9s in: Good
 
-            Assert.AreEqual("ActiveMining run: tier=3 perfect=1 good=1 late=0 misses=0 banked=0.90 result=Success",
+            Assert.AreEqual("ActiveMining run: tier=3 perfect=1 good=1 late=0 rings=0 decoys=0 wrong=0 banked=0.90 result=Success",
                 ActiveMiningRunLog.Format(3, session));
         }
 
@@ -40,8 +40,23 @@ namespace SocialUniverse.Tests
             session.Tick(0f);
             session.TapOffTarget();
 
-            Assert.AreEqual("ActiveMining run: tier=2 perfect=0 good=0 late=0 misses=1 banked=0.00 result=Failed",
+            Assert.AreEqual("ActiveMining run: tier=2 perfect=0 good=0 late=0 rings=0 decoys=0 wrong=1 banked=0.00 result=Failed",
                 ActiveMiningRunLog.Format(2, session));
+        }
+
+        [Test]
+        public void Each_miss_cause_is_counted_apart()
+        {
+            var session = new ActiveMiningSession(new ActiveMiningRunSettings(1,
+                new ActiveMiningTierSettings(4, 1.6f, 0.8f, 1.2f, 5, 1f), null,
+                1f, 0.8f, 0.6f, 0f, 0f), () => 0f);
+            session.Tick(0f);
+            session.TapTarget(session.LiveTargets[1].Id); // the decoy
+            session.TapOffTarget();
+            for (int i = 0; i < 17; i++) session.Tick(Step); // the ring closes
+
+            Assert.AreEqual("ActiveMining run: tier=4 perfect=0 good=0 late=0 rings=1 decoys=1 wrong=1 banked=0.00 result=InProgress",
+                ActiveMiningRunLog.Format(4, session));
         }
 
         [Test]

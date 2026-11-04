@@ -65,6 +65,13 @@ namespace SocialUniverse.UI
         [Header("VFX")]
         [SerializeField] private GameObject _hitVfxPrefab;
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        // The rock the dev tier picker shows for each tier, in tier order. Dev mode only reaches the
+        // first tier's rocks, which leave little room for what the later tiers add.
+        [Header("Dev")]
+        [SerializeField] private AsteroidDefinition[] _devAsteroidsByTier;
+#endif
+
         [Inject] private ActiveMiningSessionRunner _runner;
         [Inject] private ActiveMiningHandoff       _handoff;
         [Inject] private ActiveMiningState         _activeMiningState;
@@ -186,7 +193,8 @@ namespace SocialUniverse.UI
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         // Offered only when a run began through Planet, which is what supplies the tier lookup. A
-        // pick changes how the minigame plays for this run: the asteroid and its payout stay as they were.
+        // pick changes how the minigame plays for this run, and shows a real rock of that tier; what the
+        // run pays and the mineral it names stay as they were.
         private void ShowTierPicker()
         {
             if (_handoff.DevSettingsForTier == null) return;
@@ -201,6 +209,11 @@ namespace SocialUniverse.UI
             var settings = _handoff.DevSettingsForTier(tier);
             _handoff.UseSettings(settings);
             if (_rulesText != null) _rulesText.text = ActiveMiningRulesText.For(settings);
+
+            int index = tier - 1;
+            if (_session == null && _stage != null && _devAsteroidsByTier != null
+                && index >= 0 && index < _devAsteroidsByTier.Length && _devAsteroidsByTier[index] != null)
+                _stage.SpawnClone(_devAsteroidsByTier[index]);
         }
 
         private void HideTierPicker()

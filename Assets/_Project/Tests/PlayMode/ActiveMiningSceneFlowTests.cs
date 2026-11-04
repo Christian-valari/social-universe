@@ -402,7 +402,7 @@ namespace SocialUniverse.Tests
             TapMissArea();
             TapMissArea();
 
-            LogAssert.Expect(LogType.Log, "[SU:Mining] ActiveMining run: tier=1 perfect=0 good=0 late=0 misses=3 banked=0.00 result=Failed");
+            LogAssert.Expect(LogType.Log, "[SU:Mining] ActiveMining run: tier=1 perfect=0 good=0 late=0 rings=0 decoys=0 wrong=3 banked=0.00 result=Failed");
             TapMissArea();
         }
 
@@ -871,6 +871,24 @@ namespace SocialUniverse.Tests
             Assert.AreEqual(3, _handoff.Settings.TierNumber);
             Assert.AreEqual(80, _handoff.FullQuantity, "The asteroid and what it pays are unchanged");
             Assert.IsTrue(_view.GetComponent<ActiveMiningDevTierPicker>() == null, "The picker goes once the run starts");
+        }
+
+        [UnityTest]
+        public IEnumerator Picking_a_tier_shows_a_real_asteroid_of_that_tier()
+        {
+            OfferTierPicker();
+            var rocks = Private<AsteroidDefinition[]>(_view, "_devAsteroidsByTier");
+            Assert.AreEqual("Asteroid_Palladium", rocks[3].name, "The scene wires Tier 4 to Palladium");
+            Assert.IsNotNull(rocks[3].ModelPrefab);
+            string mineral = Private<Text>(_view, "_mineralTypeText").text;
+
+            PickTier(4);
+            yield return null;
+
+            Assert.AreEqual(rocks[3].ModelPrefab.name + "(Clone)", StageClone().name);
+            Assert.AreEqual(80, _handoff.FullQuantity, "What the run pays is unchanged");
+            Assert.AreSame(_definition, _handoff.Definition);
+            Assert.AreEqual(mineral, Private<Text>(_view, "_mineralTypeText").text);
         }
 
         // IMGUI doesn't block uGUI, so a tap on a tier button reaches the Start button too.

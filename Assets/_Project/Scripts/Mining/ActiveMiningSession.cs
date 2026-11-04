@@ -39,6 +39,11 @@ namespace SocialUniverse.Mining
         public int   GoodCount       { get; private set; }
         public int   LateCount       { get; private set; }
 
+        // Where the misses came from; they sum to ErrorCount.
+        public int   RingMisses      { get; private set; }
+        public int   DecoyTaps       { get; private set; }
+        public int   WrongTaps       { get; private set; }
+
         // The share of the asteroid earned so far, 0-1 against a clean sweep of Perfect hits.
         public float BankedFraction => _bankedShares / Targets;
 
@@ -116,6 +121,7 @@ namespace SocialUniverse.Mining
             if (!HasLiveTarget() || _graceRemaining > 0f) return;
 
             ErrorCount++;
+            WrongTaps++;
             OnWrongTap?.Invoke();
             CheckFinished();
         }
@@ -202,7 +208,7 @@ namespace SocialUniverse.Mining
                 case ActiveMiningGrade.Perfect: PerfectCount++; _bankedShares += _settings.PerfectShare; break;
                 case ActiveMiningGrade.Good:    GoodCount++;    _bankedShares += _settings.GoodShare;    break;
                 case ActiveMiningGrade.Late:    LateCount++;    _bankedShares += _settings.LateShare;    break;
-                default:                        ErrorCount++;                                            break;
+                default:                        ErrorCount++; RingMisses++;                              break;
             }
 
             OnTargetResolved?.Invoke(target, grade);
@@ -214,6 +220,7 @@ namespace SocialUniverse.Mining
         {
             _live.Remove(decoy);
             ErrorCount++;
+            DecoyTaps++;
             OnTargetResolved?.Invoke(decoy, ActiveMiningGrade.Miss);
             CheckFinished();
         }
