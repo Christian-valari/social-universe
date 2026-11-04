@@ -78,9 +78,10 @@ namespace SocialUniverse.Tests
             Assert.AreEqual(0.7f, Real().IdleYieldFraction, 0.001f);
         }
 
-        [TestCase(1, 0)] [TestCase(2, 0)] [TestCase(3, 0)] [TestCase(4, 0)] [TestCase(5, 4)]
-        public void Real_asset_has_veins_only_at_tier_5(int tier, int every) =>
-            Assert.AreEqual(every, Real().ActiveRunSettings(tier).Tier.VeinEvery);
+        // Tier 5's cadence is left out on purpose: setting it to 0 on the asset turns veins off.
+        [TestCase(1)] [TestCase(2)] [TestCase(3)] [TestCase(4)]
+        public void Real_asset_has_no_veins_below_tier_5(int tier) =>
+            Assert.AreEqual(0, Real().ActiveRunSettings(tier).Tier.VeinEvery);
 
         [Test] public void Real_asset_holds_the_vein_values()
         {
@@ -105,7 +106,7 @@ namespace SocialUniverse.Tests
 
         [Test] public void A_run_settings_object_defaults_to_the_shipped_vein_length_band()
         {
-            var s = new ActiveMiningRunSettings(1, new ActiveMiningTierSettings(), null, 1f, 0.8f, 0.6f, 0.25f, 0.2f);
+            var s = new ActiveMiningRunSettings(1, new ActiveMiningTierSettings(), 1f, 0.8f, 0.6f, 0.25f, 0.2f);
             Assert.AreEqual((300f, 550f), (s.VeinMinLength, s.VeinMaxLength));
         }
 
@@ -119,12 +120,6 @@ namespace SocialUniverse.Tests
         [Test] public void Real_asset_holds_the_first_target_lead_in()
         {
             Assert.AreEqual(0.6f, Real().ActiveRunSettings(1).FirstTargetDelaySeconds, 0.001f);
-        }
-
-        [Test] public void Previous_tier_is_null_at_tier_1_and_set_above_it()
-        {
-            Assert.IsNull(Real().ActiveRunSettings(1).PreviousTier);
-            Assert.AreEqual(8, Real().ActiveRunSettings(2).PreviousTier.Targets);
         }
 
         [Test] public void A_tier_outside_the_table_uses_the_nearest_row()

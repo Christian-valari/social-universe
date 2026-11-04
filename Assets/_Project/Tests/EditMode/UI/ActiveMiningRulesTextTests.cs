@@ -4,106 +4,70 @@ using SocialUniverse.UI;
 
 namespace SocialUniverse.Tests
 {
-    // The line on the pre-game panel that tells the player how a closing-ring run works.
+    // The lines on the pre-game panel that tell the player how a run works. A tier names every
+    // challenge it has, because a player can reach it without having met the tiers below.
     public class ActiveMiningRulesTextTests
     {
         private const string Rules = "Tap each target before its ring closes. Earlier taps bank more.";
 
         [Test]
         public void Rules_explain_the_ring() =>
-            Assert.AreEqual(Rules, ActiveMiningRulesText.For(TierOneSettings()));
+            Assert.AreEqual(Rules, ActiveMiningRulesText.For(Settings(new ActiveMiningTierSettings())));
 
         // A scene opened on its own has no run begun, so the handoff holds no settings.
         [Test]
         public void A_run_without_settings_gets_the_same_rules() =>
             Assert.AreEqual(Rules, ActiveMiningRulesText.For(null));
 
-        private const string DecoyLine = "New: red X spots are decoys, so leave them alone.";
+        [Test]
+        public void Tier_1_is_one_line() =>
+            Assert.AreEqual(1, ActiveMiningRulesText.For(Settings(new ActiveMiningTierSettings(8, 1.6f, 0.8f, 1.2f, 3))).Split('\n').Length);
 
         [Test]
-        public void The_first_tier_with_decoys_names_them() =>
-            StringAssert.Contains(DecoyLine, ActiveMiningRulesText.For(Tier(chance: 0.25f, previousChance: 0f)));
+        public void Tier_2_names_decoys() =>
+            Assert.AreEqual(Rules + "\nWatch for: red X decoys", ActiveMiningRulesText.For(Settings(Tier(decoys: 0.25f))));
 
         [Test]
-        public void The_decoy_line_follows_the_ring_rule() =>
-            StringAssert.StartsWith(Rules, ActiveMiningRulesText.For(Tier(chance: 0.25f, previousChance: 0f)));
-
-        [TestCase(0.25f, 0.25f, TestName = "A_tier_with_the_same_decoy_chance_as_the_one_below_does_not_repeat_it")]
-        [TestCase(0.35f, 0.25f, TestName = "A_tier_with_more_decoys_than_the_one_below_does_not_repeat_it")]
-        public void Decoys_are_named_only_where_they_first_appear(float chance, float previousChance) =>
-            StringAssert.DoesNotContain("decoy", ActiveMiningRulesText.For(Tier(chance, previousChance)));
+        public void Tier_3_names_decoys_and_two_targets() =>
+            Assert.AreEqual(Rules + "\nWatch for: red X decoys, two targets at once", ActiveMiningRulesText.For(Settings(Tier(decoys: 0.25f, live: 2))));
 
         [Test]
-        public void A_tier_without_decoys_does_not_name_them() =>
-            Assert.AreEqual(Rules, ActiveMiningRulesText.For(Tier(chance: 0f, previousChance: 0f)));
-
-        private const string TwoTargetsLine = "New: two targets can be live at once.";
-
-        [Test]
-        public void Tier_3_rules_name_two_targets() =>
-            StringAssert.Contains(TwoTargetsLine, ActiveMiningRulesText.For(Live(live: 2, previousLive: 1)));
+        public void Tier_4_names_the_spin_too() =>
+            Assert.AreEqual(Rules + "\nWatch for: red X decoys, two targets at once, faster spin",
+                ActiveMiningRulesText.For(Settings(Tier(decoys: 0.3f, live: 2, maxSpin: 45f))));
 
         [Test]
-        public void The_two_targets_line_follows_the_ring_rule() =>
-            StringAssert.StartsWith(Rules, ActiveMiningRulesText.For(Live(live: 2, previousLive: 1)));
+        public void Tier_5_names_every_challenge() =>
+            Assert.AreEqual(Rules + "\nWatch for: red X decoys, two targets at once, faster spin, dragging along lines",
+                ActiveMiningRulesText.For(Settings(Tier(decoys: 0.35f, live: 2, maxSpin: 45f, veinEvery: 4))));
 
-        [TestCase(2, 2, TestName = "A_tier_with_two_targets_like_the_one_below_does_not_repeat_it")]
-        [TestCase(1, 1, TestName = "A_tier_with_one_target_does_not_name_two")]
-        public void Two_targets_are_named_only_where_they_first_appear(int live, int previousLive) =>
-            StringAssert.DoesNotContain("two targets", ActiveMiningRulesText.For(Live(live, previousLive)));
-
-        private const string SpinLine = "New: the asteroid spins faster, so targets move.";
+        // A tier needs no lower tier to be named: a challenge is listed wherever it is on.
+        [Test]
+        public void A_challenge_is_named_without_the_ones_below_it() =>
+            Assert.AreEqual(Rules + "\nWatch for: two targets at once", ActiveMiningRulesText.For(Settings(Tier(live: 2))));
 
         [Test]
-        public void Tier_4_rules_name_the_spin() =>
-            StringAssert.Contains(SpinLine, ActiveMiningRulesText.For(Spin(maxSpin: 45f, previousMaxSpin: 15f)));
+        public void Veins_alone_are_named() =>
+            Assert.AreEqual(Rules + "\nWatch for: dragging along lines", ActiveMiningRulesText.For(Settings(Tier(veinEvery: 4))));
+
+        [TestCase(15f, TestName = "The_base_spin_is_not_named")]
+        [TestCase(5f, TestName = "A_slower_spin_is_not_named")]
+        public void Spin_is_named_only_above_the_base_range(float maxSpin) =>
+            StringAssert.DoesNotContain("spin", ActiveMiningRulesText.For(Settings(Tier(maxSpin: maxSpin))));
 
         [Test]
-        public void The_spin_line_follows_the_ring_rule() =>
-            StringAssert.StartsWith(Rules, ActiveMiningRulesText.For(Spin(maxSpin: 45f, previousMaxSpin: 15f)));
-
-        [TestCase(45f, 45f, TestName = "A_tier_that_spins_like_the_one_below_does_not_repeat_it")]
-        [TestCase(15f, 15f, TestName = "A_tier_at_the_base_spin_does_not_name_it")]
-        public void The_spin_is_named_only_where_it_first_speeds_up(float maxSpin, float previousMaxSpin) =>
-            StringAssert.DoesNotContain("spins", ActiveMiningRulesText.For(Spin(maxSpin, previousMaxSpin)));
-
-        private const string VeinLine = "New: press and drag along glowing veins.";
+        public void Veins_turned_off_are_not_named() =>
+            StringAssert.DoesNotContain("dragging", ActiveMiningRulesText.For(Settings(Tier(decoys: 0.35f, live: 2, maxSpin: 45f, veinEvery: 0))));
 
         [Test]
-        public void Tier_5_rules_name_the_veins() =>
-            StringAssert.Contains(VeinLine, ActiveMiningRulesText.For(Veins(every: 4, previousEvery: 0)));
+        public void The_text_does_not_call_the_line_glowing() =>
+            StringAssert.DoesNotContain("glow", ActiveMiningRulesText.For(Settings(Tier(veinEvery: 4))));
 
-        [Test]
-        public void The_vein_line_follows_the_ring_rule() =>
-            StringAssert.StartsWith(Rules, ActiveMiningRulesText.For(Veins(every: 4, previousEvery: 0)));
+        private static ActiveMiningTierSettings Tier(float decoys = 0f, int live = 1, float maxSpin = 15f, int veinEvery = 0) =>
+            new ActiveMiningTierSettings(16, 0.9f, 0.6f, 0.75f, 3, decoys, live, 5f, maxSpin, veinEvery);
 
-        [TestCase(4, 4, TestName = "A_tier_with_veins_like_the_one_below_does_not_repeat_them")]
-        [TestCase(0, 0, TestName = "A_tier_with_veins_turned_off_does_not_name_them")]
-        public void Veins_are_named_only_where_they_first_appear(int every, int previousEvery) =>
-            StringAssert.DoesNotContain("vein", ActiveMiningRulesText.For(Veins(every, previousEvery)));
-
-        private static ActiveMiningRunSettings Veins(int every, int previousEvery) =>
-            new ActiveMiningRunSettings(5, new ActiveMiningTierSettings(16, 0.9f, 0.6f, 0.75f, 3, veinEvery: every),
-                new ActiveMiningTierSettings(14, 1f, 0.65f, 0.85f, 3, veinEvery: previousEvery),
-                perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: 0.25f, missGraceSeconds: 0.2f);
-
-        private static ActiveMiningRunSettings Spin(float maxSpin, float previousMaxSpin) =>
-            new ActiveMiningRunSettings(4, new ActiveMiningTierSettings(14, 1f, 0.65f, 0.85f, 3, 0f, 1, 5f, maxSpin),
-                new ActiveMiningTierSettings(12, 1.1f, 0.7f, 0.9f, 3, 0f, 1, 5f, previousMaxSpin),
-                perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: 0.25f, missGraceSeconds: 0.2f);
-
-        private static ActiveMiningRunSettings Live(int live, int previousLive) =>
-            new ActiveMiningRunSettings(3, new ActiveMiningTierSettings(12, 1.1f, 0.7f, 0.9f, 3, 0f, live),
-                new ActiveMiningTierSettings(10, 1.3f, 0.75f, 1.05f, 3, 0f, previousLive),
-                perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: 0.25f, missGraceSeconds: 0.2f);
-
-        private static ActiveMiningRunSettings Tier(float chance, float previousChance) =>
-            new ActiveMiningRunSettings(2, new ActiveMiningTierSettings(10, 1.3f, 0.75f, 1.05f, 3, chance),
-                new ActiveMiningTierSettings(8, 1.6f, 0.8f, 1.2f, 3, previousChance),
-                perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: 0.25f, missGraceSeconds: 0.2f);
-
-        private static ActiveMiningRunSettings TierOneSettings() =>
-            new ActiveMiningRunSettings(1, new ActiveMiningTierSettings(), previousTier: null,
+        private static ActiveMiningRunSettings Settings(ActiveMiningTierSettings tier) =>
+            new ActiveMiningRunSettings(1, tier,
                 perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: 0.25f, missGraceSeconds: 0.2f);
     }
 }

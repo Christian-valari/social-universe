@@ -1,13 +1,11 @@
 namespace SocialUniverse.Config
 {
     // Everything an active-mining run reads from EconomyConfig, resolved for one asteroid tier.
-    // PreviousTier is the row below Tier (null at Tier 1).
     public sealed class ActiveMiningRunSettings
     {
         public ActiveMiningRunSettings(
             int tierNumber,
             ActiveMiningTierSettings tier,
-            ActiveMiningTierSettings previousTier,
             float perfectShare,
             float goodShare,
             float lateShare,
@@ -35,7 +33,6 @@ namespace SocialUniverse.Config
             SecondTargetStagger     = secondTargetStagger;
             TierNumber              = tierNumber;
             Tier                    = tier;
-            PreviousTier            = previousTier;
             PerfectShare            = perfectShare;
             GoodShare               = goodShare;
             LateShare               = lateShare;
@@ -46,7 +43,6 @@ namespace SocialUniverse.Config
 
         public int                      TierNumber              { get; }
         public ActiveMiningTierSettings Tier                    { get; }
-        public ActiveMiningTierSettings PreviousTier            { get; }
         public float                    PerfectShare            { get; }
         public float                    GoodShare               { get; }
         public float                    LateShare               { get; }

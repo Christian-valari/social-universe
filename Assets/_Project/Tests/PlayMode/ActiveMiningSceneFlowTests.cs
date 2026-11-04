@@ -1418,13 +1418,28 @@ namespace SocialUniverse.Tests
         {
             var tierTwo = new ActiveMiningRunSettings(2,
                 new ActiveMiningTierSettings(10, 1.3f, 0.75f, 1.05f, 3, 0.25f),
-                new ActiveMiningTierSettings(8, 1.6f, 0.8f, 1.2f, 3),
                 perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: 0.25f, missGraceSeconds: 0.2f);
+            StringAssert.Contains("decoys", ActiveMiningRulesText.For(tierTwo));
+            return RulesFitOnScreen(tierTwo);
+        }
+
+        // The longest the rules get: every challenge named on one line that has to wrap.
+        [UnityTest]
+        public IEnumerator The_rules_for_tier_5_fit_on_screen_clear_of_the_start_prompt()
+        {
+            var tierFive = new ActiveMiningRunSettings(5,
+                new ActiveMiningTierSettings(16, 0.9f, 0.6f, 0.75f, 3, 0.35f, 2, 30f, 45f, 4),
+                perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: 0.25f, missGraceSeconds: 0.2f);
+            StringAssert.Contains("dragging along lines", ActiveMiningRulesText.For(tierFive));
+            return RulesFitOnScreen(tierFive);
+        }
+
+        private IEnumerator RulesFitOnScreen(ActiveMiningRunSettings settings)
+        {
             var rules       = Private<Text>(_view, "_rulesText");
             var startPrompt = Private<Button>(_view, "_startButton").GetComponentInChildren<Text>();
             var mineralType = Private<Text>(_view, "_mineralTypeText");
-            rules.text = ActiveMiningRulesText.For(tierTwo);
-            StringAssert.Contains("decoys", rules.text);
+            rules.text = ActiveMiningRulesText.For(settings);
             yield return null;
             Canvas.ForceUpdateCanvases();
 
@@ -1556,7 +1571,7 @@ namespace SocialUniverse.Tests
         private void OfferTierPicker()
         {
             _handoff.DevSettingsForTier = tier => new ActiveMiningRunSettings(tier,
-                new ActiveMiningTierSettings(tier, 5f, 4f, 4.5f, 3), previousTier: null,
+                new ActiveMiningTierSettings(tier, 5f, 4f, 4.5f, 3),
                 perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: 0f, missGraceSeconds: 0f);
             InvokePrivate(_view, "ShowTierPicker");
         }
@@ -1578,7 +1593,7 @@ namespace SocialUniverse.Tests
             var tier = spinDegrees > 0f
                 ? new ActiveMiningTierSettings(targets, ringSeconds, perfectBySeconds, goodBySeconds, maxMisses, decoyChance, liveTargets, spinDegrees, spinDegrees, veinEvery)
                 : new ActiveMiningTierSettings(targets, ringSeconds, perfectBySeconds, goodBySeconds, maxMisses, decoyChance, liveTargets, veinEvery: veinEvery);
-            var settings = new ActiveMiningRunSettings(1, tier, previousTier: null,
+            var settings = new ActiveMiningRunSettings(1, tier,
                 perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: spawnGapSeconds, missGraceSeconds: 0f, veinRingSeconds: ringSeconds,
                 veinSpinDegrees: veinSpinDegrees, veinDragTolerance: veinDragTolerance);
             _handoff.Begin("earth", "Iron#1", _definition, 80, settings);

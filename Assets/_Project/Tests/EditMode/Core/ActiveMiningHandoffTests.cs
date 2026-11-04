@@ -20,7 +20,7 @@ namespace SocialUniverse.Tests
         {
             _def      = ScriptableObject.CreateInstance<AsteroidDefinition>();
             _handoff  = new ActiveMiningHandoff();
-            _settings = new ActiveMiningRunSettings(1, new ActiveMiningTierSettings(), null, 1f, 0.8f, 0.6f, 0.25f, 0.2f);
+            _settings = new ActiveMiningRunSettings(1, new ActiveMiningTierSettings(), 1f, 0.8f, 0.6f, 0.25f, 0.2f);
         }
 
         [TearDown]
@@ -54,7 +54,7 @@ namespace SocialUniverse.Tests
         [Test]
         public void UseSettings_replaces_the_runs_settings()
         {
-            var other = new ActiveMiningRunSettings(3, new ActiveMiningTierSettings(), null, 1f, 0.8f, 0.6f, 0.25f, 0.2f);
+            var other = new ActiveMiningRunSettings(3, new ActiveMiningTierSettings(), 1f, 0.8f, 0.6f, 0.25f, 0.2f);
             _handoff.Begin("earth", "slot_3", _def, fullQuantity: 16, _settings);
 
             _handoff.UseSettings(other);

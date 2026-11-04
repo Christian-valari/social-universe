@@ -15,7 +15,7 @@ namespace SocialUniverse.Tests
         // Ring 1.6s, Perfect by 0.8s, Good by 1.2s; shares 1 / 0.8 / 0.6.
         private static ActiveMiningRunSettings Settings(int targets, int maxMisses, float spawnGap = 0.25f, float missGrace = 0.2f, float decoyChance = 0f) =>
             new ActiveMiningRunSettings(1,
-                new ActiveMiningTierSettings(targets, 1.6f, 0.8f, 1.2f, maxMisses, decoyChance), null,
+                new ActiveMiningTierSettings(targets, 1.6f, 0.8f, 1.2f, maxMisses, decoyChance),
                 1f, 0.8f, 0.6f, spawnGap, missGrace);
 
         private static ActiveMiningSession New(int targets = 8, int maxMisses = 3) =>
@@ -349,7 +349,7 @@ namespace SocialUniverse.Tests
         private static ActiveMiningSession NewTwoLive(int targets = 6, int maxMisses = 3, float stagger = 0.4f,
             float spawnGap = 0.25f, float missGrace = 0.2f, float decoyChance = 0f, Func<float> random = null) =>
             new ActiveMiningSession(new ActiveMiningRunSettings(3,
-                new ActiveMiningTierSettings(targets, 1.1f, 0.6f, 0.9f, maxMisses, decoyChance, liveTargets: 2), null,
+                new ActiveMiningTierSettings(targets, 1.1f, 0.6f, 0.9f, maxMisses, decoyChance, liveTargets: 2),
                 1f, 0.8f, 0.6f, spawnGap, missGrace, secondTargetStagger: stagger), random);
 
         private static IEnumerable<ActiveMiningTarget> Reals(ActiveMiningSession s) =>
@@ -480,7 +480,7 @@ namespace SocialUniverse.Tests
         // Tier 5: 16 targets, ring 0.9s, Perfect by 0.6s, Good by 0.75s, two live, no decoys.
         private static ActiveMiningSession NewTierFive() =>
             new ActiveMiningSession(new ActiveMiningRunSettings(5,
-                new ActiveMiningTierSettings(16, 0.9f, 0.6f, 0.75f, 3, 0f, liveTargets: 2), null,
+                new ActiveMiningTierSettings(16, 0.9f, 0.6f, 0.75f, 3, 0f, liveTargets: 2),
                 1f, 0.8f, 0.6f, 0.25f, 0.2f, secondTargetStagger: 0.4f));
 
         // Taps the oldest live target every tapEvery seconds until the run ends.
@@ -587,7 +587,7 @@ namespace SocialUniverse.Tests
         public void The_first_target_waits_for_the_lead_in()
         {
             var s = new ActiveMiningSession(new ActiveMiningRunSettings(1,
-                new ActiveMiningTierSettings(8, 1.6f, 0.8f, 1.2f, 3), null,
+                new ActiveMiningTierSettings(8, 1.6f, 0.8f, 1.2f, 3),
                 1f, 0.8f, 0.6f, 0.25f, 0.2f, firstTargetDelaySeconds: 0.6f));
 
             Advance(s, 0.5f);
@@ -916,7 +916,7 @@ namespace SocialUniverse.Tests
         private static ActiveMiningSession NewVeins(int veinEvery = 2, int targets = 6, int maxMisses = 3, int liveTargets = 1,
             float decoyChance = 0f, float spawnGap = 0f, float missGrace = 0.2f, float stagger = 0f, Func<float> random = null) =>
             new ActiveMiningSession(new ActiveMiningRunSettings(5,
-                new ActiveMiningTierSettings(targets, 1.6f, 0.8f, 1.2f, maxMisses, decoyChance, liveTargets, veinEvery: veinEvery), null,
+                new ActiveMiningTierSettings(targets, 1.6f, 0.8f, 1.2f, maxMisses, decoyChance, liveTargets, veinEvery: veinEvery),
                 1f, 0.8f, 0.6f, spawnGap, missGrace, secondTargetStagger: stagger), random);
 
         private static ActiveMiningTarget Vein(ActiveMiningSession s) =>

@@ -22,7 +22,7 @@ namespace SocialUniverse.Tests
 
         // No spawn gap or grace, and a tap on a fresh ring grades Perfect, which banks a full share.
         private static ActiveMiningRunSettings Settings(int tierNumber = 1) =>
-            new ActiveMiningRunSettings(tierNumber, new ActiveMiningTierSettings(2, 1.6f, 0.8f, 1.2f, 3), null, 1f, 0.8f, 0.6f, 0f, 0f);
+            new ActiveMiningRunSettings(tierNumber, new ActiveMiningTierSettings(2, 1.6f, 0.8f, 1.2f, 3), 1f, 0.8f, 0.6f, 0f, 0f);
 
         private static void HitNextTarget(ActiveMiningSession session)
         {

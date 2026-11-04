@@ -12,7 +12,7 @@ namespace SocialUniverse.Tests
         // Ring 1.6s, Perfect by 0.8s, Good by 1.2s; shares 1 / 0.8 / 0.6, with no spawn gap or grace.
         private static ActiveMiningSession NewSession(int targets, int maxMisses) =>
             new ActiveMiningSession(new ActiveMiningRunSettings(1,
-                new ActiveMiningTierSettings(targets, 1.6f, 0.8f, 1.2f, maxMisses), null,
+                new ActiveMiningTierSettings(targets, 1.6f, 0.8f, 1.2f, maxMisses),
                 1f, 0.8f, 0.6f, 0f, 0f));
 
         private static void HitAfter(ActiveMiningSession session, int ticks)
@@ -48,7 +48,7 @@ namespace SocialUniverse.Tests
         public void Each_miss_cause_is_counted_apart()
         {
             var session = new ActiveMiningSession(new ActiveMiningRunSettings(1,
-                new ActiveMiningTierSettings(4, 1.6f, 0.8f, 1.2f, 5, 1f), null,
+                new ActiveMiningTierSettings(4, 1.6f, 0.8f, 1.2f, 5, 1f),
                 1f, 0.8f, 0.6f, 0f, 0f), () => 0f);
             session.Tick(0f);
             session.TapTarget(session.LiveTargets[1].Id); // the decoy
@@ -63,7 +63,7 @@ namespace SocialUniverse.Tests
         public void A_failed_vein_is_counted_apart_from_the_other_miss_causes()
         {
             var session = new ActiveMiningSession(new ActiveMiningRunSettings(5,
-                new ActiveMiningTierSettings(4, 1.6f, 0.8f, 1.2f, 5, veinEvery: 1), null,
+                new ActiveMiningTierSettings(4, 1.6f, 0.8f, 1.2f, 5, veinEvery: 1),
                 1f, 0.8f, 0.6f, 0f, 0f));
             session.Tick(0f);
             session.FailVein(session.LiveTargets[0].Id);

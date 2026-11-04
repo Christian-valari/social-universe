@@ -116,8 +116,7 @@ namespace SocialUniverse.Config
             int rows   = _activeTiers == null ? 0 : _activeTiers.Length;
             int number = Mathf.Clamp(tier, 1, Mathf.Max(1, rows));
             var current  = rows == 0 ? new ActiveMiningTierSettings() : _activeTiers[number - 1];
-            var previous = number > 1 ? _activeTiers[number - 2] : null;
-            return new ActiveMiningRunSettings(number, current, previous,
+            return new ActiveMiningRunSettings(number, current,
                 _activePerfectShare, _activeGoodShare, _activeLateShare,
                 _activeSpawnGapSeconds, _activeMissGraceSeconds, _activeFirstTargetDelaySeconds, _activeSecondTargetStagger,
                 _activeVeinRingSeconds, _activeVeinPerfectBySeconds, _activeVeinGoodBySeconds, _activeVeinSpinDegrees,
