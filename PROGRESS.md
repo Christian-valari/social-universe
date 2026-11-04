@@ -1261,17 +1261,18 @@ deployed. Nothing in M6 has been exercised in Play Mode or on a device.
 
 ---
 
-## Active Mining Difficulty — Phases 1 and 2 🚧 CODE COMPLETE (branch `feature/active-mining-difficulty`)
+## Active Mining Difficulty — Phases 1 to 3 🚧 CODE COMPLETE (branch `feature/active-mining-difficulty`)
 
 Spec: `docs/superpowers/specs/2026-11-03-active-mining-difficulty-design.md` · plan:
 `docs/superpowers/plans/2026-11-03-active-mining-difficulty.md`. Goal: an active run can be lost,
 playing better pays more, and higher tiers are harder.
 
-**Status (2026-11-04):** Phase 1 (the closing-ring core loop, plan tasks 1–8) and Phase 2 (the tap-based
-challenges: decoys, two live targets, faster spin) are written and tested on the branch and are not merged
-to `main`. **Neither phase has been played on a device yet**; every number below is a starting value for
-the play sessions, not tuned balance. **Phase 3 (hold-and-drag veins) is not built.** Tests on 2026-11-04
-(scratch copy, Unity 6000.3.12f1): EditMode **826/826**, PlayMode **68/68**.
+**Status (2026-11-04):** Phase 1 (the closing-ring core loop, plan tasks 1–8), Phase 2 (the tap-based
+challenges: decoys, two live targets, faster spin) and Phase 3 (hold-and-drag veins at Tier 5) are written
+and tested on the branch and are not merged to `main`. **None of Phases 1–3 has been played on a device
+yet**; every number below is a starting value for the play sessions, not tuned balance. **Veins await the
+owner's go or no-go after playing them**; setting `_veinEvery: 0` for Tier 5 in `EconomyConfig` turns them
+off. Tests on 2026-11-04 (scratch copy, Unity 6000.3.12f1): EditMode **873/873**, PlayMode **98/98**.
 
 | Piece                                  | Where                                                                                          | What it does                                                                                                                                                                                                                                                                                      |
 | -------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -1281,6 +1282,7 @@ the play sessions, not tuned balance. **Phase 3 (hold-and-drag veins) is not bui
 | Idle pays 70%                          | `EconomyConfig` (`_idleYieldFraction`), `MiningRewardCalculator`                               | Idle runs pay 70% of the full quantity; their durations are unchanged                                                                                                                                                                                                                              |
 | ActiveMining scene                     | `ActiveMiningMinigameView`, `ActiveMiningAsteroidStage`, `ActiveMiningTargetView`, `ActiveMiningRulesText` | Closing rings with a banked counter and a miss counter, grade labels, a shake and sounds on a miss and on a failed run (`SfxId.ActiveMiningMiss`, `ActiveMiningFail`, at the end of the enum), targets placed on the rock and kept on screen, a rules line on the pre-game panel, and an `AudioListener` on the scene camera (the scene had none) |
 | Phase 2 challenges                     | `ActiveMiningTierSettings` (`_decoyChance`, `_liveTargets`, `_minSpinDegrees`, `_maxSpinDegrees`), `ActiveMiningSession`, `ActiveMiningAsteroidStage`, `ActiveMiningTargetPoint`, `ActiveMiningRulesText` | From Tier 2 a target can spawn with a red X decoy beside it (25%, 35% from Tier 4); from Tier 3 two targets can be live at once; from Tier 4 the asteroid spins at 30–45 degrees per second instead of 5–15. Each tier's rules line names a challenge on the tier that introduces it. The stage reads the spin range from the run's settings when Start is pressed. Random target placement is limited to a cone around the viewer axis of `Clamp(85 − maxSpin × ringSeconds, 15, 85)` degrees, so the spin can't carry a target behind the asteroid before its ring closes; the on-screen, separation and fallback checks are unchanged. Decoys give way to real targets: a decoy with no on-screen spot clear of the live markers isn't shown (`ActiveMiningSession.DismissDecoy`, no miss), a real target placed over a live decoy dismisses it, and decoys are drawn below real targets |
+| Phase 3 veins                          | `ActiveMiningTierSettings` (`_veinEvery`), `EconomyConfig` (`_activeVein*`), `ActiveMiningSession`, `ActiveMiningVeinPath`, `ActiveMiningVeinView`, `ActiveMiningMinigameView`, `ActiveMiningAsteroidStage`, `ActiveMiningRulesText` | At Tier 5 every fourth target is a vein: a line between two points on the rock, with a closing ring at its start. The player presses the start and drags to the end, and the finish time grades it (Perfect by 1.1 s, Good by 1.35 s, ring 1.6 s). Reaching 95% of the line finishes it; lifting early or going more than 90 canvas units off the line fails it as one miss, and a ring that closes first is one miss too. A vein has the screen to itself, and the asteroid eases down to 5 degrees per second while one is live. An app pause lets go of a held vein at no cost, and the start can be pressed again while the ring has time. Both ends stay on screen now and when the ring closes, at least 300 canvas units apart, or else the farthest pair found. Tier 5's rules line names the veins |
 | Mining prompt                          | `AsteroidTierPrompt.PayLines`, `MiningModePromptView`                                          | Under the tier status, when the drone can mine the asteroid: "Idle: safe, pays 70%" and "Active: up to 100%, depends on how you play"                                                                                                                                                             |
 | Quitting mid-run                       | `ActiveMiningRunStore`, `ActiveMiningRunRecord`, `SaveKeys.ActiveMiningRun`, `MiningController` | A local marker is written when Start is pressed and refreshed on pause, quit and run end. If Planet loads with a marker and no result, the run settles like a failed one (pays what was banked, asteroid used up). The marker is cleared once the claim is answered                                  |
 | Dev tools (Editor and Development Builds only) | `ActiveMiningDevTierPicker`, `ActiveMiningRunLog`, `ActiveMiningHandoff.DevSettingsForTier` / `UseSettings` | Tier 1–5 buttons across the top of the pre-game panel, so any tier can be tried; a pick changes the minigame's difficulty for that run and shows a real asteroid of that tier (`_devAsteroidsByTier` on the view), but not what the run pays or the mineral it names, and the picker goes when Start is pressed. Each finished run logs one line: `[SU:Mining] ActiveMining run: tier=3 perfect=1 good=1 late=0 rings=0 decoys=0 wrong=0 banked=0.90 result=Success`. All of it sits inside `#if UNITY_EDITOR || DEVELOPMENT_BUILD`; a release compile of the player scripts has none of it |
@@ -1296,6 +1298,17 @@ Play-session notes for Phase 2:
   tapped decoy, a tap on empty space).
 - Three ring misses clustered at the end of a run mean pace is the limit: tune
   `_activeSpawnGapSeconds` and `_activeSecondTargetStagger`.
+
+Veins were measured with a scratch harness (not committed) on Helium3, the only Tier 5 asteroid, at 1080×1920 and 1080×2340: 2,100 veins at the real settings with every target a vein, stepped at 60 frames per second. A scripted finger called the view's pointer handlers, so no real touch input was involved, and 300 of the veins were left alone so their rings ran to the close. Median length was about 500 canvas units at 1080×1920 and 570 at 1080×2340, in a range of 300 to 950; 2 of 2,100 measured a fraction under the 300 gap. Both ends stayed on screen in every sample. A finger moving steadily from the start to the end's current position over 1.2 s was never more than about 28 units off the moving line, against the limit of 90.
+
+That 1.2 s drag finished all 150 veins in each row when pressed within 0.4 s of the vein appearing (Good when pressed at once, Late when pressed at 0.3 or 0.4 s), and none of them when pressed at 0.5 s, because the ring closes first. From a press at 0.5 s, a 0.6 s drag finished all of them as Perfect.
+
+Play-session notes for Phase 3:
+
+- The dev tier picker's Tier 5 shows Helium3 with its first vein as the fourth target. The run log's `veins` count shows drags that failed; a vein whose ring closed counts under `rings`.
+- A vein's time limit doesn't depend on its length, so the longest veins need about three times the finger speed of the shortest. Check whether that feels fair.
+- The values to tune are `_activeVeinRingSeconds`, `_activeVeinPerfectBySeconds`, `_activeVeinGoodBySeconds`, `_activeVeinDragTolerance` and `_activeVeinCompleteProgress` in `EconomyConfig`.
+- For a no-go, set `_veinEvery: 0` for Tier 5. The rules line and the veins both go with it.
 
 The play-session steps (dev mode on, a Development Build to a phone, Tiers 1 and 2 through the picker)
 are in the plan's "STOP: Phase 1 play session". What to look for: Tier 1 clears nearly every time and
@@ -1763,11 +1776,13 @@ milestone. Once (1)–(3) land, run each milestone's "Manual Play Mode Verificat
 auth (email + Google), persistence, two-client presence/chat, travel/fuel, gyro sky discovery,
 land building, and the full M6 mine → sell → upgrade → higher-tier loop.
 
-**5a. Active Mining Phase 1 — weigh after the first play session** (see "Active Mining Difficulty" above;
-Phases 2 and 3 are not built and wait for the owner's go-ahead)
+**5a. Active Mining — weigh after the play sessions** (see "Active Mining Difficulty" above; Phases 1–3
+are built and none has been played on a device)
 
 - [ ] Play Phase 1 on a device (Development Build, dev tier picker, Tiers 1 and 2 first) and tune the
       `EconomyConfig` tier rows if Tier 1 doesn't clear nearly every time or banks under 60%.
+- [ ] Play Phase 3 on a device (dev tier picker, Tier 5) and decide go or no-go on veins. For a no-go, set
+      `_veinEvery: 0` for Tier 5 in `EconomyConfig`.
 - [ ] The mining prompt's pay lines render small — the status text auto-sizes to about 17 where it
       normally uses 26 — and the prompt window has about 84 units of spare room below the button row.
       Decide whether to use that room for larger text.

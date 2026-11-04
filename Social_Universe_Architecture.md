@@ -169,6 +169,8 @@ Priority tags follow the PRD: **P0** = core/MVP, **P1** = launch, **P2** = later
 | `MiningController` | Mining | Orchestrate a mining session (idle + active) | P0 |
 | `IdleMiningCalculator` | Mining | Compute offline haul up to cargo cap | P0 |
 | `ActiveMiningSession` | Mining | Closing-ring run logic and grading | P0 |
+| `ActiveMiningVeinPath` | Mining | Where a finger is relative to a vein's line (distance, progress) | P0 |
+| `ActiveMiningVeinView` | UI | Hold-and-drag vein: draws the line and ring, turns a drag into complete or fail | P0 |
 | `IEconomyService` + `LocalMockEconomy` | Economy | Balances/spend/grant interface + offline stub | P0 |
 | `Wallet` | Economy | Client-cached balances + change events | P0 |
 | `LandPurchaseService` (mock) | Economy | Buy a tile: request → (mock) commit ownership | P0 |
