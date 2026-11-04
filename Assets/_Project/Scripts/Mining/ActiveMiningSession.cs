@@ -16,6 +16,10 @@ namespace SocialUniverse.Mining
     // on its own. Either way a target also waits out the spawn gap that each resolve restarts.
     // A decoy can spawn beside a target. It is not a target: tapping it is a miss, ignoring it costs
     // nothing, and it never counts toward the run or holds back the next target.
+    // A tier can make every VeinEvery-th target a vein, which is dragged along a line instead of
+    // tapped; the view reports the outcome with CompleteVein or FailVein, and a ring that closes
+    // first is a miss. A vein has the screen to itself: it waits for every live target to resolve
+    // (dismissing live decoys at no cost), and nothing else spawns until it resolves.
     public sealed class ActiveMiningSession
     {
         // Engineering limit: a hitch can't age a ring, or burn the miss limit, in a single frame.
@@ -39,16 +43,18 @@ namespace SocialUniverse.Mining
         public int   GoodCount       { get; private set; }
         public int   LateCount       { get; private set; }
 
-        // Where the misses came from; they sum to ErrorCount.
+        // Where the misses came from; they sum to ErrorCount. A vein whose ring closes is a ring miss.
         public int   RingMisses      { get; private set; }
         public int   DecoyTaps       { get; private set; }
         public int   WrongTaps       { get; private set; }
+        public int   VeinFails       { get; private set; }
 
         // The share of the asteroid earned so far, 0-1 against a clean sweep of Perfect hits.
         public float BankedFraction => _bankedShares / Targets;
 
         public ActiveMiningStage                 Stage       { get; private set; } = ActiveMiningStage.InProgress;
         public IReadOnlyList<ActiveMiningTarget> LiveTargets => _live;
+        public bool                              IsVeinLive  => FindLiveVein() != null;
 
         public event Action<ActiveMiningStage>                     OnStageChanged;
         public event Action<ActiveMiningTarget>                    OnTargetSpawned;
@@ -80,6 +86,9 @@ namespace SocialUniverse.Mining
 
             AgeLiveTargets(step);
 
+            if (Stage == ActiveMiningStage.InProgress && _spawned < Targets && NextIsVein() && !HasLiveTarget())
+                DismissLiveDecoys();
+
             while (Stage == ActiveMiningStage.InProgress && _spawned < Targets && ShouldSpawn())
                 SpawnTarget();
         }
@@ -91,7 +100,7 @@ namespace SocialUniverse.Mining
             if (Stage != ActiveMiningStage.InProgress) return;
 
             var target = FindLive(targetId);
-            if (target == null) return;
+            if (target == null || target.Kind == ActiveMiningTargetKind.Vein) return;
 
             _graceRemaining = _settings.MissGraceSeconds;
 
@@ -111,6 +120,32 @@ namespace SocialUniverse.Mining
             if (target == null || target.Kind != ActiveMiningTargetKind.Decoy) return;
 
             ExpireDecoy(target);
+        }
+
+        // The player dragged the vein from end to end; it grades on how long that took. An id that
+        // isn't a live vein, or a finished run, is ignored.
+        public void CompleteVein(int targetId)
+        {
+            if (Stage != ActiveMiningStage.InProgress) return;
+
+            var vein = FindLive(targetId);
+            if (vein == null || vein.Kind != ActiveMiningTargetKind.Vein) return;
+
+            _graceRemaining = _settings.MissGraceSeconds;
+            Resolve(vein, GradeForVein(vein.ElapsedSeconds));
+        }
+
+        // The player lifted early or strayed off the line. The vein is used up as a miss, with no
+        // retry. An id that isn't a live vein, or a finished run, is ignored.
+        public void FailVein(int targetId)
+        {
+            if (Stage != ActiveMiningStage.InProgress) return;
+
+            var vein = FindLive(targetId);
+            if (vein == null || vein.Kind != ActiveMiningTargetKind.Vein) return;
+
+            _graceRemaining = _settings.MissGraceSeconds;
+            Resolve(vein, ActiveMiningGrade.Miss, failedVein: true);
         }
 
         // The player tapped empty space. Counts as a miss while a target is live, unless it follows
@@ -146,12 +181,16 @@ namespace SocialUniverse.Mining
 
         private void SpawnTarget()
         {
-            var target = new ActiveMiningTarget(_nextTargetId++, ActiveMiningTargetKind.Normal, _settings.Tier.RingSeconds);
+            bool vein = NextIsVein();
+            var target = vein
+                ? new ActiveMiningTarget(_nextTargetId++, ActiveMiningTargetKind.Vein, _settings.VeinRingSeconds)
+                : new ActiveMiningTarget(_nextTargetId++, ActiveMiningTargetKind.Normal, _settings.Tier.RingSeconds);
             _spawned++;
             _live.Add(target);
             OnTargetSpawned?.Invoke(target);
 
-            if (_settings.Tier.DecoyChance > 0f && _random() < _settings.Tier.DecoyChance)
+            // A vein has the screen to itself, so it rolls for no decoy.
+            if (!vein && _settings.Tier.DecoyChance > 0f && _random() < _settings.Tier.DecoyChance)
                 SpawnDecoy();
         }
 
@@ -170,9 +209,32 @@ namespace SocialUniverse.Mining
             return false;
         }
 
-        // Decoys count for nothing here: only real targets fill the limit or set the stagger.
+        private bool NextIsVein()
+        {
+            int every = _settings.Tier.VeinEvery;
+            return every > 0 && (_spawned + 1) % every == 0;
+        }
+
+        private ActiveMiningTarget FindLiveVein()
+        {
+            for (int i = 0; i < _live.Count; i++)
+                if (_live[i].Kind == ActiveMiningTargetKind.Vein) return _live[i];
+            return null;
+        }
+
+        private void DismissLiveDecoys()
+        {
+            for (int i = _live.Count - 1; i >= 0; i--)
+                if (_live[i].Kind == ActiveMiningTargetKind.Decoy) ExpireDecoy(_live[i]);
+        }
+
+        // Decoys count for nothing here: only real targets fill the limit or set the stagger. A vein
+        // waits for every real target to resolve and holds the screen until it does itself.
         private bool ShouldSpawn()
         {
+            if (IsVeinLive) return false;
+
+
             int liveReal = 0;
             ActiveMiningTarget newest = null;
             for (int i = 0; i < _live.Count; i++)
@@ -184,6 +246,7 @@ namespace SocialUniverse.Mining
 
             if (_spawnGapRemaining > 0f) return false;
             if (liveReal == 0) return true;
+            if (NextIsVein()) return false;
 
             return liveReal < Mathf.Max(1, _settings.Tier.LiveTargets)
                 && newest.Progress >= _settings.SecondTargetStagger;
@@ -197,7 +260,15 @@ namespace SocialUniverse.Mining
             return ActiveMiningGrade.Late;
         }
 
-        private void Resolve(ActiveMiningTarget target, ActiveMiningGrade grade)
+        private ActiveMiningGrade GradeForVein(float elapsedSeconds)
+        {
+            if (elapsedSeconds <= _settings.VeinPerfectBySeconds) return ActiveMiningGrade.Perfect;
+            if (elapsedSeconds <= _settings.VeinGoodBySeconds)    return ActiveMiningGrade.Good;
+            return ActiveMiningGrade.Late;
+        }
+
+        // A vein that was failed is told apart from one whose ring closed; both are one miss.
+        private void Resolve(ActiveMiningTarget target, ActiveMiningGrade grade, bool failedVein = false)
         {
             _live.Remove(target);
             ResolvedTargets++;
@@ -208,7 +279,10 @@ namespace SocialUniverse.Mining
                 case ActiveMiningGrade.Perfect: PerfectCount++; _bankedShares += _settings.PerfectShare; break;
                 case ActiveMiningGrade.Good:    GoodCount++;    _bankedShares += _settings.GoodShare;    break;
                 case ActiveMiningGrade.Late:    LateCount++;    _bankedShares += _settings.LateShare;    break;
-                default:                        ErrorCount++; RingMisses++;                              break;
+                default:
+                    ErrorCount++;
+                    if (failedVein) VeinFails++; else RingMisses++;
+                    break;
             }
 
             OnTargetResolved?.Invoke(target, grade);

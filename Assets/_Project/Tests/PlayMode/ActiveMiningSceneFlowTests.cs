@@ -402,8 +402,28 @@ namespace SocialUniverse.Tests
             TapMissArea();
             TapMissArea();
 
-            LogAssert.Expect(LogType.Log, "[SU:Mining] ActiveMining run: tier=1 perfect=0 good=0 late=0 rings=0 decoys=0 wrong=3 banked=0.00 result=Failed");
+            LogAssert.Expect(LogType.Log, "[SU:Mining] ActiveMining run: tier=1 perfect=0 good=0 late=0 rings=0 decoys=0 wrong=3 veins=0 banked=0.00 result=Failed");
             TapMissArea();
+        }
+
+        // The view has no drag yet, so a vein can only close its ring as a miss; the run must still end.
+        [UnityTest]
+        public IEnumerator A_vein_the_view_cannot_drag_closes_as_a_miss_and_the_run_still_ends()
+        {
+            BeginRun(targets: 2, maxMisses: 3, ringSeconds: 1f, veinEvery: 1);
+            PressStart();
+            yield return WaitUntil(() => LiveView(ActiveMiningTargetKind.Vein) != null, "a vein to spawn");
+            var vein = LiveView(ActiveMiningTargetKind.Vein).Target;
+
+            Private<Button>(LiveView(ActiveMiningTargetKind.Vein), "_button").onClick.Invoke();
+            TapMissArea();
+            Assert.AreEqual((0, 0), (Session().ErrorCount, Session().ResolvedTargets), "A tap neither completes it nor misses");
+
+            yield return WaitUntil(() => vein.Progress >= 1f, "the vein's ring to close");
+            yield return WaitUntil(() => Session().Stage != ActiveMiningStage.InProgress, "the run to end");
+
+            Assert.AreEqual(ActiveMiningStage.Success, Session().Stage);
+            Assert.AreEqual((2, 2), (Session().RingMisses, Session().ResolvedTargets));
         }
 
         [UnityTest]
@@ -956,7 +976,7 @@ namespace SocialUniverse.Tests
 
         // A decoyChance of 2 puts a decoy beside every target.
         private void BeginRun(int targets, int maxMisses, float ringSeconds = 5f, float perfectBySeconds = 4f, float goodBySeconds = 4.5f,
-            float decoyChance = 0f, float spawnGapSeconds = 0f, int liveTargets = 1, float spinDegrees = 0f, bool roomyRock = true)
+            float decoyChance = 0f, float spawnGapSeconds = 0f, int liveTargets = 1, float spinDegrees = 0f, bool roomyRock = true, int veinEvery = 0)
         {
             // The stand-in rock is too big for the camera to leave a decoy a clear spot, so a run with decoys gets one that does.
             if (decoyChance > 0f && roomyRock && _view != null)
@@ -965,10 +985,10 @@ namespace SocialUniverse.Tests
                 if (spinDegrees <= 0f) spinDegrees = 5f;
             }
             var tier = spinDegrees > 0f
-                ? new ActiveMiningTierSettings(targets, ringSeconds, perfectBySeconds, goodBySeconds, maxMisses, decoyChance, liveTargets, spinDegrees, spinDegrees)
-                : new ActiveMiningTierSettings(targets, ringSeconds, perfectBySeconds, goodBySeconds, maxMisses, decoyChance, liveTargets);
+                ? new ActiveMiningTierSettings(targets, ringSeconds, perfectBySeconds, goodBySeconds, maxMisses, decoyChance, liveTargets, spinDegrees, spinDegrees, veinEvery)
+                : new ActiveMiningTierSettings(targets, ringSeconds, perfectBySeconds, goodBySeconds, maxMisses, decoyChance, liveTargets, veinEvery: veinEvery);
             var settings = new ActiveMiningRunSettings(1, tier, previousTier: null,
-                perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: spawnGapSeconds, missGraceSeconds: 0f);
+                perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: spawnGapSeconds, missGraceSeconds: 0f, veinRingSeconds: ringSeconds);
             _handoff.Begin("earth", "Iron#1", _definition, 80, settings);
         }
 

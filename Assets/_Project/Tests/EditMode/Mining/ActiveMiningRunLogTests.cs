@@ -29,7 +29,7 @@ namespace SocialUniverse.Tests
             HitAfter(session, 0); // fresh ring: Perfect
             HitAfter(session, 9); // 0.9s in: Good
 
-            Assert.AreEqual("ActiveMining run: tier=3 perfect=1 good=1 late=0 rings=0 decoys=0 wrong=0 banked=0.90 result=Success",
+            Assert.AreEqual("ActiveMining run: tier=3 perfect=1 good=1 late=0 rings=0 decoys=0 wrong=0 veins=0 banked=0.90 result=Success",
                 ActiveMiningRunLog.Format(3, session));
         }
 
@@ -40,7 +40,7 @@ namespace SocialUniverse.Tests
             session.Tick(0f);
             session.TapOffTarget();
 
-            Assert.AreEqual("ActiveMining run: tier=2 perfect=0 good=0 late=0 rings=0 decoys=0 wrong=1 banked=0.00 result=Failed",
+            Assert.AreEqual("ActiveMining run: tier=2 perfect=0 good=0 late=0 rings=0 decoys=0 wrong=1 veins=0 banked=0.00 result=Failed",
                 ActiveMiningRunLog.Format(2, session));
         }
 
@@ -55,8 +55,21 @@ namespace SocialUniverse.Tests
             session.TapOffTarget();
             for (int i = 0; i < 17; i++) session.Tick(Step); // the ring closes
 
-            Assert.AreEqual("ActiveMining run: tier=4 perfect=0 good=0 late=0 rings=1 decoys=1 wrong=1 banked=0.00 result=InProgress",
+            Assert.AreEqual("ActiveMining run: tier=4 perfect=0 good=0 late=0 rings=1 decoys=1 wrong=1 veins=0 banked=0.00 result=InProgress",
                 ActiveMiningRunLog.Format(4, session));
+        }
+
+        [Test]
+        public void A_failed_vein_is_counted_apart_from_the_other_miss_causes()
+        {
+            var session = new ActiveMiningSession(new ActiveMiningRunSettings(5,
+                new ActiveMiningTierSettings(4, 1.6f, 0.8f, 1.2f, 5, veinEvery: 1), null,
+                1f, 0.8f, 0.6f, 0f, 0f));
+            session.Tick(0f);
+            session.FailVein(session.LiveTargets[0].Id);
+
+            Assert.AreEqual("ActiveMining run: tier=5 perfect=0 good=0 late=0 rings=0 decoys=0 wrong=0 veins=1 banked=0.00 result=InProgress",
+                ActiveMiningRunLog.Format(5, session));
         }
 
         [Test]

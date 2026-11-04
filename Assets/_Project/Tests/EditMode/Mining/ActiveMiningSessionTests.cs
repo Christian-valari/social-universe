@@ -911,5 +911,297 @@ namespace SocialUniverse.Tests
             Assert.AreEqual(0.1f, t.ElapsedSeconds, 0.001f);
             Assert.AreEqual(0, s.ErrorCount);
         }
+
+        // Ring 1.6s, Perfect by 0.8s, Good by 1.2s; a vein is open 1.6s with Perfect by 1.1s and Good by 1.35s.
+        private static ActiveMiningSession NewVeins(int veinEvery = 2, int targets = 6, int maxMisses = 3, int liveTargets = 1,
+            float decoyChance = 0f, float spawnGap = 0f, float missGrace = 0.2f, float stagger = 0f, Func<float> random = null) =>
+            new ActiveMiningSession(new ActiveMiningRunSettings(5,
+                new ActiveMiningTierSettings(targets, 1.6f, 0.8f, 1.2f, maxMisses, decoyChance, liveTargets, veinEvery: veinEvery), null,
+                1f, 0.8f, 0.6f, spawnGap, missGrace, secondTargetStagger: stagger), random);
+
+        private static ActiveMiningTarget Vein(ActiveMiningSession s) =>
+            s.LiveTargets.FirstOrDefault(t => t.Kind == ActiveMiningTargetKind.Vein);
+
+        // Taps real targets until the vein is live.
+        private static ActiveMiningTarget ReachVein(ActiveMiningSession s)
+        {
+            for (int i = 0; i < 100 && Vein(s) == null && s.Stage == ActiveMiningStage.InProgress; i++)
+            {
+                s.Tick(Step);
+                var real = Real(s);
+                if (real != null) s.TapTarget(real.Id);
+            }
+            Assert.IsNotNull(Vein(s), "the vein should have spawned");
+            return Vein(s);
+        }
+
+        [Test]
+        public void Every_fourth_target_is_a_vein()
+        {
+            var s = NewVeins(veinEvery: 4);
+            var kinds = new List<ActiveMiningTargetKind>();
+            s.OnTargetSpawned += t => kinds.Add(t.Kind);
+
+            for (int i = 0; i < 3; i++) HitAt(s, 0.3f);
+            WaitForTarget(s);
+
+            CollectionAssert.AreEqual(new[]
+            {
+                ActiveMiningTargetKind.Normal, ActiveMiningTargetKind.Normal,
+                ActiveMiningTargetKind.Normal, ActiveMiningTargetKind.Vein
+            }, kinds);
+            Assert.AreEqual(1.6f, s.LiveTargets[0].RingSeconds, 0.0001f);
+        }
+
+        [Test]
+        public void A_tier_with_no_vein_setting_never_spawns_one()
+        {
+            var s = NewVeins(veinEvery: 0, targets: 8);
+            var kinds = new List<ActiveMiningTargetKind>();
+            s.OnTargetSpawned += t => kinds.Add(t.Kind);
+
+            for (int i = 0; i < 8; i++) HitAt(s, 0.3f);
+
+            CollectionAssert.DoesNotContain(kinds, ActiveMiningTargetKind.Vein);
+        }
+
+        [Test]
+        public void A_vein_waits_for_live_targets_to_resolve()
+        {
+            var s = NewVeins(veinEvery: 4, liveTargets: 2);
+            s.Tick(0f);
+            Assert.AreEqual(2, s.LiveTargets.Count);
+            s.TapTarget(s.LiveTargets[0].Id);
+            s.Tick(0f); // target 3 joins the remaining one
+            Assert.AreEqual(2, s.LiveTargets.Count);
+
+            s.TapTarget(s.LiveTargets[0].Id);
+            Advance(s, 0.5f);
+            Assert.AreEqual(1, s.LiveTargets.Count, "Target 3 is live, so target 4 is held back");
+            Assert.AreEqual(ActiveMiningTargetKind.Normal, s.LiveTargets[0].Kind);
+
+            s.TapTarget(s.LiveTargets[0].Id);
+            s.Tick(0f);
+            Assert.AreEqual(ActiveMiningTargetKind.Vein, s.LiveTargets[0].Kind);
+        }
+
+        [Test]
+        public void A_vein_that_is_next_waits_past_the_stagger_while_a_real_target_is_live()
+        {
+            var s = NewVeins(veinEvery: 2, liveTargets: 2, stagger: 0.4f);
+            s.Tick(0f);
+
+            Advance(s, 1.0f);
+
+            Assert.AreEqual(1, s.LiveTargets.Count);
+            Assert.AreEqual(ActiveMiningTargetKind.Normal, s.LiveTargets[0].Kind);
+        }
+
+        [Test]
+        public void Nothing_spawns_while_a_vein_is_live()
+        {
+            var s = NewVeins(veinEvery: 2, liveTargets: 2, decoyChance: 1f, random: () => 0f);
+            var vein = ReachVein(s);
+
+            Advance(s, 1.5f);
+
+            CollectionAssert.AreEqual(new[] { vein }, s.LiveTargets);
+            Assert.IsTrue(s.IsVeinLive);
+        }
+
+        [Test]
+        public void A_vein_rolls_for_no_decoy()
+        {
+            int rolls = 0;
+            var s = NewVeins(veinEvery: 1, decoyChance: 1f, random: () => { rolls++; return 0f; });
+
+            s.Tick(0f);
+
+            Assert.AreEqual(ActiveMiningTargetKind.Vein, s.LiveTargets[0].Kind);
+            Assert.AreEqual((1, 0), (s.LiveTargets.Count, rolls));
+        }
+
+        [Test]
+        public void Live_decoys_are_dismissed_at_no_cost_before_a_vein_and_the_gap_still_applies()
+        {
+            var s = NewVeins(veinEvery: 2, decoyChance: 1f, spawnGap: 0.25f, random: () => 0f);
+            var expired  = new List<ActiveMiningTarget>();
+            var resolved = new List<ActiveMiningTarget>();
+            s.OnDecoyExpired   += expired.Add;
+            s.OnTargetResolved += (t, _) => resolved.Add(t);
+            s.Tick(0f);
+            var decoy = Decoy(s);
+            s.TapTarget(Real(s).Id);
+            resolved.Clear();
+
+            s.Tick(0f);
+
+            CollectionAssert.AreEqual(new[] { decoy }, expired);
+            CollectionAssert.IsEmpty(resolved);
+            Assert.AreEqual(0, s.ErrorCount);
+            Assert.AreEqual(0, s.LiveTargets.Count, "The gap runs before the vein");
+
+            Advance(s, 0.2f);
+            Assert.AreEqual(0, s.LiveTargets.Count);
+            Advance(s, 0.1f);
+            Assert.IsNotNull(Vein(s));
+        }
+
+        [TestCase(1.0f, ActiveMiningGrade.Perfect)]
+        [TestCase(1.3f, ActiveMiningGrade.Good)]
+        [TestCase(1.5f, ActiveMiningGrade.Late)]
+        public void Completing_a_vein_grades_by_its_own_times(float completeAt, ActiveMiningGrade expected)
+        {
+            var s = NewVeins();
+            var graded = new List<ActiveMiningGrade>();
+            var vein = ReachVein(s);
+            s.OnTargetResolved += (_, grade) => graded.Add(grade);
+            Advance(s, completeAt);
+
+            s.CompleteVein(vein.Id);
+
+            CollectionAssert.AreEqual(new[] { expected }, graded);
+            Assert.AreEqual(0, s.ErrorCount);
+            Assert.IsFalse(s.IsVeinLive);
+            Assert.AreEqual(2, s.ResolvedTargets);
+        }
+
+        [Test]
+        public void A_failed_vein_is_a_miss_that_uses_it_up()
+        {
+            var s = NewVeins(veinEvery: 1);
+            s.Tick(0f);
+            var vein = s.LiveTargets[0];
+
+            s.FailVein(vein.Id);
+
+            Assert.AreEqual((1, 1, 0f), (s.ErrorCount, s.ResolvedTargets, s.BankedFraction));
+            Assert.AreEqual((1, 0), (s.VeinFails, s.RingMisses));
+            Assert.IsFalse(s.IsVeinLive);
+        }
+
+        [Test]
+        public void A_closed_vein_ring_is_a_miss()
+        {
+            var s = NewVeins(veinEvery: 1, targets: 1);
+            s.Tick(0f);
+
+            Advance(s, 1.65f);
+
+            Assert.AreEqual((1, 1, 0f), (s.ErrorCount, s.ResolvedTargets, s.BankedFraction));
+            Assert.AreEqual((0, 1), (s.VeinFails, s.RingMisses));
+            Assert.IsFalse(s.IsVeinLive);
+        }
+
+        [Test]
+        public void A_tap_does_not_complete_a_vein()
+        {
+            var s = NewVeins(veinEvery: 1);
+            s.Tick(0f);
+            var vein = s.LiveTargets[0];
+            Advance(s, 0.3f);
+
+            s.TapTarget(vein.Id);
+
+            Assert.IsTrue(s.IsVeinLive);
+            Assert.AreEqual((0, 0), (s.ErrorCount, s.ResolvedTargets));
+        }
+
+        [Test]
+        public void Off_target_taps_are_ignored_while_a_vein_is_live()
+        {
+            var s = NewVeins(veinEvery: 1, missGrace: 0f);
+            int wrongTaps = 0;
+            s.OnWrongTap += () => wrongTaps++;
+            s.Tick(0f);
+            Advance(s, 0.3f);
+
+            s.TapOffTarget();
+
+            Assert.AreEqual((0, 0), (s.ErrorCount, wrongTaps));
+        }
+
+        [Test]
+        public void Completing_or_failing_something_that_is_not_a_live_vein_does_nothing()
+        {
+            var s = NewVeins(veinEvery: 2);
+            s.Tick(0f);
+            var real = Real(s);
+            var resolved = new List<ActiveMiningTarget>();
+            s.OnTargetResolved += (t, _) => resolved.Add(t);
+
+            s.CompleteVein(real.Id);
+            s.FailVein(real.Id);
+            s.CompleteVein(999);
+            s.FailVein(999);
+
+            CollectionAssert.IsEmpty(resolved);
+            CollectionAssert.AreEqual(new[] { real }, s.LiveTargets);
+            Assert.AreEqual((0, 0), (s.ErrorCount, s.ResolvedTargets));
+        }
+
+        [Test]
+        public void Completing_or_failing_a_vein_twice_or_after_the_run_ends_does_nothing()
+        {
+            var s = NewVeins(veinEvery: 1, maxMisses: 1);
+            s.Tick(0f);
+            var vein = s.LiveTargets[0];
+            s.FailVein(vein.Id);
+            Assert.AreEqual(ActiveMiningStage.Failed, s.Stage);
+            int events = 0;
+            s.OnTargetResolved += (_, __) => events++;
+
+            s.FailVein(vein.Id);
+            s.CompleteVein(vein.Id);
+
+            Assert.AreEqual((1, 1, 1, 0), (s.ErrorCount, s.ResolvedTargets, s.VeinFails, events));
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void Resolving_a_vein_sets_the_miss_grace(bool complete)
+        {
+            var s = NewVeins(veinEvery: 2, targets: 4);
+            var vein = ReachVein(s);
+            if (complete) s.CompleteVein(vein.Id); else s.FailVein(vein.Id);
+            s.Tick(0f);
+            Assert.IsNotNull(Real(s), "The next target is live");
+
+            s.TapOffTarget();
+
+            Assert.AreEqual(complete ? 0 : 1, s.ErrorCount);
+        }
+
+        [Test]
+        public void After_a_vein_resolves_the_gap_applies_then_spawning_resumes()
+        {
+            var s = NewVeins(veinEvery: 1, targets: 3, spawnGap: 0.25f);
+            s.Tick(0f);
+            s.CompleteVein(s.LiveTargets[0].Id);
+
+            Advance(s, 0.2f);
+            Assert.AreEqual(0, s.LiveTargets.Count);
+            Advance(s, 0.1f);
+            Assert.AreEqual(ActiveMiningTargetKind.Vein, s.LiveTargets[0].Kind);
+        }
+
+        [Test]
+        public void A_vein_miss_counts_in_the_miss_causes()
+        {
+            var s = NewVeins(veinEvery: 2, maxMisses: 6, missGrace: 0f, decoyChance: 1f, random: () => 0f);
+            s.Tick(0f);
+            s.TapTarget(Decoy(s).Id);
+            s.TapOffTarget();
+            s.TapTarget(Real(s).Id);
+            s.Tick(0f);
+            s.FailVein(Vein(s).Id);
+            s.Tick(0f); // the next real target
+            s.TapTarget(Real(s).Id);
+            s.Tick(0f);
+            Advance(s, 1.65f); // the second vein closes
+
+            Assert.AreEqual((1, 1, 1, 1), (s.RingMisses, s.DecoyTaps, s.WrongTaps, s.VeinFails));
+            Assert.AreEqual(s.ErrorCount, s.RingMisses + s.DecoyTaps + s.WrongTaps + s.VeinFails);
+        }
     }
 }

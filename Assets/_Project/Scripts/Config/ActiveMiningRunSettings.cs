@@ -14,8 +14,16 @@ namespace SocialUniverse.Config
             float spawnGapSeconds,
             float missGraceSeconds,
             float firstTargetDelaySeconds = 0f,
-            float secondTargetStagger = 0.4f)
+            float secondTargetStagger = 0.4f,
+            float veinRingSeconds = 1.6f,
+            float veinPerfectBySeconds = 1.1f,
+            float veinGoodBySeconds = 1.35f,
+            float veinSpinDegrees = 5f)
         {
+            VeinRingSeconds         = veinRingSeconds;
+            VeinPerfectBySeconds    = veinPerfectBySeconds;
+            VeinGoodBySeconds       = veinGoodBySeconds;
+            VeinSpinDegrees         = veinSpinDegrees;
             SecondTargetStagger     = secondTargetStagger;
             TierNumber              = tierNumber;
             Tier                    = tier;
@@ -40,5 +48,11 @@ namespace SocialUniverse.Config
 
         // How far round its ring the newest target must be before another can join it (0-1).
         public float                    SecondTargetStagger     { get; }
+
+        // A vein is graded on its own times, and the asteroid eases down to VeinSpinDegrees while one is live.
+        public float                    VeinRingSeconds         { get; }
+        public float                    VeinPerfectBySeconds    { get; }
+        public float                    VeinGoodBySeconds       { get; }
+        public float                    VeinSpinDegrees         { get; }
     }
 }

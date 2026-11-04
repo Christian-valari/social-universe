@@ -58,6 +58,10 @@ namespace SocialUniverse.Config
         [SerializeField] private float _activeMissGraceSeconds  = 0.2f;  // stray taps right after a hit are forgiven for this long
         [SerializeField] private float _activeFirstTargetDelaySeconds = 0.6f; // pause between pressing Start and the first target
         [SerializeField] private float _activeSecondTargetStagger = 0.4f; // share of the newest ring that must have run before another target joins it
+        [SerializeField] private float _activeVeinRingSeconds   = 1.6f;  // how long a vein stays open
+        [SerializeField] private float _activeVeinPerfectBySeconds = 1.1f; // a vein finished at or before this age is Perfect (playtest guess)
+        [SerializeField] private float _activeVeinGoodBySeconds = 1.35f; // ... Good; later is Late (playtest guess)
+        [SerializeField] private float _activeVeinSpinDegrees   = 5f;    // the asteroid's spin while a vein is live, in degrees per second
 
         [Header("Drones — M6")]
         [SerializeField] private int   _startingFleetSlots    = 2;
@@ -111,7 +115,8 @@ namespace SocialUniverse.Config
             var previous = number > 1 ? _activeTiers[number - 2] : null;
             return new ActiveMiningRunSettings(number, current, previous,
                 _activePerfectShare, _activeGoodShare, _activeLateShare,
-                _activeSpawnGapSeconds, _activeMissGraceSeconds, _activeFirstTargetDelaySeconds, _activeSecondTargetStagger);
+                _activeSpawnGapSeconds, _activeMissGraceSeconds, _activeFirstTargetDelaySeconds, _activeSecondTargetStagger,
+                _activeVeinRingSeconds, _activeVeinPerfectBySeconds, _activeVeinGoodBySeconds, _activeVeinSpinDegrees);
         }
 
         public int   StartingFleetSlots   => _startingFleetSlots;

@@ -48,6 +48,7 @@ MonoBehaviour:
     _liveTargets: 1
     _minSpinDegrees: 5
     _maxSpinDegrees: 15
+    _veinEvery: 0
   - _targets: 10
     _ringSeconds: 1.3
     _perfectBySeconds: 0.75
@@ -57,6 +58,7 @@ MonoBehaviour:
     _liveTargets: 1
     _minSpinDegrees: 5
     _maxSpinDegrees: 15
+    _veinEvery: 0
   - _targets: 12
     _ringSeconds: 1.1
     _perfectBySeconds: 0.7
@@ -66,6 +68,7 @@ MonoBehaviour:
     _liveTargets: 2
     _minSpinDegrees: 5
     _maxSpinDegrees: 15
+    _veinEvery: 0
   - _targets: 14
     _ringSeconds: 1
     _perfectBySeconds: 0.65
@@ -75,6 +78,7 @@ MonoBehaviour:
     _liveTargets: 2
     _minSpinDegrees: 30
     _maxSpinDegrees: 45
+    _veinEvery: 0
   - _targets: 16
     _ringSeconds: 0.9
     _perfectBySeconds: 0.6
@@ -84,6 +88,7 @@ MonoBehaviour:
     _liveTargets: 2
     _minSpinDegrees: 30
     _maxSpinDegrees: 45
+    _veinEvery: 4
   _activePerfectShare: 1
   _activeGoodShare: 0.8
   _activeLateShare: 0.6
@@ -91,6 +96,10 @@ MonoBehaviour:
   _activeMissGraceSeconds: 0.2
   _activeFirstTargetDelaySeconds: 0.6
   _activeSecondTargetStagger: 0.4
+  _activeVeinRingSeconds: 1.6
+  _activeVeinPerfectBySeconds: 1.1
+  _activeVeinGoodBySeconds: 1.35
+  _activeVeinSpinDegrees: 5
   _maxFuel: 100
   _fuelRechargePerHour: 10
   _fuelRefillCost: 50

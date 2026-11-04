@@ -18,10 +18,11 @@ namespace SocialUniverse.Config
         [SerializeField] private int   _liveTargets      = 1;     // targets that can be live at once
         [SerializeField] private float _minSpinDegrees   = 5f;    // slowest the asteroid spins, in degrees per second
         [SerializeField] private float _maxSpinDegrees   = 15f;   // fastest it spins
+        [SerializeField] private int   _veinEvery        = 0;     // every this many targets is a hold-and-drag vein; 0 for none
 
         public ActiveMiningTierSettings() { }
 
-        public ActiveMiningTierSettings(int targets, float ringSeconds, float perfectBySeconds, float goodBySeconds, int maxMisses, float decoyChance = 0f, int liveTargets = 1, float minSpinDegrees = 5f, float maxSpinDegrees = 15f)
+        public ActiveMiningTierSettings(int targets, float ringSeconds, float perfectBySeconds, float goodBySeconds, int maxMisses, float decoyChance = 0f, int liveTargets = 1, float minSpinDegrees = 5f, float maxSpinDegrees = 15f, int veinEvery = 0)
         {
             _liveTargets      = liveTargets;
             _targets          = targets;
@@ -32,6 +33,7 @@ namespace SocialUniverse.Config
             _decoyChance      = decoyChance;
             _minSpinDegrees   = minSpinDegrees;
             _maxSpinDegrees   = maxSpinDegrees;
+            _veinEvery        = veinEvery;
         }
 
         public int   Targets          => _targets;
@@ -43,5 +45,6 @@ namespace SocialUniverse.Config
         public int   LiveTargets      => _liveTargets;
         public float MinSpinDegrees   => _minSpinDegrees;
         public float MaxSpinDegrees   => _maxSpinDegrees;
+        public int   VeinEvery        => _veinEvery;
     }
 }

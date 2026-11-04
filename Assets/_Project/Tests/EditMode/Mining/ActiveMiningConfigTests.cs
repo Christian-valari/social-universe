@@ -78,6 +78,26 @@ namespace SocialUniverse.Tests
             Assert.AreEqual(0.7f, Real().IdleYieldFraction, 0.001f);
         }
 
+        [TestCase(1, 0)] [TestCase(2, 0)] [TestCase(3, 0)] [TestCase(4, 0)] [TestCase(5, 4)]
+        public void Real_asset_has_veins_only_at_tier_5(int tier, int every) =>
+            Assert.AreEqual(every, Real().ActiveRunSettings(tier).Tier.VeinEvery);
+
+        [Test] public void Real_asset_holds_the_vein_values()
+        {
+            var s = Real().ActiveRunSettings(5);
+            Assert.AreEqual((1.6f, 1.1f, 1.35f, 5f),
+                (s.VeinRingSeconds, s.VeinPerfectBySeconds, s.VeinGoodBySeconds, s.VeinSpinDegrees));
+            Assert.Less(s.VeinPerfectBySeconds, s.VeinGoodBySeconds);
+            Assert.Less(s.VeinGoodBySeconds, s.VeinRingSeconds);
+        }
+
+        [Test] public void A_tier_has_no_veins_unless_it_is_given_a_cadence()
+        {
+            Assert.AreEqual(0, new ActiveMiningTierSettings().VeinEvery);
+            Assert.AreEqual(0, new ActiveMiningTierSettings(8, 1.6f, 0.8f, 1.2f, 3).VeinEvery);
+            Assert.AreEqual(4, new ActiveMiningTierSettings(8, 1.6f, 0.8f, 1.2f, 3, veinEvery: 4).VeinEvery);
+        }
+
         [Test] public void Real_asset_holds_the_first_target_lead_in()
         {
             Assert.AreEqual(0.6f, Real().ActiveRunSettings(1).FirstTargetDelaySeconds, 0.001f);
