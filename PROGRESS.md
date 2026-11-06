@@ -1261,15 +1261,15 @@ deployed. Nothing in M6 has been exercised in Play Mode or on a device.
 
 ---
 
-## Active Mining Difficulty — Phases 1 to 3 🚧 CODE COMPLETE (branch `feature/active-mining-difficulty`)
+## Active Mining Difficulty — Phases 1 to 3 🚧 CODE COMPLETE (merged to `main` 2026-11-06)
 
 Spec: `docs/superpowers/specs/2026-11-03-active-mining-difficulty-design.md` · plan:
 `docs/superpowers/plans/2026-11-03-active-mining-difficulty.md`. Goal: an active run can be lost,
 playing better pays more, and higher tiers are harder.
 
-**Status (2026-11-04):** Phase 1 (the closing-ring core loop, plan tasks 1–8), Phase 2 (the tap-based
-challenges: decoys, two live targets, faster spin) and Phase 3 (hold-and-drag veins at Tier 5) are written
-and tested on the branch and are not merged to `main`. **No device results are recorded for Phases 1–3
+**Status (2026-11-06):** Phase 1 (the closing-ring core loop, plan tasks 1–8), Phase 2 (the tap-based
+challenges: decoys, two live targets, faster spin) and Phase 3 (hold-and-drag veins at Tier 5) are written,
+tested and merged to `main` (not yet pushed). **No device results are recorded for Phases 1–3
 yet**; every number below is a starting value, not tuned balance. **The owner decided on 2026-11-05 that
 veins stay**; setting `_veinEvery: 0` for Tier 5 in `EconomyConfig` still turns them off, and nothing else
 is needed. Tests on 2026-11-05 (scratch copy, Unity 6000.3.12f1): EditMode **884/884**, PlayMode **105/105**.
