@@ -72,6 +72,9 @@ namespace SocialUniverse.UI
         // first tier's rocks, which leave little room for what the later tiers add.
         [Header("Dev")]
         [SerializeField] private AsteroidDefinition[] _devAsteroidsByTier;
+
+        // Off by default, so the pre-game panel looks as players see it. Tick to try other tiers.
+        [SerializeField] private bool _showDevTierPicker;
 #endif
 
         [Inject] private ActiveMiningSessionRunner _runner;
@@ -122,7 +125,7 @@ namespace SocialUniverse.UI
             if (_rulesText       != null) _rulesText.text       = ActiveMiningRulesText.For(_handoff.Settings);
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            ShowTierPicker();
+            if (_showDevTierPicker) ShowTierPicker();
 #endif
         }
 

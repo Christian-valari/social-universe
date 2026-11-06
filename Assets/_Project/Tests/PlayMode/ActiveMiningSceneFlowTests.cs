@@ -1636,6 +1636,23 @@ namespace SocialUniverse.Tests
             yield return null;
         }
 
+        // The scene ships with the tier buttons off, even when a run from Planet could offer them. Running
+        // Start again stands in for opening the panel with the switch in each position.
+        [Test]
+        public void The_tier_buttons_stay_hidden_unless_switched_on()
+        {
+            _handoff.DevSettingsForTier = tier => new ActiveMiningRunSettings(tier,
+                new ActiveMiningTierSettings(tier, 5f, 4f, 4.5f, 3),
+                perfectShare: 1f, goodShare: 0.8f, lateShare: 0.6f, spawnGapSeconds: 0f, missGraceSeconds: 0f);
+
+            InvokePrivate(_view, "Start");
+            Assert.IsTrue(_view.GetComponent<ActiveMiningDevTierPicker>() == null, "Hidden in the scene as shipped");
+
+            SetPrivate(_view, "_showDevTierPicker", true);
+            InvokePrivate(_view, "Start");
+            Assert.IsNotNull(_view.GetComponent<ActiveMiningDevTierPicker>(), "Shown once switched on");
+        }
+
         // The dev tier picker is for runs that began in Planet, which is what supplies its tier lookup. A
         // tier N run here has N targets, so a run's length shows which tier it played.
         [UnityTest]

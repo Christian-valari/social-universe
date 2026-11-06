@@ -296,7 +296,7 @@ Phase 2 for a play session, and the project owner decides whether to continue. T
 
 **Dev-only test tools**, compiled out of release builds *(drafting call)*:
 
-- A way to start a run at any tier, showing a real asteroid of that tier, since reaching Tier 5
+- A way to start a run at any tier, off by default, showing a real asteroid of that tier, since reaching Tier 5
   otherwise takes a 15,000-coin drone.
 - One `SULog` line per run with tier, grades, misses and banked share, to measure the targets below.
 
